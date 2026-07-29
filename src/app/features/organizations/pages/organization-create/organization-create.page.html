@@ -1,0 +1,192 @@
+<main class="min-h-screen p-6">
+      <section class="mx-auto max-w-3xl">
+        <dos-card>
+  <header>
+    <h1 class="text-2xl font-bold">
+      {{
+        'organizations.createTitle'
+          | translate
+      }}
+    </h1>
+
+    <p
+      class="
+        mt-2 text-sm
+        text-slate-500
+        dark:text-slate-400
+      "
+    >
+      {{
+        'organizations.createDescription'
+          | translate
+      }}
+    </p>
+  </header>
+
+          <form
+            class="mt-6 space-y-6"
+            [formGroup]="form"
+            (ngSubmit)="submit()"
+          >
+            <div class="space-y-2">
+              <label
+                for="legalName"
+                class="block font-medium"
+              >
+                {{
+                  'organizations.fields.legalName'
+                    | translate
+                }}
+              </label>
+
+              <input
+                id="legalName"
+                dosInput
+                class="w-full"
+                formControlName="legalName"
+                [placeholder]="
+                  'organizations.placeholders.legalName'
+                    | translate
+                "
+              />
+
+              @if (
+                form.controls.legalName.touched &&
+                form.controls.legalName.invalid
+              ) {
+                <small class="text-red-600">
+                  {{
+                    'errors.organizations.legalName.empty'
+                      | translate
+                  }}
+                </small>
+              }
+            </div>
+
+            <div class="space-y-2">
+              <label
+                for="countryCode"
+                class="block font-medium"
+              >
+                {{
+                  'organizations.fields.countryCode'
+                    | translate
+                }}
+              </label>
+
+              <input
+                dosInput
+                id="countryCode"
+                maxlength="2"
+                formControlName="countryCode"
+                class="uppercase"
+                [placeholder]="
+                  'organizations.placeholders.countryCode'
+                    | translate
+                "
+              />
+
+              @if (
+                form.controls.countryCode.touched &&
+                form.controls.countryCode.invalid
+              ) {
+                <small class="text-red-600">
+                  {{
+                    'errors.organizations.countryCode.invalid'
+                      | translate
+                  }}
+                </small>
+              }
+            </div>
+
+            <div class="space-y-2">
+              <label
+                for="organizationType"
+                class="block font-medium"
+              >
+                {{
+                  'organizations.fields.organizationType'
+                    | translate
+                }}
+              </label>
+
+              <select
+                  id="organizationType"
+                  formControlName="organizationType"
+                  class="
+                    w-full rounded-lg
+                    border border-slate-300
+                    bg-white px-3 py-2
+                    text-sm text-slate-900
+                    outline-none
+                    transition-colors
+                    focus:border-blue-700
+                    focus:ring-2
+                    focus:ring-blue-700/20
+                    dark:border-slate-700
+                    dark:bg-slate-900
+                    dark:text-slate-100
+                  "
+                >
+                  <option [ngValue]="null">
+                    {{
+                      'organizations.placeholders.organizationType'
+                        | translate
+                    }}
+                  </option>
+
+                  @for (
+                    option of translatedTypeOptions();
+                    track option.value
+                  ) {
+                    <option [ngValue]="option.value">
+                      {{ option.label }}
+                    </option>
+                  }
+                </select>
+
+              @if (
+                form.controls.organizationType.touched &&
+                form.controls.organizationType.invalid
+              ) {
+                <small class="text-red-600">
+                  {{
+                    'errors.organizations.type.invalid'
+                      | translate
+                  }}
+                </small>
+              }
+            </div>
+
+            <div
+              class="flex justify-end gap-3"
+            >
+            <div class="flex justify-end gap-3">
+                <dos-button
+                  variant="outline"
+                  (pressed)="cancel()"
+                >
+                  {{
+                    'common.actions.cancel'
+                      | translate
+                  }}
+                </dos-button>
+
+                <dos-button
+                  type="submit"
+                  icon="ph-bold ph-check"
+                  [loading]="isSubmitting()"
+                  [disabled]="form.invalid"
+                >
+                  {{
+                    'common.actions.create'
+                      | translate
+                  }}
+                </dos-button>
+              </div>
+
+            </div>
+          </form>
+        </dos-card>
+      </section>
+    </main>

@@ -1,1 +1,46 @@
-/* You can add global styles to this file, and also import other style files */
+@import "@phosphor-icons/web/regular";
+@import "@phosphor-icons/web/bold";
+@import "@phosphor-icons/web/fill";
+@import "@phosphor-icons/web/duotone";
+
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+
+  --driveos-primary: #1e40af;
+  --driveos-primary-hover: #1e3a8a;
+  --driveos-accent: #f97316;
+
+  --driveos-background: #f8fafc;
+  --driveos-surface: #ffffff;
+  --driveos-text: #0f172a;
+  --driveos-text-muted: #64748b;
+  --driveos-border: #e2e8f0;
+}
+
+.driveos-dark {
+  color-scheme: dark;
+
+  --driveos-background: #020617;
+  --driveos-surface: #0f172a;
+  --driveos-text: #f8fafc;
+  --driveos-text-muted: #94a3b8;
+  --driveos-border: #1e293b;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--driveos-background);
+  color: var(--driveos-text);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+}

@@ -1,0 +1,184 @@
+{
+  "app": {
+    "name": "DriveOS"
+  },
+  "common": {
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "create": "Create",
+      "search": "Search",
+      "close": "Close",
+      "title": "Actions",
+      "view": "View",
+      "refresh": "Refresh",
+      "loading": "Loading"
+    },
+    "status": {
+      "loading": "Loading...",
+      "empty": "No data available"
+    }
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "organizations": "Organizations",
+    "students": "Students",
+    "planning": "Schedule",
+    "instructors": "Instructors",
+    "vehicles": "Vehicles",
+    "billing": "Finance",
+    "settings": "Settings"
+  },
+  "theme": {
+    "label": "Theme",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "errors": {
+    "title": "An error occurred",
+    "generic": "An unexpected error occurred.",
+    "network": "Unable to contact the server.",
+    "organizations": {
+      "id": {
+        "empty": "The organization identifier is empty.",
+        "invalid": "The organization identifier is invalid."
+      },
+      "legalName": {
+        "empty": "The legal name is required.",
+        "tooLong": "The legal name cannot exceed {{maxLength}} characters.",
+        "alreadyExists": "An organization with this legal name already exists."
+      },
+      "countryCode": {
+        "empty": "The country code is required.",
+        "invalid": "The country code must contain two letters."
+      },
+      "type": {
+        "invalid": "The organization type is invalid."
+      },
+      "notFound": "The requested organization could not be found.",
+       "search": {
+        "tooLong": "The search cannot exceed 200 characters."
+      },
+      "sort": {
+        "invalid": "The sort field is invalid."
+      },
+      "sortDirection": {
+        "invalid": "The sort direction is invalid."
+      }
+
+    },
+    "pagination": {
+      "pageNumber": {
+        "invalid": "The page number must be greater than or equal to 1."
+      },
+      "pageSize": {
+        "invalid": "The page size must be between 1 and {{maximumPageSize}}."
+      },
+      "report": "{{first}} to {{last}} of {{total}} items",
+    "page": "Page {{current}} of {{total}}",
+    "firstPage": "First page",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "lastPage": "Last page"
+    }
+  },
+  "organizations": {
+    "title": "Organizations",
+    "createTitle": "Create an organization",
+    "createDescription": "Register a driving school, network, training center or partner organization.",
+    "createdSuccessfully": "The organization was created successfully.",
+    "detailsTitle": "Organization information",
+    "fields": {
+      "legalName": "Legal name",
+      "countryCode": "Country code",
+      "organizationType": "Organization type",
+      "status": "Status",
+      "createdAt": "Created on",
+      "lastModifiedAt": "Last modified"
+    },
+    "placeholders": {
+      "legalName": "Example: Horizon Driving School",
+      "countryCode": "Example: FR",
+      "organizationType": "Select a type"
+    },
+    "types": {
+      "drivingSchool": "Driving school",
+      "drivingSchoolNetwork": "Driving school network",
+      "trainingCenter": "Training center",
+      "independentInstructorBusiness": "Independent instructor business",
+      "vehicleProvider": "Vehicle provider",
+      "fundingOrganization": "Funding organization",
+      "partnerOrganization": "Partner organization",
+      "platformOperator": "Platform operator",
+      "unknown": "Unknown type"
+    },
+    "listDescription": "Manage the structures and tenants registered in DriveOS.",
+    "searchPlaceholder": "Search by legal name or country code...",
+    "paginationReport": "{first} to {last} of {totalRecords} organizations",
+    "empty": {
+      "title": "No organization found",
+      "description": "Create an organization or change your search criteria."
+    },
+    "statuses": {
+      "draft": "Draft",
+      "pendingActivation": "Pending activation",
+      "active": "Active",
+      "restricted": "Restricted",
+      "suspended": "Suspended",
+      "closed": "Closed",
+      "archived": "Archived"
+    },
+    "lifecycle": {
+      "title": "Lifecycle",
+      "description": "Available actions depend on the organization's current status.",
+      "changeSuccess": "The organization status has been updated.",
+      "reason": {
+        "label": "Reason",
+        "placeholder": "Explain precisely why this decision is being made...",
+        "required": "A reason is required.",
+        "tooLong": "The reason cannot exceed 500 characters."
+      },
+      "history": {
+        "title": "Status history",
+        "description": "Timeline of status changes applied to this organization.",
+        "loading": "Loading status history",
+        "emptyTitle": "No status changes",
+        "emptyDescription": "This organization does not have any recorded transition yet.",
+        "changedBy": "Changed by:"
+      },
+      "actions": {
+        "submitForActivation": {
+          "label": "Submit for activation",
+          "title": "Submit organization for activation",
+          "description": "The organization “{{organization}}” will move to Pending activation."
+        },
+        "activate": {
+          "label": "Activate",
+          "title": "Activate organization",
+          "description": "The organization “{{organization}}” will become active."
+        },
+        "restrict": {
+          "label": "Restrict",
+          "title": "Restrict organization",
+          "description": "Some operations for “{{organization}}” may be limited."
+        },
+        "suspend": {
+          "label": "Suspend",
+          "title": "Suspend organization",
+          "description": "The organization “{{organization}}” will be temporarily suspended."
+        },
+        "reactivate": {
+          "label": "Reactivate",
+          "title": "Reactivate organization",
+          "description": "The organization “{{organization}}” will return to Active status."
+        },
+        "close": {
+          "label": "Close",
+          "title": "Permanently close organization",
+          "description": "Closing “{{organization}}” is a sensitive action and cannot be reversed through the current workflow."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,143 @@
+<dos-card>
+  <header
+    class="
+      flex flex-col gap-4
+      sm:flex-row
+      sm:items-start
+      sm:justify-between
+    "
+  >
+    <div>
+      <h1
+        class="
+          text-2xl font-bold
+          text-slate-950
+          dark:text-slate-50
+        "
+      >
+        {{ organization().legalName }}
+      </h1>
+
+      <p
+        class="
+          mt-1 text-sm
+          text-slate-500
+          dark:text-slate-400
+        "
+      >
+        {{ organization().countryCode }}
+      </p>
+    </div>
+
+    <dos-badge
+      [variant]="
+        statusVariant(
+          organization().status
+        )
+      "
+    >
+      {{
+        statusKey(
+          organization().status
+        ) | translate
+      }}
+    </dos-badge>
+  </header>
+
+  <dl
+    class="
+      mt-6 grid gap-5
+      md:grid-cols-2
+    "
+  >
+    <div>
+      <dt
+        class="
+          text-sm
+          text-[var(--driveos-text-muted)]
+        "
+      >
+        {{
+          'organizations.fields.organizationType'
+            | translate
+        }}
+      </dt>
+
+      <dd class="mt-1 font-medium">
+        {{
+          organizationTypeKey(
+            organization().type
+          ) | translate
+        }}
+      </dd>
+    </div>
+
+    <div>
+      <dt
+        class="
+          text-sm
+          text-[var(--driveos-text-muted)]
+        "
+      >
+        {{
+          'organizations.fields.createdAt'
+            | translate
+        }}
+      </dt>
+
+      <dd class="mt-1 font-medium">
+        {{
+          organization().createdAtUtc
+            | date: 'medium'
+        }}
+      </dd>
+    </div>
+
+    <div>
+      <dt
+        class="
+          text-sm
+          text-[var(--driveos-text-muted)]
+        "
+      >
+        {{
+          'organizations.fields.lastModifiedAt'
+            | translate
+        }}
+      </dt>
+
+      <dd class="mt-1 font-medium">
+        @if (
+          organization().lastModifiedAtUtc
+        ) {
+          {{
+            organization().lastModifiedAtUtc
+              | date: 'medium'
+          }}
+        } @else {
+          —
+        }
+      </dd>
+    </div>
+
+    <div>
+      <dt
+        class="
+          text-sm
+          text-[var(--driveos-text-muted)]
+        "
+      >
+        ID
+      </dt>
+
+      <dd
+        class="
+          mt-1 break-all
+          font-mono text-sm
+        "
+      >
+        {{ organization().id }}
+      </dd>
+    </div>
+  </dl>
+</dos-card>

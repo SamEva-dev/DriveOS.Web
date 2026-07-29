@@ -1,0 +1,209 @@
+{
+  "app": {
+    "name": "DriveOS"
+  },
+  "common": {
+    "actions": {
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "create": "Créer",
+      "search": "Rechercher",
+      "close": "Fermer",
+      "title": "Actions",
+      "view": "Consulter",
+      "refresh": "Actualiser",
+      "loading": "Chargement en cours"
+    },
+    "status": {
+      "loading": "Chargement...",
+      "empty": "Aucune donnée disponible"
+    },
+    "comingSoon": "Ce module sera développé dans un prochain sprint."
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "organizations": "Organisations",
+    "students": "Élèves",
+    "planning": "Planning",
+    "instructors": "Enseignants",
+    "vehicles": "Véhicules",
+    "billing": "Finance",
+    "settings": "Paramètres"
+  },
+  "theme": {
+    "label": "Thème",
+    "system": "Système",
+    "light": "Clair",
+    "dark": "Sombre"
+  },
+  "errors": {
+    "title": "Une erreur est survenue",
+    "generic": "Une erreur inattendue est survenue.",
+    "network": "Impossible de contacter le serveur.",
+    "organizations": {
+      "id": {
+        "empty": "L’identifiant de l’organisation est vide.",
+        "invalid": "L’identifiant de l’organisation est invalide."
+      },
+      "legalName": {
+        "empty": "La raison sociale est obligatoire.",
+        "tooLong": "La raison sociale ne peut pas dépasser {{maxLength}} caractères.",
+        "alreadyExists": "Une organisation portant cette raison sociale existe déjà."
+      },
+      "countryCode": {
+        "empty": "Le code pays est obligatoire.",
+        "invalid": "Le code pays doit contenir deux lettres."
+      },
+      "type": {
+        "invalid": "Le type d’organisation est invalide."
+      },
+      "notFound": "L’organisation demandée est introuvable.",
+      "search": {
+        "tooLong": "La recherche ne peut pas dépasser 200 caractères."
+      },
+      "sort": {
+        "invalid": "Le champ de tri est invalide."
+      },
+      "sortDirection": {
+        "invalid": "Le sens de tri est invalide."
+      },
+      "listDescription": "Gérez les structures et tenants enregistrés dans DriveOS.",
+      "searchPlaceholder": "Rechercher par raison sociale ou code pays...",
+      "paginationReport": "{first} à {last} sur {totalRecords} organisations",
+      "empty": {
+        "title": "Aucune organisation trouvée",
+        "description": "Créez une organisation ou modifiez vos critères de recherche."
+      },
+      "types": {
+        "unknown": "Type inconnu"
+      },
+      "statuses": {
+        "draft": "Brouillon",
+        "pendingActivation": "En attente d’activation",
+        "active": "Active",
+        "restricted": "Restreinte",
+        "suspended": "Suspendue",
+        "closed": "Fermée",
+        "archived": "Archivée"
+      }
+    },
+
+    "pagination": {
+      "pageNumber": {
+        "invalid": "Le numéro de page doit être supérieur ou égal à 1."
+      },
+      "pageSize": {
+        "invalid": "La taille de page doit être comprise entre 1 et {{maximumPageSize}}."
+      },
+      "report": "{{first}} à {{last}} sur {{total}} éléments",
+    "page": "Page {{current}} sur {{total}}",
+    "firstPage": "Première page",
+    "previousPage": "Page précédente",
+    "nextPage": "Page suivante",
+    "lastPage": "Dernière page"
+    }
+
+  },
+  "organizations": {
+    "title": "Organisations",
+    "createTitle": "Créer une organisation",
+    "createDescription": "Enregistrer une auto-école, un réseau, un centre de formation ou une organisation partenaire.",
+    "createdSuccessfully": "L’organisation a été créée avec succès.",
+    "detailsTitle": "Informations de l’organisation",
+    "fields": {
+      "legalName": "Raison sociale",
+      "countryCode": "Code pays",
+      "organizationType": "Type d’organisation",
+      "status": "Statut",
+      "createdAt": "Créée le",
+      "lastModifiedAt": "Dernière modification"
+    },
+    "placeholders": {
+      "legalName": "Ex. Auto-école Horizon",
+      "countryCode": "Ex. FR",
+      "organizationType": "Sélectionnez un type"
+    },
+    "types": {
+      "drivingSchool": "Auto-école",
+      "drivingSchoolNetwork": "Réseau d’auto-écoles",
+      "trainingCenter": "Centre de formation",
+      "independentInstructorBusiness": "Entreprise d’enseignant indépendant",
+      "vehicleProvider": "Fournisseur ou loueur de véhicules",
+      "fundingOrganization": "Organisme financeur",
+      "partnerOrganization": "Organisation partenaire",
+      "platformOperator": "Opérateur de plateforme",
+      "unknown": "Type inconnu"
+    },
+    "listDescription": "Gérez les structures et tenants enregistrés dans DriveOS.",
+    "searchPlaceholder": "Rechercher par raison sociale ou code pays...",
+    "paginationReport": "{first} à {last} sur {totalRecords} organisations",
+    "empty": {
+      "title": "Aucune organisation trouvée",
+      "description": "Créez une organisation ou modifiez vos critères de recherche."
+    },
+    "lifecycle": {
+      "title": "Cycle de vie",
+      "description": "Les actions disponibles dépendent du statut actuel de l’organisation.",
+      "changeSuccess": "Le statut de l’organisation a été mis à jour.",
+      "reason": {
+        "label": "Motif",
+        "placeholder": "Expliquez précisément la raison de cette décision...",
+        "required": "Le motif est obligatoire.",
+        "tooLong": "Le motif ne peut pas dépasser 500 caractères."
+      },
+      "history": {
+        "title": "Historique des statuts",
+        "description": "Chronologie des changements de statut appliqués à cette organisation.",
+        "loading": "Chargement de l’historique",
+        "emptyTitle": "Aucun changement de statut",
+        "emptyDescription": "L’organisation ne possède encore aucune transition enregistrée.",
+        "changedBy": "Effectué par :"
+      },
+      "actions": {
+        "submitForActivation": {
+          "label": "Soumettre pour activation",
+          "title": "Soumettre l’organisation pour activation",
+          "description": "L’organisation « {{organization}} » passera au statut En attente d’activation."
+        },
+        "activate": {
+          "label": "Activer",
+          "title": "Activer l’organisation",
+          "description": "L’organisation « {{organization}} » deviendra active et pourra être utilisée dans DriveOS."
+        },
+        "restrict": {
+          "label": "Restreindre",
+          "title": "Restreindre l’organisation",
+          "description": "Certaines opérations de l’organisation « {{organization}} » pourront être limitées."
+        },
+        "suspend": {
+          "label": "Suspendre",
+          "title": "Suspendre l’organisation",
+          "description": "L’organisation « {{organization}} » sera temporairement suspendue."
+        },
+        "reactivate": {
+          "label": "Réactiver",
+          "title": "Réactiver l’organisation",
+          "description": "L’organisation « {{organization}} » retrouvera le statut Actif."
+        },
+        "close": {
+          "label": "Fermer",
+          "title": "Fermer définitivement l’organisation",
+          "description": "La fermeture de l’organisation « {{organization}} » est une opération sensible et ne pourra pas être annulée par le workflow actuel."
+        }
+      }
+    }
+  },
+  "statuses": {
+    "draft": "Brouillon",
+    "pendingActivation": "En attente d’activation",
+    "active": "Active",
+    "restricted": "Restreinte",
+    "suspended": "Suspendue",
+    "closed": "Fermée",
+    "archived": "Archivée"
+  
+  },
+  "layout": {
+    "workspace": "Espace de gestion"
+  }
+}
