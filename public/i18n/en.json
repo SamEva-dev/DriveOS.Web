@@ -17,7 +17,9 @@
     "status": {
       "loading": "Loading...",
       "empty": "No data available"
-    }
+    },
+    "comingSoon": "This module will be developed in a future sprint.",
+    "loading": "Loading"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -57,7 +59,7 @@
         "invalid": "The organization type is invalid."
       },
       "notFound": "The requested organization could not be found.",
-       "search": {
+      "search": {
         "tooLong": "The search cannot exceed 200 characters."
       },
       "sort": {
@@ -65,8 +67,26 @@
       },
       "sortDirection": {
         "invalid": "The sort direction is invalid."
+      },
+      "listDescription": "Manage the structures and tenants registered in DriveOS.",
+      "searchPlaceholder": "Search by legal name or country code...",
+      "paginationReport": "{first} to {last} of {totalRecords} organizations",
+      "empty": {
+        "title": "No organization found",
+        "description": "Create an organization or change your search criteria."
+      },
+      "types": {
+        "unknown": "Unknown type"
+      },
+      "statuses": {
+        "draft": "Draft",
+        "pendingActivation": "Pending activation",
+        "active": "Active",
+        "restricted": "Restricted",
+        "suspended": "Suspended",
+        "closed": "Closed",
+        "archived": "Archived"
       }
-
     },
     "pagination": {
       "pageNumber": {
@@ -76,11 +96,42 @@
         "invalid": "The page size must be between 1 and {{maximumPageSize}}."
       },
       "report": "{{first}} to {{last}} of {{total}} items",
-    "page": "Page {{current}} of {{total}}",
-    "firstPage": "First page",
-    "previousPage": "Previous page",
-    "nextPage": "Next page",
-    "lastPage": "Last page"
+      "page": "Page {{current}} of {{total}}",
+      "firstPage": "First page",
+      "previousPage": "Previous page",
+      "nextPage": "Next page",
+      "lastPage": "Last page"
+    },
+    "branches": {
+      "organization": {
+        "mustBeActive": "The organization must be active to activate or reactivate a branch."
+      },
+      "status": {
+        "invalidTransition": "The transition from {{currentStatus}} to {{targetStatus}} is not allowed."
+      },
+      "name": {
+        "empty": "The branch name is required.",
+        "tooLong": "The branch name is too long."
+      },
+      "code": {
+        "empty": "The branch code is required.",
+        "invalid": "The code must start with a letter or number and may contain only letters, numbers, hyphens or underscores."
+      },
+      "type": {
+        "invalid": "Select a valid branch type."
+      },
+      "address": {
+        "invalid": "The branch address is required."
+      },
+      "postalCode": {
+        "invalid": "The postal code is required."
+      },
+      "city": {
+        "invalid": "The city is required."
+      },
+      "timeZone": {
+        "invalid": "The time zone is required."
+      }
     }
   },
   "organizations": {
@@ -178,11 +229,178 @@
           "title": "Permanently close organization",
           "description": "Closing “{{organization}}” is a sensitive action and cannot be reversed through the current workflow."
         }
+      },
+      "refreshWarning": {
+        "title": "Incomplete refresh",
+        "description": "The status was changed, but the page could not be refreshed. Reload the page."
+      }
+    },
+    "branches": {
+      "title": "Branches",
+      "description": "Manage the organization's branches, training sites and locations.",
+      "backToOrganization": "Back to organization",
+      "searchPlaceholder": "Search by name, code or city",
+      "primary": "Primary",
+      "empty": {
+        "title": "No branches",
+        "description": "This organization does not have any branches yet."
+      },
+      "errors": {
+        "loadTitle": "Unable to load branches",
+        "loadDescription": "An error occurred while loading the branches. Check that the API is available and try again.",
+        "detailTitle": "Unable to load branch",
+        "detailDescription": "The requested branch could not be found or loaded."
+      },
+      "actions": {
+        "create": "Create branch",
+        "edit": "Edit",
+        "view": "View",
+        "setPrimary": "Set as primary",
+        "manage": "Manage branches"
+      },
+      "types": {
+        "headquarters": "Headquarters",
+        "drivingSchoolAgency": "Driving school branch",
+        "trainingSite": "Training site",
+        "administrativeOffice": "Administrative office",
+        "examinationSupportSite": "Examination support site",
+        "virtualBranch": "Virtual branch",
+        "other": "Other",
+        "unknown": "Unknown type"
+      },
+      "statuses": {
+        "draft": "Draft",
+        "active": "Active",
+        "restricted": "Restricted",
+        "suspended": "Suspended",
+        "closed": "Closed",
+        "unknown": "Unknown status"
+      },
+      "fields": {
+        "name": "Branch name",
+        "code": "Code",
+        "branchType": "Branch type",
+        "addressLine1": "Address",
+        "addressLine2": "Address line 2",
+        "postalCode": "Postal code",
+        "city": "City",
+        "countryCode": "Country",
+        "timeZoneId": "Time zone",
+        "isPrimary": "Primary branch",
+        "status": "Status",
+        "createdAtUtc": "Created on",
+        "lastModifiedAtUtc": "Last modified"
+      },
+      "lifecycle": {
+        "title": "Lifecycle",
+        "description": "Manage the operational status and primary designation of this branch.",
+        "branch": "Branch",
+        "actions": {
+          "activate": "Activate",
+          "restrict": "Restrict",
+          "suspend": "Suspend",
+          "reactivate": "Reactivate",
+          "close": "Close"
+        },
+        "descriptions": {
+          "activate": "The branch will become available for organization operations.",
+          "restrict": "Some branch operations will be temporarily limited.",
+          "suspend": "New operations for this branch will be blocked.",
+          "reactivate": "The branch will return to active status.",
+          "close": "Closing is definitive and automatically removes the primary branch designation."
+        },
+        "confirmations": {
+          "activate": "Activate this branch",
+          "restrict": "Restrict this branch",
+          "suspend": "Suspend this branch",
+          "reactivate": "Reactivate this branch",
+          "close": "Permanently close this branch"
+        },
+        "reason": "Reason",
+        "reasonPlaceholder": "Explain the reason for this status change.",
+        "reasonRequired": "The reason is required.",
+        "reasonTooLong": "The reason cannot exceed 500 characters.",
+        "changeSuccess": "The branch status has been updated."
+      },
+      "backToBranches": "Back to branches",
+      "backToBranch": "Back to branch",
+      "create": {
+        "title": "Create branch",
+        "description": "Register a branch, training site or location belonging to this organization."
+      },
+      "edit": {
+        "title": "Edit branch",
+        "description": "Update the general information and address of this branch."
+      },
+      "form": {
+        "general": {
+          "title": "General information",
+          "description": "Define the operational identity of the branch."
+        },
+        "address": {
+          "title": "Address",
+          "description": "Enter the physical or administrative address of the branch."
+        },
+        "settings": {
+          "title": "Operational settings",
+          "description": "Configure the time zone and the role of the branch within the organization."
+        },
+        "codeImmutable": "The code is a stable functional reference and cannot be changed after creation.",
+        "timeZoneHelp": "Use an IANA time zone identifier, for example Europe/Paris or Africa/Douala.",
+        "primaryDescription": "This branch will become the organization's primary branch. The current primary branch will automatically lose this designation."
+      },
+      "placeholders": {
+        "name": "E.g. Nice Centre",
+        "code": "E.g. NICE-CENTRE",
+        "branchType": "Select a branch type",
+        "addressLine1": "E.g. 10 rue de France",
+        "addressLine2": "Building, floor or additional information",
+        "postalCode": "E.g. 06000",
+        "city": "E.g. Nice",
+        "timeZoneId": "E.g. Europe/Paris"
+      },
+      "notifications": {
+        "created": "The branch was created successfully.",
+        "updated": "The branch was updated successfully.",
+        "primarySet": "The branch was set as the primary branch.",
+        "refreshWarningTitle": "Incomplete refresh",
+        "refreshWarningDescription": "The operation succeeded, but the branch information could not be refreshed."
+      },
+      "organizationCardDescription": "View and manage the branches, sites and locations belonging to this organization.",
+      "history": {
+        "title": "Status history",
+        "description": "Review status changes and their reasons.",
+        "emptyTitle": "No status changes",
+        "emptyDescription": "No status transition has been recorded yet.",
+        "changedBy": "Changed by",
+        "loadErrorTitle": "Unable to load status history",
+        "loadErrorDescription": "The branch details remain available, but the status history could not be loaded."
       }
     }
   },
   "refreshWarning": {
-  "title": "Incomplete refresh",
-  "description": "The status was changed, but the page could not be refreshed. Reload the page."
-}
+    "title": "Incomplete refresh",
+    "description": "The status was changed, but the page could not be refreshed. Reload the page."
+  },
+  "layout": {
+    "workspace": "Workspace"
+  },
+  "pagination": {
+    "page": "Page {{current}} of {{total}}",
+    "pageSize": "Items per page",
+    "firstPage": "First page",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "lastPage": "Last page",
+    "report": "{{first}} to {{last}} of {{total}} items"
+  },
+  "statuses": {
+    "draft": "Draft",
+    "pendingActivation": "Pending activation",
+    "active": "Active",
+    "restricted": "Restricted",
+    "suspended": "Suspended",
+    "closed": "Closed",
+    "archived": "Archived"
+  }
 }

@@ -18,6 +18,7 @@ import {
 import {
   ActivatedRoute,
   Router,
+  RouterLink,
 } from '@angular/router';
 
 import {
@@ -86,6 +87,7 @@ import { OrganizationLifecycleActionDefinition, getOrganizationLifecycleActions 
     DriveOsButtonComponent,
     DriveOsCardComponent,
     DriveOsSpinnerComponent,
+    RouterLink,
   ],
   templateUrl:
     './organization-detail.page.html',
@@ -397,6 +399,21 @@ readonly availableActions =
           },
       });
   }
+  readonly branchesLink =
+  computed(() => {
+    const organization =
+      this.organization();
+
+    return organization
+      ? [
+          '/organizations',
+          organization.id,
+          'branches',
+        ]
+      : [
+          '/organizations',
+        ];
+  });
 
   private showErrors(
     error: HttpErrorResponse,

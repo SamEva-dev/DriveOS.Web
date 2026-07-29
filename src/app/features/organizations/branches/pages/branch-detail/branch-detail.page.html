@@ -1,0 +1,220 @@
+<section
+  class="
+    mx-auto max-w-5xl
+    space-y-6
+  "
+>
+  <div>
+    <dos-button
+      variant="ghost"
+      icon="ph ph-arrow-left"
+      (pressed)="goBack()"
+    >
+      {{
+        'organizations.branches.title'
+          | translate
+      }}
+    </dos-button>
+  </div>
+
+  @if (isLoading()) {
+    <div
+      class="
+        flex min-h-72
+        items-center justify-center
+      "
+    >
+      <dos-spinner
+        size="lg"
+        [label]="
+          'common.actions.loading'
+            | translate
+        "
+      />
+    </div>
+  } @else if (loadError()) {
+    <dos-card>
+      <dos-empty-state
+        icon="ph-duotone ph-warning-circle"
+        [title]="
+          'organizations.branches.errors.detailTitle'
+            | translate
+        "
+        [description]="
+          'organizations.branches.errors.detailDescription'
+            | translate
+        "
+      />
+
+      <div
+        class="
+          flex justify-center
+          pb-6
+        "
+      >
+        <dos-button
+          variant="outline"
+          icon="ph ph-arrows-clockwise"
+          (pressed)="loadBranch()"
+        >
+          {{
+            'common.actions.refresh'
+              | translate
+          }}
+        </dos-button>
+      </div>
+    </dos-card>
+  } @else if (branch(); as item) {
+    <driveos-branch-summary
+      [branch]="item"
+      [organizationId]="organizationId"
+    />
+
+    @if (
+      canSetPrimary() ||
+      availableActions().length > 0
+    ) {
+      <dos-card>
+        <header>
+          <h2
+            class="
+              text-lg font-semibold
+              text-slate-950
+              dark:text-slate-50
+            "
+          >
+            {{
+              'organizations.branches.lifecycle.title'
+                | translate
+            }}
+          </h2>
+
+          <p
+            class="
+              mt-1 text-sm
+              text-slate-500
+              dark:text-slate-400
+            "
+          >
+            {{
+              'organizations.branches.lifecycle.description'
+                | translate
+            }}
+          </p>
+        </header>
+
+        <div
+          class="
+            mt-5 flex
+            flex-wrap gap-3
+          "
+        >
+          @if (canSetPrimary()) {
+            <dos-button
+              variant="outline"
+              icon="ph ph-star"
+              [loading]="
+                isSettingPrimary()
+              "
+              [disabled]="
+                isChangingStatus()
+              "
+              (pressed)="setPrimary()"
+            >
+              {{
+                'organizations.branches.actions.setPrimary'
+                  | translate
+              }}
+            </dos-button>
+          }
+
+          @for (
+            action of availableActions();
+            track action.code
+          ) {
+            <dos-button
+              [variant]="
+                action.buttonVariant
+              "
+              [icon]="action.icon"
+              [disabled]="
+                isChangingStatus() ||
+                isSettingPrimary()
+              "
+              (pressed)="
+                openStatusDialog(action)
+              "
+            >
+              {{
+                action.labelKey
+                  | translate
+              }}
+            </dos-button>
+          }
+        </div>
+      </dos-card>
+    }
+
+    @if (canReadHistory()) {
+      @if (historyLoadError()) {
+        <dos-card>
+          <dos-empty-state
+            icon="ph-duotone ph-clock-counter-clockwise"
+            [title]="
+              'organizations.branches.history.loadErrorTitle'
+                | translate
+            "
+            [description]="
+              'organizations.branches.history.loadErrorDescription'
+                | translate
+            "
+          />
+
+          <div
+            class="
+              flex justify-center
+              pb-6
+            "
+          >
+            <dos-button
+              variant="outline"
+              icon="ph ph-arrows-clockwise"
+              (pressed)="
+                loadStatusHistory()
+              "
+            >
+              {{
+                'common.actions.refresh'
+                  | translate
+              }}
+            </dos-button>
+          </div>
+        </dos-card>
+      } @else {
+        <driveos-branch-status-history
+          [history]="statusHistory()"
+          [loading]="
+            isHistoryLoading()
+          "
+        />
+      }
+    }
+
+    <driveos-branch-status-dialog
+      [open]="
+        selectedAction() !== null
+      "
+      [action]="selectedAction()"
+      [branchName]="item.name"
+      [submitting]="
+        isChangingStatus()
+      "
+      (cancelled)="
+        closeStatusDialog()
+      "
+      (confirmed)="
+        confirmStatusChange($event)
+      "
+    />
+  }
+</section>

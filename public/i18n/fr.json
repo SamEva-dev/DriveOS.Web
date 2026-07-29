@@ -18,7 +18,8 @@
       "loading": "Chargement...",
       "empty": "Aucune donnée disponible"
     },
-    "comingSoon": "Ce module sera développé dans un prochain sprint."
+    "comingSoon": "Ce module sera développé dans un prochain sprint.",
+    "loading": "Chargement en cours"
   },
   "navigation": {
     "dashboard": "Tableau de bord",
@@ -87,7 +88,6 @@
         "archived": "Archivée"
       }
     },
-
     "pagination": {
       "pageNumber": {
         "invalid": "Le numéro de page doit être supérieur ou égal à 1."
@@ -96,13 +96,43 @@
         "invalid": "La taille de page doit être comprise entre 1 et {{maximumPageSize}}."
       },
       "report": "{{first}} à {{last}} sur {{total}} éléments",
-    "page": "Page {{current}} sur {{total}}",
-    "firstPage": "Première page",
-    "previousPage": "Page précédente",
-    "nextPage": "Page suivante",
-    "lastPage": "Dernière page"
+      "page": "Page {{current}} sur {{total}}",
+      "firstPage": "Première page",
+      "previousPage": "Page précédente",
+      "nextPage": "Page suivante",
+      "lastPage": "Dernière page"
+    },
+    "branches": {
+      "organization": {
+        "mustBeActive": "L’organisation doit être active pour activer ou réactiver une agence."
+      },
+      "status": {
+        "invalidTransition": "Le passage du statut {{currentStatus}} vers {{targetStatus}} n’est pas autorisé."
+      },
+      "name": {
+        "empty": "Le nom de l’agence est obligatoire.",
+        "tooLong": "Le nom de l’agence est trop long."
+      },
+      "code": {
+        "empty": "Le code de l’agence est obligatoire.",
+        "invalid": "Le code doit commencer par une lettre ou un chiffre et ne contenir que des lettres, chiffres, tirets ou underscores."
+      },
+      "type": {
+        "invalid": "Sélectionnez un type d’agence valide."
+      },
+      "address": {
+        "invalid": "L’adresse de l’agence est obligatoire."
+      },
+      "postalCode": {
+        "invalid": "Le code postal est obligatoire."
+      },
+      "city": {
+        "invalid": "La ville est obligatoire."
+      },
+      "timeZone": {
+        "invalid": "Le fuseau horaire est obligatoire."
+      }
     }
-
   },
   "organizations": {
     "title": "Organisations",
@@ -190,7 +220,162 @@
           "title": "Fermer définitivement l’organisation",
           "description": "La fermeture de l’organisation « {{organization}} » est une opération sensible et ne pourra pas être annulée par le workflow actuel."
         }
+      },
+      "refreshWarning": {
+        "title": "Actualisation incomplète",
+        "description": "Le statut a été modifié, mais la page n’a pas pu être actualisée. Rechargez la page."
       }
+    },
+    "branches": {
+      "title": "Agences",
+      "description": "Gérez les agences, sites de formation et implantations de l’organisation.",
+      "backToOrganization": "Retour à l’organisation",
+      "searchPlaceholder": "Rechercher par nom, code ou ville",
+      "primary": "Principale",
+      "empty": {
+        "title": "Aucune agence",
+        "description": "Cette organisation ne possède encore aucune agence."
+      },
+      "errors": {
+        "loadTitle": "Impossible de charger les agences",
+        "loadDescription": "Une erreur est survenue pendant le chargement. Vérifiez que l’API est accessible puis réessayez.",
+        "detailTitle": "Impossible de charger l’agence",
+        "detailDescription": "L’agence demandée est introuvable ou ne peut pas être chargée."
+      },
+      "actions": {
+        "create": "Créer une agence",
+        "edit": "Modifier",
+        "view": "Consulter",
+        "setPrimary": "Définir comme principale",
+        "manage": "Gérer les agences"
+      },
+      "types": {
+        "headquarters": "Siège social",
+        "drivingSchoolAgency": "Agence d’auto-école",
+        "trainingSite": "Site de formation",
+        "administrativeOffice": "Bureau administratif",
+        "examinationSupportSite": "Site d’accompagnement aux examens",
+        "virtualBranch": "Agence virtuelle",
+        "other": "Autre",
+        "unknown": "Type inconnu"
+      },
+      "statuses": {
+        "draft": "Brouillon",
+        "active": "Active",
+        "restricted": "Restreinte",
+        "suspended": "Suspendue",
+        "closed": "Fermée",
+        "unknown": "Statut inconnu"
+      },
+      "fields": {
+        "name": "Nom de l’agence",
+        "code": "Code",
+        "branchType": "Type d’agence",
+        "addressLine1": "Adresse",
+        "addressLine2": "Complément d’adresse",
+        "postalCode": "Code postal",
+        "city": "Ville",
+        "countryCode": "Pays",
+        "timeZoneId": "Fuseau horaire",
+        "isPrimary": "Agence principale",
+        "status": "Statut",
+        "createdAtUtc": "Créée le",
+        "lastModifiedAtUtc": "Dernière modification"
+      },
+      "lifecycle": {
+        "title": "Cycle de vie",
+        "description": "Gérez le statut opérationnel et la désignation principale de cette agence.",
+        "branch": "Agence",
+        "actions": {
+          "activate": "Activer",
+          "restrict": "Restreindre",
+          "suspend": "Suspendre",
+          "reactivate": "Réactiver",
+          "close": "Fermer"
+        },
+        "descriptions": {
+          "activate": "L’agence pourra être utilisée pour les opérations de l’organisation.",
+          "restrict": "Certaines opérations de l’agence seront temporairement limitées.",
+          "suspend": "Les nouvelles opérations de cette agence seront bloquées.",
+          "reactivate": "L’agence retrouvera son statut actif.",
+          "close": "La fermeture est définitive et retire automatiquement la désignation d’agence principale."
+        },
+        "confirmations": {
+          "activate": "Activer cette agence",
+          "restrict": "Restreindre cette agence",
+          "suspend": "Suspendre cette agence",
+          "reactivate": "Réactiver cette agence",
+          "close": "Fermer définitivement cette agence"
+        },
+        "reason": "Motif",
+        "reasonPlaceholder": "Expliquez la raison de ce changement de statut.",
+        "reasonRequired": "Le motif est obligatoire.",
+        "reasonTooLong": "Le motif ne peut pas dépasser 500 caractères.",
+        "changeSuccess": "Le statut de l’agence a été mis à jour."
+      },
+      "backToBranches": "Retour aux agences",
+      "backToBranch": "Retour à l’agence",
+      "create": {
+        "title": "Créer une agence",
+        "description": "Enregistrez une agence, un site de formation ou une implantation rattachée à cette organisation."
+      },
+      "edit": {
+        "title": "Modifier l’agence",
+        "description": "Mettez à jour les informations générales et l’adresse de cette agence."
+      },
+      "form": {
+        "general": {
+          "title": "Informations générales",
+          "description": "Définissez l’identité opérationnelle de l’agence."
+        },
+        "address": {
+          "title": "Adresse",
+          "description": "Renseignez l’adresse physique ou administrative de l’agence."
+        },
+        "settings": {
+          "title": "Paramètres opérationnels",
+          "description": "Configurez le fuseau horaire et le rôle de l’agence dans l’organisation."
+        },
+        "codeImmutable": "Le code est une référence fonctionnelle stable et ne peut plus être modifié après la création.",
+        "timeZoneHelp": "Utilisez un identifiant de fuseau horaire IANA, par exemple Europe/Paris ou Africa/Douala.",
+        "primaryDescription": "Cette agence deviendra l’agence principale de l’organisation. L’ancienne agence principale perdra automatiquement cette désignation."
+      },
+      "placeholders": {
+        "name": "Ex. Nice Centre",
+        "code": "Ex. NICE-CENTRE",
+        "branchType": "Sélectionner un type d’agence",
+        "addressLine1": "Ex. 10 rue de France",
+        "addressLine2": "Bâtiment, étage, complément",
+        "postalCode": "Ex. 06000",
+        "city": "Ex. Nice",
+        "timeZoneId": "Ex. Europe/Paris"
+      },
+      "notifications": {
+        "created": "L’agence a été créée avec succès.",
+        "updated": "L’agence a été modifiée avec succès.",
+        "primarySet": "L’agence a été définie comme agence principale.",
+        "refreshWarningTitle": "Actualisation incomplète",
+        "refreshWarningDescription": "L’opération a réussi, mais les informations de l’agence n’ont pas pu être rechargées."
+      },
+      "history": {
+        "title": "Historique des statuts",
+        "description": "Consultez les changements de statut et leurs motifs.",
+        "emptyTitle": "Aucun changement de statut",
+        "emptyDescription": "Aucune transition de statut n’a encore été enregistrée.",
+        "changedBy": "Modifié par",
+        "loadErrorTitle": "Impossible de charger l’historique",
+        "loadErrorDescription": "La fiche de l’agence reste accessible, mais son historique de statut n’a pas pu être chargé."
+      },
+      "organizationCardDescription": "Consultez et administrez les agences, sites et implantations rattachés à cette organisation."
+    },
+    "statuses": {
+      "draft": "Brouillon",
+      "pendingActivation": "En attente d’activation",
+      "active": "Active",
+      "restricted": "Restreinte",
+      "suspended": "Suspendue",
+      "closed": "Fermée",
+      "archived": "Archivée"
     }
   },
   "statuses": {
@@ -201,13 +386,21 @@
     "suspended": "Suspendue",
     "closed": "Fermée",
     "archived": "Archivée"
-
   },
   "layout": {
-    "workspace": "Espace de gestion"
+    "workspace": "Espace de travail"
   },
   "refreshWarning": {
-  "title": "Actualisation incomplète",
-  "description": "Le statut a été modifié, mais la fiche n’a pas pu être rechargée. Actualisez la page."
-}
+    "title": "Actualisation incomplète",
+    "description": "Le statut a été modifié, mais la fiche n’a pas pu être rechargée. Actualisez la page."
+  },
+  "pagination": {
+    "page": "Page {{current}} sur {{total}}",
+    "pageSize": "Éléments par page",
+    "firstPage": "Première page",
+    "previousPage": "Page précédente",
+    "nextPage": "Page suivante",
+    "lastPage": "Dernière page",
+    "report": "{{first}} à {{last}} sur {{total}} éléments"
+  }
 }
