@@ -37,11 +37,7 @@
       [organization]="item"
     />
 
-    @if (
-      availableActions(
-        item.status
-      ).length > 0
-    ) {
+    @if (availableActions().length > 0) {
       <dos-card>
         <header>
           <h2
@@ -78,10 +74,7 @@
           "
         >
           @for (
-            action of
-              availableActions(
-                item.status
-              );
+            action of availableActions();
             track action.code
           ) {
             <dos-button

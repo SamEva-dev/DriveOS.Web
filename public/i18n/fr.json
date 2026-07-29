@@ -201,9 +201,13 @@
     "suspended": "Suspendue",
     "closed": "Fermée",
     "archived": "Archivée"
-  
+
   },
   "layout": {
     "workspace": "Espace de gestion"
-  }
+  },
+  "refreshWarning": {
+  "title": "Actualisation incomplète",
+  "description": "Le statut a été modifié, mais la fiche n’a pas pu être rechargée. Actualisez la page."
+}
 }

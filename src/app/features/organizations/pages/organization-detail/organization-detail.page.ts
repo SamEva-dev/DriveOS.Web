@@ -5,6 +5,7 @@ import {
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   inject,
   signal,
@@ -70,6 +71,8 @@ import {
 import {
   Organization,
 } from '../../models/organization.model';
+import { AuthorizationService } from '../../../../core/auth/authorization.service';
+import { OrganizationLifecycleActionDefinition, getOrganizationLifecycleActions } from '../../domain/organization-lifecycle';
 
 @Component({
   selector:
@@ -95,6 +98,9 @@ export class OrganizationDetailPage {
 
   private readonly router =
     inject(Router);
+
+    private readonly authorization =
+  inject(AuthorizationService);
 
   private readonly organizationsApi =
     inject(OrganizationsApiService);
@@ -154,132 +160,55 @@ export class OrganizationDetailPage {
 
     this.loadPage();
   }
+readonly availableActions =
+  computed<
+    readonly OrganizationLifecycleActionDefinition[]
+  >(() => {
+    const organization =
+      this.organization();
 
-  readonly allActions:
-    readonly OrganizationStatusAction[] = [
-    {
-      code: 'submitForActivation',
-      labelKey:
-        'organizations.lifecycle.actions.submitForActivation.label',
-      titleKey:
-        'organizations.lifecycle.actions.submitForActivation.title',
-      descriptionKey:
-        'organizations.lifecycle.actions.submitForActivation.description',
-      icon: 'ph-bold ph-paper-plane-tilt',
-      buttonVariant: 'primary',
-    },
-    {
-      code: 'activate',
-      labelKey:
-        'organizations.lifecycle.actions.activate.label',
-      titleKey:
-        'organizations.lifecycle.actions.activate.title',
-      descriptionKey:
-        'organizations.lifecycle.actions.activate.description',
-      icon: 'ph-bold ph-check-circle',
-      buttonVariant: 'primary',
-    },
-    {
-      code: 'restrict',
-      labelKey:
-        'organizations.lifecycle.actions.restrict.label',
-      titleKey:
-        'organizations.lifecycle.actions.restrict.title',
-      descriptionKey:
-        'organizations.lifecycle.actions.restrict.description',
-      icon: 'ph-bold ph-warning',
-      buttonVariant: 'outline',
-    },
-    {
-      code: 'suspend',
-      labelKey:
-        'organizations.lifecycle.actions.suspend.label',
-      titleKey:
-        'organizations.lifecycle.actions.suspend.title',
-      descriptionKey:
-        'organizations.lifecycle.actions.suspend.description',
-      icon: 'ph-bold ph-pause-circle',
-      buttonVariant: 'danger',
-    },
-    {
-      code: 'reactivate',
-      labelKey:
-        'organizations.lifecycle.actions.reactivate.label',
-      titleKey:
-        'organizations.lifecycle.actions.reactivate.title',
-      descriptionKey:
-        'organizations.lifecycle.actions.reactivate.description',
-      icon: 'ph-bold ph-arrow-counter-clockwise',
-      buttonVariant: 'primary',
-    },
-    {
-      code: 'close',
-      labelKey:
-        'organizations.lifecycle.actions.close.label',
-      titleKey:
-        'organizations.lifecycle.actions.close.title',
-      descriptionKey:
-        'organizations.lifecycle.actions.close.description',
-      icon: 'ph-bold ph-lock-key',
-      buttonVariant: 'danger',
-    },
-  ];
+    if (!organization) {
+      return [];
+    }
 
-  availableActions(
-    status: OrganizationStatus,
-  ): readonly OrganizationStatusAction[] {
-    const allowedCodes:
-      Readonly<
-        Partial<
-          Record<
-            OrganizationStatus,
-            readonly OrganizationStatusAction['code'][]
-          >
-        >
-      > = {
-      Draft: [
-        'submitForActivation',
-      ],
-
-      PendingActivation: [
-        'activate',
-      ],
-
-      Active: [
-        'restrict',
-        'suspend',
-        'close',
-      ],
-
-      Restricted: [
-        'reactivate',
-        'suspend',
-        'close',
-      ],
-
-      Suspended: [
-        'reactivate',
-        'close',
-      ],
-
-      Closed: [],
-      Archived: [],
-    };
-
-    const codes =
-      allowedCodes[status] ?? [];
-
-    return this.allActions.filter(
-      action =>
-        codes.includes(action.code),
+    return getOrganizationLifecycleActions(
+      organization.status,
+    ).filter(action =>
+      this.authorization.hasPermission(
+        action.permission,
+      ),
     );
-  }
+  });
 
   openStatusDialog(
-    action: OrganizationStatusAction,
-  ): void {
-    this.selectedAction.set(action);
+  action: OrganizationLifecycleActionDefinition,
+): void {
+  const organization =
+    this.organization();
+
+  if (!organization) {
+    return;
   }
+
+  const allowed =
+    getOrganizationLifecycleActions(
+      organization.status,
+    ).some(
+      candidate =>
+        candidate.code === action.code,
+    );
+
+  if (
+    !allowed ||
+    !this.authorization.hasPermission(
+      action.permission,
+    )
+  ) {
+    return;
+  }
+
+  this.selectedAction.set(action);
+}
 
   closeStatusDialog(): void {
     if (!this.isChangingStatus()) {
@@ -451,14 +380,21 @@ export class OrganizationDetailPage {
         },
 
         error: (
-          error: HttpErrorResponse,
-        ) => {
-          this.isHistoryLoading.set(
-            false,
-          );
+            error: HttpErrorResponse,
+          ) => {
+            this.isHistoryLoading.set(false);
 
-          this.showErrors(error);
-        },
+            this.showErrors(error);
+
+            this.toastService.warning(
+              this.translate.instant(
+                'organizations.lifecycle.refreshWarning.title',
+              ),
+              this.translate.instant(
+                'organizations.lifecycle.refreshWarning.description',
+              ),
+            );
+          },
       });
   }
 

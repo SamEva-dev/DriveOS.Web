@@ -180,5 +180,9 @@
         }
       }
     }
-  }
+  },
+  "refreshWarning": {
+  "title": "Incomplete refresh",
+  "description": "The status was changed, but the page could not be refreshed. Reload the page."
+}
 }

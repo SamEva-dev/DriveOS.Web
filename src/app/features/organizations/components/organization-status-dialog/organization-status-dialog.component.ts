@@ -3,13 +3,16 @@ import {
   Component,
   computed,
   effect,
+  HostListener,
   input,
   output,
 } from '@angular/core';
 
 import {
+  AbstractControl,
   FormControl,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 
@@ -23,6 +26,15 @@ import {
 import { DriveOsButtonComponent } from '../../../../shared/ui';
 import { OrganizationStatusAction } from '../../models/organization-status-action';
 
+function notBlankValidator(
+  control: AbstractControl<string>,
+): ValidationErrors | null {
+  return control.value.trim().length > 0
+    ? null
+    : {
+        blank: true,
+      };
+}
 
 @Component({
   selector:
@@ -48,6 +60,15 @@ export class OrganizationStatusDialogComponent {
       null,
     );
 
+    @HostListener(
+      'document:keydown.escape',
+    )
+    onEscape(): void {
+      if (this.open()) {
+        this.close();
+      }
+    }
+
   readonly organizationName =
     input.required<string>();
 
@@ -61,16 +82,17 @@ export class OrganizationStatusDialogComponent {
     output<string>();
 
   readonly reasonControl =
-    new FormControl(
-      '',
-      {
-        nonNullable: true,
-        validators: [
-          Validators.required,
-          Validators.maxLength(500),
-        ],
-      },
-    );
+  new FormControl(
+    '',
+    {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        notBlankValidator,
+        Validators.maxLength(500),
+      ],
+    },
+  );
 
   readonly reasonLength =
     computed(() =>
@@ -118,4 +140,6 @@ export class OrganizationStatusDialogComponent {
 
     this.confirmed.emit(reason);
   }
+
+
 }

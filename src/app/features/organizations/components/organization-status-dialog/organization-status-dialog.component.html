@@ -151,6 +151,8 @@
             rows="5"
             maxlength="500"
             [formControl]="reasonControl"
+            [attr.aria-invalid]="reasonControl.invalid && reasonControl.touched "
+            aria-describedby="organization-status-reason-errors"
             class="
               mt-2 w-full resize-y
               rounded-xl
@@ -182,11 +184,15 @@
               gap-4
             "
           >
-            <div>
+            <div
+                id="organization-status-reason-errors"
+                aria-live="polite"
+              >
               @if (
                 reasonControl.touched &&
-                reasonControl.hasError(
-                  'required'
+                (
+                  reasonControl.hasError('required') ||
+                  reasonControl.hasError('blank')
                 )
               ) {
                 <p class="text-sm text-red-600">
@@ -196,7 +202,6 @@
                   }}
                 </p>
               }
-
               @if (
                 reasonControl.touched &&
                 reasonControl.hasError(
