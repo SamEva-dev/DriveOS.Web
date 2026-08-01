@@ -3,6 +3,7 @@
     "name": "DriveOS"
   },
   "common": {
+    "notAvailable": "Not provided",
     "actions": {
       "save": "Save",
       "cancel": "Cancel",
@@ -12,7 +13,13 @@
       "title": "Actions",
       "view": "View",
       "refresh": "Refresh",
-      "loading": "Loading"
+      "loading": "Loading",
+      "actions": "Actions",
+      "reset": "Reset",
+      "retry": "Retry"
+    },
+    "filters": {
+      "all": "All"
     },
     "status": {
       "loading": "Loading...",
@@ -132,10 +139,58 @@
       "timeZone": {
         "invalid": "The time zone is required."
       }
+    },
+    "branchAssignments": {
+      "id": {
+        "empty": "The assignment identifier is required."
+      },
+      "organizationId": {
+        "empty": "The organization is required."
+      },
+      "branchId": {
+        "empty": "The branch is required."
+      },
+      "userId": {
+        "empty": "The user is required."
+      },
+      "role": {
+        "invalid": "The selected business role is invalid.",
+        "required": "The business role is required."
+      },
+      "type": {
+        "invalid": "The selected assignment type is invalid.",
+        "required": "The assignment type is required."
+      },
+      "status": {
+        "invalid": "The selected status is invalid."
+      },
+      "startDate": {
+        "invalid": "The start date is invalid."
+      },
+      "endDate": {
+        "invalid": "The planned end date is invalid.",
+        "required": "A planned end date is required for this assignment type.",
+        "future": "The planned end date must be later than the current date."
+      },
+      "reason": {
+        "empty": "The reason is required.",
+        "tooLong": "The reason cannot exceed 500 characters.",
+        "invalid": "The reason is invalid."
+      },
+      "alreadySuspended": "This assignment is already suspended.",
+      "notSuspended": "Only a suspended assignment can be reactivated.",
+      "alreadyEnded": "This assignment has already ended.",
+      "ended": "An ended assignment can no longer be modified.",
+      "duplicate": "An open assignment already exists for this user, branch and role.",
+      "primaryAlreadyExists": "This user already has a primary branch assignment in this organization.",
+      "organizationNotFound": "The requested organization was not found.",
+      "branchNotFound": "The requested branch was not found.",
+      "notFound": "The requested assignment was not found.",
+      "branchClosed": "An assignment cannot be created for a closed branch."
     }
   },
   "organizations": {
-    "title": "Organizations",
+    "title": "My organizations",
     "createTitle": "Create an organization",
     "createDescription": "Register a driving school, network, training center or partner organization.",
     "createdSuccessfully": "The organization was created successfully.",
@@ -164,12 +219,12 @@
       "platformOperator": "Platform operator",
       "unknown": "Unknown type"
     },
-    "listDescription": "Manage the structures and tenants registered in DriveOS.",
+    "listDescription": "View the organizations associated with your DriveOS account.",
     "searchPlaceholder": "Search by legal name or country code...",
     "paginationReport": "{first} to {last} of {totalRecords} organizations",
     "empty": {
       "title": "No organization found",
-      "description": "Create an organization or change your search criteria."
+      "description": "No organization is accessible for this account."
     },
     "statuses": {
       "draft": "Draft",
@@ -375,6 +430,158 @@
         "changedBy": "Changed by",
         "loadErrorTitle": "Unable to load status history",
         "loadErrorDescription": "The branch details remain available, but the status history could not be loaded."
+      },
+      "detail": {
+        "backToBranch": "Back to branch"
+      }
+    },
+    "branchAssignments": {
+      "title": "Branch team",
+      "description": "Manage the users assigned to this branch, their business role and assignment type.",
+      "listTitle": "Assigned users",
+      "listDescription": "View current and previous user assignments for the branch.",
+      "createTitle": "Add a team member",
+      "createDescription": "Assign a user from the organization to this branch.",
+      "detailTitle": "Assignment details",
+      "emptyTitle": "No assigned users",
+      "emptyDescription": "This branch does not have any user assignments yet.",
+      "loadErrorTitle": "Unable to load",
+      "loadErrorDescription": "The branch assignments could not be loaded.",
+      "createSuccessTitle": "Assignment created",
+      "createSuccessDescription": "The user has been assigned to the branch.",
+      "createErrorTitle": "Unable to create assignment",
+      "suspendSuccessTitle": "Assignment suspended",
+      "reactivateSuccessTitle": "Assignment reactivated",
+      "endSuccessTitle": "Assignment ended",
+      "statusChangeErrorTitle": "Unable to complete action",
+      "fields": {
+        "userId": "User",
+        "role": "Business role",
+        "assignmentType": "Assignment type",
+        "status": "Status",
+        "startsAtUtc": "Start date",
+        "plannedEndAtUtc": "Planned end",
+        "effectiveEndAtUtc": "Effective end",
+        "reason": "Reason",
+        "createdAtUtc": "Created on"
+      },
+      "actions": {
+        "create": "Add team member",
+        "view": "View assignment",
+        "suspend": "Suspend",
+        "reactivate": "Reactivate",
+        "end": "End assignment",
+        "manageTeam": "Manage team",
+        "viewBranch": "View branch",
+        "backToTeam": "Back to branch team"
+      },
+      "statuses": {
+        "active": "Active",
+        "suspended": "Suspended",
+        "ended": "Ended"
+      },
+      "roles": {
+        "instructor": "Driving instructor",
+        "pedagogicalManager": "Pedagogical manager",
+        "administrativeManager": "Administrative manager",
+        "secretary": "Secretary",
+        "accountant": "Accountant",
+        "fleetManager": "Fleet manager",
+        "examCoordinator": "Exam coordinator",
+        "salesAdvisor": "Sales advisor",
+        "complianceOfficer": "Compliance officer",
+        "trainingCoordinator": "Training coordinator",
+        "receptionist": "Receptionist",
+        "supportAgent": "Support agent",
+        "other": "Other",
+        "unknown": "Unknown role"
+      },
+      "types": {
+        "primary": "Primary assignment",
+        "secondary": "Secondary assignment",
+        "temporary": "Temporary assignment",
+        "replacement": "Replacement",
+        "shared": "Shared resource",
+        "support": "Support",
+        "other": "Other",
+        "unknown": "Unknown assignment type"
+      },
+      "organizationCardDescription": "View the users assigned to this branch and manage their assignment lifecycle.",
+      "filters": {
+        "searchPlaceholder": "Search by user identifier"
+      },
+      "dialogs": {
+        "suspendTitle": "Suspend assignment",
+        "suspendDescription": "The user will temporarily lose their operational scope for this branch.",
+        "reactivateTitle": "Reactivate assignment",
+        "reactivateDescription": "The user will regain their operational scope for this branch.",
+        "endTitle": "End assignment",
+        "endDescription": "This permanently closes the assignment while preserving its history.",
+        "reasonPlaceholder": "Describe the reason for this action."
+      },
+      "sections": {
+        "user": "User",
+        "userDescription": "Select an active account belonging to the organization.",
+        "assignment": "Assignment",
+        "assignmentDescription": "Define the business role and branch assignment type."
+      },
+      "placeholders": {
+        "selectRole": "Select a business role",
+        "selectType": "Select an assignment type"
+      },
+      "help": {
+        "plannedEndDate": "Optional for permanent assignments. Required for temporary or replacement assignments."
+      },
+      "userSelector": {
+        "selected": "Selected user",
+        "change": "Change",
+        "searchLabel": "Search for a user",
+        "searchPlaceholder": "First name, last name or email address",
+        "emptyTitle": "No users found",
+        "emptyDescription": "No active account in this organization matches the search.",
+        "emailConfirmed": "Email verified",
+        "inactive": "Inactive",
+        "loadMore": "Show more users"
+      },
+      "detailDescription": "View the business information, linked user and lifecycle of this assignment.",
+      "detailLoadErrorDescription": "The assignment information could not be loaded.",
+      "summary": {
+        "title": "Assignment summary",
+        "description": "Business role, branch relationship and active period.",
+        "suspensionReason": "Suspension reason",
+        "endReason": "End reason"
+      },
+      "userCard": {
+        "title": "User account",
+        "description": "Identity information provided by the AuthGate service.",
+        "active": "Active account",
+        "inactive": "Inactive account",
+        "emailConfirmed": "Email verified",
+        "authRoles": "AuthGate roles",
+        "loadWarning": "The detailed account information could not be loaded. The assignment remains available."
+      },
+      "timeline": {
+        "title": "Timeline",
+        "description": "Main dates currently available for this assignment.",
+        "created": "Assignment created",
+        "createdDescription": "The user was assigned to the branch.",
+        "started": "Effective start",
+        "startedDescription": "The assignment became operational.",
+        "suspended": "Assignment suspended",
+        "suspendedDescription": "The operational scope was temporarily removed.",
+        "reactivated": "Assignment reactivated",
+        "reactivatedDescription": "The operational scope was restored.",
+        "ended": "Assignment ended",
+        "endedDescription": "The operational branch relationship ended.",
+        "modified": "Assignment modified",
+        "modifiedDescription": "The assignment information was updated.",
+        "actor": "Actor"
+      },
+      "audit": {
+        "title": "Audit information",
+        "createdBy": "Created by",
+        "lastModifiedAt": "Last modified",
+        "lastModifiedBy": "Modified by"
       }
     }
   },
@@ -402,5 +609,67 @@
     "suspended": "Suspended",
     "closed": "Closed",
     "archived": "Archived"
+  },
+  "auth": {
+    "subtitle": "Run your driving school efficiently and confidently.",
+    "fields": {
+      "email": "Email address",
+      "emailPlaceholder": "you@driving-school.com",
+      "password": "Password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "organization": "Driving school name",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "phone": "Phone"
+    },
+    "actions": {
+      "continue": "Continue",
+      "change": "Change",
+      "togglePassword": "Show or hide password",
+      "login": "Sign in",
+      "register": "Create my workspace",
+      "sendResetLink": "Send reset link",
+      "backToLogin": "Back to sign in",
+      "resetPassword": "Reset password",
+      "showPassword": "Show passwords",
+      "resend": "Resend email"
+    },
+    "login": {
+      "title": "Welcome to DriveOS",
+      "description": "Sign in to access your workspace.",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Do not have an account yet?"
+    },
+    "register": {
+      "title": "Create your DriveOS workspace",
+      "description": "Set up the primary account for your driving school.",
+      "haveAccount": "Already have an account?"
+    },
+    "forgot": {
+      "title": "Forgot password",
+      "description": "Enter your email address to receive a reset link."
+    },
+    "reset": {
+      "title": "Create a new password",
+      "description": "Choose a strong and unique password."
+    },
+    "checkEmail": {
+      "title": "Check your inbox",
+      "verifyDescription": "A confirmation email was sent to this address.",
+      "resetDescription": "A password reset link was sent to this address.",
+      "resent": "Email resent"
+    },
+    "confirmEmail": {
+      "success": "Your email address has been confirmed.",
+      "failed": "Email confirmation failed."
+    },
+    "forbidden": {
+      "title": "Access denied",
+      "description": "Your account is authenticated, but it does not have the permission required to perform this action.",
+      "retry": "Try again",
+      "back": "Back to organizations"
+    }
   }
 }

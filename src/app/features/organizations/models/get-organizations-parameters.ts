@@ -1,13 +1,6 @@
-export type OrganizationSortField =
-  | 'legalName'
-  | 'countryCode'
-  | 'type'
-  | 'status'
-  | 'createdAt';
+export type OrganizationSortField = 'legalName' | 'countryCode' | 'type' | 'status' | 'createdAt';
 
-export type SortDirection =
-  | 'asc'
-  | 'desc';
+export type SortDirection = 'asc' | 'desc';
 
 export interface GetOrganizationsParameters {
   pageNumber: number;

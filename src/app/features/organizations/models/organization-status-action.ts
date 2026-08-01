@@ -1,14 +1,7 @@
-import {
-  DriveOsButtonVariant,
-} from '../../../shared/ui';
+import { DriveOsButtonVariant } from '../../../shared/ui';
 
 export type OrganizationStatusActionCode =
-  | 'submitForActivation'
-  | 'activate'
-  | 'restrict'
-  | 'suspend'
-  | 'reactivate'
-  | 'close';
+  'submitForActivation' | 'activate' | 'restrict' | 'suspend' | 'reactivate' | 'close';
 
 export interface OrganizationStatusAction {
   code: OrganizationStatusActionCode;

@@ -1,208 +1,109 @@
-import {
-  ComponentFixture,
-  TestBed,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {
-  provideNoopAnimations,
-} from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-import {
-  provideTranslateService,
-} from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 
-import {
-  OrganizationStatusDialogComponent,
-} from './organization-status-dialog.component';
+import { OrganizationStatusDialogComponent } from './organization-status-dialog.component';
 
-describe(
-  'OrganizationStatusDialogComponent',
-  () => {
-    let fixture:
-      ComponentFixture<OrganizationStatusDialogComponent>;
+describe('OrganizationStatusDialogComponent', () => {
+  let fixture: ComponentFixture<OrganizationStatusDialogComponent>;
 
-    let component:
-      OrganizationStatusDialogComponent;
+  let component: OrganizationStatusDialogComponent;
 
-    beforeEach(
-      async () => {
-        await TestBed
-          .configureTestingModule({
-            imports: [
-              OrganizationStatusDialogComponent,
-            ],
-            providers: [
-              provideNoopAnimations(),
-              provideTranslateService({
-                fallbackLang: 'fr',
-                lang: 'fr',
-              }),
-            ],
-          })
-          .compileComponents();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [OrganizationStatusDialogComponent],
+      providers: [
+        provideNoopAnimations(),
+        provideTranslateService({
+          fallbackLang: 'fr',
+          lang: 'fr',
+        }),
+      ],
+    }).compileComponents();
 
-        fixture =
-          TestBed.createComponent(
-            OrganizationStatusDialogComponent,
-          );
+    fixture = TestBed.createComponent(OrganizationStatusDialogComponent);
 
-        component =
-          fixture.componentInstance;
+    component = fixture.componentInstance;
 
-        fixture.componentRef
-          .setInput(
-            'organizationName',
-            'Auto-école Horizon',
-          );
+    fixture.componentRef.setInput('organizationName', 'Auto-école Horizon');
 
-        fixture.componentRef
-          .setInput(
-            'action',
-            {
-              code: 'suspend',
-              labelKey:
-                'organizations.lifecycle.actions.suspend.label',
-              titleKey:
-                'organizations.lifecycle.actions.suspend.title',
-              descriptionKey:
-                'organizations.lifecycle.actions.suspend.description',
-              icon:
-                'ph-bold ph-pause-circle',
-              buttonVariant: 'danger',
-            },
-          );
+    fixture.componentRef.setInput('action', {
+      code: 'suspend',
+      labelKey: 'organizations.lifecycle.actions.suspend.label',
+      titleKey: 'organizations.lifecycle.actions.suspend.title',
+      descriptionKey: 'organizations.lifecycle.actions.suspend.description',
+      icon: 'ph-bold ph-pause-circle',
+      buttonVariant: 'danger',
+    });
 
-        fixture.componentRef
-          .setInput(
-            'open',
-            true,
-          );
+    fixture.componentRef.setInput('open', true);
 
-        fixture.detectChanges();
-      },
-    );
+    fixture.detectChanges();
+  });
 
-    it(
-      'should create',
-      () => {
-        expect(component)
-          .toBeTruthy();
-      },
-    );
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-    it(
-      'should reject an empty reason',
-      () => {
-        let emittedReason:
-          string | undefined;
+  it('should reject an empty reason', () => {
+    let emittedReason: string | undefined;
 
-        component.confirmed
-          .subscribe(
-            reason =>
-              emittedReason = reason,
-          );
+    component.confirmed.subscribe((reason) => (emittedReason = reason));
 
-        component.reasonControl
-          .setValue('');
+    component.reasonControl.setValue('');
 
-        component.submit();
+    component.submit();
 
-        expect(
-          emittedReason,
-        ).toBeUndefined();
+    expect(emittedReason).toBeUndefined();
 
-        expect(
-          component.reasonControl.invalid,
-        ).toBeTrue();
-      },
-    );
+    expect(component.reasonControl.invalid).toBeTrue();
+  });
 
-    it(
-      'should reject a whitespace-only reason',
-      () => {
-        component.reasonControl
-          .setValue('   ');
+  it('should reject a whitespace-only reason', () => {
+    component.reasonControl.setValue('   ');
 
-        component.submit();
+    component.submit();
 
-        expect(
-          component.reasonControl.invalid,
-        ).toBeTrue();
+    expect(component.reasonControl.invalid).toBeTrue();
 
-        expect(
-          component.reasonControl
-            .hasError('blank'),
-        ).toBeTrue();
-      },
-    );
+    expect(component.reasonControl.hasError('blank')).toBeTrue();
+  });
 
-    it(
-      'should emit a trimmed reason',
-      () => {
-        let emittedReason:
-          string | undefined;
+  it('should emit a trimmed reason', () => {
+    let emittedReason: string | undefined;
 
-        component.confirmed
-          .subscribe(
-            reason =>
-              emittedReason = reason,
-          );
+    component.confirmed.subscribe((reason) => (emittedReason = reason));
 
-        component.reasonControl
-          .setValue(
-            '  Document expiré.  ',
-          );
+    component.reasonControl.setValue('  Document expiré.  ');
 
-        component.submit();
+    component.submit();
 
-        expect(
-          emittedReason,
-        ).toBe(
-          'Document expiré.',
-        );
-      },
-    );
+    expect(emittedReason).toBe('Document expiré.');
+  });
 
-    it(
-      'should not close while submitting',
-      () => {
-        let cancelled = false;
+  it('should not close while submitting', () => {
+    let cancelled = false;
 
-        component.cancelled
-          .subscribe(
-            () => cancelled = true,
-          );
+    component.cancelled.subscribe(() => (cancelled = true));
 
-        fixture.componentRef
-          .setInput(
-            'submitting',
-            true,
-          );
+    fixture.componentRef.setInput('submitting', true);
 
-        fixture.detectChanges();
+    fixture.detectChanges();
 
-        component.close();
+    component.close();
 
-        expect(cancelled)
-          .toBeFalse();
-      },
-    );
+    expect(cancelled).toBeFalse();
+  });
 
-    it(
-      'should emit cancellation when Escape is pressed',
-      () => {
-        let cancelled = false;
+  it('should emit cancellation when Escape is pressed', () => {
+    let cancelled = false;
 
-        component.cancelled
-          .subscribe(
-            () => cancelled = true,
-          );
+    component.cancelled.subscribe(() => (cancelled = true));
 
-        component.onEscape();
+    component.onEscape();
 
-        expect(cancelled)
-          .toBeTrue();
-      },
-    );
-  },
-);
+    expect(cancelled).toBeTrue();
+  });
+});

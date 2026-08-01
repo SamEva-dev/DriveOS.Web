@@ -15,25 +15,15 @@ import {
   Validators,
 } from '@angular/forms';
 
-import {
-  A11yModule,
-} from '@angular/cdk/a11y';
+import { A11yModule } from '@angular/cdk/a11y';
 
-import {
-  TranslatePipe,
-} from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
-import {
-  DriveOsButtonComponent,
-} from '../../../../../shared/ui';
+import { DriveOsButtonComponent } from '../../../../../shared/ui';
 
-import {
-  BranchLifecycleActionDefinition,
-} from '../../domain/branch-lifecycle';
+import { BranchLifecycleActionDefinition } from '../../domain/branch-lifecycle';
 
-function notBlankValidator(
-  control: AbstractControl<string>,
-): ValidationErrors | null {
+function notBlankValidator(control: AbstractControl<string>): ValidationErrors | null {
   return control.value.trim().length > 0
     ? null
     : {
@@ -42,58 +32,33 @@ function notBlankValidator(
 }
 
 @Component({
-  selector:
-    'driveos-branch-status-dialog',
+  selector: 'driveos-branch-status-dialog',
 
   standalone: true,
 
-  imports: [
-    A11yModule,
-    ReactiveFormsModule,
-    TranslatePipe,
+  imports: [A11yModule, ReactiveFormsModule, TranslatePipe, DriveOsButtonComponent],
 
-    DriveOsButtonComponent,
-  ],
+  templateUrl: './branch-status-dialog.component.html',
 
-  templateUrl:
-    './branch-status-dialog.component.html',
-
-  changeDetection:
-    ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BranchStatusDialogComponent {
-  readonly open =
-    input(false);
+  readonly open = input(false);
 
-  readonly action =
-    input<
-      BranchLifecycleActionDefinition | null
-    >(null);
+  readonly action = input<BranchLifecycleActionDefinition | null>(null);
 
-  readonly branchName =
-    input('');
+  readonly branchName = input('');
 
-  readonly submitting =
-    input(false);
+  readonly submitting = input(false);
 
-  readonly cancelled =
-    output<void>();
+  readonly cancelled = output<void>();
 
-  readonly confirmed =
-    output<string>();
+  readonly confirmed = output<string>();
 
-  readonly reasonControl =
-    new FormControl(
-      '',
-      {
-        nonNullable: true,
-        validators: [
-          Validators.required,
-          notBlankValidator,
-          Validators.maxLength(500),
-        ],
-      },
-    );
+  readonly reasonControl = new FormControl('', {
+    nonNullable: true,
+    validators: [Validators.required, notBlankValidator, Validators.maxLength(500)],
+  });
 
   constructor() {
     effect(() => {
@@ -103,14 +68,9 @@ export class BranchStatusDialogComponent {
     });
   }
 
-  @HostListener(
-    'document:keydown.escape',
-  )
+  @HostListener('document:keydown.escape')
   onEscape(): void {
-    if (
-      this.open() &&
-      !this.submitting()
-    ) {
+    if (this.open() && !this.submitting()) {
       this.close();
     }
   }
@@ -124,16 +84,12 @@ export class BranchStatusDialogComponent {
   }
 
   submit(): void {
-    if (
-      this.reasonControl.invalid ||
-      this.submitting()
-    ) {
+    if (this.reasonControl.invalid || this.submitting()) {
       this.reasonControl.markAsTouched();
       return;
     }
 
-    const reason =
-      this.reasonControl.value.trim();
+    const reason = this.reasonControl.value.trim();
 
     if (!reason) {
       this.reasonControl.setErrors({
@@ -146,13 +102,8 @@ export class BranchStatusDialogComponent {
     this.confirmed.emit(reason);
   }
 
-  onBackdropClick(
-    event: MouseEvent,
-  ): void {
-    if (
-      event.target ===
-      event.currentTarget
-    ) {
+  onBackdropClick(event: MouseEvent): void {
+    if (event.target === event.currentTarget) {
       this.close();
     }
   }

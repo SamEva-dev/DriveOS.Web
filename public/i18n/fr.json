@@ -3,6 +3,7 @@
     "name": "DriveOS"
   },
   "common": {
+    "notAvailable": "Non renseigné",
     "actions": {
       "save": "Enregistrer",
       "cancel": "Annuler",
@@ -12,7 +13,13 @@
       "title": "Actions",
       "view": "Consulter",
       "refresh": "Actualiser",
-      "loading": "Chargement en cours"
+      "loading": "Chargement en cours",
+      "actions": "Actions",
+      "reset": "Réinitialiser",
+      "retry": "Réessayer"
+    },
+    "filters": {
+      "all": "Tous"
     },
     "status": {
       "loading": "Chargement...",
@@ -132,10 +139,58 @@
       "timeZone": {
         "invalid": "Le fuseau horaire est obligatoire."
       }
+    },
+    "branchAssignments": {
+      "id": {
+        "empty": "L’identifiant de l’affectation est obligatoire."
+      },
+      "organizationId": {
+        "empty": "L’organisation est obligatoire."
+      },
+      "branchId": {
+        "empty": "L’agence est obligatoire."
+      },
+      "userId": {
+        "empty": "L’utilisateur est obligatoire."
+      },
+      "role": {
+        "invalid": "La fonction sélectionnée est invalide.",
+        "required": "La fonction est obligatoire."
+      },
+      "type": {
+        "invalid": "Le type d’affectation sélectionné est invalide.",
+        "required": "Le type d’affectation est obligatoire."
+      },
+      "status": {
+        "invalid": "Le statut sélectionné est invalide."
+      },
+      "startDate": {
+        "invalid": "La date de début est invalide."
+      },
+      "endDate": {
+        "invalid": "La date de fin prévue est invalide.",
+        "required": "Une date de fin est obligatoire pour ce type d’affectation.",
+        "future": "La date de fin prévue doit être postérieure à la date actuelle."
+      },
+      "reason": {
+        "empty": "Le motif est obligatoire.",
+        "tooLong": "Le motif ne peut pas dépasser 500 caractères.",
+        "invalid": "Le motif est invalide."
+      },
+      "alreadySuspended": "Cette affectation est déjà suspendue.",
+      "notSuspended": "Seule une affectation suspendue peut être réactivée.",
+      "alreadyEnded": "Cette affectation est déjà terminée.",
+      "ended": "Une affectation terminée ne peut plus être modifiée.",
+      "duplicate": "Une affectation ouverte existe déjà pour cet utilisateur, cette agence et cette fonction.",
+      "primaryAlreadyExists": "Cet utilisateur possède déjà une affectation principale dans cette organisation.",
+      "organizationNotFound": "L’organisation demandée est introuvable.",
+      "branchNotFound": "L’agence demandée est introuvable.",
+      "notFound": "L’affectation demandée est introuvable.",
+      "branchClosed": "Une affectation ne peut pas être créée dans une agence fermée."
     }
   },
   "organizations": {
-    "title": "Organisations",
+    "title": "Mes organisations",
     "createTitle": "Créer une organisation",
     "createDescription": "Enregistrer une auto-école, un réseau, un centre de formation ou une organisation partenaire.",
     "createdSuccessfully": "L’organisation a été créée avec succès.",
@@ -164,12 +219,12 @@
       "platformOperator": "Opérateur de plateforme",
       "unknown": "Type inconnu"
     },
-    "listDescription": "Gérez les structures et tenants enregistrés dans DriveOS.",
+    "listDescription": "Consultez les organisations auxquelles votre compte DriveOS est rattaché.",
     "searchPlaceholder": "Rechercher par raison sociale ou code pays...",
     "paginationReport": "{first} à {last} sur {totalRecords} organisations",
     "empty": {
       "title": "Aucune organisation trouvée",
-      "description": "Créez une organisation ou modifiez vos critères de recherche."
+      "description": "Aucune organisation accessible pour ce compte."
     },
     "lifecycle": {
       "title": "Cycle de vie",
@@ -366,7 +421,10 @@
         "loadErrorTitle": "Impossible de charger l’historique",
         "loadErrorDescription": "La fiche de l’agence reste accessible, mais son historique de statut n’a pas pu être chargé."
       },
-      "organizationCardDescription": "Consultez et administrez les agences, sites et implantations rattachés à cette organisation."
+      "organizationCardDescription": "Consultez et administrez les agences, sites et implantations rattachés à cette organisation.",
+      "detail": {
+        "backToBranch": "Retour à l’agence"
+      }
     },
     "statuses": {
       "draft": "Brouillon",
@@ -376,6 +434,155 @@
       "suspended": "Suspendue",
       "closed": "Fermée",
       "archived": "Archivée"
+    },
+    "branchAssignments": {
+      "title": "Équipe de l’agence",
+      "description": "Gérez les utilisateurs affectés à cette agence, leur fonction et leur type de rattachement.",
+      "listTitle": "Utilisateurs affectés",
+      "listDescription": "Consultez les membres actuellement ou précédemment affectés à l’agence.",
+      "createTitle": "Ajouter un membre",
+      "createDescription": "Affectez un utilisateur de l’organisation à cette agence.",
+      "detailTitle": "Détail de l’affectation",
+      "emptyTitle": "Aucun utilisateur affecté",
+      "emptyDescription": "Cette agence ne possède encore aucune affectation utilisateur.",
+      "loadErrorTitle": "Chargement impossible",
+      "loadErrorDescription": "Les affectations de l’agence n’ont pas pu être chargées.",
+      "createSuccessTitle": "Affectation créée",
+      "createSuccessDescription": "L’utilisateur a été affecté à l’agence.",
+      "createErrorTitle": "Création impossible",
+      "suspendSuccessTitle": "Affectation suspendue",
+      "reactivateSuccessTitle": "Affectation réactivée",
+      "endSuccessTitle": "Affectation terminée",
+      "statusChangeErrorTitle": "Action impossible",
+      "fields": {
+        "userId": "Utilisateur",
+        "role": "Fonction",
+        "assignmentType": "Type d’affectation",
+        "status": "Statut",
+        "startsAtUtc": "Date de début",
+        "plannedEndAtUtc": "Fin prévue",
+        "effectiveEndAtUtc": "Fin effective",
+        "reason": "Motif",
+        "createdAtUtc": "Créée le"
+      },
+      "actions": {
+        "create": "Ajouter un membre",
+        "view": "Voir l’affectation",
+        "suspend": "Suspendre",
+        "reactivate": "Réactiver",
+        "end": "Terminer",
+        "manageTeam": "Gérer l’équipe",
+        "viewBranch": "Voir l’agence",
+        "backToTeam": "Retour à l’équipe"
+      },
+      "statuses": {
+        "active": "Active",
+        "suspended": "Suspendue",
+        "ended": "Terminée"
+      },
+      "roles": {
+        "instructor": "Enseignant de la conduite",
+        "pedagogicalManager": "Responsable pédagogique",
+        "administrativeManager": "Responsable administratif",
+        "secretary": "Secrétaire",
+        "accountant": "Comptable",
+        "fleetManager": "Gestionnaire de flotte",
+        "examCoordinator": "Coordinateur des examens",
+        "salesAdvisor": "Conseiller commercial",
+        "complianceOfficer": "Responsable conformité",
+        "trainingCoordinator": "Coordinateur de formation",
+        "receptionist": "Agent d’accueil",
+        "supportAgent": "Agent support",
+        "other": "Autre",
+        "unknown": "Fonction inconnue"
+      },
+      "types": {
+        "primary": "Affectation principale",
+        "secondary": "Affectation secondaire",
+        "temporary": "Affectation temporaire",
+        "replacement": "Remplacement",
+        "shared": "Ressource partagée",
+        "support": "Support",
+        "other": "Autre",
+        "unknown": "Type inconnu"
+      },
+      "organizationCardDescription": "Consultez les utilisateurs affectés à cette agence et gérez leur cycle de vie.",
+      "filters": {
+        "searchPlaceholder": "Rechercher par identifiant utilisateur"
+      },
+      "dialogs": {
+        "suspendTitle": "Suspendre l’affectation",
+        "suspendDescription": "L’utilisateur perdra temporairement sa portée opérationnelle sur cette agence.",
+        "reactivateTitle": "Réactiver l’affectation",
+        "reactivateDescription": "L’utilisateur retrouvera sa portée opérationnelle sur cette agence.",
+        "endTitle": "Terminer l’affectation",
+        "endDescription": "Cette action clôture définitivement l’affectation tout en conservant son historique.",
+        "reasonPlaceholder": "Décrivez précisément le motif de cette action."
+      },
+      "sections": {
+        "user": "Utilisateur",
+        "userDescription": "Sélectionnez un compte actif appartenant à l’organisation.",
+        "assignment": "Affectation",
+        "assignmentDescription": "Définissez la fonction exercée et le type de rattachement à l’agence."
+      },
+      "placeholders": {
+        "selectRole": "Sélectionner une fonction",
+        "selectType": "Sélectionner un type d’affectation"
+      },
+      "help": {
+        "plannedEndDate": "Facultative pour les affectations permanentes. Obligatoire pour une affectation temporaire ou un remplacement."
+      },
+      "userSelector": {
+        "selected": "Utilisateur sélectionné",
+        "change": "Changer",
+        "searchLabel": "Rechercher un utilisateur",
+        "searchPlaceholder": "Nom, prénom ou adresse e-mail",
+        "emptyTitle": "Aucun utilisateur trouvé",
+        "emptyDescription": "Aucun compte actif de cette organisation ne correspond à la recherche.",
+        "emailConfirmed": "E-mail vérifié",
+        "inactive": "Inactif",
+        "loadMore": "Afficher plus d’utilisateurs"
+      },
+      "detailDescription": "Consultez les informations métier, l’utilisateur associé et le cycle de vie de cette affectation.",
+      "detailLoadErrorDescription": "Les informations de cette affectation n’ont pas pu être chargées.",
+      "summary": {
+        "title": "Synthèse de l’affectation",
+        "description": "Fonction, rattachement et période d’activité dans l’agence.",
+        "suspensionReason": "Motif de la suspension",
+        "endReason": "Motif de fin"
+      },
+      "userCard": {
+        "title": "Compte utilisateur",
+        "description": "Informations fournies par le service d’identité AuthGate.",
+        "active": "Compte actif",
+        "inactive": "Compte inactif",
+        "emailConfirmed": "E-mail vérifié",
+        "authRoles": "Rôles AuthGate",
+        "loadWarning": "Les informations détaillées du compte n’ont pas pu être chargées. L’affectation reste néanmoins disponible."
+      },
+      "timeline": {
+        "title": "Chronologie",
+        "description": "Principales dates actuellement disponibles pour cette affectation.",
+        "created": "Affectation créée",
+        "createdDescription": "L’utilisateur a été rattaché à l’agence.",
+        "started": "Prise d’effet",
+        "startedDescription": "L’affectation est devenue opérationnelle.",
+        "suspended": "Affectation suspendue",
+        "suspendedDescription": "La portée opérationnelle a été temporairement retirée.",
+        "reactivated": "Affectation réactivée",
+        "reactivatedDescription": "La portée opérationnelle a été restaurée.",
+        "ended": "Affectation terminée",
+        "endedDescription": "Le rattachement opérationnel à l’agence a pris fin.",
+        "modified": "Affectation modifiée",
+        "modifiedDescription": "Les informations de l’affectation ont été mises à jour.",
+        "actor": "Acteur"
+      },
+      "audit": {
+        "title": "Informations d’audit",
+        "createdBy": "Créée par",
+        "lastModifiedAt": "Dernière modification",
+        "lastModifiedBy": "Modifiée par"
+      }
     }
   },
   "statuses": {
@@ -402,5 +609,67 @@
     "nextPage": "Page suivante",
     "lastPage": "Dernière page",
     "report": "{{first}} à {{last}} sur {{total}} éléments"
+  },
+  "auth": {
+    "subtitle": "Gérez votre auto-école avec efficacité et sérénité.",
+    "fields": {
+      "email": "Adresse e-mail",
+      "emailPlaceholder": "vous@auto-ecole.fr",
+      "password": "Mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "organization": "Nom de l’auto-école",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "phone": "Téléphone"
+    },
+    "actions": {
+      "continue": "Continuer",
+      "change": "Modifier",
+      "togglePassword": "Afficher ou masquer le mot de passe",
+      "login": "Se connecter",
+      "register": "Créer mon espace",
+      "sendResetLink": "Envoyer le lien",
+      "backToLogin": "Retour à la connexion",
+      "resetPassword": "Réinitialiser le mot de passe",
+      "showPassword": "Afficher les mots de passe",
+      "resend": "Renvoyer l’e-mail"
+    },
+    "login": {
+      "title": "Bienvenue sur DriveOS",
+      "description": "Connectez-vous pour accéder à votre espace.",
+      "rememberMe": "Se souvenir de moi",
+      "forgotPassword": "Mot de passe oublié ?",
+      "noAccount": "Vous n’avez pas encore de compte ?"
+    },
+    "register": {
+      "title": "Créer votre espace DriveOS",
+      "description": "Configurez le compte principal de votre auto-école.",
+      "haveAccount": "Vous avez déjà un compte ?"
+    },
+    "forgot": {
+      "title": "Mot de passe oublié",
+      "description": "Saisissez votre adresse e-mail pour recevoir un lien de réinitialisation."
+    },
+    "reset": {
+      "title": "Créer un nouveau mot de passe",
+      "description": "Choisissez un mot de passe robuste et unique."
+    },
+    "checkEmail": {
+      "title": "Consultez votre messagerie",
+      "verifyDescription": "Un e-mail de confirmation a été envoyé à cette adresse.",
+      "resetDescription": "Un lien de réinitialisation a été envoyé à cette adresse.",
+      "resent": "E-mail renvoyé"
+    },
+    "confirmEmail": {
+      "success": "Votre adresse e-mail est confirmée.",
+      "failed": "La confirmation a échoué."
+    },
+    "forbidden": {
+      "title": "Accès refusé",
+      "description": "Votre compte est authentifié, mais il ne possède pas la permission nécessaire pour effectuer cette action.",
+      "retry": "Réessayer",
+      "back": "Retour aux organisations"
+    }
   }
 }

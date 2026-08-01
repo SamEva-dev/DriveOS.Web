@@ -1,0 +1,36 @@
+<driveos-auth-shell [subtitle]="'auth.subtitle' | translate">
+  <div
+    class="mx-auto flex size-14 items-center justify-center rounded-full bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300"
+  >
+    <i class="ph-duotone ph-envelope-open text-3xl"></i>
+  </div>
+  <h1 class="mt-5 text-center text-xl font-semibold text-slate-950 dark:text-white">
+    {{ 'auth.checkEmail.title' | translate }}
+  </h1>
+  <p class="mt-2 text-center text-sm text-slate-500 dark:text-slate-400">
+    {{
+      (type === 'reset' ? 'auth.checkEmail.resetDescription' : 'auth.checkEmail.verifyDescription')
+        | translate
+    }}
+  </p>
+  <p
+    class="mt-4 rounded-lg bg-slate-50 p-3 text-center text-sm font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-200"
+  >
+    {{ email }}
+  </p>
+  <button
+    type="button"
+    class="driveos-auth-secondary mt-5"
+    (click)="resend()"
+    [disabled]="loading()"
+  >
+    {{ sent() ? ('auth.checkEmail.resent' | translate) : ('auth.actions.resend' | translate) }}
+  </button>
+  <a
+    routerLink="/login"
+    [queryParams]="{ email: email }"
+    class="mt-4 block text-center text-sm font-medium text-blue-700 hover:underline dark:text-blue-300"
+  >
+    {{ 'auth.actions.backToLogin' | translate }}
+  </a>
+</driveos-auth-shell>

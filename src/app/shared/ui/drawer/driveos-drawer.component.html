@@ -1,34 +1,24 @@
 @if (open()) {
-      <div
-        class="fixed inset-0 z-40"
-        role="presentation"
-      >
-        <button
-          type="button"
-          class="
-            absolute inset-0
-            bg-slate-950/50
-            backdrop-blur-[1px]
-          "
-          aria-label="Fermer le menu"
-          (click)="closeRequested.emit()"
-        ></button>
+  <div
+    class="fixed inset-0 z-40"
+    role="presentation"
+  >
+    <button
+      type="button"
+      class="absolute inset-0 bg-slate-950/50 backdrop-blur-[1px]"
+      aria-label="Fermer le menu"
+      (click)="closeRequested.emit()"
+    ></button>
 
-        <aside
-          cdkTrapFocus
-          [cdkTrapFocusAutoCapture]="true"
-          role="dialog"
-          aria-modal="true"
-          [attr.aria-label]="ariaLabel()"
-          class="
-            absolute inset-y-0 left-0
-            z-10 w-full max-w-72
-            overflow-y-auto
-            bg-white shadow-2xl
-            dark:bg-slate-900
-          "
-        >
-          <ng-content />
-        </aside>
-      </div>
-    }
+    <aside
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="ariaLabel()"
+      class="absolute inset-y-0 left-0 z-10 w-full max-w-72 overflow-y-auto bg-white shadow-2xl dark:bg-slate-900"
+    >
+      <ng-content />
+    </aside>
+  </div>
+}

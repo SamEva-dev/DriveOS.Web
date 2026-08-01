@@ -1,0 +1,83 @@
+@if (isOpen() && definition(); as definition) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4"
+    role="presentation"
+    (click)="close()"
+  >
+    <section
+      class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-labelledby]="'branch-assignment-dialog-title'"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="mb-5">
+        <h2
+          id="branch-assignment-dialog-title"
+          class="text-xl font-semibold text-slate-950 dark:text-white"
+        >
+          {{ definition.titleKey | translate }}
+        </h2>
+
+        <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+          {{ definition.descriptionKey | translate }}
+        </p>
+      </header>
+
+      <div>
+        <label
+          for="branch-assignment-reason"
+          class="mb-2 block text-sm font-medium text-slate-800 dark:text-slate-200"
+        >
+          {{ 'organizations.branchAssignments.fields.reason' | translate }}
+        </label>
+
+        <textarea
+          id="branch-assignment-reason"
+          driveOsInput
+          rows="5"
+          maxlength="500"
+          [formControl]="reasonControl"
+          [placeholder]="'organizations.branchAssignments.dialogs.reasonPlaceholder' | translate"
+        ></textarea>
+
+        <div class="mt-2 flex items-start justify-between gap-4">
+          <div>
+            @if (reasonControl.touched && reasonControl.hasError('required')) {
+              <p class="text-sm text-red-600">
+                {{ 'errors.branchAssignments.reason.empty' | translate }}
+              </p>
+            }
+
+            @if (reasonControl.touched && reasonControl.hasError('maxlength')) {
+              <p class="text-sm text-red-600">
+                {{ 'errors.branchAssignments.reason.tooLong' | translate }}
+              </p>
+            }
+          </div>
+
+          <span class="shrink-0 text-xs text-slate-500">{{ reasonControl.value.length }}/500</span>
+        </div>
+      </div>
+
+      <footer class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <drive-os-button
+          variant="secondary"
+          [disabled]="loading()"
+          (pressed)="close()"
+        >
+          {{ 'common.actions.cancel' | translate }}
+        </drive-os-button>
+
+        <drive-os-button
+          [variant]="definition.buttonVariant"
+          [loading]="loading()"
+          [disabled]="reasonControl.invalid"
+          (pressed)="confirm()"
+        >
+          {{ definition.confirmLabelKey | translate }}
+        </drive-os-button>
+      </footer>
+    </section>
+  </div>
+}

@@ -1,6 +1,4 @@
-import {
-  HttpErrorResponse,
-} from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import {
   ChangeDetectionStrategy,
@@ -11,28 +9,15 @@ import {
   signal,
 } from '@angular/core';
 
-import {
-  takeUntilDestroyed,
-} from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink,
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import {
-  TranslatePipe,
-  TranslateService,
-} from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
-import {
-  forkJoin,
-} from 'rxjs';
+import { forkJoin } from 'rxjs';
 
-import {
-  ApiErrorService,
-} from '../../../../core/errors/api-error.service';
+import { ApiErrorService } from '../../../../core/errors/api-error.service';
 
 import {
   DriveOsButtonComponent,
@@ -41,43 +26,29 @@ import {
   DriveOsToastService,
 } from '../../../../shared/ui';
 
-import {
-  OrganizationStatusDialogComponent,
-} from '../../components/organization-status-dialog/organization-status-dialog.component';
+import { OrganizationStatusDialogComponent } from '../../components/organization-status-dialog/organization-status-dialog.component';
 
-import {
-  OrganizationStatusHistoryComponent,
-} from '../../components/organization-status-history/organization-status-history.component';
+import { OrganizationStatusHistoryComponent } from '../../components/organization-status-history/organization-status-history.component';
 
-import {
-  OrganizationSummaryComponent,
-} from '../../components/organization-summary/organization-summary.component';
+import { OrganizationSummaryComponent } from '../../components/organization-summary/organization-summary.component';
 
-import {
-  OrganizationsApiService,
-} from '../../data-access/organizations-api.service';
+import { OrganizationsApiService } from '../../data-access/organizations-api.service';
 
-import {
-  OrganizationStatusAction,
-} from '../../models/organization-status-action';
+import { OrganizationStatusAction } from '../../models/organization-status-action';
 
-import {
-  OrganizationStatusHistoryItem,
-} from '../../models/organization-status-history-item';
+import { OrganizationStatusHistoryItem } from '../../models/organization-status-history-item';
 
-import {
-  OrganizationStatus,
-} from '../../models/organization-status';
+import { OrganizationStatus } from '../../models/organization-status';
 
-import {
-  Organization,
-} from '../../models/organization.model';
+import { Organization } from '../../models/organization.model';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
-import { OrganizationLifecycleActionDefinition, getOrganizationLifecycleActions } from '../../domain/organization-lifecycle';
+import {
+  OrganizationLifecycleActionDefinition,
+  getOrganizationLifecycleActions,
+} from '../../domain/organization-lifecycle';
 
 @Component({
-  selector:
-    'driveos-organization-detail-page',
+  selector: 'driveos-organization-detail-page',
   standalone: true,
   imports: [
     TranslatePipe,
@@ -89,128 +60,82 @@ import { OrganizationLifecycleActionDefinition, getOrganizationLifecycleActions 
     DriveOsSpinnerComponent,
     RouterLink,
   ],
-  templateUrl:
-    './organization-detail.page.html',
-  changeDetection:
-    ChangeDetectionStrategy.OnPush,
+  templateUrl: './organization-detail.page.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganizationDetailPage {
-  private readonly route =
-    inject(ActivatedRoute);
+  private readonly route = inject(ActivatedRoute);
 
-  private readonly router =
-    inject(Router);
+  private readonly router = inject(Router);
 
-    private readonly authorization =
-  inject(AuthorizationService);
+  private readonly authorization = inject(AuthorizationService);
 
-  private readonly organizationsApi =
-    inject(OrganizationsApiService);
+  private readonly organizationsApi = inject(OrganizationsApiService);
 
-  private readonly apiErrorService =
-    inject(ApiErrorService);
+  private readonly apiErrorService = inject(ApiErrorService);
 
-  private readonly translate =
-    inject(TranslateService);
+  private readonly translate = inject(TranslateService);
 
-  private readonly toastService =
-    inject(DriveOsToastService);
+  private readonly toastService = inject(DriveOsToastService);
 
-  private readonly destroyRef =
-    inject(DestroyRef);
+  private readonly destroyRef = inject(DestroyRef);
 
-  readonly organization =
-    signal<Organization | null>(null);
+  readonly organization = signal<Organization | null>(null);
 
-  readonly statusHistory =
-    signal<
-      readonly OrganizationStatusHistoryItem[]
-    >([]);
+  readonly statusHistory = signal<readonly OrganizationStatusHistoryItem[]>([]);
 
-  readonly isLoading =
-    signal(true);
+  readonly isLoading = signal(true);
 
-  readonly isHistoryLoading =
-    signal(false);
+  readonly isHistoryLoading = signal(false);
 
-  readonly isChangingStatus =
-    signal(false);
+  readonly isChangingStatus = signal(false);
 
-  readonly selectedAction =
-    signal<OrganizationStatusAction | null>(
-      null,
-    );
+  readonly selectedAction = signal<OrganizationStatusAction | null>(null);
 
-  private readonly organizationId:
-    string | null;
+  private readonly organizationId: string | null;
 
   constructor() {
-    this.organizationId =
-      this.route.snapshot.paramMap.get(
-        'organizationId',
-      );
+    this.organizationId = this.route.snapshot.paramMap.get('organizationId');
 
     if (!this.organizationId) {
       this.isLoading.set(false);
 
-      void this.router.navigate([
-        '/organizations',
-      ]);
+      void this.router.navigate(['/organizations']);
 
       return;
     }
 
     this.loadPage();
   }
-readonly availableActions =
-  computed<
-    readonly OrganizationLifecycleActionDefinition[]
-  >(() => {
-    const organization =
-      this.organization();
+  readonly availableActions = computed<readonly OrganizationLifecycleActionDefinition[]>(() => {
+    const organization = this.organization();
 
     if (!organization) {
       return [];
     }
 
-    return getOrganizationLifecycleActions(
-      organization.status,
-    ).filter(action =>
-      this.authorization.hasPermission(
-        action.permission,
-      ),
+    return getOrganizationLifecycleActions(organization.status).filter((action) =>
+      this.authorization.hasPermission(action.permission),
     );
   });
 
-  openStatusDialog(
-  action: OrganizationLifecycleActionDefinition,
-): void {
-  const organization =
-    this.organization();
+  openStatusDialog(action: OrganizationLifecycleActionDefinition): void {
+    const organization = this.organization();
 
-  if (!organization) {
-    return;
-  }
+    if (!organization) {
+      return;
+    }
 
-  const allowed =
-    getOrganizationLifecycleActions(
-      organization.status,
-    ).some(
-      candidate =>
-        candidate.code === action.code,
+    const allowed = getOrganizationLifecycleActions(organization.status).some(
+      (candidate) => candidate.code === action.code,
     );
 
-  if (
-    !allowed ||
-    !this.authorization.hasPermission(
-      action.permission,
-    )
-  ) {
-    return;
-  }
+    if (!allowed || !this.authorization.hasPermission(action.permission)) {
+      return;
+    }
 
-  this.selectedAction.set(action);
-}
+    this.selectedAction.set(action);
+  }
 
   closeStatusDialog(): void {
     if (!this.isChangingStatus()) {
@@ -218,77 +143,46 @@ readonly availableActions =
     }
   }
 
-  confirmStatusChange(
-    reason: string,
-  ): void {
-    const action =
-      this.selectedAction();
+  confirmStatusChange(reason: string): void {
+    const action = this.selectedAction();
 
-    if (
-      !action ||
-      !this.organizationId ||
-      this.isChangingStatus()
-    ) {
+    if (!action || !this.organizationId || this.isChangingStatus()) {
       return;
     }
 
     this.isChangingStatus.set(true);
 
     this.organizationsApi
-      .changeStatus(
-        this.organizationId,
-        action.code,
-        {
-          reason,
-        },
-      )
-      .pipe(
-        takeUntilDestroyed(
-          this.destroyRef,
-        ),
-      )
+      .changeStatus(this.organizationId, action.code, {
+        reason,
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.isChangingStatus.set(false);
           this.selectedAction.set(null);
 
           this.toastService.success(
-            this.translate.instant(
-              'organizations.lifecycle.changeSuccess',
-            ),
+            this.translate.instant('organizations.lifecycle.changeSuccess'),
           );
 
           this.reloadAfterStatusChange();
         },
 
-        error: (
-          error: HttpErrorResponse,
-        ) => {
+        error: (error: HttpErrorResponse) => {
           this.isChangingStatus.set(false);
 
-          const messages =
-            this.apiErrorService.getMessages(
-              error,
-            );
+          const messages = this.apiErrorService.getMessages(error);
 
-          for (
-            const message of messages
-          ) {
-            this.toastService.error(
-              this.translate.instant(
-                'errors.title',
-              ),
-              message,
-            );
+          for (const message of messages) {
+            this.toastService.error(this.translate.instant('errors.title'), message);
           }
         },
       });
   }
 
   goBack(): void {
-    void this.router.navigate([
-      '/organizations',
-    ]);
+    void this.router.navigate(['/organizations']);
   }
 
   private loadPage(): void {
@@ -299,45 +193,26 @@ readonly availableActions =
     this.isLoading.set(true);
 
     forkJoin({
-      organization:
-        this.organizationsApi.getById(
-          this.organizationId,
-        ),
+      organization: this.organizationsApi.getById(this.organizationId),
 
-      history:
-        this.organizationsApi
-          .getStatusHistory(
-            this.organizationId,
-          ),
+      history: this.organizationsApi.getStatusHistory(this.organizationId),
     })
-      .pipe(
-        takeUntilDestroyed(
-          this.destroyRef,
-        ),
-      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: result => {
-          this.organization.set(
-            result.organization,
-          );
+        next: (result) => {
+          this.organization.set(result.organization);
 
-          this.statusHistory.set(
-            result.history,
-          );
+          this.statusHistory.set(result.history);
 
           this.isLoading.set(false);
         },
 
-        error: (
-          error: HttpErrorResponse,
-        ) => {
+        error: (error: HttpErrorResponse) => {
           this.isLoading.set(false);
 
           this.showErrors(error);
 
-          void this.router.navigate([
-            '/organizations',
-          ]);
+          void this.router.navigate(['/organizations']);
         },
       });
   }
@@ -350,86 +225,43 @@ readonly availableActions =
     this.isHistoryLoading.set(true);
 
     forkJoin({
-      organization:
-        this.organizationsApi.getById(
-          this.organizationId,
-        ),
+      organization: this.organizationsApi.getById(this.organizationId),
 
-      history:
-        this.organizationsApi
-          .getStatusHistory(
-            this.organizationId,
-          ),
+      history: this.organizationsApi.getStatusHistory(this.organizationId),
     })
-      .pipe(
-        takeUntilDestroyed(
-          this.destroyRef,
-        ),
-      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: result => {
-          this.organization.set(
-            result.organization,
-          );
+        next: (result) => {
+          this.organization.set(result.organization);
 
-          this.statusHistory.set(
-            result.history,
-          );
+          this.statusHistory.set(result.history);
 
-          this.isHistoryLoading.set(
-            false,
-          );
+          this.isHistoryLoading.set(false);
         },
 
-        error: (
-            error: HttpErrorResponse,
-          ) => {
-            this.isHistoryLoading.set(false);
+        error: (error: HttpErrorResponse) => {
+          this.isHistoryLoading.set(false);
 
-            this.showErrors(error);
+          this.showErrors(error);
 
-            this.toastService.warning(
-              this.translate.instant(
-                'organizations.lifecycle.refreshWarning.title',
-              ),
-              this.translate.instant(
-                'organizations.lifecycle.refreshWarning.description',
-              ),
-            );
-          },
+          this.toastService.warning(
+            this.translate.instant('organizations.lifecycle.refreshWarning.title'),
+            this.translate.instant('organizations.lifecycle.refreshWarning.description'),
+          );
+        },
       });
   }
-  readonly branchesLink =
-  computed(() => {
-    const organization =
-      this.organization();
+  readonly branchesLink = computed(() => {
+    const organization = this.organization();
 
-    return organization
-      ? [
-          '/organizations',
-          organization.id,
-          'branches',
-        ]
-      : [
-          '/organizations',
-        ];
+    return organization ? ['/organizations', organization.id, 'branches'] : ['/organizations'];
   });
 
-  private showErrors(
-    error: HttpErrorResponse,
-  ): void {
-    const messages =
-      this.apiErrorService.getMessages(
-        error,
-      );
+  private showErrors(error: HttpErrorResponse): void {
+    const messages = this.apiErrorService.getMessages(error);
 
     for (const message of messages) {
-      this.toastService.error(
-        this.translate.instant(
-          'errors.title',
-        ),
-        message,
-      );
+      this.toastService.error(this.translate.instant('errors.title'), message);
     }
   }
 }

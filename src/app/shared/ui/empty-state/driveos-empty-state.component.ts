@@ -1,23 +1,15 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
-  selector: 'dos-empty-state',
+  selector: 'drive-os-empty-state',
   standalone: true,
   templateUrl: './driveos-empty-state.component.html',
-  changeDetection:
-    ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DriveOsEmptyStateComponent {
-  readonly icon =
-    input('ph-duotone ph-buildings');
+  readonly icon = input('ph-duotone ph-buildings');
 
-  readonly title =
-    input.required<string>();
+  readonly title = input.required<string>();
 
-  readonly description =
-    input.required<string>();
+  readonly description = input.required<string>();
 }

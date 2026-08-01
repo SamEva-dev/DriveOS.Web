@@ -1,37 +1,20 @@
-<dos-card>
-      <div
-        class="flex min-h-80
-               flex-col items-center
-               justify-center text-center"
-      >
-        <div
-          class="flex size-16 items-center
-                 justify-center rounded-2xl
-                 bg-surface-100
-                 dark:bg-surface-800"
-        >
-          <i
-            class="
-              ph-duotone ph-clock
-              text-2xl
-              text-[var(--driveos-primary)]
-            "
-            aria-hidden="true"
-          ></i>
-        </div>
+<drive-os-card>
+  <div class="flex min-h-80 flex-col items-center justify-center text-center">
+    <div
+      class="flex size-16 items-center justify-center rounded-2xl bg-surface-100 dark:bg-surface-800"
+    >
+      <i
+        class="ph-duotone ph-clock text-2xl text-[var(--driveos-primary)]"
+        aria-hidden="true"
+      ></i>
+    </div>
 
-        <h1 class="mt-5 text-2xl font-bold">
-          {{ titleKey | translate }}
-        </h1>
+    <h1 class="mt-5 text-2xl font-bold">
+      {{ titleKey | translate }}
+    </h1>
 
-        <p
-          class="mt-2
-                 text-[var(--driveos-text-muted)]"
-        >
-          {{
-            'common.comingSoon'
-              | translate
-          }}
-        </p>
-      </div>
-    </dos-card>
+    <p class="mt-2 text-[var(--driveos-text-muted)]">
+      {{ 'common.comingSoon' | translate }}
+    </p>
+  </div>
+</drive-os-card>

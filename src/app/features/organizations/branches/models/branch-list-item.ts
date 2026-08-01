@@ -1,21 +1,15 @@
-import {
-  BranchStatus,
-} from './branch-status';
+import { BranchStatus } from './branch-status';
 
-import {
-  BranchTypeName,
-} from './branch-type';
+import { BranchTypeName } from './branch-type';
 
 export interface BranchListItem {
   readonly id: string;
   readonly name: string;
   readonly code: string;
 
-  readonly branchType:
-    BranchTypeName;
+  readonly branchType: BranchTypeName;
 
-  readonly status:
-    BranchStatus;
+  readonly status: BranchStatus;
 
   readonly isPrimary: boolean;
 

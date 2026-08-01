@@ -1,233 +1,85 @@
-<section
-  class="
-    mx-auto max-w-5xl
-    space-y-6
-  "
->
+<section class="mx-auto max-w-5xl space-y-6">
   <div>
-    <dos-button
+    <drive-os-button
       variant="ghost"
       icon="ph ph-arrow-left"
       (pressed)="goBack()"
     >
-      {{
-        'organizations.title'
-          | translate
-      }}
-    </dos-button>
+      {{ 'organizations.title' | translate }}
+    </drive-os-button>
   </div>
 
   @if (isLoading()) {
-    <div
-      class="
-        flex min-h-72
-        items-center justify-center
-      "
-    >
-      <dos-spinner
+    <div class="flex min-h-72 items-center justify-center">
+      <drive-os-spinner
         size="lg"
-        [label]="
-          'common.actions.loading'
-            | translate
-        "
+        [label]="'common.actions.loading' | translate"
       />
     </div>
   } @else if (organization(); as item) {
-    <driveos-organization-summary
-      [organization]="item"
-    />
-    <dos-card>
-  <div
-    class="
-      flex flex-col gap-5
-      sm:flex-row
-      sm:items-center
-      sm:justify-between
-    "
-  >
-    <div
-      class="
-        flex items-start gap-4
-      "
-    >
-      <div
-        class="
-          flex size-12
-          shrink-0 items-center
-          justify-center
-          rounded-xl
-          bg-blue-100
-          text-blue-800
-          dark:bg-blue-950
-          dark:text-blue-300
-        "
-      >
-        <i
-          class="
-            ph-duotone ph-buildings
-            text-2xl
-          "
-          aria-hidden="true"
-        ></i>
-      </div>
+    <driveos-organization-summary [organization]="item" />
 
-      <div>
-        <h2
-          class="
-            text-lg font-semibold
-            text-slate-950
-            dark:text-slate-50
-          "
-        >
-          {{
-            'organizations.branches.title'
-              | translate
-          }}
-        </h2>
-
-        <p
-          class="
-            mt-1 text-sm
-            text-slate-500
-            dark:text-slate-400
-          "
-        >
-          {{
-            'organizations.branches.organizationCardDescription'
-              | translate
-          }}
-        </p>
-      </div>
-    </div>
-
-    <a
-      [routerLink]="branchesLink()"
-      class="
-        inline-flex h-10
-        shrink-0 items-center
-        justify-center gap-2
-        rounded-lg
-        border border-slate-300
-        px-4 text-sm font-medium
-        text-slate-700
-        transition-colors
-        hover:bg-slate-100
-        focus-visible:outline-none
-        focus-visible:ring-2
-        focus-visible:ring-blue-600
-        focus-visible:ring-offset-2
-        dark:border-slate-600
-        dark:text-slate-200
-        dark:hover:bg-slate-800
-      "
-    >
-      <i
-        class="ph ph-arrow-right"
-        aria-hidden="true"
-      ></i>
-
-      {{
-        'organizations.branches.actions.manage'
-          | translate
-      }}
-    </a>
-  </div>
-</dos-card>
-
-    @if (availableActions().length > 0) {
-      <dos-card>
-        <header>
-          <h2
-            class="
-              text-lg font-semibold
-              text-slate-950
-              dark:text-slate-50
-            "
-          >
-            {{
-              'organizations.lifecycle.title'
-                | translate
-            }}
-          </h2>
-
-          <p
-            class="
-              mt-1 text-sm
-              text-slate-500
-              dark:text-slate-400
-            "
-          >
-            {{
-              'organizations.lifecycle.description'
-                | translate
-            }}
-          </p>
-          <a
-            [routerLink]="[
-              '/organizations',
-              item.id,
-              'branches'
-            ]"
-            class="
-              inline-flex h-10
-              items-center justify-center
-              gap-2 rounded-lg
-              border border-slate-300
-              bg-transparent px-4
-              text-sm font-medium
-              text-slate-700
-              transition-colors
-              hover:bg-slate-100
-              focus-visible:outline-none
-              focus-visible:ring-2
-              focus-visible:ring-blue-600
-              focus-visible:ring-offset-2
-              dark:border-slate-600
-              dark:text-slate-200
-              dark:hover:bg-slate-800
-            "
+    <drive-os-card>
+      <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex items-start gap-4">
+          <div
+            class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300"
           >
             <i
-              class="ph ph-buildings"
+              class="ph-duotone ph-buildings text-2xl"
               aria-hidden="true"
             ></i>
+          </div>
 
-            <span>
-              {{
-                'organizations.branches.title'
-                  | translate
-              }}
-            </span>
-          </a>
+          <div>
+            <h2 class="text-lg font-semibold text-slate-950 dark:text-slate-50">
+              {{ 'organizations.branches.title' | translate }}
+            </h2>
+
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              {{ 'organizations.branches.organizationCardDescription' | translate }}
+            </p>
+          </div>
+        </div>
+
+        <a
+          [routerLink]="branchesLink()"
+          class="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg border border-slate-300 px-4 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-800"
+        >
+          <i
+            class="ph ph-arrow-right"
+            aria-hidden="true"
+          ></i>
+
+          {{ 'organizations.branches.actions.manage' | translate }}
+        </a>
+      </div>
+    </drive-os-card>
+
+    @if (availableActions().length > 0) {
+      <drive-os-card>
+        <header>
+          <h2 class="text-lg font-semibold text-slate-950 dark:text-slate-50">
+            {{ 'organizations.lifecycle.title' | translate }}
+          </h2>
+
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            {{ 'organizations.lifecycle.description' | translate }}
+          </p>
         </header>
 
-        <div
-          class="
-            mt-5 flex
-            flex-wrap gap-3
-          "
-        >
-          @for (
-            action of availableActions();
-            track action.code
-          ) {
-            <dos-button
-              [variant]="
-                action.buttonVariant
-              "
+        <div class="mt-5 flex flex-wrap gap-3">
+          @for (action of availableActions(); track action.code) {
+            <drive-os-button
+              [variant]="action.buttonVariant"
               [icon]="action.icon"
-              (pressed)="
-                openStatusDialog(action)
-              "
+              (pressed)="openStatusDialog(action)"
             >
-              {{
-                action.labelKey
-                  | translate
-              }}
-            </dos-button>
+              {{ action.labelKey | translate }}
+            </drive-os-button>
           }
         </div>
-      </dos-card>
+      </drive-os-card>
     }
 
     <driveos-organization-status-history
@@ -239,15 +91,9 @@
       [open]="selectedAction() !== null"
       [action]="selectedAction()"
       [organizationName]="item.legalName"
-      [submitting]="
-        isChangingStatus()
-      "
-      (cancelled)="
-        closeStatusDialog()
-      "
-      (confirmed)="
-        confirmStatusChange($event)
-      "
+      [submitting]="isChangingStatus()"
+      (cancelled)="closeStatusDialog()"
+      (confirmed)="confirmStatusChange($event)"
     />
   }
 </section>

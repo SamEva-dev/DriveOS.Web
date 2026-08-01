@@ -1,12 +1,6 @@
-import {
-  Injectable,
-  signal,
-} from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
-import {
-  DriveOsToast,
-  ShowDriveOsToast,
-} from './driveos-toast.model';
+import { DriveOsToast, ShowDriveOsToast } from './driveos-toast.model';
 
 const DEFAULT_DURATION = 5_000;
 
@@ -14,11 +8,9 @@ const DEFAULT_DURATION = 5_000;
   providedIn: 'root',
 })
 export class DriveOsToastService {
-  private readonly toastsSignal =
-    signal<readonly DriveOsToast[]>([]);
+  private readonly toastsSignal = signal<readonly DriveOsToast[]>([]);
 
-  readonly toasts =
-    this.toastsSignal.asReadonly();
+  readonly toasts = this.toastsSignal.asReadonly();
 
   show(options: ShowDriveOsToast): string {
     const id = crypto.randomUUID();
@@ -28,28 +20,19 @@ export class DriveOsToastService {
       title: options.title,
       message: options.message,
       variant: options.variant ?? 'info',
-      duration:
-        options.duration ?? DEFAULT_DURATION,
+      duration: options.duration ?? DEFAULT_DURATION,
     };
 
-    this.toastsSignal.update(
-      current => [...current, toast],
-    );
+    this.toastsSignal.update((current) => [...current, toast]);
 
     if (toast.duration > 0) {
-      window.setTimeout(
-        () => this.dismiss(id),
-        toast.duration,
-      );
+      window.setTimeout(() => this.dismiss(id), toast.duration);
     }
 
     return id;
   }
 
-  success(
-    title: string,
-    message?: string,
-  ): string {
+  success(title: string, message?: string): string {
     return this.show({
       title,
       message,
@@ -57,10 +40,7 @@ export class DriveOsToastService {
     });
   }
 
-  error(
-    title: string,
-    message?: string,
-  ): string {
+  error(title: string, message?: string): string {
     return this.show({
       title,
       message,
@@ -69,10 +49,7 @@ export class DriveOsToastService {
     });
   }
 
-  warning(
-    title: string,
-    message?: string,
-  ): string {
+  warning(title: string, message?: string): string {
     return this.show({
       title,
       message,
@@ -80,10 +57,7 @@ export class DriveOsToastService {
     });
   }
 
-  info(
-    title: string,
-    message?: string,
-  ): string {
+  info(title: string, message?: string): string {
     return this.show({
       title,
       message,
@@ -92,12 +66,7 @@ export class DriveOsToastService {
   }
 
   dismiss(id: string): void {
-    this.toastsSignal.update(
-      current =>
-        current.filter(
-          toast => toast.id !== id,
-        ),
-    );
+    this.toastsSignal.update((current) => current.filter((toast) => toast.id !== id));
   }
 
   clear(): void {

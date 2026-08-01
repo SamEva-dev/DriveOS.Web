@@ -1,0 +1,134 @@
+<driveos-auth-shell [subtitle]="'auth.subtitle' | translate">
+  <h1 class="text-center text-xl font-semibold text-slate-950 dark:text-white">
+    {{ 'auth.login.title' | translate }}
+  </h1>
+  <p class="mt-2 text-center text-sm text-slate-500 dark:text-slate-400">
+    {{ 'auth.login.description' | translate }}
+  </p>
+
+  @if (step() === 'email') {
+    <form
+      class="mt-6 space-y-4"
+      (ngSubmit)="continue()"
+    >
+      <label
+        class="block text-sm font-medium text-slate-700 dark:text-slate-200"
+        for="login-email"
+      >
+        {{ 'auth.fields.email' | translate }}
+      </label>
+      <div class="relative">
+        <i
+          class="ph ph-envelope-simple absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+        ></i>
+        <input
+          id="login-email"
+          name="email"
+          [(ngModel)]="email"
+          type="email"
+          required
+          autocomplete="email"
+          class="driveos-auth-input pl-10"
+          [placeholder]="'auth.fields.emailPlaceholder' | translate"
+        />
+      </div>
+      <button
+        class="driveos-auth-primary"
+        type="submit"
+        [disabled]="loading() || !email.trim()"
+      >
+        {{
+          loading() ? ('common.actions.loading' | translate) : ('auth.actions.continue' | translate)
+        }}
+      </button>
+    </form>
+  } @else {
+    <form
+      class="mt-6 space-y-4"
+      (ngSubmit)="login()"
+    >
+      <div
+        class="rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+      >
+        {{ email }}
+        <button
+          type="button"
+          class="ml-2 font-medium text-blue-700 hover:underline dark:text-blue-300"
+          (click)="changeEmail()"
+        >
+          {{ 'auth.actions.change' | translate }}
+        </button>
+      </div>
+      <label
+        class="block text-sm font-medium text-slate-700 dark:text-slate-200"
+        for="login-password"
+      >
+        {{ 'auth.fields.password' | translate }}
+      </label>
+      <div class="relative">
+        <i class="ph ph-lock-key absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input
+          id="login-password"
+          name="password"
+          [(ngModel)]="password"
+          [type]="showPassword() ? 'text' : 'password'"
+          required
+          autocomplete="current-password"
+          class="driveos-auth-input px-10"
+        />
+        <button
+          type="button"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"
+          (click)="showPassword.set(!showPassword())"
+          [attr.aria-label]="'auth.actions.togglePassword' | translate"
+        >
+          <i [class]="showPassword() ? 'ph ph-eye-slash' : 'ph ph-eye'"></i>
+        </button>
+      </div>
+      <div class="flex items-center justify-between gap-4 text-sm">
+        <label class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+          <input
+            name="remember"
+            [(ngModel)]="rememberMe"
+            type="checkbox"
+            class="size-4 rounded border-slate-300 text-blue-800"
+          />
+          {{ 'auth.login.rememberMe' | translate }}
+        </label>
+        <a
+          routerLink="/forgot-password"
+          [queryParams]="{ email: email }"
+          class="font-medium text-blue-700 hover:underline dark:text-blue-300"
+        >
+          {{ 'auth.login.forgotPassword' | translate }}
+        </a>
+      </div>
+      <button
+        class="driveos-auth-primary"
+        type="submit"
+        [disabled]="loading() || !password"
+      >
+        {{
+          loading() ? ('common.actions.loading' | translate) : ('auth.actions.login' | translate)
+        }}
+      </button>
+    </form>
+  }
+
+  @if (error()) {
+    <p
+      class="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/30 dark:text-red-300"
+    >
+      {{ error() }}
+    </p>
+  }
+  <div class="mt-6 border-t border-slate-200 pt-5 text-center text-sm dark:border-slate-800">
+    <span class="text-slate-500 dark:text-slate-400">{{ 'auth.login.noAccount' | translate }}</span>
+    <a
+      routerLink="/register"
+      class="ml-1 font-semibold text-blue-700 hover:underline dark:text-blue-300"
+    >
+      {{ 'auth.actions.register' | translate }}
+    </a>
+  </div>
+</driveos-auth-shell>

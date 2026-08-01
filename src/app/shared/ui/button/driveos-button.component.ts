@@ -1,61 +1,33 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  input,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
-export type DriveOsButtonVariant =
-  | 'primary'
-  | 'secondary'
-  | 'outline'
-  | 'ghost'
-  | 'danger';
+export type DriveOsButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
 
-export type DriveOsButtonSize =
-  | 'sm'
-  | 'md'
-  | 'lg';
+export type DriveOsButtonSize = 'sm' | 'md' | 'lg';
 
 @Component({
-  selector: 'dos-button',
+  selector: 'drive-os-button',
   standalone: true,
   templateUrl: './driveos-button.component.html',
-  changeDetection:
-    ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DriveOsButtonComponent {
-  readonly type =
-    input<'button' | 'submit' | 'reset'>(
-      'button',
-    );
+  readonly type = input<'button' | 'submit' | 'reset'>('button');
 
-  readonly variant =
-    input<DriveOsButtonVariant>(
-      'primary',
-    );
+  readonly variant = input<DriveOsButtonVariant>('primary');
 
-  readonly size =
-    input<DriveOsButtonSize>('md');
+  readonly size = input<DriveOsButtonSize>('md');
 
-  readonly icon =
-    input<string | null>(null);
+  readonly icon = input<string | null>(null);
 
-  readonly ariaLabel =
-    input<string | null>(null);
+  readonly ariaLabel = input<string | null>(null);
 
-  readonly disabled =
-    input(false);
+  readonly disabled = input(false);
 
-  readonly loading =
-    input(false);
+  readonly loading = input(false);
 
-  readonly fullWidth =
-    input(false);
+  readonly fullWidth = input(false);
 
-    readonly pressed =
-  output<MouseEvent>();
+  readonly pressed = output<MouseEvent>();
 
   readonly buttonClasses = computed(() => {
     const base = [
@@ -75,32 +47,14 @@ export class DriveOsButtonComponent {
       'disabled:opacity-50',
     ];
 
-    const sizes:
-      Record<DriveOsButtonSize, string[]> = {
-      sm: [
-        'h-8',
-        'px-3',
-        'text-sm',
-      ],
-      md: [
-        'h-10',
-        'px-4',
-        'text-sm',
-      ],
-      lg: [
-        'h-12',
-        'px-5',
-        'text-base',
-      ],
+    const sizes: Record<DriveOsButtonSize, string[]> = {
+      sm: ['h-8', 'px-3', 'text-sm'],
+      md: ['h-10', 'px-4', 'text-sm'],
+      lg: ['h-12', 'px-5', 'text-base'],
     };
 
-    const variants:
-      Record<DriveOsButtonVariant, string[]> = {
-      primary: [
-        'bg-blue-800',
-        'text-white',
-        'hover:bg-blue-900',
-      ],
+    const variants: Record<DriveOsButtonVariant, string[]> = {
+      primary: ['bg-blue-800', 'text-white', 'hover:bg-blue-900'],
 
       secondary: [
         'bg-slate-200',
@@ -130,20 +84,14 @@ export class DriveOsButtonComponent {
         'dark:hover:bg-slate-800',
       ],
 
-      danger: [
-        'bg-red-600',
-        'text-white',
-        'hover:bg-red-700',
-      ],
+      danger: ['bg-red-600', 'text-white', 'hover:bg-red-700'],
     };
 
     return [
       ...base,
       ...sizes[this.size()],
       ...variants[this.variant()],
-      this.fullWidth()
-        ? 'w-full'
-        : '',
+      this.fullWidth() ? 'w-full' : '',
     ]
       .filter(Boolean)
       .join(' ');

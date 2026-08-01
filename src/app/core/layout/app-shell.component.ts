@@ -1,42 +1,20 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
-import {
-  NavigationEnd,
-  Router,
-  RouterOutlet,
-} from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
-import {
-  filter,
-} from 'rxjs';
+import { filter } from 'rxjs';
 
-import {
-  takeUntilDestroyed,
-} from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+import { AppSidebarComponent } from './app-sidebar.component';
 
-import {
-  AppSidebarComponent,
-} from './app-sidebar.component';
-
-import {
-  AppTopbarComponent,
-} from './app-topbar.component';
+import { AppTopbarComponent } from './app-topbar.component';
 import { DriveOsDrawerComponent } from '../../shared/ui';
 
 @Component({
   selector: 'driveos-app-shell',
   standalone: true,
-  imports: [
-    RouterOutlet,
-  DriveOsDrawerComponent,
-  AppSidebarComponent,
-  AppTopbarComponent,
-  ],
+  imports: [RouterOutlet, DriveOsDrawerComponent, AppSidebarComponent, AppTopbarComponent],
   template: `
     <div
       class="min-h-screen
@@ -50,21 +28,17 @@ import { DriveOsDrawerComponent } from '../../shared/ui';
         <driveos-app-sidebar />
       </div>
 
-      <dos-drawer
+      <drive-os-drawer
         ariaLabel="Navigation principale"
         [open]="mobileMenuVisible()"
-        (closeRequested)="
-          mobileMenuVisible.set(false)
-        "
+        (closeRequested)="mobileMenuVisible.set(false)"
       >
         <driveos-app-sidebar />
-      </dos-drawer>
+      </drive-os-drawer>
 
       <div class="min-h-screen lg:pl-72">
         <div class="sticky top-0 z-20">
-          <driveos-app-topbar
-            (menuRequested)="openMobileMenu()"
-          />
+          <driveos-app-topbar (menuRequested)="openMobileMenu()" />
         </div>
 
         <main class="p-4 md:p-6">
@@ -73,20 +47,15 @@ import { DriveOsDrawerComponent } from '../../shared/ui';
       </div>
     </div>
   `,
-  changeDetection:
-    ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppShellComponent {
-  readonly mobileMenuVisible =
-    signal(false);
+  readonly mobileMenuVisible = signal(false);
 
   constructor(router: Router) {
     router.events
       .pipe(
-        filter(
-          event =>
-            event instanceof NavigationEnd,
-        ),
+        filter((event) => event instanceof NavigationEnd),
         takeUntilDestroyed(),
       )
       .subscribe(() => {

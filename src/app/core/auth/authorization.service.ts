@@ -24,8 +24,12 @@ export class AuthorizationService {
   setPermissions(
     permissions: readonly string[],
   ): void {
+    const normalized = permissions
+      .map(permission => permission.trim())
+      .filter(permission => permission.length > 0);
+
     this.permissionsSignal.set(
-      new Set(permissions),
+      new Set(normalized),
     );
   }
 

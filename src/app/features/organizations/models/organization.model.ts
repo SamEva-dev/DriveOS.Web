@@ -1,6 +1,4 @@
-import {
-  OrganizationStatus,
-} from './organization-status';
+import { OrganizationStatus } from './organization-status';
 
 export interface Organization {
   id: string;

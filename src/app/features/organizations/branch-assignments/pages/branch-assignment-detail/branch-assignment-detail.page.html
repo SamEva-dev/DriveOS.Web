@@ -1,0 +1,187 @@
+<section class="space-y-6">
+  <header class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <div>
+      <a
+        class="inline-flex items-center gap-2 text-sm font-medium text-blue-700 hover:underline dark:text-blue-300"
+        [routerLink]="teamLink()"
+      >
+        <span aria-hidden="true">←</span>
+
+        {{ 'organizations.branchAssignments.actions.backToTeam' | translate }}
+      </a>
+
+      <h1 class="mt-3 text-3xl font-bold tracking-tight text-slate-950 dark:text-white">
+        {{ 'organizations.branchAssignments.detailTitle' | translate }}
+      </h1>
+
+      <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+        {{ 'organizations.branchAssignments.detailDescription' | translate }}
+      </p>
+    </div>
+
+    @if (assignment(); as assignment) {
+      <div class="flex flex-wrap gap-2">
+        @if (assignment.status === 'Active' && canSuspend()) {
+          <drive-os-button
+            variant="secondary"
+            (pressed)="openAction('suspend')"
+          >
+            {{ 'organizations.branchAssignments.actions.suspend' | translate }}
+          </drive-os-button>
+        }
+
+        @if (assignment.status === 'Suspended' && canReactivate()) {
+          <drive-os-button
+            variant="primary"
+            (pressed)="openAction('reactivate')"
+          >
+            {{ 'organizations.branchAssignments.actions.reactivate' | translate }}
+          </drive-os-button>
+        }
+
+        @if (assignment.status !== 'Ended' && canEnd()) {
+          <drive-os-button
+            variant="danger"
+            (pressed)="openAction('end')"
+          >
+            {{ 'organizations.branchAssignments.actions.end' | translate }}
+          </drive-os-button>
+        }
+      </div>
+    }
+  </header>
+
+  @if (loading()) {
+    <div class="flex min-h-72 items-center justify-center">
+      <drive-os-spinner size="lg" />
+    </div>
+  } @else if (assignmentErrors().length > 0) {
+    <drive-os-card>
+      <div class="p-8 text-center">
+        <h2 class="text-lg font-semibold text-red-700 dark:text-red-300">
+          {{ 'organizations.branchAssignments.loadErrorTitle' | translate }}
+        </h2>
+
+        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          {{ 'organizations.branchAssignments.detailLoadErrorDescription' | translate }}
+        </p>
+
+        <ul class="mx-auto mt-4 max-w-xl space-y-1 text-sm text-red-700 dark:text-red-300">
+          @for (message of assignmentErrors(); track $index) {
+            <li>{{ message }}</li>
+          }
+        </ul>
+
+        <div class="mt-6">
+          <drive-os-button
+            variant="secondary"
+            (pressed)="reload()"
+          >
+            {{ 'common.actions.retry' | translate }}
+          </drive-os-button>
+        </div>
+      </div>
+    </drive-os-card>
+  } @else if (assignment(); as assignment) {
+    <app-branch-assignment-summary [assignment]="assignment" />
+
+    <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(22rem,0.7fr)]">
+      <div class="space-y-6">
+        @if (user(); as user) {
+          <app-branch-assignment-user-card [user]="user" />
+        } @else {
+          <drive-os-card>
+            <div class="p-6">
+              <h2 class="text-lg font-semibold text-slate-950 dark:text-white">
+                {{ 'organizations.branchAssignments.userCard.title' | translate }}
+              </h2>
+
+              <p class="mt-2 text-sm text-amber-700 dark:text-amber-300">
+                {{ 'organizations.branchAssignments.userCard.loadWarning' | translate }}
+              </p>
+
+              @for (message of userErrors(); track $index) {
+                <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                  {{ message }}
+                </p>
+              }
+
+              <p class="mt-4 break-all text-sm font-medium text-slate-950 dark:text-white">
+                {{ assignment.userId }}
+              </p>
+            </div>
+          </drive-os-card>
+        }
+
+        <drive-os-card>
+          <div class="p-6">
+            <h2 class="text-xl font-semibold text-slate-950 dark:text-white">
+              {{ 'organizations.branchAssignments.audit.title' | translate }}
+            </h2>
+
+            <dl class="mt-5 grid gap-5 md:grid-cols-2">
+              <div>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  {{ 'organizations.branchAssignments.fields.createdAtUtc' | translate }}
+                </dt>
+
+                <dd class="mt-1 text-sm text-slate-800 dark:text-slate-200">
+                  {{ assignment.createdAtUtc | date: 'medium' }}
+                </dd>
+              </div>
+
+              <div>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  {{ 'organizations.branchAssignments.audit.createdBy' | translate }}
+                </dt>
+
+                <dd class="mt-1 break-all text-sm text-slate-800 dark:text-slate-200">
+                  {{ assignment.createdByUserId ?? ('common.notAvailable' | translate) }}
+                </dd>
+              </div>
+
+              <div>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  {{ 'organizations.branchAssignments.audit.lastModifiedAt' | translate }}
+                </dt>
+
+                <dd class="mt-1 text-sm text-slate-800 dark:text-slate-200">
+                  {{
+                    assignment.lastModifiedAtUtc
+                      ? (assignment.lastModifiedAtUtc | date: 'medium')
+                      : ('common.notAvailable' | translate)
+                  }}
+                </dd>
+              </div>
+
+              <div>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  {{ 'organizations.branchAssignments.audit.lastModifiedBy' | translate }}
+                </dt>
+
+                <dd class="mt-1 break-all text-sm text-slate-800 dark:text-slate-200">
+                  {{ assignment.lastModifiedByUserId ?? ('common.notAvailable' | translate) }}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </drive-os-card>
+      </div>
+
+      <app-branch-assignment-timeline [items]="timeline()" />
+    </div>
+
+    <div class="flex justify-end">
+      <a [routerLink]="branchLink()">
+        <drive-os-button variant="secondary">
+          {{ 'organizations.branchAssignments.actions.viewBranch' | translate }}
+        </drive-os-button>
+      </a>
+    </div>
+  }
+</section>
+
+<app-branch-assignment-status-dialog
+  [submitting]="actionLoading()"
+  (confirmed)="executeAction($event)"
+/>

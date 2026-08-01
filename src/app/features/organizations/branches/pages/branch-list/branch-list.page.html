@@ -1,25 +1,10 @@
 <section class="mx-auto max-w-7xl">
-  <dos-card>
-    <div
-      class="
-        flex flex-col gap-5
-        lg:flex-row
-        lg:items-center
-        lg:justify-between
-      "
-    >
+  <drive-os-card>
+    <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
       <div>
         <a
           [routerLink]="organizationLink()"
-          class="
-            inline-flex items-center gap-2
-            text-sm font-medium
-            text-slate-500
-            transition-colors
-            hover:text-blue-800
-            dark:text-slate-400
-            dark:hover:text-blue-300
-          "
+          class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-blue-800 dark:text-slate-400 dark:hover:text-blue-300"
         >
           <i
             class="ph ph-arrow-left"
@@ -27,59 +12,26 @@
           ></i>
 
           <span>
-            {{
-              'organizations.branches.backToOrganization'
-                | translate
-            }}
+            {{ 'organizations.branches.backToOrganization' | translate }}
           </span>
         </a>
 
-        <p
-          class="
-            mt-4 text-sm font-semibold
-            uppercase tracking-wide
-            text-[var(--driveos-accent)]
-          "
-        >
+        <p class="mt-4 text-sm font-semibold uppercase tracking-wide text-[var(--driveos-accent)]">
           DriveOS
         </p>
 
         <h1 class="mt-1 text-2xl font-bold">
-          {{
-            'organizations.branches.title'
-              | translate
-          }}
+          {{ 'organizations.branches.title' | translate }}
         </h1>
 
-        <p
-          class="
-            mt-1
-            text-[var(--driveos-text-muted)]
-          "
-        >
-          {{
-            'organizations.branches.description'
-              | translate
-          }}
+        <p class="mt-1 text-[var(--driveos-text-muted)]">
+          {{ 'organizations.branches.description' | translate }}
         </p>
       </div>
 
       <a
         [routerLink]="createBranchLink()"
-        class="
-          inline-flex h-10
-          items-center justify-center
-          gap-2 rounded-lg
-          bg-blue-800 px-4
-          text-sm font-medium
-          text-white
-          transition-colors
-          hover:bg-blue-900
-          focus-visible:outline-none
-          focus-visible:ring-2
-          focus-visible:ring-blue-700
-          focus-visible:ring-offset-2
-        "
+        class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-blue-800 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-offset-2"
       >
         <i
           class="ph-bold ph-plus"
@@ -87,36 +39,15 @@
         ></i>
 
         <span>
-          {{
-            'organizations.branches.actions.create'
-              | translate
-          }}
+          {{ 'organizations.branches.actions.create' | translate }}
         </span>
       </a>
     </div>
 
-    <div
-      class="
-        mt-6 flex flex-col gap-3
-        sm:flex-row
-        sm:items-center
-        sm:justify-between
-      "
-    >
-      <div
-        class="
-          relative w-full
-          sm:max-w-md
-        "
-      >
+    <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div class="relative w-full sm:max-w-md">
         <i
-          class="
-            ph ph-magnifying-glass
-            pointer-events-none
-            absolute left-3 top-1/2
-            -translate-y-1/2
-            text-slate-400
-          "
+          class="ph ph-magnifying-glass pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
           aria-hidden="true"
         ></i>
 
@@ -125,79 +56,40 @@
           type="search"
           class="pl-10"
           [formControl]="searchControl"
-          [placeholder]="
-            'organizations.branches.searchPlaceholder'
-              | translate
-          "
+          [placeholder]="'organizations.branches.searchPlaceholder' | translate"
         />
       </div>
 
-      <dos-button
+      <drive-os-button
         variant="outline"
         icon="ph ph-arrows-clockwise"
         [loading]="store.isLoading()"
         (pressed)="store.reload()"
       >
-        {{
-          'common.actions.refresh'
-            | translate
-        }}
-      </dos-button>
+        {{ 'common.actions.refresh' | translate }}
+      </drive-os-button>
     </div>
 
     <div class="mt-6 overflow-hidden">
-      <div
-        class="
-          overflow-x-auto
-          rounded-xl
-          border border-slate-200
-          dark:border-slate-800
-        "
-      >
+      <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
         <table dosTable>
-          <thead
-            class="
-              bg-slate-50
-              dark:bg-slate-950
-            "
-          >
+          <thead class="bg-slate-50 dark:bg-slate-950">
             <tr>
               <th
                 scope="col"
-                class="
-                  min-w-64
-                  border-b
-                  border-slate-200
-                  px-4 py-3
-                  font-semibold
-                  text-slate-600
-                  dark:border-slate-800
-                  dark:text-slate-300
-                "
+                class="min-w-64 border-b border-slate-200 px-4 py-3 font-semibold text-slate-600 dark:border-slate-800 dark:text-slate-300"
               >
                 <button
                   type="button"
-                  class="
-                    inline-flex
-                    items-center gap-2
-                    hover:text-blue-800
-                    dark:hover:text-blue-300
-                  "
-                  (click)="
-                    toggleSorting('name')
-                  "
+                  class="inline-flex items-center gap-2 hover:text-blue-800 dark:hover:text-blue-300"
+                  (click)="toggleSorting('name')"
                 >
                   <span>
-                    {{
-                      'organizations.branches.fields.name'
-                        | translate
-                    }}
+                    {{ 'organizations.branches.fields.name' | translate }}
                   </span>
 
                   <i
-                    [class]="
-                      sortingIcon('name')
-                    "
+                    [class]="sortingIcon('name')"
                     aria-hidden="true"
                   ></i>
                 </button>
@@ -205,40 +97,19 @@
 
               <th
                 scope="col"
-                class="
-                  min-w-32
-                  border-b
-                  border-slate-200
-                  px-4 py-3
-                  font-semibold
-                  text-slate-600
-                  dark:border-slate-800
-                  dark:text-slate-300
-                "
+                class="min-w-32 border-b border-slate-200 px-4 py-3 font-semibold text-slate-600 dark:border-slate-800 dark:text-slate-300"
               >
                 <button
                   type="button"
-                  class="
-                    inline-flex
-                    items-center gap-2
-                    hover:text-blue-800
-                    dark:hover:text-blue-300
-                  "
-                  (click)="
-                    toggleSorting('code')
-                  "
+                  class="inline-flex items-center gap-2 hover:text-blue-800 dark:hover:text-blue-300"
+                  (click)="toggleSorting('code')"
                 >
                   <span>
-                    {{
-                      'organizations.branches.fields.code'
-                        | translate
-                    }}
+                    {{ 'organizations.branches.fields.code' | translate }}
                   </span>
 
                   <i
-                    [class]="
-                      sortingIcon('code')
-                    "
+                    [class]="sortingIcon('code')"
                     aria-hidden="true"
                   ></i>
                 </button>
@@ -246,44 +117,19 @@
 
               <th
                 scope="col"
-                class="
-                  min-w-52
-                  border-b
-                  border-slate-200
-                  px-4 py-3
-                  font-semibold
-                  text-slate-600
-                  dark:border-slate-800
-                  dark:text-slate-300
-                "
+                class="min-w-52 border-b border-slate-200 px-4 py-3 font-semibold text-slate-600 dark:border-slate-800 dark:text-slate-300"
               >
                 <button
                   type="button"
-                  class="
-                    inline-flex
-                    items-center gap-2
-                    hover:text-blue-800
-                    dark:hover:text-blue-300
-                  "
-                  (click)="
-                    toggleSorting(
-                      'branchType'
-                    )
-                  "
+                  class="inline-flex items-center gap-2 hover:text-blue-800 dark:hover:text-blue-300"
+                  (click)="toggleSorting('branchType')"
                 >
                   <span>
-                    {{
-                      'organizations.branches.fields.branchType'
-                        | translate
-                    }}
+                    {{ 'organizations.branches.fields.branchType' | translate }}
                   </span>
 
                   <i
-                    [class]="
-                      sortingIcon(
-                        'branchType'
-                      )
-                    "
+                    [class]="sortingIcon('branchType')"
                     aria-hidden="true"
                   ></i>
                 </button>
@@ -291,40 +137,19 @@
 
               <th
                 scope="col"
-                class="
-                  min-w-44
-                  border-b
-                  border-slate-200
-                  px-4 py-3
-                  font-semibold
-                  text-slate-600
-                  dark:border-slate-800
-                  dark:text-slate-300
-                "
+                class="min-w-44 border-b border-slate-200 px-4 py-3 font-semibold text-slate-600 dark:border-slate-800 dark:text-slate-300"
               >
                 <button
                   type="button"
-                  class="
-                    inline-flex
-                    items-center gap-2
-                    hover:text-blue-800
-                    dark:hover:text-blue-300
-                  "
-                  (click)="
-                    toggleSorting('city')
-                  "
+                  class="inline-flex items-center gap-2 hover:text-blue-800 dark:hover:text-blue-300"
+                  (click)="toggleSorting('city')"
                 >
                   <span>
-                    {{
-                      'organizations.branches.fields.city'
-                        | translate
-                    }}
+                    {{ 'organizations.branches.fields.city' | translate }}
                   </span>
 
                   <i
-                    [class]="
-                      sortingIcon('city')
-                    "
+                    [class]="sortingIcon('city')"
                     aria-hidden="true"
                   ></i>
                 </button>
@@ -332,40 +157,19 @@
 
               <th
                 scope="col"
-                class="
-                  min-w-36
-                  border-b
-                  border-slate-200
-                  px-4 py-3
-                  font-semibold
-                  text-slate-600
-                  dark:border-slate-800
-                  dark:text-slate-300
-                "
+                class="min-w-36 border-b border-slate-200 px-4 py-3 font-semibold text-slate-600 dark:border-slate-800 dark:text-slate-300"
               >
                 <button
                   type="button"
-                  class="
-                    inline-flex
-                    items-center gap-2
-                    hover:text-blue-800
-                    dark:hover:text-blue-300
-                  "
-                  (click)="
-                    toggleSorting('status')
-                  "
+                  class="inline-flex items-center gap-2 hover:text-blue-800 dark:hover:text-blue-300"
+                  (click)="toggleSorting('status')"
                 >
                   <span>
-                    {{
-                      'organizations.branches.fields.status'
-                        | translate
-                    }}
+                    {{ 'organizations.branches.fields.status' | translate }}
                   </span>
 
                   <i
-                    [class]="
-                      sortingIcon('status')
-                    "
+                    [class]="sortingIcon('status')"
                     aria-hidden="true"
                   ></i>
                 </button>
@@ -373,133 +177,61 @@
 
               <th
                 scope="col"
-                class="
-                  min-w-36
-                  border-b
-                  border-slate-200
-                  px-4 py-3
-                  text-center
-                  font-semibold
-                  text-slate-600
-                  dark:border-slate-800
-                  dark:text-slate-300
-                "
+                class="min-w-36 border-b border-slate-200 px-4 py-3 text-center font-semibold text-slate-600 dark:border-slate-800 dark:text-slate-300"
               >
-                {{
-                  'organizations.branches.fields.isPrimary'
-                    | translate
-                }}
+                {{ 'organizations.branches.fields.isPrimary' | translate }}
               </th>
 
               <th
                 scope="col"
-                class="
-                  w-24
-                  border-b
-                  border-slate-200
-                  px-4 py-3
-                  text-center
-                  font-semibold
-                  text-slate-600
-                  dark:border-slate-800
-                  dark:text-slate-300
-                "
+                class="w-24 border-b border-slate-200 px-4 py-3 text-center font-semibold text-slate-600 dark:border-slate-800 dark:text-slate-300"
               >
-                {{
-                  'common.actions.title'
-                    | translate
-                }}
+                {{ 'common.actions.title' | translate }}
               </th>
             </tr>
           </thead>
 
-          <tbody
-            class="
-              divide-y divide-slate-200
-              bg-white
-              dark:divide-slate-800
-              dark:bg-slate-900
-            "
-          >
+          <tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-800 dark:bg-slate-900">
             @if (store.isLoading()) {
               <tr>
                 <td
                   colspan="7"
-                  class="
-                    px-4 py-16
-                    text-center
-                  "
+                  class="px-4 py-16 text-center"
                 >
-                  <dos-spinner
+                  <drive-os-spinner
                     size="lg"
-                    [label]="
-                      'common.actions.loading'
-                        | translate
-                    "
+                    [label]="'common.actions.loading' | translate"
                   />
                 </td>
               </tr>
             } @else if (store.hasError()) {
               <tr>
                 <td colspan="7">
-                  <dos-empty-state
+                  <drive-os-empty-state
                     icon="ph-duotone ph-warning-circle"
-                    [title]="
-                      'organizations.branches.errors.loadTitle'
-                        | translate
-                    "
-                    [description]="
-                      'organizations.branches.errors.loadDescription'
-                        | translate
-                    "
+                    [title]="'organizations.branches.errors.loadTitle' | translate"
+                    [description]="'organizations.branches.errors.loadDescription' | translate"
                   />
 
-                  <div
-                    class="
-                      flex justify-center
-                      pb-8
-                    "
-                  >
-                    <dos-button
+                  <div class="flex justify-center pb-8">
+                    <drive-os-button
                       variant="outline"
                       icon="ph ph-arrows-clockwise"
-                      (pressed)="
-                        store.reload()
-                      "
+                      (pressed)="store.reload()"
                     >
-                      {{
-                        'common.actions.refresh'
-                          | translate
-                      }}
-                    </dos-button>
+                      {{ 'common.actions.refresh' | translate }}
+                    </drive-os-button>
                   </div>
                 </td>
               </tr>
             } @else {
-              @for (
-                branch of store.branches();
-                track branch.id
-              ) {
-                <tr
-                  class="
-                    transition-colors
-                    hover:bg-slate-50
-                    dark:hover:bg-slate-800/60
-                  "
-                >
+              @for (branch of store.branches(); track branch.id) {
+                <tr class="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60">
                   <td class="px-4 py-4">
                     <button
                       type="button"
-                      class="
-                        text-left
-                        font-semibold
-                        text-blue-800
-                        hover:underline
-                        dark:text-blue-300
-                      "
-                      (click)="
-                        openBranch(branch.id)
-                      "
+                      class="text-left font-semibold text-blue-800 hover:underline dark:text-blue-300"
+                      (click)="openBranch(branch.id)"
                     >
                       {{ branch.name }}
                     </button>
@@ -507,154 +239,68 @@
 
                   <td class="px-4 py-4">
                     <span
-                      class="
-                        inline-flex
-                        rounded-md
-                        bg-slate-100
-                        px-2 py-1
-                        font-mono
-                        text-xs font-semibold
-                        text-slate-700
-                        dark:bg-slate-800
-                        dark:text-slate-300
-                      "
+                      class="inline-flex rounded-md bg-slate-100 px-2 py-1 font-mono text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300"
                     >
                       {{ branch.code }}
                     </span>
                   </td>
 
-                  <td
-                    class="
-                      px-4 py-4
-                      text-slate-700
-                      dark:text-slate-300
-                    "
-                  >
-                    {{
-                      branchTypeKey(
-                        branch.branchType
-                      ) | translate
-                    }}
+                  <td class="px-4 py-4 text-slate-700 dark:text-slate-300">
+                    {{ branchTypeKey(branch.branchType) | translate }}
                   </td>
 
                   <td class="px-4 py-4">
-                    <div
-                      class="
-                        font-medium
-                        text-slate-800
-                        dark:text-slate-200
-                      "
-                    >
+                    <div class="font-medium text-slate-800 dark:text-slate-200">
                       {{ branch.city }}
                     </div>
 
-                    <div
-                      class="
-                        mt-1 text-xs
-                        text-slate-500
-                        dark:text-slate-400
-                      "
-                    >
-                      {{
-                        branch.countryCode
-                      }}
+                    <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      {{ branch.countryCode }}
                       ·
-                      {{
-                        branch.timeZoneId
-                      }}
+                      {{ branch.timeZoneId }}
                     </div>
                   </td>
 
                   <td class="px-4 py-4">
-                    <dos-badge
-                      [variant]="
-                        statusVariant(
-                          branch.status
-                        )
-                      "
-                    >
-                      {{
-                        branchStatusKey(
-                          branch.status
-                        ) | translate
-                      }}
-                    </dos-badge>
+                    <drive-os-badge [variant]="statusVariant(branch.status)">
+                      {{ branchStatusKey(branch.status) | translate }}
+                    </drive-os-badge>
                   </td>
 
-                  <td
-                    class="
-                      px-4 py-4
-                      text-center
-                    "
-                  >
-                    @if (
-                      branch.isPrimary
-                    ) {
-                      <dos-badge
-                        variant="warning"
-                      >
-                        <span
-                          class="
-                            inline-flex
-                            items-center gap-1
-                          "
-                        >
+                  <td class="px-4 py-4 text-center">
+                    @if (branch.isPrimary) {
+                      <drive-os-badge variant="warning">
+                        <span class="inline-flex items-center gap-1">
                           <i
                             class="ph-fill ph-star"
                             aria-hidden="true"
                           ></i>
 
-                          {{
-                            'organizations.branches.primary'
-                              | translate
-                          }}
+                          {{ 'organizations.branches.primary' | translate }}
                         </span>
-                      </dos-badge>
+                      </drive-os-badge>
                     } @else {
-                      <span
-                        class="
-                          text-sm text-slate-400
-                          dark:text-slate-600
-                        "
-                      >
-                        —
-                      </span>
+                      <span class="text-sm text-slate-400 dark:text-slate-600">—</span>
                     }
                   </td>
 
-                  <td
-                    class="
-                      px-4 py-4
-                      text-center
-                    "
-                  >
-                    <dos-button
+                  <td class="px-4 py-4 text-center">
+                    <drive-os-button
                       variant="ghost"
                       size="sm"
                       icon="ph ph-eye"
-                      [ariaLabel]="
-                        'organizations.branches.actions.view'
-                          | translate
-                      "
-                      (pressed)="
-                        openBranch(branch.id)
-                      "
+                      [ariaLabel]="'organizations.branches.actions.view' | translate"
+                      (pressed)="openBranch(branch.id)"
                     />
                   </td>
                 </tr>
               } @empty {
                 <tr>
                   <td colspan="7">
-                    <dos-empty-state
+                    <drive-os-empty-state
                       icon="ph-duotone ph-buildings"
-                      [title]="
-                        'organizations.branches.empty.title'
-                          | translate
-                      "
-                      [description]="
-                        'organizations.branches.empty.description'
-                          | translate
-                      "
+                      [title]="'organizations.branches.empty.title' | translate"
+                      [description]="'organizations.branches.empty.description' | translate"
                     />
                   </td>
                 </tr>
@@ -663,34 +309,16 @@
           </tbody>
         </table>
 
-        <dos-paginator
-          [pageNumber]="
-            store.page().pageNumber
-          "
-          [pageSize]="
-            store.page().pageSize
-          "
-          [totalCount]="
-            store.page().totalCount
-          "
-          [totalPages]="
-            store.page().totalPages
-          "
-          [disabled]="
-            store.isLoading() ||
-            store.hasError()
-          "
-          [pageSizeOptions]="[
-            10,
-            20,
-            50,
-            100
-          ]"
-          (pageChange)="
-            onPageChange($event)
-          "
+        <drive-os-paginator
+          [pageNumber]="store.page().pageNumber"
+          [pageSize]="store.page().pageSize"
+          [totalCount]="store.page().totalCount"
+          [totalPages]="store.page().totalPages"
+          [disabled]="store.isLoading() || store.hasError()"
+          [pageSizeOptions]="[10, 20, 50, 100]"
+          (pageChange)="onPageChange($event)"
         />
       </div>
     </div>
-  </dos-card>
+  </drive-os-card>
 </section>

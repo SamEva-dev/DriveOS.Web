@@ -1,36 +1,23 @@
 export const BRANCH_PERMISSIONS = {
-  read:
-    'Branches.Read',
+  read: 'Branches.Read',
 
-  create:
-    'Branches.Create',
+  create: 'Branches.Create',
 
-  update:
-    'Branches.Update',
+  update: 'Branches.Update',
 
-  setPrimary:
-    'Branches.SetPrimary',
+  setPrimary: 'Branches.SetPrimary',
 
-  activate:
-    'Branches.Activate',
+  activate: 'Branches.Activate',
 
-  restrict:
-    'Branches.Restrict',
+  restrict: 'Branches.Restrict',
 
-  suspend:
-    'Branches.Suspend',
+  suspend: 'Branches.Suspend',
 
-  reactivate:
-    'Branches.Reactivate',
+  reactivate: 'Branches.Reactivate',
 
-  close:
-    'Branches.Close',
+  close: 'Branches.Close',
 
-  statusHistoryRead:
-    'Branches.StatusHistory.Read',
+  statusHistoryRead: 'Branches.StatusHistory.Read',
 } as const;
 
-export type BranchPermission =
-  typeof BRANCH_PERMISSIONS[
-    keyof typeof BRANCH_PERMISSIONS
-  ];
+export type BranchPermission = (typeof BRANCH_PERMISSIONS)[keyof typeof BRANCH_PERMISSIONS];

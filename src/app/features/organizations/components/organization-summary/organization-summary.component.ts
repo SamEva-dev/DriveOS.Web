@@ -1,16 +1,8 @@
-import {
-  DatePipe,
-} from '@angular/common';
+import { DatePipe } from '@angular/common';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import {
-  TranslatePipe,
-} from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import {
   DriveOsBadgeComponent,
@@ -18,44 +10,25 @@ import {
   DriveOsCardComponent,
 } from '../../../../shared/ui';
 
-import {
-  OrganizationStatus,
-} from '../../models/organization-status';
+import { OrganizationStatus } from '../../models/organization-status';
 
-import {
-  Organization,
-} from '../../models/organization.model';
+import { Organization } from '../../models/organization.model';
 
 @Component({
-  selector:
-    'driveos-organization-summary',
+  selector: 'driveos-organization-summary',
   standalone: true,
-  imports: [
-    DatePipe,
-    TranslatePipe,
-    DriveOsBadgeComponent,
-    DriveOsCardComponent,
-  ],
-  templateUrl:
-    './organization-summary.component.html',
-  changeDetection:
-    ChangeDetectionStrategy.OnPush,
+  imports: [DatePipe, TranslatePipe, DriveOsBadgeComponent, DriveOsCardComponent],
+  templateUrl: './organization-summary.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganizationSummaryComponent {
-  readonly organization =
-    input.required<Organization>();
+  readonly organization = input.required<Organization>();
 
-  statusKey(
-    status: OrganizationStatus,
-  ): string {
-    return `organizations.statuses.${status
-      .charAt(0)
-      .toLowerCase()}${status.slice(1)}`;
+  statusKey(status: OrganizationStatus): string {
+    return `organizations.statuses.${status.charAt(0).toLowerCase()}${status.slice(1)}`;
   }
 
-  statusVariant(
-    status: OrganizationStatus,
-  ): DriveOsBadgeVariant {
+  statusVariant(status: OrganizationStatus): DriveOsBadgeVariant {
     switch (status) {
       case 'Active':
         return 'success';
@@ -77,39 +50,25 @@ export class OrganizationSummaryComponent {
     }
   }
 
-  organizationTypeKey(
-    type: string,
-  ): string {
-    const values:
-      Record<string, string> = {
-      DrivingSchool:
-        'organizations.types.drivingSchool',
+  organizationTypeKey(type: string): string {
+    const values: Record<string, string> = {
+      DrivingSchool: 'organizations.types.drivingSchool',
 
-      DrivingSchoolNetwork:
-        'organizations.types.drivingSchoolNetwork',
+      DrivingSchoolNetwork: 'organizations.types.drivingSchoolNetwork',
 
-      TrainingCenter:
-        'organizations.types.trainingCenter',
+      TrainingCenter: 'organizations.types.trainingCenter',
 
-      IndependentInstructorBusiness:
-        'organizations.types.independentInstructorBusiness',
+      IndependentInstructorBusiness: 'organizations.types.independentInstructorBusiness',
 
-      VehicleProvider:
-        'organizations.types.vehicleProvider',
+      VehicleProvider: 'organizations.types.vehicleProvider',
 
-      FundingOrganization:
-        'organizations.types.fundingOrganization',
+      FundingOrganization: 'organizations.types.fundingOrganization',
 
-      PartnerOrganization:
-        'organizations.types.partnerOrganization',
+      PartnerOrganization: 'organizations.types.partnerOrganization',
 
-      PlatformOperator:
-        'organizations.types.platformOperator',
+      PlatformOperator: 'organizations.types.platformOperator',
     };
 
-    return (
-      values[type] ??
-      'organizations.types.unknown'
-    );
+    return values[type] ?? 'organizations.types.unknown';
   }
 }

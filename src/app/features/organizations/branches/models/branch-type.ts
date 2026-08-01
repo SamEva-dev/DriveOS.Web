@@ -23,81 +23,52 @@ export interface BranchTypeOption {
   readonly labelKey: string;
 }
 
-export const BRANCH_TYPE_OPTIONS:
-  readonly BranchTypeOption[] = [
+export const BRANCH_TYPE_OPTIONS: readonly BranchTypeOption[] = [
   {
     value: BranchType.Headquarters,
     name: 'Headquarters',
-    labelKey:
-      'organizations.branches.types.headquarters',
+    labelKey: 'organizations.branches.types.headquarters',
   },
   {
-    value:
-      BranchType.DrivingSchoolAgency,
+    value: BranchType.DrivingSchoolAgency,
     name: 'DrivingSchoolAgency',
-    labelKey:
-      'organizations.branches.types.drivingSchoolAgency',
+    labelKey: 'organizations.branches.types.drivingSchoolAgency',
   },
   {
     value: BranchType.TrainingSite,
     name: 'TrainingSite',
-    labelKey:
-      'organizations.branches.types.trainingSite',
+    labelKey: 'organizations.branches.types.trainingSite',
   },
   {
-    value:
-      BranchType.AdministrativeOffice,
+    value: BranchType.AdministrativeOffice,
     name: 'AdministrativeOffice',
-    labelKey:
-      'organizations.branches.types.administrativeOffice',
+    labelKey: 'organizations.branches.types.administrativeOffice',
   },
   {
-    value:
-      BranchType.ExaminationSupportSite,
+    value: BranchType.ExaminationSupportSite,
     name: 'ExaminationSupportSite',
-    labelKey:
-      'organizations.branches.types.examinationSupportSite',
+    labelKey: 'organizations.branches.types.examinationSupportSite',
   },
   {
     value: BranchType.VirtualBranch,
     name: 'VirtualBranch',
-    labelKey:
-      'organizations.branches.types.virtualBranch',
+    labelKey: 'organizations.branches.types.virtualBranch',
   },
   {
     value: BranchType.Other,
     name: 'Other',
-    labelKey:
-      'organizations.branches.types.other',
+    labelKey: 'organizations.branches.types.other',
   },
 ] as const;
 
-export function branchTypeFromName(
-  branchTypeName: BranchTypeName,
-): BranchType {
-  const option =
-    BRANCH_TYPE_OPTIONS.find(
-      item =>
-        item.name === branchTypeName,
-    );
+export function branchTypeFromName(branchTypeName: BranchTypeName): BranchType {
+  const option = BRANCH_TYPE_OPTIONS.find((item) => item.name === branchTypeName);
 
-  return (
-    option?.value ??
-    BranchType.Other
-  );
+  return option?.value ?? BranchType.Other;
 }
 
-export function branchTypeLabelKey(
-  branchTypeName: BranchTypeName,
-): string {
-  const option =
-    BRANCH_TYPE_OPTIONS.find(
-      item =>
-        item.name === branchTypeName,
-    );
+export function branchTypeLabelKey(branchTypeName: BranchTypeName): string {
+  const option = BRANCH_TYPE_OPTIONS.find((item) => item.name === branchTypeName);
 
-  return (
-    option?.labelKey ??
-    'organizations.branches.types.unknown'
-  );
+  return option?.labelKey ?? 'organizations.branches.types.unknown';
 }

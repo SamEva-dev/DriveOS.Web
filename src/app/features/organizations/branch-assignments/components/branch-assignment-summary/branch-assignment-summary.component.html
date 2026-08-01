@@ -1,0 +1,117 @@
+<drive-os-card>
+  <div class="space-y-6 p-6">
+    <header class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <h2 class="text-xl font-semibold text-slate-950 dark:text-white">
+          {{ 'organizations.branchAssignments.summary.title' | translate }}
+        </h2>
+
+        <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+          {{ 'organizations.branchAssignments.summary.description' | translate }}
+        </p>
+      </div>
+
+      <drive-os-badge [variant]="statusVariant(assignment.status)">
+        {{ statusLabelKey(assignment.status) | translate }}
+      </drive-os-badge>
+    </header>
+
+    <dl class="grid gap-x-6 gap-y-5 md:grid-cols-2 xl:grid-cols-3">
+      <div>
+        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          {{ 'organizations.branchAssignments.fields.userId' | translate }}
+        </dt>
+
+        <dd class="mt-1 break-all text-sm font-medium text-slate-950 dark:text-white">
+          {{ assignment.userId }}
+        </dd>
+      </div>
+
+      <div>
+        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          {{ 'organizations.branchAssignments.fields.role' | translate }}
+        </dt>
+
+        <dd class="mt-1 text-sm font-medium text-slate-950 dark:text-white">
+          {{ roleLabelKey(assignment.role) | translate }}
+        </dd>
+      </div>
+
+      <div>
+        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          {{ 'organizations.branchAssignments.fields.assignmentType' | translate }}
+        </dt>
+
+        <dd class="mt-1 text-sm font-medium text-slate-950 dark:text-white">
+          {{ typeLabelKey(assignment.assignmentType) | translate }}
+        </dd>
+      </div>
+
+      <div>
+        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          {{ 'organizations.branchAssignments.fields.startsAtUtc' | translate }}
+        </dt>
+
+        <dd class="mt-1 text-sm text-slate-800 dark:text-slate-200">
+          {{ assignment.startsAtUtc | date: 'medium' }}
+        </dd>
+      </div>
+
+      <div>
+        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          {{ 'organizations.branchAssignments.fields.plannedEndAtUtc' | translate }}
+        </dt>
+
+        <dd class="mt-1 text-sm text-slate-800 dark:text-slate-200">
+          @if (assignment.plannedEndAtUtc) {
+            {{ assignment.plannedEndAtUtc | date: 'medium' }}
+          } @else {
+            {{ 'common.notAvailable' | translate }}
+          }
+        </dd>
+      </div>
+
+      <div>
+        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          {{ 'organizations.branchAssignments.fields.effectiveEndAtUtc' | translate }}
+        </dt>
+
+        <dd class="mt-1 text-sm text-slate-800 dark:text-slate-200">
+          @if (assignment.effectiveEndAtUtc) {
+            {{ assignment.effectiveEndAtUtc | date: 'medium' }}
+          } @else {
+            {{ 'common.notAvailable' | translate }}
+          }
+        </dd>
+      </div>
+    </dl>
+
+    @if (assignment.status === 'Suspended' && assignment.suspensionReason) {
+      <section
+        class="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950/30"
+      >
+        <h3 class="text-sm font-semibold text-amber-900 dark:text-amber-200">
+          {{ 'organizations.branchAssignments.summary.suspensionReason' | translate }}
+        </h3>
+
+        <p class="mt-2 whitespace-pre-line text-sm text-amber-800 dark:text-amber-300">
+          {{ assignment.suspensionReason }}
+        </p>
+      </section>
+    }
+
+    @if (assignment.status === 'Ended' && assignment.endReason) {
+      <section
+        class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60"
+      >
+        <h3 class="text-sm font-semibold text-slate-900 dark:text-white">
+          {{ 'organizations.branchAssignments.summary.endReason' | translate }}
+        </h3>
+
+        <p class="mt-2 whitespace-pre-line text-sm text-slate-700 dark:text-slate-300">
+          {{ assignment.endReason }}
+        </p>
+      </section>
+    }
+  </div>
+</drive-os-card>

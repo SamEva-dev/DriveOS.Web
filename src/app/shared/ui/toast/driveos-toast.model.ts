@@ -1,8 +1,4 @@
-export type DriveOsToastVariant =
-  | 'success'
-  | 'info'
-  | 'warning'
-  | 'error';
+export type DriveOsToastVariant = 'success' | 'info' | 'warning' | 'error';
 
 export interface DriveOsToast {
   readonly id: string;

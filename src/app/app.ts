@@ -1,26 +1,14 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import {
-  RouterOutlet,
-} from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 
-import {
-  DriveOsToastContainerComponent,
-} from './shared/ui';
+import { DriveOsToastContainerComponent } from './shared/ui';
 
 @Component({
   selector: 'driveos-root',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    DriveOsToastContainerComponent,
-  ],
+  imports: [RouterOutlet, DriveOsToastContainerComponent],
   templateUrl: './app.html',
-  changeDetection:
-    ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
-}
+export class App {}

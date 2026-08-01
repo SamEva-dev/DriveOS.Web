@@ -1,77 +1,30 @@
-<section
-  class="
-    mx-auto max-w-4xl
-    space-y-6
-  "
->
+<section class="mx-auto max-w-4xl space-y-6">
   <div>
     <a
-      [routerLink]="[
-        '/organizations',
-        organizationId,
-        'branches'
-      ]"
-      class="
-        inline-flex items-center gap-2
-        text-sm font-medium
-        text-slate-500
-        transition-colors
-        hover:text-blue-800
-        dark:text-slate-400
-        dark:hover:text-blue-300
-      "
+      [routerLink]="['/organizations', organizationId, 'branches']"
+      class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-blue-800 dark:text-slate-400 dark:hover:text-blue-300"
     >
       <i
         class="ph ph-arrow-left"
         aria-hidden="true"
       ></i>
 
-      {{
-        'organizations.branches.backToBranches'
-          | translate
-      }}
+      {{ 'organizations.branches.backToBranches' | translate }}
     </a>
   </div>
 
-  <dos-card>
+  <drive-os-card>
     <header>
-      <p
-        class="
-          text-sm font-semibold
-          uppercase tracking-wide
-          text-orange-500
-        "
-      >
-        {{
-          'organizations.branches.title'
-            | translate
-        }}
+      <p class="text-sm font-semibold uppercase tracking-wide text-orange-500">
+        {{ 'organizations.branches.title' | translate }}
       </p>
 
-      <h1
-        class="
-          mt-1 text-2xl font-bold
-          text-slate-950
-          dark:text-slate-50
-        "
-      >
-        {{
-          'organizations.branches.create.title'
-            | translate
-        }}
+      <h1 class="mt-1 text-2xl font-bold text-slate-950 dark:text-slate-50">
+        {{ 'organizations.branches.create.title' | translate }}
       </h1>
 
-      <p
-        class="
-          mt-2 text-sm
-          text-slate-500
-          dark:text-slate-400
-        "
-      >
-        {{
-          'organizations.branches.create.description'
-            | translate
-        }}
+      <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        {{ 'organizations.branches.create.description' | translate }}
       </p>
     </header>
 
@@ -83,5 +36,5 @@
         (cancelled)="cancel()"
       />
     </div>
-  </dos-card>
+  </drive-os-card>
 </section>

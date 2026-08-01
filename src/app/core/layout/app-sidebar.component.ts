@@ -1,29 +1,15 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import {
-  RouterLink,
-  RouterLinkActive,
-} from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
-import {
-  TranslatePipe,
-} from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
-import {
-  NavigationItem,
-} from './navigation-item';
+import { NavigationItem } from './navigation-item';
 
 @Component({
   selector: 'driveos-app-sidebar',
   standalone: true,
-  imports: [
-    RouterLink,
-    RouterLinkActive,
-    TranslatePipe,
-  ],
+  imports: [RouterLink, RouterLinkActive, TranslatePipe],
   template: `
     <aside
       class="flex h-full flex-col
@@ -47,9 +33,7 @@ import {
         </div>
 
         <div>
-          <p class="text-lg font-bold">
-            DriveOS
-          </p>
+          <p class="text-lg font-bold">DriveOS</p>
 
           <p
             class="text-xs
@@ -69,7 +53,7 @@ import {
             [routerLink]="item.routerLink"
             routerLinkActive="driveos-navigation-active"
             [routerLinkActiveOptions]="{
-              exact: item.exact ?? false
+              exact: item.exact ?? false,
             }"
             class="flex items-center gap-3
                    rounded-xl px-3 py-2.5
@@ -102,9 +86,7 @@ import {
                  bg-surface-100 p-3
                  dark:bg-surface-800"
         >
-          <p class="text-sm font-semibold">
-            DriveOS
-          </p>
+          <p class="text-sm font-semibold">DriveOS</p>
 
           <p
             class="mt-1 text-xs
@@ -116,52 +98,50 @@ import {
       </div>
     </aside>
   `,
-  changeDetection:
-    ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppSidebarComponent {
-  readonly navigationItems:
-  readonly NavigationItem[] = [
-  {
-    labelKey: 'navigation.dashboard',
-    icon: 'ph ph-house',
-    routerLink: '/dashboard',
-    exact: true,
-  },
-  {
-    labelKey: 'navigation.organizations',
-    icon: 'ph ph-buildings',
-    routerLink: '/organizations',
-  },
-  {
-    labelKey: 'navigation.students',
-    icon: 'ph ph-users',
-    routerLink: '/students',
-  },
-  {
-    labelKey: 'navigation.planning',
-    icon: 'ph ph-calendar-dots',
-    routerLink: '/planning',
-  },
-  {
-    labelKey: 'navigation.instructors',
-    icon: 'ph ph-identification-card',
-    routerLink: '/instructors',
-  },
-  {
-    labelKey: 'navigation.vehicles',
-    icon: 'ph ph-car',
-    routerLink: '/vehicles',
-  },
-  {
-    labelKey: 'navigation.billing',
-    icon: 'ph ph-wallet',
-    routerLink: '/billing',
-  },
-  {
-    labelKey: 'navigation.settings',
-    icon: 'ph ph-gear',
-    routerLink: '/settings',
-  },
-];
+  readonly navigationItems: readonly NavigationItem[] = [
+    {
+      labelKey: 'navigation.dashboard',
+      icon: 'ph ph-house',
+      routerLink: '/dashboard',
+      exact: true,
+    },
+    {
+      labelKey: 'navigation.organizations',
+      icon: 'ph ph-buildings',
+      routerLink: '/organizations',
+    },
+    {
+      labelKey: 'navigation.students',
+      icon: 'ph ph-users',
+      routerLink: '/students',
+    },
+    {
+      labelKey: 'navigation.planning',
+      icon: 'ph ph-calendar-dots',
+      routerLink: '/planning',
+    },
+    {
+      labelKey: 'navigation.instructors',
+      icon: 'ph ph-identification-card',
+      routerLink: '/instructors',
+    },
+    {
+      labelKey: 'navigation.vehicles',
+      icon: 'ph ph-car',
+      routerLink: '/vehicles',
+    },
+    {
+      labelKey: 'navigation.billing',
+      icon: 'ph ph-wallet',
+      routerLink: '/billing',
+    },
+    {
+      labelKey: 'navigation.settings',
+      icon: 'ph ph-gear',
+      routerLink: '/settings',
+    },
+  ];
 }

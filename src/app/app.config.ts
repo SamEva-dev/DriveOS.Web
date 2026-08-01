@@ -4,46 +4,25 @@ import {
   provideZonelessChangeDetection,
 } from '@angular/core';
 
-import {
-  provideHttpClient,
-  withInterceptors,
-} from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
-import {
-  provideRouter,
-  withComponentInputBinding,
-  withInMemoryScrolling,
-} from '@angular/router';
+import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 
+import { provideTranslateService } from '@ngx-translate/core';
 
-import {
-  provideTranslateService,
-} from '@ngx-translate/core';
-
-import {
-  provideTranslateHttpLoader,
-} from '@ngx-translate/http-loader';
-
-
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 
-import {
-  API_CONFIG,
-} from './core/config/api-config';
+import { API_CONFIG } from './core/config/api-config';
 
-import {
-  apiErrorInterceptor,
-} from './core/http/api-error.interceptor';
+import { apiErrorInterceptor } from './core/http/api-error.interceptor';
 
-import {
-  correlationIdInterceptor,
-} from './core/http/correlation-id.interceptor';
+import { correlationIdInterceptor } from './core/http/correlation-id.interceptor';
 
-import {
-  provideTheme,
-} from './core/theme/provide-theme';
+import { provideTheme } from './core/theme/provide-theme';
+import { AUTH_API_CONFIG } from './core/auth/auth-api-config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -59,12 +38,7 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
 
-    provideHttpClient(
-      withInterceptors([
-        correlationIdInterceptor,
-        apiErrorInterceptor,
-      ]),
-    ),
+    provideHttpClient(withInterceptors([correlationIdInterceptor, apiErrorInterceptor])),
 
     provideTranslateService({
       fallbackLang: 'fr',
@@ -80,7 +54,14 @@ export const appConfig: ApplicationConfig = {
     {
       provide: API_CONFIG,
       useValue: {
-        baseUrl: environment.apiBaseUrl,
+        baseUrl: environment.BASE_DRIVEOS_API,
+      },
+    },
+    {
+      provide: AUTH_API_CONFIG,
+
+      useValue: {
+        baseUrl: environment.BASE_AUTH_API,
       },
     },
   ],

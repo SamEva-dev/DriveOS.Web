@@ -1,10 +1,6 @@
-import {
-  BranchStatus,
-} from './branch-status';
+import { BranchStatus } from './branch-status';
 
-import {
-  BranchTypeName,
-} from './branch-type';
+import { BranchTypeName } from './branch-type';
 
 export interface Branch {
   readonly id: string;
@@ -13,11 +9,9 @@ export interface Branch {
   readonly name: string;
   readonly code: string;
 
-  readonly branchType:
-    BranchTypeName;
+  readonly branchType: BranchTypeName;
 
-  readonly status:
-    BranchStatus;
+  readonly status: BranchStatus;
 
   readonly isPrimary: boolean;
 
@@ -30,6 +24,5 @@ export interface Branch {
   readonly timeZoneId: string;
 
   readonly createdAtUtc: string;
-  readonly lastModifiedAtUtc:
-    string | null;
+  readonly lastModifiedAtUtc: string | null;
 }

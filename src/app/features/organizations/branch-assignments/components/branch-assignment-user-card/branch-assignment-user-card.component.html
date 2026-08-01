@@ -1,0 +1,65 @@
+<drive-os-card>
+  <div class="p-6">
+    <header>
+      <h2 class="text-xl font-semibold text-slate-950 dark:text-white">
+        {{ 'organizations.branchAssignments.userCard.title' | translate }}
+      </h2>
+
+      <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+        {{ 'organizations.branchAssignments.userCard.description' | translate }}
+      </p>
+    </header>
+
+    <div class="mt-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div class="min-w-0">
+        <p class="truncate text-lg font-semibold text-slate-950 dark:text-white">
+          {{ displayName() }}
+        </p>
+
+        <p class="mt-1 truncate text-sm text-slate-600 dark:text-slate-300">
+          {{ user.email }}
+        </p>
+
+        @if (user.phoneNumber) {
+          <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+            {{ user.phoneNumber }}
+          </p>
+        }
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        @if (user.isActive) {
+          <drive-os-badge variant="success">
+            {{ 'organizations.branchAssignments.userCard.active' | translate }}
+          </drive-os-badge>
+        } @else {
+          <drive-os-badge variant="neutral">
+            {{ 'organizations.branchAssignments.userCard.inactive' | translate }}
+          </drive-os-badge>
+        }
+
+        @if (user.emailConfirmed) {
+          <drive-os-badge variant="info">
+            {{ 'organizations.branchAssignments.userCard.emailConfirmed' | translate }}
+          </drive-os-badge>
+        }
+      </div>
+    </div>
+
+    @if (user.roles.length > 0) {
+      <div class="mt-5">
+        <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          {{ 'organizations.branchAssignments.userCard.authRoles' | translate }}
+        </h3>
+
+        <div class="mt-2 flex flex-wrap gap-2">
+          @for (role of user.roles; track role) {
+            <drive-os-badge variant="neutral">
+              {{ role }}
+            </drive-os-badge>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</drive-os-card>

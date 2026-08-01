@@ -2,9 +2,7 @@ export interface ApiError {
   type: string;
   code: string;
   messageKey: string;
-  parameters:
-    | Record<string, unknown>
-    | null;
+  parameters: Record<string, unknown> | null;
   traceId: string | null;
 }
 

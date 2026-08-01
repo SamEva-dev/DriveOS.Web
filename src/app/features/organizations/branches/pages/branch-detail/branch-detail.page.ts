@@ -18,6 +18,7 @@ import {
 import {
   ActivatedRoute,
   Router,
+  RouterLink,
 } from '@angular/router';
 
 import {
@@ -74,6 +75,7 @@ import {
   Branch,
 } from '../../models/branch.model';
 import { BRANCH_PERMISSIONS } from '../../domain/branch-permissions';
+import { BRANCH_ASSIGNMENT_PERMISSIONS } from '../../../branch-assignments/domain/branch-assignment-permissions';
 
 @Component({
   selector:
@@ -83,7 +85,7 @@ import { BRANCH_PERMISSIONS } from '../../domain/branch-permissions';
 
   imports: [
     TranslatePipe,
-
+    RouterLink,
     BranchSummaryComponent,
     BranchStatusDialogComponent,
     BranchStatusHistoryComponent,
@@ -207,6 +209,28 @@ export class BranchDetailPage {
         ),
       );
     });
+
+
+    readonly teamLink =
+  computed(
+    () => [
+      '/organizations',
+      this.organizationId,
+      'branches',
+      this.branchId,
+      'team',
+    ],
+  );
+
+readonly canManageTeam =
+  computed(
+    () =>
+      this.authorization
+        .hasPermission(
+          BRANCH_ASSIGNMENT_PERMISSIONS
+            .read,
+        ),
+  );
 
   constructor() {
     this.loadBranch();

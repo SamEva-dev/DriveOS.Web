@@ -1,0 +1,319 @@
+<section class="space-y-6">
+  <header class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <div>
+      <a
+        class="inline-flex items-center gap-2 text-sm font-medium text-blue-700 hover:underline dark:text-blue-300"
+        [routerLink]="branchLink()"
+      >
+        <span aria-hidden="true">←</span>
+
+        {{ 'organizations.branches.detail.backToBranch' | translate }}
+      </a>
+
+      <h1 class="mt-3 text-3xl font-bold tracking-tight text-slate-950 dark:text-white">
+        {{ 'organizations.branchAssignments.title' | translate }}
+      </h1>
+
+      <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+        {{ 'organizations.branchAssignments.description' | translate }}
+      </p>
+    </div>
+
+    @if (canCreate()) {
+      <a [routerLink]="createLink()">
+        <drive-os-button>
+          {{ 'organizations.branchAssignments.actions.create' | translate }}
+        </drive-os-button>
+      </a>
+    }
+  </header>
+
+  <drive-os-card>
+    <div class="grid gap-4 p-5 md:grid-cols-2 xl:grid-cols-5">
+      <div class="xl:col-span-2">
+        <label
+          for="branch-team-search"
+          class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200"
+        >
+          {{ 'common.actions.search' | translate }}
+        </label>
+
+        <input
+          id="branch-team-search"
+          driveOsInput
+          type="search"
+          [formControl]="searchControl"
+          [placeholder]="'organizations.branchAssignments.filters.searchPlaceholder' | translate"
+        />
+      </div>
+
+      <div>
+        <label
+          for="branch-team-status"
+          class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200"
+        >
+          {{ 'organizations.branchAssignments.fields.status' | translate }}
+        </label>
+
+        <select
+          id="branch-team-status"
+          driveOsInput
+          [formControl]="statusControl"
+        >
+          <option value="">
+            {{ 'common.filters.all' | translate }}
+          </option>
+
+          @for (status of statusOptions; track status) {
+            <option [value]="status">
+              {{ statusLabelKey(status) | translate }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label
+          for="branch-team-role"
+          class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200"
+        >
+          {{ 'organizations.branchAssignments.fields.role' | translate }}
+        </label>
+
+        <select
+          id="branch-team-role"
+          driveOsInput
+          [formControl]="roleControl"
+        >
+          <option value="">
+            {{ 'common.filters.all' | translate }}
+          </option>
+
+          @for (role of roleOptions; track role.value) {
+            <option [value]="role.name">
+              {{ role.labelKey | translate }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label
+          for="branch-team-type"
+          class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200"
+        >
+          {{ 'organizations.branchAssignments.fields.assignmentType' | translate }}
+        </label>
+
+        <select
+          id="branch-team-type"
+          driveOsInput
+          [formControl]="typeControl"
+        >
+          <option value="">
+            {{ 'common.filters.all' | translate }}
+          </option>
+
+          @for (type of typeOptions; track type.value) {
+            <option [value]="type.name">
+              {{ type.labelKey | translate }}
+            </option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="flex justify-end border-t border-slate-200 px-5 py-3 dark:border-slate-700">
+      <drive-os-button
+        variant="secondary"
+        size="sm"
+        (pressed)="resetFilters()"
+      >
+        {{ 'common.actions.reset' | translate }}
+      </drive-os-button>
+    </div>
+  </drive-os-card>
+
+  @if (store.loading()) {
+    <div class="flex min-h-64 items-center justify-center">
+      <drive-os-spinner size="lg" />
+    </div>
+  } @else if (store.errorMessages().length > 0) {
+    <drive-os-card>
+      <div class="p-8 text-center">
+        <h2 class="text-lg font-semibold text-red-700 dark:text-red-300">
+          {{ 'organizations.branchAssignments.loadErrorTitle' | translate }}
+        </h2>
+
+        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          {{ 'organizations.branchAssignments.loadErrorDescription' | translate }}
+        </p>
+
+        <ul class="mx-auto mt-4 max-w-xl space-y-1 text-sm text-red-700 dark:text-red-300">
+          @for (message of store.errorMessages(); track $index) {
+            <li>{{ message }}</li>
+          }
+        </ul>
+
+        <div class="mt-6">
+          <drive-os-button
+            variant="secondary"
+            (pressed)="store.reload()"
+          >
+            {{ 'common.actions.retry' | translate }}
+          </drive-os-button>
+        </div>
+      </div>
+    </drive-os-card>
+  } @else if (!store.hasItems()) {
+    <drive-os-empty-state
+      icon="users"
+      [title]="'organizations.branchAssignments.emptyTitle' | translate"
+      [description]="'organizations.branchAssignments.emptyDescription' | translate"
+    />
+
+    @if (canCreate()) {
+      <div class="flex justify-center">
+        <a [routerLink]="createLink()">
+          <drive-os-button>
+            {{ 'organizations.branchAssignments.actions.create' | translate }}
+          </drive-os-button>
+        </a>
+      </div>
+    }
+  } @else {
+    <drive-os-card>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+          <thead class="bg-slate-50 dark:bg-slate-800/70">
+            <tr>
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500"
+              >
+                {{ 'organizations.branchAssignments.fields.userId' | translate }}
+              </th>
+
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500"
+              >
+                {{ 'organizations.branchAssignments.fields.role' | translate }}
+              </th>
+
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500"
+              >
+                {{ 'organizations.branchAssignments.fields.assignmentType' | translate }}
+              </th>
+
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500"
+              >
+                {{ 'organizations.branchAssignments.fields.status' | translate }}
+              </th>
+
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500"
+              >
+                {{ 'organizations.branchAssignments.fields.startsAtUtc' | translate }}
+              </th>
+
+              <th
+                class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500"
+              >
+                {{ 'common.actions.actions' | translate }}
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-900">
+            @for (assignment of store.assignments(); track assignment.id) {
+              <tr class="transition hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                <td class="px-5 py-4">
+                  <a
+                    class="font-medium text-blue-700 hover:underline dark:text-blue-300"
+                    [routerLink]="[
+                      '/organizations',
+                      organizationId,
+                      'branch-assignments',
+                      assignment.id,
+                    ]"
+                  >
+                    {{ assignment.userId }}
+                  </a>
+                </td>
+
+                <td class="px-5 py-4 text-sm text-slate-700 dark:text-slate-200">
+                  {{ roleLabelKey(assignment.role) | translate }}
+                </td>
+
+                <td class="px-5 py-4 text-sm text-slate-700 dark:text-slate-200">
+                  {{ typeLabelKey(assignment.assignmentType) | translate }}
+                </td>
+
+                <td class="px-5 py-4">
+                  <drive-os-badge [variant]="badgeVariant(assignment.status)">
+                    {{ statusLabelKey(assignment.status) | translate }}
+                  </drive-os-badge>
+                </td>
+
+                <td class="px-5 py-4 text-sm text-slate-700 dark:text-slate-200">
+                  {{ assignment.startsAtUtc | date: 'medium' }}
+                </td>
+
+                <td class="px-5 py-4">
+                  <div class="flex flex-wrap justify-end gap-2">
+                    @if (assignment.status === 'Active' && canSuspend()) {
+                      <drive-os-button
+                        size="sm"
+                        variant="secondary"
+                        (pressed)="openAction(assignment, 'suspend')"
+                      >
+                        {{ 'organizations.branchAssignments.actions.suspend' | translate }}
+                      </drive-os-button>
+                    }
+
+                    @if (assignment.status === 'Suspended' && canReactivate()) {
+                      <drive-os-button
+                        size="sm"
+                        variant="primary"
+                        (pressed)="openAction(assignment, 'reactivate')"
+                      >
+                        {{ 'organizations.branchAssignments.actions.reactivate' | translate }}
+                      </drive-os-button>
+                    }
+
+                    @if (assignment.status !== 'Ended' && canEnd()) {
+                      <drive-os-button
+                        size="sm"
+                        variant="danger"
+                        (pressed)="openAction(assignment, 'end')"
+                      >
+                        {{ 'organizations.branchAssignments.actions.end' | translate }}
+                      </drive-os-button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="border-t border-slate-200 p-4 dark:border-slate-700">
+        <drive-os-paginator
+          [pageNumber]="store.page().pageNumber"
+          [pageSize]="store.page().pageSize"
+          [totalCount]="store.page().totalCount"
+          [totalPages]="store.page().totalPages"
+          [disabled]="store.loading()"
+          (pageChange)="onPageChange($event)"
+        />
+      </div>
+    </drive-os-card>
+  }
+</section>
+
+<app-branch-assignment-status-dialog
+  [submitting]="store.actionLoading()"
+  (confirmed)="executeAction($event)"
+/>

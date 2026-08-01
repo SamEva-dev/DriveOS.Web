@@ -8,5 +8,12 @@
         "parser": "angular"
       }
     }
-  ]
+  ],
+  "semi": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "trailingComma": "all",
+  "bracketSpacing": true,
+  "htmlWhitespaceSensitivity": "ignore",
+  "singleAttributePerLine": true
 }

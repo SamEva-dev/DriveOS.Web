@@ -1,15 +1,8 @@
 <section
-      class="
-        rounded-2xl
-        border border-slate-200
-        bg-white
-        shadow-sm
-        dark:border-slate-800
-        dark:bg-slate-900
-      "
-      [class.p-4]="padding() === 'sm'"
-      [class.p-6]="padding() === 'md'"
-      [class.p-8]="padding() === 'lg'"
-    >
-      <ng-content />
-    </section>
+  class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"
+  [class.p-4]="padding() === 'sm'"
+  [class.p-6]="padding() === 'md'"
+  [class.p-8]="padding() === 'lg'"
+>
+  <ng-content />
+</section>

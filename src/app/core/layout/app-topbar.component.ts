@@ -1,29 +1,15 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 
-import {
-  TranslatePipe,
-} from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
+import { ThemeService } from '../theme/theme.service';
 
-import {
-  ThemeService,
-} from '../theme/theme.service';
-
-import {
-  ThemeMode,
-} from '../theme/theme-mode';
+import { ThemeMode } from '../theme/theme-mode';
 
 @Component({
   selector: 'driveos-app-topbar',
   standalone: true,
-  imports: [
-    TranslatePipe,
-  ],
+  imports: [TranslatePipe],
   template: `
     <header
       class="flex h-16 items-center
@@ -61,19 +47,14 @@ import {
         </button>
 
         <div>
-          <p class="font-semibold">
-            DriveOS
-          </p>
+          <p class="font-semibold">DriveOS</p>
 
           <p
             class="hidden text-xs
                    text-[var(--driveos-text-muted)]
                    sm:block"
           >
-            {{
-              'layout.workspace'
-                | translate
-            }}
+            {{ 'layout.workspace' | translate }}
           </p>
         </div>
       </div>
@@ -110,8 +91,8 @@ import {
         </select>
 
         <button
-            type="button"
-            class="
+          type="button"
+          class="
               flex size-10 items-center
               justify-center rounded-lg
               text-slate-600
@@ -125,13 +106,13 @@ import {
               dark:hover:bg-slate-800
               dark:hover:text-white
             "
-            aria-label="Notifications"
-          >
-            <i
-              class="ph ph-bell text-xl"
-              aria-hidden="true"
-            ></i>
-          </button>
+          aria-label="Notifications"
+        >
+          <i
+            class="ph ph-bell text-xl"
+            aria-hidden="true"
+          ></i>
+        </button>
 
         <button
           type="button"
@@ -146,22 +127,17 @@ import {
       </div>
     </header>
   `,
-  changeDetection:
-    ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppTopbarComponent {
-  readonly menuRequested =
-    output<void>();
+  readonly menuRequested = output<void>();
 
-  readonly themeService =
-    inject(ThemeService);
+  readonly themeService = inject(ThemeService);
 
   changeTheme(event: Event): void {
-    const select =
-      event.target as HTMLSelectElement;
+    const select = event.target as HTMLSelectElement;
 
-    const mode =
-      select.value as ThemeMode;
+    const mode = select.value as ThemeMode;
 
     this.themeService.setMode(mode);
   }

@@ -1,0 +1,175 @@
+<driveos-auth-shell [subtitle]="'auth.subtitle' | translate">
+  <h1 class="text-center text-xl font-semibold text-slate-950 dark:text-white">
+    {{ 'auth.register.title' | translate }}
+  </h1>
+  <p class="mt-2 text-center text-sm text-slate-500 dark:text-slate-400">
+    {{ 'auth.register.description' | translate }}
+  </p>
+  <form
+    class="mt-6 space-y-4"
+    (ngSubmit)="submit()"
+  >
+    <div>
+      <label
+        class="driveos-auth-label"
+        for="org"
+      >
+        {{ 'auth.fields.organization' | translate }}
+      </label>
+      <div class="relative">
+        <i class="ph ph-buildings absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input
+          id="org"
+          name="organization"
+          [(ngModel)]="organizationName"
+          required
+          class="driveos-auth-input pl-10"
+        />
+      </div>
+    </div>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div>
+        <label
+          class="driveos-auth-label"
+          for="firstName"
+        >
+          {{ 'auth.fields.firstName' | translate }}
+        </label>
+        <input
+          id="firstName"
+          name="firstName"
+          [(ngModel)]="firstName"
+          required
+          class="driveos-auth-input"
+        />
+      </div>
+      <div>
+        <label
+          class="driveos-auth-label"
+          for="lastName"
+        >
+          {{ 'auth.fields.lastName' | translate }}
+        </label>
+        <input
+          id="lastName"
+          name="lastName"
+          [(ngModel)]="lastName"
+          required
+          class="driveos-auth-input"
+        />
+      </div>
+    </div>
+    <div>
+      <label
+        class="driveos-auth-label"
+        for="phone"
+      >
+        {{ 'auth.fields.phone' | translate }}
+      </label>
+      <input
+        id="phone"
+        name="phone"
+        [(ngModel)]="phone"
+        type="tel"
+        autocomplete="tel"
+        class="driveos-auth-input"
+      />
+    </div>
+    <div>
+      <label
+        class="driveos-auth-label"
+        for="email"
+      >
+        {{ 'auth.fields.email' | translate }}
+      </label>
+      <input
+        id="email"
+        name="email"
+        [(ngModel)]="email"
+        type="email"
+        required
+        autocomplete="email"
+        class="driveos-auth-input"
+      />
+    </div>
+    <div>
+      <label
+        class="driveos-auth-label"
+        for="password"
+      >
+        {{ 'auth.fields.password' | translate }}
+      </label>
+      <div class="relative">
+        <input
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          [type]="showPassword() ? 'text' : 'password'"
+          required
+          minlength="8"
+          autocomplete="new-password"
+          class="driveos-auth-input pr-10"
+        />
+        <button
+          type="button"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"
+          (click)="showPassword.set(!showPassword())"
+        >
+          <i [class]="showPassword() ? 'ph ph-eye-slash' : 'ph ph-eye'"></i>
+        </button>
+      </div>
+    </div>
+    <div>
+      <label
+        class="driveos-auth-label"
+        for="confirmPassword"
+      >
+        {{ 'auth.fields.confirmPassword' | translate }}
+      </label>
+      <input
+        id="confirmPassword"
+        name="confirmPassword"
+        [(ngModel)]="confirmPassword"
+        [type]="showPassword() ? 'text' : 'password'"
+        required
+        autocomplete="new-password"
+        class="driveos-auth-input"
+      />
+    </div>
+    <button
+      class="driveos-auth-primary"
+      type="submit"
+      [disabled]="
+        loading() ||
+        !organizationName ||
+        !firstName ||
+        !lastName ||
+        !email ||
+        !password ||
+        password !== confirmPassword
+      "
+    >
+      {{
+        loading() ? ('common.actions.loading' | translate) : ('auth.actions.register' | translate)
+      }}
+    </button>
+  </form>
+  @if (error()) {
+    <p
+      class="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/30 dark:text-red-300"
+    >
+      {{ error() }}
+    </p>
+  }
+  <div class="mt-6 border-t border-slate-200 pt-5 text-center text-sm dark:border-slate-800">
+    <span class="text-slate-500 dark:text-slate-400">
+      {{ 'auth.register.haveAccount' | translate }}
+    </span>
+    <a
+      routerLink="/login"
+      class="ml-1 font-semibold text-blue-700 hover:underline dark:text-blue-300"
+    >
+      {{ 'auth.actions.login' | translate }}
+    </a>
+  </div>
+</driveos-auth-shell>

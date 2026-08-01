@@ -1,16 +1,8 @@
-import {
-  DatePipe,
-} from '@angular/common';
+import { DatePipe } from '@angular/common';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import {
-  TranslatePipe,
-} from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import {
   DriveOsCardComponent,
@@ -18,13 +10,10 @@ import {
   DriveOsSpinnerComponent,
 } from '../../../../shared/ui';
 
-import {
-  OrganizationStatusHistoryItem,
-} from '../../models/organization-status-history-item';
+import { OrganizationStatusHistoryItem } from '../../models/organization-status-history-item';
 
 @Component({
-  selector:
-    'driveos-organization-status-history',
+  selector: 'driveos-organization-status-history',
   standalone: true,
   imports: [
     DatePipe,
@@ -33,25 +22,15 @@ import {
     DriveOsEmptyStateComponent,
     DriveOsSpinnerComponent,
   ],
-  templateUrl:
-    './organization-status-history.component.html',
-  changeDetection:
-    ChangeDetectionStrategy.OnPush,
+  templateUrl: './organization-status-history.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganizationStatusHistoryComponent {
-  readonly history =
-    input.required<
-      readonly OrganizationStatusHistoryItem[]
-    >();
+  readonly history = input.required<readonly OrganizationStatusHistoryItem[]>();
 
-  readonly loading =
-    input(false);
+  readonly loading = input(false);
 
-  statusKey(
-    status: string,
-  ): string {
-    return `organizations.statuses.${status
-      .charAt(0)
-      .toLowerCase()}${status.slice(1)}`;
+  statusKey(status: string): string {
+    return `organizations.statuses.${status.charAt(0).toLowerCase()}${status.slice(1)}`;
   }
 }

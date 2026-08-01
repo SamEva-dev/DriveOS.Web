@@ -1,84 +1,43 @@
-import {
-  HttpClient,
-} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
-import {
-  Injectable,
-  inject,
-} from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
-import {
-  Observable,
-} from 'rxjs';
+import { Observable } from 'rxjs';
 
-import {
-  API_CONFIG,
-  ApiConfig,
-} from '../../../core/config/api-config';
+import { API_CONFIG, ApiConfig } from '../../../core/config/api-config';
 
-import {
-  ChangeOrganizationStatusRequest,
-} from '../models/change-organization-status-request';
+import { ChangeOrganizationStatusRequest } from '../models/change-organization-status-request';
 
-import {
-  CreateOrganizationRequest,
-} from '../models/create-organization-request';
+import { CreateOrganizationRequest } from '../models/create-organization-request';
 
-import {
-  CreateOrganizationResponse,
-} from '../models/create-organization-response';
+import { CreateOrganizationResponse } from '../models/create-organization-response';
 
-import {
-  OrganizationStatusActionCode,
-} from '../models/organization-status-action';
+import { OrganizationStatusActionCode } from '../models/organization-status-action';
 
-import {
-  OrganizationStatusHistoryItem,
-} from '../models/organization-status-history-item';
+import { OrganizationStatusHistoryItem } from '../models/organization-status-history-item';
 
-import {
-  Organization,
-} from '../models/organization.model';
+import { Organization } from '../models/organization.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrganizationsApiService {
-  private readonly http =
-    inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
-  private readonly apiConfig =
-    inject<ApiConfig>(API_CONFIG);
+  private readonly apiConfig = inject<ApiConfig>(API_CONFIG);
 
-  private readonly baseUrl =
-    `${this.apiConfig.baseUrl}/organizations`;
+  private readonly baseUrl = `${this.apiConfig.baseUrl}/organizations`;
 
-  create(
-    request: CreateOrganizationRequest,
-  ): Observable<CreateOrganizationResponse> {
-    return this.http
-      .post<CreateOrganizationResponse>(
-        this.baseUrl,
-        request,
-      );
+  create(request: CreateOrganizationRequest): Observable<CreateOrganizationResponse> {
+    return this.http.post<CreateOrganizationResponse>(this.baseUrl, request);
   }
 
-  getById(
-    organizationId: string,
-  ): Observable<Organization> {
-    return this.http.get<Organization>(
-      `${this.baseUrl}/${organizationId}`,
-    );
+  getById(organizationId: string): Observable<Organization> {
+    return this.http.get<Organization>(`${this.baseUrl}/${organizationId}`);
   }
 
-  getStatusHistory(
-    organizationId: string,
-  ): Observable<
-    readonly OrganizationStatusHistoryItem[]
-  > {
-    return this.http.get<
-      readonly OrganizationStatusHistoryItem[]
-    >(
+  getStatusHistory(organizationId: string): Observable<readonly OrganizationStatusHistoryItem[]> {
+    return this.http.get<readonly OrganizationStatusHistoryItem[]>(
       `${this.baseUrl}/${organizationId}/status-history`,
     );
   }
@@ -94,9 +53,7 @@ export class OrganizationsApiService {
     );
   }
 
-  private resolveActionPath(
-    action: OrganizationStatusActionCode,
-  ): string {
+  private resolveActionPath(action: OrganizationStatusActionCode): string {
     switch (action) {
       case 'submitForActivation':
         return 'submit-for-activation';
