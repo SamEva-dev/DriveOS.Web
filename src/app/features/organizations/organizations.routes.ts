@@ -69,6 +69,15 @@ export const ORGANIZATIONS_ROUTES: Routes = [
   },
 
   {
+    path: ':organizationId/branches/:branchId/configuration-overrides',
+
+    loadComponent: () =>
+      import('./branch-configuration-overrides/pages/branch-configuration-overrides/branch-configuration-overrides.page').then(
+        (component) => component.BranchConfigurationOverridesPage,
+      ),
+  },
+
+  {
     path: ':organizationId/branches/:branchId',
 
     loadComponent: () =>

@@ -76,6 +76,7 @@ import {
 } from '../../models/branch.model';
 import { BRANCH_PERMISSIONS } from '../../domain/branch-permissions';
 import { BRANCH_ASSIGNMENT_PERMISSIONS } from '../../../branch-assignments/domain/branch-assignment-permissions';
+import { BRANCH_CONFIGURATION_OVERRIDE_PERMISSIONS } from '../../../branch-configuration-overrides/domain/branch-configuration-override-permissions';
 
 @Component({
   selector:
@@ -221,6 +222,18 @@ export class BranchDetailPage {
       'team',
     ],
   );
+
+readonly configurationOverridesLink = computed(() => [
+    '/organizations',
+    this.organizationId,
+    'branches',
+    this.branchId,
+    'configuration-overrides',
+  ]);
+
+readonly canReadConfigurationOverrides = computed(() =>
+  this.authorization.hasPermission(BRANCH_CONFIGURATION_OVERRIDE_PERMISSIONS.read),
+);
 
 readonly canManageTeam =
   computed(

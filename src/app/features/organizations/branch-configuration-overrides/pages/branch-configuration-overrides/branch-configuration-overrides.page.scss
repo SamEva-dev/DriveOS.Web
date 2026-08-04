@@ -1,0 +1,10 @@
+.configuration-layout { display: grid; gap: 1.5rem; grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr); }
+.configuration-version { width:100%; border:1px solid var(--driveos-border); border-radius:var(--driveos-radius-md); padding:1rem; text-align:left; background:var(--driveos-surface-card); transition:border-color .15s ease, box-shadow .15s ease; }
+.configuration-version:hover, .configuration-version--selected { border-color:var(--driveos-primary-500); box-shadow:var(--driveos-shadow-sm); }
+.configuration-editor,.configuration-preview { width:100%; border:1px solid var(--driveos-border); border-radius:var(--driveos-radius-md); background:var(--driveos-surface-muted); padding:1rem; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.875rem; line-height:1.55; }
+.configuration-editor:focus { outline:2px solid var(--driveos-primary-600); outline-offset:2px; }
+.configuration-preview { overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; }
+.configuration-meta { border:1px solid var(--driveos-border); border-radius:var(--driveos-radius-md); padding:1rem; }
+.configuration-meta dt { font-size:.75rem; color:var(--driveos-text-muted); }
+.configuration-meta dd { margin-top:.25rem; font-weight:600; }
+@media (max-width: 900px) { .configuration-layout { grid-template-columns:1fr; } }

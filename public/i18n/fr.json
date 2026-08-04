@@ -712,6 +712,66 @@
         "saved": "La configuration a été enregistrée.",
         "conflict": "Cette configuration a été modifiée par un autre utilisateur. Les données ont été actualisées."
       }
+    },
+    "branchConfigurationOverrides": {
+      "kicker": "Paramètres locaux",
+      "title": "Surcharges de configuration de l’agence",
+      "description": "Gérez les différences locales appliquées au-dessus d’une configuration organisationnelle publiée.",
+      "versionsTitle": "Versions locales",
+      "versionsCount": "version(s)",
+      "revision": "Révision",
+      "versionLabel": "Version locale",
+      "createTitle": "Créer un brouillon local",
+      "createDescription": "Sélectionnez une configuration organisationnelle publiée puis saisissez uniquement les différences locales.",
+      "editTitle": "Modifier la surcharge",
+      "publishTitle": "Publier la surcharge",
+      "archiveTitle": "Archiver la surcharge",
+      "archiveDescription": "La version restera consultable dans l’historique, mais ne sera plus effective.",
+      "cardTitle": "Configuration locale",
+      "cardDescription": "Gérer les paramètres propres à cette agence sans modifier la configuration globale.",
+      "actions": {
+        "create": "Nouveau brouillon",
+        "publish": "Publier",
+        "archive": "Archiver",
+        "manage": "Gérer la configuration locale"
+      },
+      "fields": {
+        "baseConfiguration": "Configuration organisationnelle de base",
+        "version": "Numéro de version",
+        "country": "Pays",
+        "payload": "Surcharge JSON",
+        "effectiveFrom": "Effective à partir du",
+        "effectiveTo": "Effective jusqu’au",
+        "createdAt": "Créée le"
+      },
+      "status": {
+        "Draft": "Brouillon",
+        "Published": "Publiée",
+        "Archived": "Archivée"
+      },
+      "empty": {
+        "title": "Aucune surcharge locale",
+        "description": "Cette agence utilise actuellement la configuration de l’organisation sans adaptation locale."
+      },
+      "selection": {
+        "title": "Sélectionnez une version",
+        "description": "Choisissez une version locale pour consulter son détail."
+      },
+      "noBase": {
+        "title": "Aucune configuration de base publiée",
+        "description": "Publiez d’abord une configuration organisationnelle avant de créer une surcharge d’agence."
+      },
+      "validation": {
+        "invalidJson": "Le contenu doit être un objet JSON valide.",
+        "invalidPeriod": "La date de fin doit être postérieure à la date de début."
+      },
+      "conflict": {
+        "title": "Conflit de modification",
+        "description": "Cette surcharge a été modifiée par un autre utilisateur. Les données ont été actualisées."
+      },
+      "notifications": {
+        "saved": "La configuration locale a été enregistrée."
+      }
     }
   },
   "statuses": {
@@ -799,6 +859,104 @@
       "description": "Votre compte est authentifié, mais il ne possède pas la permission nécessaire pour effectuer cette action.",
       "retry": "Réessayer",
       "back": "Retour aux organisations"
+    }
+  },
+  "dashboard": {
+    "eyebrow": "Pilotage de l’activité",
+    "title": "Tableau de bord",
+    "subtitle": "Vue d’ensemble de votre auto-école, de vos équipes et du parcours de vos élèves.",
+    "filters": {
+      "month": "Mois",
+      "year": "Année"
+    },
+    "months": {
+      "0": "Janvier",
+      "1": "Février",
+      "2": "Mars",
+      "3": "Avril",
+      "4": "Mai",
+      "5": "Juin",
+      "6": "Juillet",
+      "7": "Août",
+      "8": "Septembre",
+      "9": "Octobre",
+      "10": "Novembre",
+      "11": "Décembre"
+    },
+    "quickActions": {
+      "kicker": "Actions rapides",
+      "title": "Que voulez-vous faire maintenant ?",
+      "subtitle": "Accédez directement aux opérations les plus fréquentes de DriveOS.",
+      "deviceNote": "Pensé pour ordinateur, tablette et téléphone",
+      "organization": {
+        "title": "Gérer les organisations",
+        "description": "Consulter les structures, agences et paramètres."
+      },
+      "student": {
+        "title": "Ajouter un élève",
+        "description": "Démarrer ou reprendre un parcours d’inscription."
+      },
+      "session": {
+        "title": "Planifier une séance",
+        "description": "Réserver un élève, un enseignant et un véhicule.",
+        "badge": "Planning"
+      },
+      "instructor": {
+        "title": "Gérer les enseignants",
+        "description": "Consulter les équipes, disponibilités et affectations."
+      },
+      "vehicle": {
+        "title": "Gérer les véhicules",
+        "description": "Suivre la disponibilité, la conformité et la maintenance."
+      },
+      "payment": {
+        "title": "Suivre les paiements",
+        "description": "Consulter les échéances, encaissements et impayés."
+      }
+    },
+    "metrics": {
+      "activeStudents": "Élèves actifs",
+      "activeStudentsDetail": "Aucun parcours actif",
+      "todaySessions": "Séances aujourd’hui",
+      "todaySessionsDetail": "Aucune séance planifiée",
+      "availableInstructors": "Enseignants disponibles",
+      "availableInstructorsDetail": "Aucune disponibilité chargée",
+      "availableVehicles": "Véhicules disponibles",
+      "availableVehiclesDetail": "Aucun véhicule chargé",
+      "monthRevenue": "Encaissements du mois",
+      "monthRevenueDetail": "Aucun paiement enregistré",
+      "complianceAlerts": "Alertes de conformité",
+      "complianceAlertsDetail": "Aucune alerte critique"
+    },
+    "agenda": {
+      "title": "Planning du jour",
+      "subtitle": "Séances, évaluations et examens à venir.",
+      "emptyTitle": "Aucune activité planifiée",
+      "emptyDescription": "Le planning du jour apparaîtra ici dès que des séances seront créées.",
+      "emptyAction": "Ouvrir le planning"
+    },
+    "alerts": {
+      "title": "Alertes prioritaires",
+      "subtitle": "Éléments qui nécessitent votre attention.",
+      "emptyTitle": "Tout est en ordre",
+      "emptyDescription": "Aucune alerte prioritaire pour le moment."
+    },
+    "activity": {
+      "title": "Activité récente",
+      "subtitle": "Dernières actions importantes réalisées dans DriveOS.",
+      "emptyTitle": "Aucune activité récente",
+      "emptyDescription": "Les créations, modifications et événements métier apparaîtront ici."
+    },
+    "readiness": {
+      "title": "Mise en route DriveOS",
+      "subtitle": "Progression de la configuration initiale.",
+      "organization": "Organisation créée",
+      "settings": "Paramètres configurés",
+      "subscription": "Abonnement initialisé",
+      "action": "Continuer la configuration"
+    },
+    "actions": {
+      "viewPlanning": "Voir tout le planning"
     }
   }
 }
