@@ -1,21 +1,15 @@
 <button
   [attr.type]="type()"
   [attr.aria-label]="ariaLabel() || null"
+  [attr.aria-busy]="loading() ? 'true' : null"
   [disabled]="disabled() || loading()"
   [class]="buttonClasses()"
   (click)="pressed.emit($event)"
 >
   @if (loading()) {
-    <i
-      class="ph ph-spinner animate-spin"
-      aria-hidden="true"
-    ></i>
+    <drive-os-icon name="loader-circle" class="animate-spin" />
   } @else if (icon()) {
-    <i
-      [class]="icon()"
-      aria-hidden="true"
-    ></i>
+    <drive-os-icon [name]="icon()!" />
   }
-
   <ng-content />
 </button>

@@ -1,22 +1,21 @@
-<section class="mx-auto max-w-7xl">
-  <drive-os-card>
-    <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+<section class="driveos-page">
+  <div class="driveos-page-header">
       <div>
-        <p class="text-sm font-semibold uppercase tracking-wide text-[var(--driveos-accent)]">
+        <p class="driveos-kicker">
           DriveOS
         </p>
 
-        <h1 class="mt-1 text-2xl font-bold">
+        <h1 class="driveos-page-title">
           {{ 'organizations.title' | translate }}
         </h1>
 
-        <p class="mt-1 text-[var(--driveos-text-muted)]">
+        <p class="driveos-page-subtitle">
           {{ 'organizations.listDescription' | translate }}
         </p>
       </div>
     </div>
 
-    <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div class="driveos-toolbar">
       <div class="relative w-full sm:max-w-md">
         <i
           class="ph ph-magnifying-glass pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -43,7 +42,7 @@
     </div>
 
     <div class="mt-6 overflow-hidden">
-      <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+      <div class="driveos-table-shell overflow-x-auto">
         <table dosTable>
           <thead class="bg-slate-50 dark:bg-slate-950">
             <tr>
@@ -240,5 +239,4 @@
         />
       </div>
     </div>
-  </drive-os-card>
-</section>
+  </section>

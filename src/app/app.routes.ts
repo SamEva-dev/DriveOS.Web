@@ -26,7 +26,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'organizations',
+        redirectTo: 'dashboard',
         pathMatch: 'full',
       },
       {
@@ -43,10 +43,10 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import(
-            './shared/pages/coming-soon/coming-soon.page'
+            './features/dashboard/pages/dashboard/dashboard.page'
           ).then(
             component =>
-              component.ComingSoonPage,
+              component.DashboardPage,
           ),
         data: {
           titleKey: 'navigation.dashboard',

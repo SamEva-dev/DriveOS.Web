@@ -583,6 +583,135 @@
         "lastModifiedAt": "Last modified",
         "lastModifiedBy": "Modified by"
       }
+    },
+    "subscription": {
+      "title": "Subscription",
+      "description": "Manage the organization plan, billing cycle, entitlements and limits.",
+      "organizationCardDescription": "Review the SaaS plan, enabled capabilities and tenant limits.",
+      "plan": "Plan",
+      "currentPeriod": "Current period",
+      "openEnded": "No end date",
+      "version": "Version",
+      "externalProvider": "External provider",
+      "externalReference": "External reference",
+      "currentPeriodStart": "Period start",
+      "currentPeriodEnd": "Period end",
+      "trialStart": "Trial start",
+      "trialEnd": "Trial end",
+      "reason": "Reason",
+      "empty": {
+        "title": "No subscription configured",
+        "description": "Initialize a subscription to enable SaaS capabilities and quotas for this organization."
+      },
+      "actions": {
+        "title": "Actions",
+        "manage": "Manage subscription",
+        "create": "Initialize subscription",
+        "changePlan": "Change plan",
+        "activate": "Activate",
+        "markPastDue": "Mark past due",
+        "restrict": "Restrict",
+        "suspend": "Suspend",
+        "expire": "Expire",
+        "cancel": "Cancel subscription"
+      },
+      "create": {
+        "title": "Initialize subscription"
+      },
+      "status": {
+        "label": "Status",
+        "Trialing": "Trialing",
+        "Active": "Active",
+        "PastDue": "Past due",
+        "Restricted": "Restricted",
+        "Suspended": "Suspended",
+        "Cancelled": "Cancelled",
+        "Expired": "Expired"
+      },
+      "billingCycle": {
+        "label": "Billing cycle",
+        "None": "None",
+        "Monthly": "Monthly",
+        "Quarterly": "Quarterly",
+        "Yearly": "Yearly",
+        "Custom": "Custom"
+      },
+      "entitlements": {
+        "title": "Included capabilities",
+        "empty": "No capability configured.",
+        "codes": "Entitlement codes — one per line"
+      },
+      "limits": {
+        "title": "Limits",
+        "empty": "No limit: usage is considered unlimited.",
+        "format": "Limits — one line per code, using Code=Value"
+      },
+      "statusChange": {
+        "title": "Change subscription status"
+      },
+      "cancel": {
+        "title": "Cancel subscription",
+        "effectiveAt": "Effective date"
+      },
+      "validation": {
+        "invalidLimits": "Invalid limit format. Use one Code=Value entry per line without duplicates."
+      },
+      "messages": {
+        "saved": "The subscription was updated."
+      }
+    },
+    "configurations": {
+      "kicker": "Organization governance",
+      "title": "Versioned configurations",
+      "description": "Create, publish and archive the business rules applicable to this organization.",
+      "organizationCardDescription": "Manage dated versions of business rules and settings.",
+      "versionsTitle": "Versions",
+      "versionsCount": "version(s)",
+      "versionLabel": "Version",
+      "revision": "Revision",
+      "createTitle": "New draft",
+      "createDescription": "A published version is immutable. Any change must start from a new draft.",
+      "editTitle": "Edit draft",
+      "editDescription": "The content must be a valid JSON object.",
+      "publishTitle": "Publish version",
+      "publishDescription": "Define the effective period. Once published, this version can no longer be edited.",
+      "archiveTitle": "Archive version",
+      "archiveDescription": "Archiving preserves history but removes this version from the active lifecycle.",
+      "actions": {
+        "manage": "Manage configurations",
+        "create": "New draft",
+        "publish": "Publish",
+        "archive": "Archive"
+      },
+      "fields": {
+        "version": "Version number",
+        "country": "Country (ISO 2)",
+        "payload": "JSON configuration",
+        "effectiveFrom": "Effective from",
+        "effectiveTo": "Effective until",
+        "createdAt": "Created at"
+      },
+      "status": {
+        "Draft": "Draft",
+        "Published": "Published",
+        "Archived": "Archived"
+      },
+      "empty": {
+        "title": "No configuration",
+        "description": "Create the first version to start formalizing the organization rules."
+      },
+      "select": {
+        "title": "Select a version",
+        "description": "Choose a version from the list to review its content and history."
+      },
+      "validation": {
+        "invalidJson": "The content must be a valid JSON object.",
+        "invalidPeriod": "The end date must be later than the start date."
+      },
+      "messages": {
+        "saved": "The configuration has been saved.",
+        "conflict": "This configuration was changed by another user. The data has been refreshed."
+      }
     }
   },
   "refreshWarning": {

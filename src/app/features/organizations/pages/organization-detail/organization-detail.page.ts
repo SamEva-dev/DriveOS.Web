@@ -42,6 +42,8 @@ import { OrganizationStatus } from '../../models/organization-status';
 
 import { Organization } from '../../models/organization.model';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
+import { ORGANIZATION_SUBSCRIPTION_PERMISSIONS } from '../../organization-subscriptions/domain/organization-subscription-permissions';
+import { ORGANIZATION_CONFIGURATION_PERMISSIONS } from '../../organization-configurations/domain/organization-configuration-permissions';
 import {
   OrganizationLifecycleActionDefinition,
   getOrganizationLifecycleActions,
@@ -118,6 +120,26 @@ export class OrganizationDetailPage {
       this.authorization.hasPermission(action.permission),
     );
   });
+
+  readonly canReadSubscription = computed(() =>
+    this.authorization.hasPermission(ORGANIZATION_SUBSCRIPTION_PERMISSIONS.read),
+  );
+
+  readonly subscriptionLink = computed(() =>
+    this.organizationId
+      ? ['/organizations', this.organizationId, 'subscription']
+      : ['/organizations'],
+  );
+
+  readonly canReadConfigurations = computed(() =>
+    this.authorization.hasPermission(ORGANIZATION_CONFIGURATION_PERMISSIONS.read),
+  );
+
+  readonly configurationsLink = computed(() =>
+    this.organizationId
+      ? ['/organizations', this.organizationId, 'configurations']
+      : ['/organizations'],
+  );
 
   openStatusDialog(action: OrganizationLifecycleActionDefinition): void {
     const organization = this.organization();

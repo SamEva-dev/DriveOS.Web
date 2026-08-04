@@ -1,36 +1,10 @@
 <driveos-auth-shell [subtitle]="'auth.subtitle' | translate">
-  <div
-    class="mx-auto flex size-14 items-center justify-center rounded-full bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300"
-  >
-    <i class="ph-duotone ph-envelope-open text-3xl"></i>
+  <div class="mx-auto flex size-16 items-center justify-center rounded-full bg-[var(--driveos-primary-100)] text-[var(--driveos-primary-800)]">
+    <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M22 10.5V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8.5"/><path d="m2 7 10 6 10-6"/><path d="m16 19 2 2 4-4"/></svg>
   </div>
-  <h1 class="mt-5 text-center text-xl font-semibold text-slate-950 dark:text-white">
-    {{ 'auth.checkEmail.title' | translate }}
-  </h1>
-  <p class="mt-2 text-center text-sm text-slate-500 dark:text-slate-400">
-    {{
-      (type === 'reset' ? 'auth.checkEmail.resetDescription' : 'auth.checkEmail.verifyDescription')
-        | translate
-    }}
-  </p>
-  <p
-    class="mt-4 rounded-lg bg-slate-50 p-3 text-center text-sm font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-200"
-  >
-    {{ email }}
-  </p>
-  <button
-    type="button"
-    class="driveos-auth-secondary mt-5"
-    (click)="resend()"
-    [disabled]="loading()"
-  >
-    {{ sent() ? ('auth.checkEmail.resent' | translate) : ('auth.actions.resend' | translate) }}
-  </button>
-  <a
-    routerLink="/login"
-    [queryParams]="{ email: email }"
-    class="mt-4 block text-center text-sm font-medium text-blue-700 hover:underline dark:text-blue-300"
-  >
-    {{ 'auth.actions.backToLogin' | translate }}
-  </a>
+  <h1 class="mt-6 text-center text-2xl font-bold text-[var(--driveos-text-primary)]">{{ 'auth.checkEmail.title' | translate }}</h1>
+  <p class="mt-4 text-center text-base leading-7 text-[var(--driveos-text-secondary)]">{{ (type === 'reset' ? 'auth.checkEmail.resetDescription' : 'auth.checkEmail.verifyDescription') | translate }}</p>
+  <p class="mt-6 rounded-xl bg-[var(--driveos-surface-subtle)] p-4 text-center text-sm font-semibold text-[var(--driveos-text-primary)]">{{ email }}</p>
+  <button type="button" class="driveos-auth-primary mt-6" (click)="resend()" [disabled]="loading()">{{ sent() ? ('auth.checkEmail.resent' | translate) : ('auth.actions.resend' | translate) }}</button>
+  <a routerLink="/login" [queryParams]="{ email: email }" class="driveos-auth-secondary mt-4">{{ 'auth.actions.backToLogin' | translate }}</a>
 </driveos-auth-shell>

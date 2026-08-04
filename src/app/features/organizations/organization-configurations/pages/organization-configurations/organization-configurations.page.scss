@@ -1,0 +1,35 @@
+.configuration-layout {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+}
+.configuration-list-card { align-self: start; }
+.configuration-version {
+  width: 100%;
+  border: 1px solid var(--driveos-border);
+  border-radius: var(--driveos-radius-lg);
+  background: var(--driveos-surface-card);
+  padding: 1rem;
+  text-align: left;
+  transition: border-color .15s ease, background-color .15s ease, box-shadow .15s ease;
+}
+.configuration-version:hover { border-color: var(--driveos-primary-500); background: var(--driveos-surface-subtle); }
+.configuration-version--selected { border-color: var(--driveos-primary-700); box-shadow: 0 0 0 2px color-mix(in srgb, var(--driveos-primary-700) 16%, transparent); }
+.configuration-editor,
+.configuration-preview {
+  width: 100%;
+  border: 1px solid var(--driveos-border);
+  border-radius: var(--driveos-radius-lg);
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 1rem;
+  font: 0.875rem/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  tab-size: 2;
+  overflow: auto;
+}
+.configuration-editor:focus { outline: 2px solid var(--driveos-primary-700); outline-offset: 2px; }
+.configuration-preview { max-height: 34rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.configuration-meta { border-radius: var(--driveos-radius-lg); background: var(--driveos-surface-subtle); padding: .875rem 1rem; }
+.configuration-meta dt { font-size: .75rem; font-weight: 600; color: var(--driveos-text-tertiary); }
+.configuration-meta dd { margin-top: .25rem; font-size: .875rem; color: var(--driveos-text-primary); }
+@media (max-width: 900px) { .configuration-layout { grid-template-columns: minmax(0, 1fr); } }

@@ -9,11 +9,12 @@ import {
   RouterLink,
 } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { AuthShellComponent } from "../../components/auth-shell.component";
 
 @Component({
   selector: 'driveos-forbidden-page',
   standalone: true,
-  imports: [RouterLink, TranslatePipe],
+  imports: [RouterLink, TranslatePipe, AuthShellComponent],
   templateUrl: './forbidden.page.html',
   styleUrl: './forbidden.page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

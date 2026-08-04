@@ -583,6 +583,135 @@
         "lastModifiedAt": "Dernière modification",
         "lastModifiedBy": "Modifiée par"
       }
+    },
+    "subscription": {
+      "title": "Abonnement",
+      "description": "Gérez le plan, le cycle de facturation, les capacités et les quotas de l’organisation.",
+      "organizationCardDescription": "Consultez le plan SaaS, les capacités activées et les limites du tenant.",
+      "plan": "Plan",
+      "currentPeriod": "Période courante",
+      "openEnded": "Sans date de fin",
+      "version": "Version",
+      "externalProvider": "Fournisseur externe",
+      "externalReference": "Référence externe",
+      "currentPeriodStart": "Début de période",
+      "currentPeriodEnd": "Fin de période",
+      "trialStart": "Début de l’essai",
+      "trialEnd": "Fin de l’essai",
+      "reason": "Motif",
+      "empty": {
+        "title": "Aucun abonnement configuré",
+        "description": "Initialisez un abonnement afin d’activer les capacités SaaS et les quotas de cette organisation."
+      },
+      "actions": {
+        "title": "Actions",
+        "manage": "Gérer l’abonnement",
+        "create": "Initialiser l’abonnement",
+        "changePlan": "Changer de plan",
+        "activate": "Activer",
+        "markPastDue": "Marquer en retard",
+        "restrict": "Restreindre",
+        "suspend": "Suspendre",
+        "expire": "Expirer",
+        "cancel": "Annuler l’abonnement"
+      },
+      "create": {
+        "title": "Initialiser l’abonnement"
+      },
+      "status": {
+        "label": "Statut",
+        "Trialing": "Période d’essai",
+        "Active": "Actif",
+        "PastDue": "Paiement en retard",
+        "Restricted": "Restreint",
+        "Suspended": "Suspendu",
+        "Cancelled": "Annulé",
+        "Expired": "Expiré"
+      },
+      "billingCycle": {
+        "label": "Cycle de facturation",
+        "None": "Aucun",
+        "Monthly": "Mensuel",
+        "Quarterly": "Trimestriel",
+        "Yearly": "Annuel",
+        "Custom": "Personnalisé"
+      },
+      "entitlements": {
+        "title": "Capacités incluses",
+        "empty": "Aucune capacité configurée.",
+        "codes": "Codes de capacité — un par ligne"
+      },
+      "limits": {
+        "title": "Limites",
+        "empty": "Aucune limite : les usages sont considérés comme illimités.",
+        "format": "Limites — une ligne par code, au format Code=Valeur"
+      },
+      "statusChange": {
+        "title": "Modifier le statut de l’abonnement"
+      },
+      "cancel": {
+        "title": "Annuler l’abonnement",
+        "effectiveAt": "Date d’effet"
+      },
+      "validation": {
+        "invalidLimits": "Le format des limites est invalide. Utilisez une ligne Code=Valeur, sans doublon."
+      },
+      "messages": {
+        "saved": "L’abonnement a été mis à jour."
+      }
+    },
+    "configurations": {
+      "kicker": "Gouvernance organisationnelle",
+      "title": "Configurations versionnées",
+      "description": "Créez, publiez et archivez les règles métier applicables à cette organisation.",
+      "organizationCardDescription": "Gérer les versions datées des règles et paramètres métier.",
+      "versionsTitle": "Versions",
+      "versionsCount": "version(s)",
+      "versionLabel": "Version",
+      "revision": "Révision",
+      "createTitle": "Nouveau brouillon",
+      "createDescription": "Une version publiée devient immuable. Toute évolution doit partir d’un nouveau brouillon.",
+      "editTitle": "Modifier le brouillon",
+      "editDescription": "Le contenu doit être un objet JSON valide.",
+      "publishTitle": "Publier la version",
+      "publishDescription": "Définissez la période d’effet. Une fois publiée, cette version ne pourra plus être modifiée.",
+      "archiveTitle": "Archiver la version",
+      "archiveDescription": "L’archivage conserve l’historique mais retire cette version du cycle actif.",
+      "actions": {
+        "manage": "Gérer les configurations",
+        "create": "Nouveau brouillon",
+        "publish": "Publier",
+        "archive": "Archiver"
+      },
+      "fields": {
+        "version": "Numéro de version",
+        "country": "Pays (ISO 2)",
+        "payload": "Configuration JSON",
+        "effectiveFrom": "Applicable à partir du",
+        "effectiveTo": "Applicable jusqu’au",
+        "createdAt": "Créée le"
+      },
+      "status": {
+        "Draft": "Brouillon",
+        "Published": "Publiée",
+        "Archived": "Archivée"
+      },
+      "empty": {
+        "title": "Aucune configuration",
+        "description": "Créez la première version pour commencer à formaliser les règles de l’organisation."
+      },
+      "select": {
+        "title": "Sélectionnez une version",
+        "description": "Choisissez une version dans la liste pour consulter son contenu et son historique."
+      },
+      "validation": {
+        "invalidJson": "Le contenu doit être un objet JSON valide.",
+        "invalidPeriod": "La date de fin doit être postérieure à la date de début."
+      },
+      "messages": {
+        "saved": "La configuration a été enregistrée.",
+        "conflict": "Cette configuration a été modifiée par un autre utilisateur. Les données ont été actualisées."
+      }
     }
   },
   "statuses": {

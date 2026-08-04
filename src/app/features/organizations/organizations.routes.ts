@@ -78,6 +78,24 @@ export const ORGANIZATIONS_ROUTES: Routes = [
   },
 
   {
+    path: ':organizationId/subscription',
+
+    loadComponent: () =>
+      import('./organization-subscriptions/pages/organization-subscription/organization-subscription.page').then(
+        (component) => component.OrganizationSubscriptionPage,
+      ),
+  },
+
+  {
+    path: ':organizationId/configurations',
+
+    loadComponent: () =>
+      import('./organization-configurations/pages/organization-configurations/organization-configurations.page').then(
+        (component) => component.OrganizationConfigurationsPage,
+      ),
+  },
+
+  {
     path: ':organizationId',
 
     loadComponent: () =>
