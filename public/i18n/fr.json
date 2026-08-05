@@ -773,7 +773,6 @@
         "saved": "La configuration locale a été enregistrée."
       }
     },
-
     "sequences": {
       "title": "Séquences de numérotation",
       "description": "Configurez les références métier uniques de l’organisation et de ses agences.",
@@ -976,6 +975,87 @@
         "revision": "Révision",
         "createdAt": "Créé le",
         "updatedAt": "Dernière modification"
+      }
+    },
+    "activationReadiness": {
+      "title": "Préparation à l’activation",
+      "description": "Vérifiez les prérequis métier nécessaires avant d’activer ou de réactiver cette organisation.",
+      "organizationCardDescription": "Contrôler le profil juridique, la gouvernance, l’abonnement, les paramètres et l’agence principale.",
+      "actions": {
+        "open": "Voir la checklist",
+        "back": "Retour à l’organisation",
+        "refresh": "Actualiser",
+        "openLegalProfile": "Configurer le profil juridique",
+        "openRepresentatives": "Gérer les propriétaires",
+        "openSubscription": "Gérer l’abonnement",
+        "openConfigurations": "Configurer l’organisation",
+        "openBranches": "Gérer les agences"
+      },
+      "summary": {
+        "completed": "prérequis satisfaits",
+        "readyTitle": "L’organisation est prête",
+        "readyDescription": "Tous les prérequis bloquants sont satisfaits. L’activation peut être lancée.",
+        "notReadyTitle": "L’organisation n’est pas encore prête",
+        "notReadyDescription": "Traitez les éléments bloquants ci-dessous avant de relancer l’activation."
+      },
+      "status": {
+        "satisfied": "Satisfait",
+        "blocking": "Bloquant",
+        "warning": "Avertissement"
+      },
+      "empty": {
+        "title": "Aucun prérequis",
+        "description": "Aucune règle de préparation à l’activation n’a été retournée."
+      },
+      "error": {
+        "title": "Checklist indisponible",
+        "description": "La préparation à l’activation n’a pas pu être chargée. Actualisez la page."
+      },
+      "requirements": {
+        "legalProfile": {
+          "active": "Le profil juridique doit être actif."
+        },
+        "activeOwner": {
+          "present": "Au moins un propriétaire actif doit être présent."
+        },
+        "primaryOwner": {
+          "present": "Un propriétaire principal actif doit être défini."
+        },
+        "activeSubscription": {
+          "present": "Un abonnement actif ou en période d’essai est requis."
+        },
+        "operationalSettings": {
+          "present": "Les paramètres opérationnels doivent être configurés."
+        },
+        "primaryBranch": {
+          "present": "Une agence principale doit être définie."
+        },
+        "primaryBranchManager": {
+          "present": "L’agence principale doit avoir un responsable actif."
+        }
+      }
+    },
+    "activation": {
+      "legalProfile": {
+        "active": "Le profil juridique doit être actif."
+      },
+      "activeOwner": {
+        "present": "Au moins un propriétaire actif doit être présent."
+      },
+      "primaryOwner": {
+        "present": "Un propriétaire principal actif doit être défini."
+      },
+      "activeSubscription": {
+        "present": "Un abonnement actif ou en période d’essai est requis."
+      },
+      "operationalSettings": {
+        "present": "Les paramètres opérationnels doivent être configurés."
+      },
+      "primaryBranch": {
+        "present": "Une agence principale doit être définie."
+      },
+      "primaryBranchManager": {
+        "present": "L’agence principale doit avoir un responsable actif."
       }
     }
   },

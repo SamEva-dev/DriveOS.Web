@@ -125,6 +125,15 @@ export const ORGANIZATIONS_ROUTES: Routes = [
   },
 
   {
+    path: ':organizationId/activation-readiness',
+
+    loadComponent: () =>
+      import('./organization-activation-readiness/pages/organization-activation-readiness/organization-activation-readiness.page').then(
+        (component) => component.OrganizationActivationReadinessPage,
+      ),
+  },
+
+  {
     path: ':organizationId/legal-profile',
 
     loadComponent: () =>
@@ -132,6 +141,11 @@ export const ORGANIZATIONS_ROUTES: Routes = [
         (component) => component.OrganizationLegalProfilePage,
       ),
   },
+  {
+  path: ':organizationId/closure',
+  loadComponent: () => import('./organization-closures/pages/organization-closure/organization-closure.page').then(m => m.OrganizationClosurePage),
+},
+
 
   {
     path: ':organizationId',

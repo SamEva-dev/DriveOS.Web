@@ -976,6 +976,87 @@
         "createdAt": "Created at",
         "updatedAt": "Last updated"
       }
+    },
+    "activationReadiness": {
+      "title": "Activation readiness",
+      "description": "Review the business prerequisites required before activating or reactivating this organization.",
+      "organizationCardDescription": "Check the legal profile, governance, subscription, settings and primary branch.",
+      "actions": {
+        "open": "View checklist",
+        "back": "Back to organization",
+        "refresh": "Refresh",
+        "openLegalProfile": "Configure legal profile",
+        "openRepresentatives": "Manage owners",
+        "openSubscription": "Manage subscription",
+        "openConfigurations": "Configure organization",
+        "openBranches": "Manage branches"
+      },
+      "summary": {
+        "completed": "requirements satisfied",
+        "readyTitle": "The organization is ready",
+        "readyDescription": "All blocking requirements are satisfied. Activation can proceed.",
+        "notReadyTitle": "The organization is not ready yet",
+        "notReadyDescription": "Resolve the blocking items below before attempting activation again."
+      },
+      "status": {
+        "satisfied": "Satisfied",
+        "blocking": "Blocking",
+        "warning": "Warning"
+      },
+      "empty": {
+        "title": "No requirements",
+        "description": "No activation-readiness rule was returned."
+      },
+      "error": {
+        "title": "Checklist unavailable",
+        "description": "Activation readiness could not be loaded. Refresh the page."
+      },
+      "requirements": {
+        "legalProfile": {
+          "active": "The legal profile must be active."
+        },
+        "activeOwner": {
+          "present": "At least one active owner must be present."
+        },
+        "primaryOwner": {
+          "present": "An active primary owner must be defined."
+        },
+        "activeSubscription": {
+          "present": "An active or trial subscription is required."
+        },
+        "operationalSettings": {
+          "present": "Operational settings must be configured."
+        },
+        "primaryBranch": {
+          "present": "A primary branch must be defined."
+        },
+        "primaryBranchManager": {
+          "present": "The primary branch must have an active manager."
+        }
+      }
+    },
+    "activation": {
+      "legalProfile": {
+        "active": "The legal profile must be active."
+      },
+      "activeOwner": {
+        "present": "At least one active owner must be present."
+      },
+      "primaryOwner": {
+        "present": "An active primary owner must be defined."
+      },
+      "activeSubscription": {
+        "present": "An active or trial subscription is required."
+      },
+      "operationalSettings": {
+        "present": "Operational settings must be configured."
+      },
+      "primaryBranch": {
+        "present": "A primary branch must be defined."
+      },
+      "primaryBranchManager": {
+        "present": "The primary branch must have an active manager."
+      }
     }
   },
   "refreshWarning": {

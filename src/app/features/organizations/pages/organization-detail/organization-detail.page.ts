@@ -165,6 +165,12 @@ export class OrganizationDetailPage {
       : ['/organizations'],
   );
 
+  readonly activationReadinessLink = computed(() =>
+    this.organizationId
+      ? ['/organizations', this.organizationId, 'activation-readiness']
+      : ['/organizations'],
+  );
+
   readonly canReadLegalProfile = computed(() =>
     this.authorization.hasPermission(ORGANIZATION_LEGAL_PROFILE_PERMISSIONS.read),
   );
