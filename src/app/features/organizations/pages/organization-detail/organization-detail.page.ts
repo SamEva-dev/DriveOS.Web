@@ -44,6 +44,8 @@ import { Organization } from '../../models/organization.model';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
 import { ORGANIZATION_SUBSCRIPTION_PERMISSIONS } from '../../organization-subscriptions/domain/organization-subscription-permissions';
 import { ORGANIZATION_CONFIGURATION_PERMISSIONS } from '../../organization-configurations/domain/organization-configuration-permissions';
+import { ORGANIZATION_SEQUENCE_PERMISSIONS } from '../../organization-sequences/domain/organization-sequence-permissions';
+import { ORGANIZATION_REPRESENTATIVE_PERMISSIONS } from '../../organization-representatives/domain/organization-representative-permissions';
 import { ORGANIZATION_LEGAL_PROFILE_PERMISSIONS } from '../../organization-legal-profile/domain/organization-legal-profile-permissions';
 import {
   OrganizationLifecycleActionDefinition,
@@ -139,6 +141,27 @@ export class OrganizationDetailPage {
   readonly configurationsLink = computed(() =>
     this.organizationId
       ? ['/organizations', this.organizationId, 'configurations']
+      : ['/organizations'],
+  );
+
+
+  readonly canReadSequences = computed(() =>
+    this.authorization.hasPermission(ORGANIZATION_SEQUENCE_PERMISSIONS.read),
+  );
+
+  readonly sequencesLink = computed(() =>
+    this.organizationId
+      ? ['/organizations', this.organizationId, 'sequences']
+      : ['/organizations'],
+  );
+
+  readonly canReadRepresentatives = computed(() =>
+    this.authorization.hasPermission(ORGANIZATION_REPRESENTATIVE_PERMISSIONS.read),
+  );
+
+  readonly representativesLink = computed(() =>
+    this.organizationId
+      ? ['/organizations', this.organizationId, 'representatives']
       : ['/organizations'],
   );
 

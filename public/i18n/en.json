@@ -858,7 +858,7 @@
       "listTitle": "Representatives",
       "empty": "No representative registered",
       "selectPrompt": "Select a representative",
-       "emptyDescription": "Add an owner or representative to define the governance of this organization.",
+      "emptyDescription": "Add an owner or representative to define the governance of this organization.",
       "selectPromptDescription": "Select a representative from the list to view their details and manage their lifecycle.",
       "primaryOwner": "Primary owner",
       "actions": {

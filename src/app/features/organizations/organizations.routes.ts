@@ -105,6 +105,25 @@ export const ORGANIZATIONS_ROUTES: Routes = [
   },
 
 
+
+  {
+    path: ':organizationId/sequences',
+
+    loadComponent: () =>
+      import('./organization-sequences/pages/organization-sequences/organization-sequences.page').then(
+        (component) => component.OrganizationSequencesPage,
+      ),
+  },
+
+  {
+    path: ':organizationId/representatives',
+
+    loadComponent: () =>
+      import('./organization-representatives/pages/organization-representatives/organization-representatives.page').then(
+        (component) => component.OrganizationRepresentativesPage,
+      ),
+  },
+
   {
     path: ':organizationId/legal-profile',
 
