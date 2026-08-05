@@ -47,7 +47,7 @@ export class RegisterPage {
           queryParams: { email: response.email, applicationAdded: '1' },
         });
       } else if (this.auth.isAuthenticated()) {
-        await this.router.navigate(['/organizations']);
+        await this.router.navigate(['/dashboard']);
       } else {
         await this.router.navigate(['/check-email'], {
           queryParams: { email: response.email, type: 'verify' },

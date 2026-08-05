@@ -11,11 +11,7 @@ import {
 } from '../models/organization-subscription.requests';
 
 export type OrganizationSubscriptionStatusAction =
-  | 'activate'
-  | 'mark-past-due'
-  | 'restrict'
-  | 'suspend'
-  | 'expire';
+  'activate' | 'mark-past-due' | 'restrict' | 'suspend' | 'expire';
 
 @Injectable({ providedIn: 'root' })
 export class OrganizationSubscriptionsApiService {
@@ -48,14 +44,14 @@ export class OrganizationSubscriptionsApiService {
     return this.http.post<void>(`${this.url(organizationId)}/${action}`, request);
   }
 
-  cancel(
-    organizationId: string,
-    request: CancelOrganizationSubscriptionRequest,
-  ): Observable<void> {
+  cancel(organizationId: string, request: CancelOrganizationSubscriptionRequest): Observable<void> {
     return this.http.post<void>(`${this.url(organizationId)}/cancel`, request);
   }
 
-  checkEntitlement(organizationId: string, code: string): Observable<{ entitlementCode: string; isGranted: boolean }> {
+  checkEntitlement(
+    organizationId: string,
+    code: string,
+  ): Observable<{ entitlementCode: string; isGranted: boolean }> {
     return this.http.get<{ entitlementCode: string; isGranted: boolean }>(
       `${this.url(organizationId)}/entitlements/${encodeURIComponent(code)}`,
     );
@@ -70,7 +66,9 @@ export class OrganizationSubscriptionsApiService {
     const params = new HttpParams()
       .set('currentUsage', currentUsage)
       .set('requestedIncrease', requestedIncrease);
-    return this.http.get(`${this.url(organizationId)}/limits/${encodeURIComponent(code)}`, { params });
+    return this.http.get(`${this.url(organizationId)}/limits/${encodeURIComponent(code)}`, {
+      params,
+    });
   }
 
   private url(organizationId: string): string {

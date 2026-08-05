@@ -1,0 +1,341 @@
+<section class="mx-auto max-w-7xl space-y-6">
+  <header class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div>
+      <a
+        [routerLink]="['/organizations', organizationId]"
+        class="text-sm font-medium text-blue-700 hover:underline dark:text-blue-300"
+      >
+        ← {{ 'organizations.sequences.back' | translate }}
+      </a>
+      <h1 class="mt-2 text-2xl font-bold text-slate-950 dark:text-white">
+        {{ 'organizations.sequences.title' | translate }}
+      </h1>
+      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+        {{ 'organizations.sequences.description' | translate }}
+      </p>
+    </div>
+    @if (canCreate()) {
+      <drive-os-button
+        icon="ph ph-plus"
+        (pressed)="openCreate()"
+      >
+        {{ 'organizations.sequences.actions.create' | translate }}
+      </drive-os-button>
+    }
+  </header>
+
+  @if (loading()) {
+    <div class="flex min-h-72 items-center justify-center">
+      <drive-os-spinner
+        size="lg"
+        [label]="'common.actions.loading' | translate"
+      />
+    </div>
+  } @else {
+    <div class="grid gap-6 lg:grid-cols-[22rem_minmax(0,1fr)]">
+      <drive-os-card>
+        <h2 class="text-base font-semibold text-slate-950 dark:text-white">
+          {{ 'organizations.sequences.listTitle' | translate }}
+        </h2>
+        @if (sequences().length === 0) {
+          <drive-os-empty-state
+            icon="ph ph-hash"
+            [title]="'organizations.sequences.empty.title' | translate"
+            [description]="'organizations.sequences.empty.description' | translate"
+          />
+        } @else {
+          <div class="mt-4 space-y-2">
+            @for (item of sequences(); track item.id) {
+              <button
+                type="button"
+                class="w-full rounded-xl border p-4 text-left transition hover:border-blue-300 hover:bg-blue-50 dark:border-slate-700 dark:hover:bg-slate-800"
+                [class.border-blue-600]="selected()?.id === item.id"
+                [class.bg-blue-50]="selected()?.id === item.id"
+                (click)="select(item)"
+              >
+                <div class="flex items-center justify-between gap-3">
+                  <strong class="text-sm text-slate-950 dark:text-white">{{ item.code }}</strong>
+                  <drive-os-badge [variant]="statusVariant(item.status)">
+                    {{ statusLabel(item.status) | translate }}
+                  </drive-os-badge>
+                </div>
+                <div class="mt-2 break-all font-mono text-xs text-slate-500 dark:text-slate-400">
+                  {{ item.pattern }}
+                </div>
+                <div class="mt-2 text-xs text-slate-500">
+                  {{ 'organizations.sequences.nextValue' | translate }}: {{ item.nextValue }}
+                </div>
+              </button>
+            }
+          </div>
+        }
+      </drive-os-card>
+
+      <div class="space-y-6">
+        @if (mode() === 'create') {
+          <drive-os-card>
+            <h2 class="text-lg font-semibold text-slate-950 dark:text-white">
+              {{ 'organizations.sequences.createTitle' | translate }}
+            </h2>
+            <form
+              class="mt-5 grid gap-4 sm:grid-cols-2"
+              [formGroup]="createForm"
+              (ngSubmit)="submitCreate()"
+            >
+              <label class="space-y-1 text-sm">
+                <span>{{ 'organizations.sequences.fields.scope' | translate }}</span>
+                <select
+                  dosInput
+                  formControlName="scope"
+                  class="driveos-field min-h-10 w-full px-3"
+                >
+                  <option [ngValue]="OrganizationSequenceScope.Organization">
+                    {{ 'organizations.sequences.scope.Organization' | translate }}
+                  </option>
+                  <option [ngValue]="OrganizationSequenceScope.Branch">
+                    {{ 'organizations.sequences.scope.Branch' | translate }}
+                  </option>
+                </select>
+              </label>
+              @if (createForm.controls.scope.value === OrganizationSequenceScope.Branch) {
+                <label class="space-y-1 text-sm">
+                  <span>{{ 'organizations.sequences.fields.branchId' | translate }}</span>
+                  <input
+                    dosInput
+                    formControlName="branchId"
+                  />
+                </label>
+              }
+              <label class="space-y-1 text-sm">
+                <span>{{ 'organizations.sequences.fields.code' | translate }}</span>
+                <input
+                  dosInput
+                  formControlName="code"
+                  placeholder="INVOICE"
+                />
+              </label>
+              <label class="space-y-1 text-sm sm:col-span-2">
+                <span>{{ 'organizations.sequences.fields.pattern' | translate }}</span>
+                <input
+                  dosInput
+                  formControlName="pattern"
+                />
+              </label>
+              <label class="space-y-1 text-sm">
+                <span>{{ 'organizations.sequences.fields.padding' | translate }}</span>
+                <input
+                  dosInput
+                  type="number"
+                  formControlName="padding"
+                />
+              </label>
+              <label class="space-y-1 text-sm">
+                <span>{{ 'organizations.sequences.fields.initialValue' | translate }}</span>
+                <input
+                  dosInput
+                  type="number"
+                  formControlName="initialValue"
+                />
+              </label>
+              <label class="space-y-1 text-sm sm:col-span-2">
+                <span>{{ 'organizations.sequences.fields.resetPolicy' | translate }}</span>
+                <select
+                  dosInput
+                  formControlName="resetPolicy"
+                  class="driveos-field min-h-10 w-full px-3"
+                >
+                  <option [ngValue]="OrganizationSequenceResetPolicy.Never">
+                    {{ 'organizations.sequences.resetPolicy.Never' | translate }}
+                  </option>
+                  <option [ngValue]="OrganizationSequenceResetPolicy.Yearly">
+                    {{ 'organizations.sequences.resetPolicy.Yearly' | translate }}
+                  </option>
+                  <option [ngValue]="OrganizationSequenceResetPolicy.Monthly">
+                    {{ 'organizations.sequences.resetPolicy.Monthly' | translate }}
+                  </option>
+                </select>
+              </label>
+              <div class="rounded-xl bg-slate-100 p-4 sm:col-span-2 dark:bg-slate-800">
+                <div class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  {{ 'organizations.sequences.preview' | translate }}
+                </div>
+                <code
+                  class="mt-2 block break-all text-sm font-semibold text-blue-800 dark:text-blue-300"
+                >
+                  {{ preview() }}
+                </code>
+              </div>
+              <div class="flex justify-end gap-3 sm:col-span-2">
+                <drive-os-button
+                  variant="ghost"
+                  type="button"
+                  (pressed)="cancelMode()"
+                >
+                  {{ 'common.actions.cancel' | translate }}
+                </drive-os-button>
+                <drive-os-button
+                  type="submit"
+                  [loading]="saving()"
+                >
+                  {{ 'common.actions.save' | translate }}
+                </drive-os-button>
+              </div>
+            </form>
+          </drive-os-card>
+        } @else if (detailLoading()) {
+          <div class="flex min-h-72 items-center justify-center">
+            <drive-os-spinner size="lg" />
+          </div>
+        } @else if (selected(); as item) {
+          <drive-os-card>
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <div class="flex items-center gap-3">
+                  <h2 class="text-xl font-semibold text-slate-950 dark:text-white">
+                    {{ item.code }}
+                  </h2>
+                  <drive-os-badge [variant]="statusVariant(item.status)">
+                    {{ statusLabel(item.status) | translate }}
+                  </drive-os-badge>
+                </div>
+                <p class="mt-2 font-mono text-sm text-slate-500">{{ item.pattern }}</p>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                @if (item.status === OrganizationSequenceStatus.Active && canReserve()) {
+                  <drive-os-button
+                    icon="ph ph-ticket"
+                    (pressed)="openReserve()"
+                  >
+                    {{ 'organizations.sequences.actions.reserve' | translate }}
+                  </drive-os-button>
+                }
+                @if (item.status === OrganizationSequenceStatus.Active && canSuspend()) {
+                  <drive-os-button
+                    variant="secondary"
+                    (pressed)="requestAction('suspend')"
+                  >
+                    {{ 'organizations.sequences.actions.suspend' | translate }}
+                  </drive-os-button>
+                }
+                @if (item.status === OrganizationSequenceStatus.Suspended && canReactivate()) {
+                  <drive-os-button (pressed)="requestAction('reactivate')">
+                    {{ 'organizations.sequences.actions.reactivate' | translate }}
+                  </drive-os-button>
+                }
+                @if (item.status !== OrganizationSequenceStatus.Archived && canArchive()) {
+                  <drive-os-button
+                    variant="danger"
+                    (pressed)="requestAction('archive')"
+                  >
+                    {{ 'organizations.sequences.actions.archive' | translate }}
+                  </drive-os-button>
+                }
+              </div>
+            </div>
+            @if (lastReservedValue()) {
+              <div
+                class="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-900 dark:bg-emerald-950"
+              >
+                <div class="text-xs font-semibold uppercase text-emerald-700 dark:text-emerald-300">
+                  {{ 'organizations.sequences.lastReserved' | translate }}
+                </div>
+                <code class="mt-1 block text-lg font-bold text-emerald-900 dark:text-emerald-100">
+                  {{ lastReservedValue() }}
+                </code>
+              </div>
+            }
+            <dl class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div>
+                <dt>{{ 'organizations.sequences.fields.scope' | translate }}</dt>
+                <dd>{{ scopeLabel(item.scope) | translate }}</dd>
+              </div>
+              <div>
+                <dt>{{ 'organizations.sequences.fields.nextValue' | translate }}</dt>
+                <dd>{{ item.nextValue }}</dd>
+              </div>
+              <div>
+                <dt>{{ 'organizations.sequences.fields.padding' | translate }}</dt>
+                <dd>{{ item.padding }}</dd>
+              </div>
+              <div>
+                <dt>{{ 'organizations.sequences.fields.resetPolicy' | translate }}</dt>
+                <dd>{{ resetLabel(item.resetPolicy) | translate }}</dd>
+              </div>
+              <div>
+                <dt>{{ 'organizations.sequences.fields.revision' | translate }}</dt>
+                <dd>{{ item.revision }}</dd>
+              </div>
+              <div>
+                <dt>{{ 'organizations.sequences.fields.createdAt' | translate }}</dt>
+                <dd>{{ item.createdAtUtc | date: 'medium' }}</dd>
+              </div>
+            </dl>
+          </drive-os-card>
+
+          @if (mode() === 'reserve') {
+            <drive-os-card>
+              <h3 class="text-lg font-semibold">
+                {{ 'organizations.sequences.reserveTitle' | translate }}
+              </h3>
+              <p class="mt-2 text-sm text-slate-500">
+                {{ 'organizations.sequences.reserveWarning' | translate }}
+              </p>
+              <form
+                class="mt-5 flex justify-end gap-3"
+                [formGroup]="reserveForm"
+                (ngSubmit)="submitReserve()"
+              >
+                <drive-os-button
+                  variant="ghost"
+                  type="button"
+                  (pressed)="cancelMode()"
+                >
+                  {{ 'common.actions.cancel' | translate }}
+                </drive-os-button>
+                <drive-os-button
+                  type="submit"
+                  [loading]="saving()"
+                >
+                  {{ 'organizations.sequences.actions.confirmReserve' | translate }}
+                </drive-os-button>
+              </form>
+            </drive-os-card>
+          }
+          @if (mode() === 'confirm') {
+            <drive-os-card>
+              <h3 class="text-lg font-semibold">
+                {{ 'organizations.sequences.confirm.' + pendingAction() + '.title' | translate }}
+              </h3>
+              <p class="mt-2 text-sm text-slate-500">
+                {{
+                  'organizations.sequences.confirm.' + pendingAction() + '.description' | translate
+                }}
+              </p>
+              <div class="mt-5 flex justify-end gap-3">
+                <drive-os-button
+                  variant="ghost"
+                  (pressed)="cancelMode()"
+                >
+                  {{ 'common.actions.cancel' | translate }}
+                </drive-os-button>
+                <drive-os-button
+                  [variant]="pendingAction() === 'archive' ? 'danger' : 'primary'"
+                  [loading]="saving()"
+                  (pressed)="confirmAction()"
+                >
+                  {{ 'common.actions.confirm' | translate }}
+                </drive-os-button>
+              </div>
+            </drive-os-card>
+          }
+        } @else {
+          <drive-os-empty-state
+            icon="ph ph-hash"
+            [title]="'organizations.sequences.empty.title' | translate"
+            [description]="'organizations.sequences.empty.description' | translate"
+          />
+        }
+      </div>
+    </div>
+  }
+</section>

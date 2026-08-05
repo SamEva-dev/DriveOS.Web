@@ -1,15 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-} from '@angular/core';
-import {
-  ActivatedRoute,
-  RouterLink,
-} from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { AuthShellComponent } from "../../components/auth-shell.component";
+import { AuthShellComponent } from '../../components/auth-shell.component';
 
 @Component({
   selector: 'driveos-forbidden-page',
@@ -23,12 +15,8 @@ export class ForbiddenPage {
   private readonly route = inject(ActivatedRoute);
 
   readonly returnUrl = computed(() => {
-    const value = this.route.snapshot.queryParamMap.get(
-      'returnUrl',
-    );
+    const value = this.route.snapshot.queryParamMap.get('returnUrl');
 
-    return value?.startsWith('/')
-      ? value
-      : '/organizations';
+    return value?.startsWith('/') ? value : '/organizations';
   });
 }

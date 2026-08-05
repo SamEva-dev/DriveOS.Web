@@ -3,14 +3,22 @@
     <div>
       <p class="driveos-kicker">{{ 'organizations.configurations.kicker' | translate }}</p>
       <h1 class="driveos-page-title">{{ 'organizations.configurations.title' | translate }}</h1>
-      <p class="driveos-page-subtitle">{{ 'organizations.configurations.description' | translate }}</p>
+      <p class="driveos-page-subtitle">
+        {{ 'organizations.configurations.description' | translate }}
+      </p>
     </div>
     <div class="flex flex-wrap gap-3">
-      <a [routerLink]="['/organizations', organizationId]" class="driveos-link-button">
+      <a
+        [routerLink]="['/organizations', organizationId]"
+        class="driveos-link-button"
+      >
         {{ 'common.actions.back' | translate }}
       </a>
       @if (canCreate()) {
-        <drive-os-button icon="plus" (pressed)="openCreate()">
+        <drive-os-button
+          icon="plus"
+          (pressed)="openCreate()"
+        >
           {{ 'organizations.configurations.actions.create' | translate }}
         </drive-os-button>
       }
@@ -19,15 +27,22 @@
 
   @if (loading()) {
     <div class="flex min-h-72 items-center justify-center">
-      <drive-os-spinner size="lg" [label]="'common.actions.loading' | translate" />
+      <drive-os-spinner
+        size="lg"
+        [label]="'common.actions.loading' | translate"
+      />
     </div>
   } @else {
     <div class="configuration-layout">
       <drive-os-card class="configuration-list-card">
         <div class="mb-4 flex items-center justify-between gap-3">
           <div>
-            <h2 class="driveos-section-title">{{ 'organizations.configurations.versionsTitle' | translate }}</h2>
-            <p class="driveos-section-description">{{ versions().length }} {{ 'organizations.configurations.versionsCount' | translate }}</p>
+            <h2 class="driveos-section-title">
+              {{ 'organizations.configurations.versionsTitle' | translate }}
+            </h2>
+            <p class="driveos-section-description">
+              {{ versions().length }} {{ 'organizations.configurations.versionsCount' | translate }}
+            </p>
           </div>
         </div>
 
@@ -47,7 +62,9 @@
                 (click)="select(item)"
               >
                 <div class="flex min-w-0 items-center justify-between gap-3">
-                  <span class="font-semibold">v{{ item.versionNumber }} · {{ item.countryCode }}</span>
+                  <span class="font-semibold">
+                    v{{ item.versionNumber }} · {{ item.countryCode }}
+                  </span>
                   <drive-os-badge [variant]="statusVariant(item.status)">
                     {{ statusLabel(item.status) | translate }}
                   </drive-os-badge>
@@ -55,7 +72,7 @@
                 <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">
                   {{ 'organizations.configurations.revision' | translate }} {{ item.revision }}
                   @if (item.effectiveFromUtc) {
-                    · {{ item.effectiveFromUtc | date:'short' }}
+                    · {{ item.effectiveFromUtc | date: 'short' }}
                   }
                 </div>
               </button>
@@ -70,74 +87,191 @@
             <drive-os-spinner [label]="'common.actions.loading' | translate" />
           </div>
         } @else if (mode() === 'create') {
-          <form class="space-y-5" [formGroup]="createForm" (ngSubmit)="submitCreate()">
+          <form
+            class="space-y-5"
+            [formGroup]="createForm"
+            (ngSubmit)="submitCreate()"
+          >
             <header>
-              <h2 class="driveos-section-title">{{ 'organizations.configurations.createTitle' | translate }}</h2>
-              <p class="driveos-section-description">{{ 'organizations.configurations.createDescription' | translate }}</p>
+              <h2 class="driveos-section-title">
+                {{ 'organizations.configurations.createTitle' | translate }}
+              </h2>
+              <p class="driveos-section-description">
+                {{ 'organizations.configurations.createDescription' | translate }}
+              </p>
             </header>
             <div class="grid gap-4 sm:grid-cols-2">
               <label class="space-y-2">
-                <span class="driveos-form-label">{{ 'organizations.configurations.fields.version' | translate }}</span>
-                <input dosInput type="number" min="1" formControlName="versionNumber" />
+                <span class="driveos-form-label">
+                  {{ 'organizations.configurations.fields.version' | translate }}
+                </span>
+                <input
+                  dosInput
+                  type="number"
+                  min="1"
+                  formControlName="versionNumber"
+                />
               </label>
               <label class="space-y-2">
-                <span class="driveos-form-label">{{ 'organizations.configurations.fields.country' | translate }}</span>
-                <input dosInput maxlength="2" formControlName="countryCode" />
+                <span class="driveos-form-label">
+                  {{ 'organizations.configurations.fields.country' | translate }}
+                </span>
+                <input
+                  dosInput
+                  maxlength="2"
+                  formControlName="countryCode"
+                />
               </label>
             </div>
             <label class="space-y-2">
-              <span class="driveos-form-label">{{ 'organizations.configurations.fields.payload' | translate }}</span>
-              <textarea class="configuration-editor" rows="18" formControlName="payloadJson" spellcheck="false"></textarea>
+              <span class="driveos-form-label">
+                {{ 'organizations.configurations.fields.payload' | translate }}
+              </span>
+              <textarea
+                class="configuration-editor"
+                rows="18"
+                formControlName="payloadJson"
+                spellcheck="false"
+              ></textarea>
             </label>
-            @if (jsonError()) { <p class="text-sm text-red-600">{{ jsonError() }}</p> }
+            @if (jsonError()) {
+              <p class="text-sm text-red-600">{{ jsonError() }}</p>
+            }
             <div class="flex flex-wrap justify-end gap-3">
-              <drive-os-button type="button" variant="ghost" (pressed)="cancelMode()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
-              <drive-os-button type="submit" [loading]="saving()">{{ 'common.actions.save' | translate }}</drive-os-button>
+              <drive-os-button
+                type="button"
+                variant="ghost"
+                (pressed)="cancelMode()"
+              >
+                {{ 'common.actions.cancel' | translate }}
+              </drive-os-button>
+              <drive-os-button
+                type="submit"
+                [loading]="saving()"
+              >
+                {{ 'common.actions.save' | translate }}
+              </drive-os-button>
             </div>
           </form>
         } @else if (mode() === 'edit' && selected(); as item) {
-          <form class="space-y-5" [formGroup]="editForm" (ngSubmit)="submitEdit()">
+          <form
+            class="space-y-5"
+            [formGroup]="editForm"
+            (ngSubmit)="submitEdit()"
+          >
             <header>
-              <h2 class="driveos-section-title">{{ 'organizations.configurations.editTitle' | translate }} v{{ item.versionNumber }}</h2>
-              <p class="driveos-section-description">{{ 'organizations.configurations.editDescription' | translate }}</p>
+              <h2 class="driveos-section-title">
+                {{ 'organizations.configurations.editTitle' | translate }} v{{ item.versionNumber }}
+              </h2>
+              <p class="driveos-section-description">
+                {{ 'organizations.configurations.editDescription' | translate }}
+              </p>
             </header>
-            <textarea class="configuration-editor" rows="22" formControlName="payloadJson" spellcheck="false"></textarea>
-            @if (jsonError()) { <p class="text-sm text-red-600">{{ jsonError() }}</p> }
+            <textarea
+              class="configuration-editor"
+              rows="22"
+              formControlName="payloadJson"
+              spellcheck="false"
+            ></textarea>
+            @if (jsonError()) {
+              <p class="text-sm text-red-600">{{ jsonError() }}</p>
+            }
             <div class="flex flex-wrap justify-end gap-3">
-              <drive-os-button type="button" variant="ghost" (pressed)="cancelMode()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
-              <drive-os-button type="submit" [loading]="saving()">{{ 'common.actions.save' | translate }}</drive-os-button>
+              <drive-os-button
+                type="button"
+                variant="ghost"
+                (pressed)="cancelMode()"
+              >
+                {{ 'common.actions.cancel' | translate }}
+              </drive-os-button>
+              <drive-os-button
+                type="submit"
+                [loading]="saving()"
+              >
+                {{ 'common.actions.save' | translate }}
+              </drive-os-button>
             </div>
           </form>
         } @else if (mode() === 'publish' && selected(); as item) {
-          <form class="space-y-5" [formGroup]="publishForm" (ngSubmit)="submitPublish()">
+          <form
+            class="space-y-5"
+            [formGroup]="publishForm"
+            (ngSubmit)="submitPublish()"
+          >
             <header>
-              <h2 class="driveos-section-title">{{ 'organizations.configurations.publishTitle' | translate }} v{{ item.versionNumber }}</h2>
-              <p class="driveos-section-description">{{ 'organizations.configurations.publishDescription' | translate }}</p>
+              <h2 class="driveos-section-title">
+                {{ 'organizations.configurations.publishTitle' | translate }} v{{
+                  item.versionNumber
+                }}
+              </h2>
+              <p class="driveos-section-description">
+                {{ 'organizations.configurations.publishDescription' | translate }}
+              </p>
             </header>
             <div class="grid gap-4 sm:grid-cols-2">
               <label class="space-y-2">
-                <span class="driveos-form-label">{{ 'organizations.configurations.fields.effectiveFrom' | translate }}</span>
-                <input dosInput type="datetime-local" formControlName="effectiveFromUtc" />
+                <span class="driveos-form-label">
+                  {{ 'organizations.configurations.fields.effectiveFrom' | translate }}
+                </span>
+                <input
+                  dosInput
+                  type="datetime-local"
+                  formControlName="effectiveFromUtc"
+                />
               </label>
               <label class="space-y-2">
-                <span class="driveos-form-label">{{ 'organizations.configurations.fields.effectiveTo' | translate }}</span>
-                <input dosInput type="datetime-local" formControlName="effectiveToUtc" />
+                <span class="driveos-form-label">
+                  {{ 'organizations.configurations.fields.effectiveTo' | translate }}
+                </span>
+                <input
+                  dosInput
+                  type="datetime-local"
+                  formControlName="effectiveToUtc"
+                />
               </label>
             </div>
             <div class="flex flex-wrap justify-end gap-3">
-              <drive-os-button type="button" variant="ghost" (pressed)="cancelMode()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
-              <drive-os-button type="submit" [loading]="saving()">{{ 'organizations.configurations.actions.publish' | translate }}</drive-os-button>
+              <drive-os-button
+                type="button"
+                variant="ghost"
+                (pressed)="cancelMode()"
+              >
+                {{ 'common.actions.cancel' | translate }}
+              </drive-os-button>
+              <drive-os-button
+                type="submit"
+                [loading]="saving()"
+              >
+                {{ 'organizations.configurations.actions.publish' | translate }}
+              </drive-os-button>
             </div>
           </form>
         } @else if (mode() === 'archive' && selected(); as item) {
           <div class="space-y-5">
             <header>
-              <h2 class="driveos-section-title">{{ 'organizations.configurations.archiveTitle' | translate }} v{{ item.versionNumber }}</h2>
-              <p class="driveos-section-description">{{ 'organizations.configurations.archiveDescription' | translate }}</p>
+              <h2 class="driveos-section-title">
+                {{ 'organizations.configurations.archiveTitle' | translate }} v{{
+                  item.versionNumber
+                }}
+              </h2>
+              <p class="driveos-section-description">
+                {{ 'organizations.configurations.archiveDescription' | translate }}
+              </p>
             </header>
             <div class="flex flex-wrap justify-end gap-3">
-              <drive-os-button variant="ghost" (pressed)="cancelMode()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
-              <drive-os-button variant="danger" [loading]="saving()" (pressed)="submitArchive()">{{ 'organizations.configurations.actions.archive' | translate }}</drive-os-button>
+              <drive-os-button
+                variant="ghost"
+                (pressed)="cancelMode()"
+              >
+                {{ 'common.actions.cancel' | translate }}
+              </drive-os-button>
+              <drive-os-button
+                variant="danger"
+                [loading]="saving()"
+                (pressed)="submitArchive()"
+              >
+                {{ 'organizations.configurations.actions.archive' | translate }}
+              </drive-os-button>
             </div>
           </div>
         } @else if (selected(); as item) {
@@ -145,32 +279,70 @@
             <header class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <div class="flex flex-wrap items-center gap-3">
-                  <h2 class="driveos-section-title">{{ 'organizations.configurations.versionLabel' | translate }} {{ item.versionNumber }}</h2>
-                  <drive-os-badge [variant]="statusVariant(item.status)">{{ statusLabel(item.status) | translate }}</drive-os-badge>
+                  <h2 class="driveos-section-title">
+                    {{ 'organizations.configurations.versionLabel' | translate }}
+                    {{ item.versionNumber }}
+                  </h2>
+                  <drive-os-badge [variant]="statusVariant(item.status)">
+                    {{ statusLabel(item.status) | translate }}
+                  </drive-os-badge>
                 </div>
-                <p class="driveos-section-description">{{ item.countryCode }} · {{ 'organizations.configurations.revision' | translate }} {{ item.revision }}</p>
+                <p class="driveos-section-description">
+                  {{ item.countryCode }} · {{ 'organizations.configurations.revision' | translate }}
+                  {{ item.revision }}
+                </p>
               </div>
               <div class="flex flex-wrap gap-2">
                 @if (item.status === 1 && canUpdate()) {
-                  <drive-os-button variant="outline" icon="pencil" (pressed)="openEdit()">{{ 'common.actions.edit' | translate }}</drive-os-button>
+                  <drive-os-button
+                    variant="outline"
+                    icon="pencil"
+                    (pressed)="openEdit()"
+                  >
+                    {{ 'common.actions.edit' | translate }}
+                  </drive-os-button>
                 }
                 @if (item.status === 1 && canPublish()) {
-                  <drive-os-button icon="send" (pressed)="openPublish()">{{ 'organizations.configurations.actions.publish' | translate }}</drive-os-button>
+                  <drive-os-button
+                    icon="send"
+                    (pressed)="openPublish()"
+                  >
+                    {{ 'organizations.configurations.actions.publish' | translate }}
+                  </drive-os-button>
                 }
                 @if (item.status === 2 && canArchive()) {
-                  <drive-os-button variant="danger" icon="archive" (pressed)="openArchive()">{{ 'organizations.configurations.actions.archive' | translate }}</drive-os-button>
+                  <drive-os-button
+                    variant="danger"
+                    icon="archive"
+                    (pressed)="openArchive()"
+                  >
+                    {{ 'organizations.configurations.actions.archive' | translate }}
+                  </drive-os-button>
                 }
               </div>
             </header>
 
             <dl class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <div class="configuration-meta"><dt>{{ 'organizations.configurations.fields.createdAt' | translate }}</dt><dd>{{ item.createdAtUtc | date:'medium' }}</dd></div>
-              <div class="configuration-meta"><dt>{{ 'organizations.configurations.fields.effectiveFrom' | translate }}</dt><dd>{{ item.effectiveFromUtc ? (item.effectiveFromUtc | date:'medium') : '—' }}</dd></div>
-              <div class="configuration-meta"><dt>{{ 'organizations.configurations.fields.effectiveTo' | translate }}</dt><dd>{{ item.effectiveToUtc ? (item.effectiveToUtc | date:'medium') : '—' }}</dd></div>
+              <div class="configuration-meta">
+                <dt>{{ 'organizations.configurations.fields.createdAt' | translate }}</dt>
+                <dd>{{ item.createdAtUtc | date: 'medium' }}</dd>
+              </div>
+              <div class="configuration-meta">
+                <dt>{{ 'organizations.configurations.fields.effectiveFrom' | translate }}</dt>
+                <dd>
+                  {{ item.effectiveFromUtc ? (item.effectiveFromUtc | date: 'medium') : '—' }}
+                </dd>
+              </div>
+              <div class="configuration-meta">
+                <dt>{{ 'organizations.configurations.fields.effectiveTo' | translate }}</dt>
+                <dd>{{ item.effectiveToUtc ? (item.effectiveToUtc | date: 'medium') : '—' }}</dd>
+              </div>
             </dl>
 
             <div>
-              <h3 class="mb-3 font-semibold text-slate-950 dark:text-white">{{ 'organizations.configurations.fields.payload' | translate }}</h3>
+              <h3 class="mb-3 font-semibold text-slate-950 dark:text-white">
+                {{ 'organizations.configurations.fields.payload' | translate }}
+              </h3>
               <pre class="configuration-preview">{{ prettyJson(item.payloadJson) }}</pre>
             </div>
           </div>

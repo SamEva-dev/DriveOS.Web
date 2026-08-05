@@ -5,7 +5,13 @@ import { AuthApiService } from '../auth/data-access/auth-api.service';
 import { AuthorizationService } from '../auth/authorization.service';
 import { environment } from '../../../environments/environment';
 import { AuthUser } from '../auth/models/auth-user.model';
-import { AuthTokens, RegisterRequest, RegisterResponse, LoginResponse, JwtPayload } from '../auth/models/auth.models';
+import {
+  AuthTokens,
+  RegisterRequest,
+  RegisterResponse,
+  LoginResponse,
+  JwtPayload,
+} from '../auth/models/auth.models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -18,7 +24,9 @@ export class AuthService {
   private refreshPromise: Promise<boolean> | null = null;
 
   readonly user = this.userSignal.asReadonly();
-  readonly isAuthenticated = computed(() => !!this.userSignal() && !!this.tokensSignal()?.accessToken);
+  readonly isAuthenticated = computed(
+    () => !!this.userSignal() && !!this.tokensSignal()?.accessToken,
+  );
   readonly accessToken = computed(() => this.tokensSignal()?.accessToken ?? null);
   readonly hasStoredRefreshToken = computed(() => !!this.tokensSignal()?.refreshToken);
 
@@ -26,20 +34,26 @@ export class AuthService {
     this.bootstrapFromStorage();
   }
 
-  setRememberMe(value: boolean): void { this.tokens.setRememberMe(value); }
-  getRememberMe(): boolean { return this.tokens.getRememberMe(); }
+  setRememberMe(value: boolean): void {
+    this.tokens.setRememberMe(value);
+  }
+  getRememberMe(): boolean {
+    return this.tokens.getRememberMe();
+  }
 
   async preLogin(email: string) {
     return firstValueFrom(this.api.preLogin(email.trim().toLowerCase()));
   }
 
   async login(email: string, password: string): Promise<void> {
-    const response = await firstValueFrom(this.api.login({
-      clientId: environment.AUTH_CLIENT_ID,
-      email: email.trim().toLowerCase(),
-      password,
-      deviceFingerprint: this.createDeviceFingerprint(),
-    }));
+    const response = await firstValueFrom(
+      this.api.login({
+        clientId: environment.AUTH_CLIENT_ID,
+        email: email.trim().toLowerCase(),
+        password,
+        deviceFingerprint: this.createDeviceFingerprint(),
+      }),
+    );
 
     if (response.requiresMfa) {
       throw new Error('MFA_REQUIRED');
@@ -61,11 +75,13 @@ export class AuthService {
     return response;
   }
 
-  hasRefreshToken(): boolean { return this.hasStoredRefreshToken(); }
+  hasRefreshToken(): boolean {
+    return this.hasStoredRefreshToken();
+  }
 
   async refresh(): Promise<boolean> {
     if (this.refreshPromise) return this.refreshPromise;
-    this.refreshPromise = this.executeRefresh().finally(() => this.refreshPromise = null);
+    this.refreshPromise = this.executeRefresh().finally(() => (this.refreshPromise = null));
     return this.refreshPromise;
   }
 
@@ -86,9 +102,14 @@ export class AuthService {
   }
 
   getBackendErrorMessage(error: unknown): string | null {
-    const value = error as { error?: { message?: string; error?: string; title?: string } | string; message?: string };
+    const value = error as {
+      error?: { message?: string; error?: string; title?: string } | string;
+      message?: string;
+    };
     if (typeof value?.error === 'string') return value.error;
-    return value?.error?.message ?? value?.error?.error ?? value?.error?.title ?? value?.message ?? null;
+    return (
+      value?.error?.message ?? value?.error?.error ?? value?.error?.title ?? value?.message ?? null
+    );
   }
 
   private async executeRefresh(): Promise<boolean> {
@@ -143,7 +164,8 @@ export class AuthService {
       firstName: responseUser?.firstName ?? null,
       lastName: responseUser?.lastName ?? null,
       fullName,
-      organizationId: payload.organization_id ?? payload.tenant_id ?? responseUser?.organizationId ?? null,
+      organizationId:
+        payload.organization_id ?? payload.tenant_id ?? responseUser?.organizationId ?? null,
       phoneNumber: responseUser?.phoneNumber ?? null,
       isActive: responseUser?.isActive ?? true,
       roles,
@@ -166,6 +188,10 @@ export class AuthService {
 
   private createDeviceFingerprint(): string {
     const source = navigator.userAgent || 'unknown';
-    try { return btoa(source); } catch { return source; }
+    try {
+      return btoa(source);
+    } catch {
+      return source;
+    }
   }
 }

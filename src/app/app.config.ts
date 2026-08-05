@@ -23,6 +23,7 @@ import { correlationIdInterceptor } from './core/http/correlation-id.interceptor
 
 import { provideTheme } from './core/theme/provide-theme';
 import { AUTH_API_CONFIG } from './core/auth/auth-api-config';
+import { authInterceptor } from './core/auth/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -38,7 +39,9 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
 
-    provideHttpClient(withInterceptors([correlationIdInterceptor, apiErrorInterceptor])),
+    provideHttpClient(
+      withInterceptors([correlationIdInterceptor, authInterceptor, apiErrorInterceptor]),
+    ),
 
     provideTranslateService({
       fallbackLang: 'fr',

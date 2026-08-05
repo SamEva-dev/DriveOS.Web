@@ -55,7 +55,7 @@ export class LoginPage {
     try {
       this.auth.setRememberMe(this.rememberMe());
       await this.auth.login(this.email, this.password);
-      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/organizations';
+      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/dashboard';
       await this.router.navigateByUrl(returnUrl);
     } catch (error) {
       const message = this.auth.getBackendErrorMessage(error);

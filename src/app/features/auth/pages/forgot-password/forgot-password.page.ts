@@ -6,7 +6,6 @@ import { firstValueFrom } from 'rxjs';
 import { AuthApiService } from '../../../../core/auth/data-access/auth-api.service';
 import { AuthShellComponent } from '../../components/auth-shell.component';
 
-
 @Component({
   selector: 'driveos-forgot-password-page',
   standalone: true,

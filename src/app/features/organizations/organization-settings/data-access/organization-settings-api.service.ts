@@ -25,15 +25,24 @@ export class OrganizationSettingsApiService {
     return this.http.post<void>(this.url(organizationId), request);
   }
 
-  updateProfile(organizationId: string, request: UpdateOrganizationProfileRequest): Observable<void> {
+  updateProfile(
+    organizationId: string,
+    request: UpdateOrganizationProfileRequest,
+  ): Observable<void> {
     return this.http.put<void>(`${this.url(organizationId)}/profile`, request);
   }
 
-  updateContact(organizationId: string, request: UpdateOrganizationContactRequest): Observable<void> {
+  updateContact(
+    organizationId: string,
+    request: UpdateOrganizationContactRequest,
+  ): Observable<void> {
     return this.http.put<void>(`${this.url(organizationId)}/contact`, request);
   }
 
-  updateAddress(organizationId: string, request: UpdateOrganizationAddressRequest): Observable<void> {
+  updateAddress(
+    organizationId: string,
+    request: UpdateOrganizationAddressRequest,
+  ): Observable<void> {
     return this.http.put<void>(`${this.url(organizationId)}/address`, request);
   }
 

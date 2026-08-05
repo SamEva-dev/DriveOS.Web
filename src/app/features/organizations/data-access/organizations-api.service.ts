@@ -36,7 +36,6 @@ export class OrganizationsApiService {
     return this.http.get<Organization>(`${this.baseUrl}/${organizationId}`);
   }
 
-
   getStatusHistory(organizationId: string): Observable<readonly OrganizationStatusHistoryItem[]> {
     return this.http.get<readonly OrganizationStatusHistoryItem[]>(
       `${this.baseUrl}/${organizationId}/status-history`,

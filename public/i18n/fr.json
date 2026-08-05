@@ -772,6 +772,143 @@
       "notifications": {
         "saved": "La configuration locale a été enregistrée."
       }
+    },
+
+    "sequences": {
+      "title": "Séquences de numérotation",
+      "description": "Configurez les références métier uniques de l’organisation et de ses agences.",
+      "organizationCardDescription": "Gérer les formats et compteurs des dossiers, contrats, factures et autres références.",
+      "back": "Retour à l’organisation",
+      "listTitle": "Séquences disponibles",
+      "createTitle": "Nouvelle séquence",
+      "reserveTitle": "Réserver le prochain numéro",
+      "reserveWarning": "Cette action consomme définitivement la prochaine valeur de la séquence.",
+      "preview": "Aperçu",
+      "lastReserved": "Dernier numéro réservé",
+      "nextValue": "Prochaine valeur",
+      "actions": {
+        "manage": "Gérer les séquences",
+        "create": "Créer une séquence",
+        "reserve": "Réserver un numéro",
+        "confirmReserve": "Confirmer la réservation",
+        "suspend": "Suspendre",
+        "reactivate": "Réactiver",
+        "archive": "Archiver"
+      },
+      "empty": {
+        "title": "Aucune séquence",
+        "description": "Créez une première séquence pour générer des références métier cohérentes."
+      },
+      "fields": {
+        "scope": "Portée",
+        "branchId": "Identifiant de l’agence",
+        "code": "Code",
+        "pattern": "Motif",
+        "padding": "Nombre de chiffres",
+        "initialValue": "Valeur initiale",
+        "resetPolicy": "Remise à zéro",
+        "nextValue": "Prochaine valeur",
+        "revision": "Révision",
+        "createdAt": "Créée le"
+      },
+      "scope": {
+        "Organization": "Organisation",
+        "Branch": "Agence"
+      },
+      "resetPolicy": {
+        "Never": "Jamais",
+        "Yearly": "Chaque année",
+        "Monthly": "Chaque mois"
+      },
+      "status": {
+        "Active": "Active",
+        "Suspended": "Suspendue",
+        "Archived": "Archivée"
+      },
+      "validation": {
+        "branchRequired": "Une agence est obligatoire pour une séquence de portée agence.",
+        "numberTokenRequired": "Le motif doit contenir le token {NUMBER}."
+      },
+      "messages": {
+        "created": "La séquence a été créée.",
+        "reserved": "Le numéro a été réservé.",
+        "suspended": "La séquence a été suspendue.",
+        "reactivated": "La séquence a été réactivée.",
+        "archived": "La séquence a été archivée.",
+        "conflict": "La séquence a été modifiée par un autre utilisateur. Les données ont été actualisées."
+      },
+      "confirm": {
+        "suspend": {
+          "title": "Suspendre la séquence ?",
+          "description": "Aucun nouveau numéro ne pourra être réservé tant qu’elle ne sera pas réactivée."
+        },
+        "reactivate": {
+          "title": "Réactiver la séquence ?",
+          "description": "La réservation de nouveaux numéros sera de nouveau autorisée."
+        },
+        "archive": {
+          "title": "Archiver la séquence ?",
+          "description": "Cette action conserve l’historique, mais la séquence ne pourra plus être utilisée."
+        }
+      }
+    },
+    "representatives": {
+      "title": "Propriétaires et représentants",
+      "description": "Gérez les personnes habilitées à agir au nom de cette organisation.",
+      "organizationCardDescription": "Propriétaires, dirigeants, signataires et autres représentants habilités.",
+      "emptyDescription": "Ajoutez un propriétaire ou un représentant afin de définir la gouvernance de cette organisation.",
+      "selectPromptDescription": "Sélectionnez un représentant dans la liste pour consulter ses informations et gérer son cycle de vie.",
+      "listTitle": "Représentants",
+      "empty": "Aucun représentant enregistré",
+      "selectPrompt": "Sélectionnez un représentant",
+      "primaryOwner": "Propriétaire principal",
+      "actions": {
+        "manage": "Gérer",
+        "create": "Ajouter un représentant",
+        "activate": "Activer",
+        "suspend": "Suspendre",
+        "reactivate": "Réactiver",
+        "end": "Mettre fin",
+        "setPrimaryOwner": "Définir comme propriétaire principal"
+      },
+      "fields": {
+        "type": "Type",
+        "authority": "Périmètre d’autorité",
+        "effectiveFrom": "Date de début",
+        "effectiveTo": "Date de fin",
+        "period": "Période",
+        "reason": "Motif",
+        "activateImmediately": "Activer immédiatement"
+      },
+      "types": {
+        "Owner": "Propriétaire",
+        "LegalRepresentative": "Représentant légal",
+        "Director": "Dirigeant",
+        "AuthorizedSignatory": "Signataire autorisé",
+        "AdministrativeRepresentative": "Représentant administratif",
+        "BillingRepresentative": "Représentant financier",
+        "DataProtectionRepresentative": "Délégué à la protection des données",
+        "Other": "Autre"
+      },
+      "status": {
+        "Draft": "Brouillon",
+        "Active": "Actif",
+        "Suspended": "Suspendu",
+        "Ended": "Terminé"
+      },
+      "messages": {
+        "created": "Représentant créé.",
+        "updated": "Autorité mise à jour.",
+        "activate": "Représentant activé.",
+        "suspend": "Représentant suspendu.",
+        "reactivate": "Représentant réactivé.",
+        "end": "Représentation terminée.",
+        "primary": "Propriétaire principal mis à jour.",
+        "conflict": "Les données ont été modifiées par un autre utilisateur. La liste a été rechargée."
+      },
+      "validation": {
+        "reasonRequired": "Le motif est obligatoire."
+      }
     }
   },
   "statuses": {

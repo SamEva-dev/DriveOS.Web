@@ -2,7 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { AUTH_API_CONFIG } from '../auth-api-config';
 import { environment } from '../../../../environments/environment';
-import { LoginRequest, LoginResponse, PreLoginResponse, RegisterRequest, RegisterResponse } from '../models/auth.models';
+import {
+  LoginRequest,
+  LoginResponse,
+  PreLoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+} from '../models/auth.models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthApiService {
@@ -11,7 +17,10 @@ export class AuthApiService {
   private readonly baseUrl = `${this.config.baseUrl.replace(/\/$/, '')}/api`;
 
   preLogin(email: string) {
-    return this.http.post<PreLoginResponse>(`${this.baseUrl}/Auth/prelogin`, { email, clientId: environment.AUTH_CLIENT_ID });
+    return this.http.post<PreLoginResponse>(`${this.baseUrl}/Auth/prelogin`, {
+      email,
+      clientId: environment.AUTH_CLIENT_ID,
+    });
   }
 
   login(request: LoginRequest) {
@@ -30,7 +39,10 @@ export class AuthApiService {
   }
 
   requestPasswordReset(email: string) {
-    return this.http.post<void>(`${this.baseUrl}/PasswordReset/request`, { email, clientId: environment.AUTH_CLIENT_ID });
+    return this.http.post<void>(`${this.baseUrl}/PasswordReset/request`, {
+      email,
+      clientId: environment.AUTH_CLIENT_ID,
+    });
   }
 
   resetPassword(email: string, token: string, newPassword: string, confirmPassword: string) {
@@ -47,6 +59,9 @@ export class AuthApiService {
   }
 
   resendEmailConfirmation(email: string) {
-    return this.http.post<void>(`${this.baseUrl}/Auth/resend-confirm-email`, { email, clientId: environment.AUTH_CLIENT_ID });
+    return this.http.post<void>(`${this.baseUrl}/Auth/resend-confirm-email`, {
+      email,
+      clientId: environment.AUTH_CLIENT_ID,
+    });
   }
 }

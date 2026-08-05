@@ -772,6 +772,142 @@
       "notifications": {
         "saved": "The local configuration has been saved."
       }
+    },
+    "sequences": {
+      "title": "Number sequences",
+      "description": "Configure unique business references for the organization and its branches.",
+      "organizationCardDescription": "Manage formats and counters for students, contracts, invoices and other references.",
+      "back": "Back to organization",
+      "listTitle": "Available sequences",
+      "createTitle": "New sequence",
+      "reserveTitle": "Reserve next number",
+      "reserveWarning": "This action permanently consumes the sequence's next value.",
+      "preview": "Preview",
+      "lastReserved": "Last reserved number",
+      "nextValue": "Next value",
+      "actions": {
+        "manage": "Manage sequences",
+        "create": "Create sequence",
+        "reserve": "Reserve number",
+        "confirmReserve": "Confirm reservation",
+        "suspend": "Suspend",
+        "reactivate": "Reactivate",
+        "archive": "Archive"
+      },
+      "empty": {
+        "title": "No sequences",
+        "description": "Create a first sequence to generate consistent business references."
+      },
+      "fields": {
+        "scope": "Scope",
+        "branchId": "Branch ID",
+        "code": "Code",
+        "pattern": "Pattern",
+        "padding": "Number padding",
+        "initialValue": "Initial value",
+        "resetPolicy": "Reset policy",
+        "nextValue": "Next value",
+        "revision": "Revision",
+        "createdAt": "Created at"
+      },
+      "scope": {
+        "Organization": "Organization",
+        "Branch": "Branch"
+      },
+      "resetPolicy": {
+        "Never": "Never",
+        "Yearly": "Yearly",
+        "Monthly": "Monthly"
+      },
+      "status": {
+        "Active": "Active",
+        "Suspended": "Suspended",
+        "Archived": "Archived"
+      },
+      "validation": {
+        "branchRequired": "A branch is required for a branch-scoped sequence.",
+        "numberTokenRequired": "The pattern must contain the {NUMBER} token."
+      },
+      "messages": {
+        "created": "The sequence was created.",
+        "reserved": "The number was reserved.",
+        "suspended": "The sequence was suspended.",
+        "reactivated": "The sequence was reactivated.",
+        "archived": "The sequence was archived.",
+        "conflict": "The sequence was changed by another user. Data has been refreshed."
+      },
+      "confirm": {
+        "suspend": {
+          "title": "Suspend the sequence?",
+          "description": "No new number can be reserved until it is reactivated."
+        },
+        "reactivate": {
+          "title": "Reactivate the sequence?",
+          "description": "New number reservations will be allowed again."
+        },
+        "archive": {
+          "title": "Archive the sequence?",
+          "description": "History will be preserved, but the sequence can no longer be used."
+        }
+      }
+    },
+    "representatives": {
+      "title": "Owners and representatives",
+      "description": "Manage people authorized to act on behalf of this organization.",
+      "organizationCardDescription": "Owners, directors, signatories and other authorized representatives.",
+      "listTitle": "Representatives",
+      "empty": "No representative registered",
+      "selectPrompt": "Select a representative",
+       "emptyDescription": "Add an owner or representative to define the governance of this organization.",
+      "selectPromptDescription": "Select a representative from the list to view their details and manage their lifecycle.",
+      "primaryOwner": "Primary owner",
+      "actions": {
+        "manage": "Manage",
+        "create": "Add representative",
+        "activate": "Activate",
+        "suspend": "Suspend",
+        "reactivate": "Reactivate",
+        "end": "End representation",
+        "setPrimaryOwner": "Set as primary owner"
+      },
+      "fields": {
+        "type": "Type",
+        "authority": "Authority scope",
+        "effectiveFrom": "Start date",
+        "effectiveTo": "End date",
+        "period": "Period",
+        "reason": "Reason",
+        "activateImmediately": "Activate immediately"
+      },
+      "types": {
+        "Owner": "Owner",
+        "LegalRepresentative": "Legal representative",
+        "Director": "Director",
+        "AuthorizedSignatory": "Authorized signatory",
+        "AdministrativeRepresentative": "Administrative representative",
+        "BillingRepresentative": "Billing representative",
+        "DataProtectionRepresentative": "Data protection representative",
+        "Other": "Other"
+      },
+      "status": {
+        "Draft": "Draft",
+        "Active": "Active",
+        "Suspended": "Suspended",
+        "Ended": "Ended"
+      },
+      "messages": {
+        "created": "Representative created.",
+        "updated": "Authority updated.",
+        "activate": "Representative activated.",
+        "suspend": "Representative suspended.",
+        "reactivate": "Representative reactivated.",
+        "end": "Representation ended.",
+        "primary": "Primary owner updated.",
+        "conflict": "The data was changed by another user. The list has been refreshed."
+      },
+      "validation": {
+        "reasonRequired": "A reason is required."
+      }
     }
   },
   "refreshWarning": {

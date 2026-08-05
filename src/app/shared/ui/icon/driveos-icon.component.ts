@@ -16,15 +16,18 @@ export class DriveOsIconComponent {
   readonly label = input<string | null>(null);
 
   readonly normalizedName = computed(() => this.normalize(this.name()));
-  readonly sizeClass = computed(() => ({ sm: 'size-4', md: 'size-5', lg: 'size-6', xl: 'size-8' })[this.size()]);
+  readonly sizeClass = computed(
+    () => ({ sm: 'size-4', md: 'size-5', lg: 'size-6', xl: 'size-8' })[this.size()],
+  );
 
   private normalize(value: string): string {
-    const token = value
-      .replace(/\bph(?:-bold|-duotone|-fill)?\b/g, '')
-      .replace(/\bph-/g, '')
-      .trim()
-      .split(/\s+/)
-      .find((part) => !part.startsWith('text-') && !part.startsWith('animate-')) ?? value;
+    const token =
+      value
+        .replace(/\bph(?:-bold|-duotone|-fill)?\b/g, '')
+        .replace(/\bph-/g, '')
+        .trim()
+        .split(/\s+/)
+        .find((part) => !part.startsWith('text-') && !part.startsWith('animate-')) ?? value;
 
     const aliases: Record<string, string> = {
       'arrows-clockwise': 'refresh-cw',

@@ -6,10 +6,5 @@ import { Directive, HostBinding } from '@angular/core';
 })
 export class DriveOsInputDirective {
   @HostBinding('class')
-  readonly classes = [
-    'driveos-field',
-    'min-h-10',
-    'px-3',
-    'py-2',
-  ].join(' ');
+  readonly classes = ['driveos-field', 'min-h-10', 'px-3', 'py-2'].join(' ');
 }

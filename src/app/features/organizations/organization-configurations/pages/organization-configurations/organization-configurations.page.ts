@@ -102,15 +102,16 @@ export class OrganizationConfigurationsPage {
     if (this.saving()) return;
     this.mode.set('view');
     this.detailLoading.set(true);
-    this.api.getById(this.organizationId, item.id)
+    this.api
+      .getById(this.organizationId, item.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: value => {
+        next: (value) => {
           this.selected.set(value);
           this.detailLoading.set(false);
           this.jsonError.set(null);
         },
-        error: error => {
+        error: (error) => {
           this.detailLoading.set(false);
           this.showErrors(error);
         },
@@ -118,7 +119,7 @@ export class OrganizationConfigurationsPage {
   }
 
   openCreate(): void {
-    const nextVersion = Math.max(0, ...this.versions().map(x => x.versionNumber)) + 1;
+    const nextVersion = Math.max(0, ...this.versions().map((x) => x.versionNumber)) + 1;
     this.createForm.reset({
       versionNumber: nextVersion,
       countryCode: this.selected()?.countryCode ?? 'FR',
@@ -130,7 +131,8 @@ export class OrganizationConfigurationsPage {
 
   openEdit(): void {
     const current = this.selected();
-    if (!current || current.status !== OrganizationConfigurationStatus.Draft || !this.canUpdate()) return;
+    if (!current || current.status !== OrganizationConfigurationStatus.Draft || !this.canUpdate())
+      return;
     this.editForm.reset({ payloadJson: this.prettyJson(current.payloadJson) });
     this.jsonError.set(null);
     this.mode.set('edit');
@@ -138,14 +140,20 @@ export class OrganizationConfigurationsPage {
 
   openPublish(): void {
     const current = this.selected();
-    if (!current || current.status !== OrganizationConfigurationStatus.Draft || !this.canPublish()) return;
+    if (!current || current.status !== OrganizationConfigurationStatus.Draft || !this.canPublish())
+      return;
     this.publishForm.reset({ effectiveFromUtc: this.toLocalInput(new Date()), effectiveToUtc: '' });
     this.mode.set('publish');
   }
 
   openArchive(): void {
     const current = this.selected();
-    if (!current || current.status !== OrganizationConfigurationStatus.Published || !this.canArchive()) return;
+    if (
+      !current ||
+      current.status !== OrganizationConfigurationStatus.Published ||
+      !this.canArchive()
+    )
+      return;
     this.mode.set('archive');
   }
 
@@ -163,14 +171,17 @@ export class OrganizationConfigurationsPage {
     if (!payloadJson) return;
 
     this.saving.set(true);
-    this.api.createDraft(this.organizationId, {
-      versionNumber: value.versionNumber,
-      countryCode: value.countryCode.trim().toUpperCase(),
-      payloadJson,
-    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: result => this.afterMutation(result.id),
-      error: error => this.onMutationError(error),
-    });
+    this.api
+      .createDraft(this.organizationId, {
+        versionNumber: value.versionNumber,
+        countryCode: value.countryCode.trim().toUpperCase(),
+        payloadJson,
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => this.afterMutation(result.id),
+        error: (error) => this.onMutationError(error),
+      });
   }
 
   submitEdit(): void {
@@ -183,13 +194,16 @@ export class OrganizationConfigurationsPage {
     if (!payloadJson) return;
 
     this.saving.set(true);
-    this.api.updateDraft(this.organizationId, current.id, {
-      payloadJson,
-      expectedRevision: current.revision,
-    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => this.afterMutation(current.id),
-      error: error => this.onMutationError(error),
-    });
+    this.api
+      .updateDraft(this.organizationId, current.id, {
+        payloadJson,
+        expectedRevision: current.revision,
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => this.afterMutation(current.id),
+        error: (error) => this.onMutationError(error),
+      });
   }
 
   submitPublish(): void {
@@ -210,25 +224,29 @@ export class OrganizationConfigurationsPage {
     }
 
     this.saving.set(true);
-    this.api.publish(this.organizationId, current.id, {
-      effectiveFromUtc: from,
-      effectiveToUtc: to,
-      expectedRevision: current.revision,
-    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => this.afterMutation(current.id),
-      error: error => this.onMutationError(error),
-    });
+    this.api
+      .publish(this.organizationId, current.id, {
+        effectiveFromUtc: from,
+        effectiveToUtc: to,
+        expectedRevision: current.revision,
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => this.afterMutation(current.id),
+        error: (error) => this.onMutationError(error),
+      });
   }
 
   submitArchive(): void {
     const current = this.selected();
     if (!current || this.saving()) return;
     this.saving.set(true);
-    this.api.archive(this.organizationId, current.id, { expectedRevision: current.revision })
+    this.api
+      .archive(this.organizationId, current.id, { expectedRevision: current.revision })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => this.afterMutation(current.id),
-        error: error => this.onMutationError(error),
+        error: (error) => this.onMutationError(error),
       });
   }
 
@@ -247,23 +265,27 @@ export class OrganizationConfigurationsPage {
   }
 
   prettyJson(value: string): string {
-    try { return JSON.stringify(JSON.parse(value), null, 2); }
-    catch { return value; }
+    try {
+      return JSON.stringify(JSON.parse(value), null, 2);
+    } catch {
+      return value;
+    }
   }
 
   private loadVersions(selectId?: string): void {
     this.loading.set(true);
-    this.api.getVersions(this.organizationId)
+    this.api
+      .getVersions(this.organizationId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: values => {
+        next: (values) => {
           this.versions.set(values);
           this.loading.set(false);
-          const target = selectId ? values.find(x => x.id === selectId) : values[0];
+          const target = selectId ? values.find((x) => x.id === selectId) : values[0];
           if (target) this.select(target);
           else this.selected.set(null);
         },
-        error: error => {
+        error: (error) => {
           this.loading.set(false);
           this.showErrors(error);
         },
@@ -297,7 +319,9 @@ export class OrganizationConfigurationsPage {
       this.jsonError.set(null);
       return JSON.stringify(parsed);
     } catch {
-      this.jsonError.set(this.translate.instant('organizations.configurations.validation.invalidJson'));
+      this.jsonError.set(
+        this.translate.instant('organizations.configurations.validation.invalidJson'),
+      );
       return null;
     }
   }

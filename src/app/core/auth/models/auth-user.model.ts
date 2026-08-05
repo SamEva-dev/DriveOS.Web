@@ -24,7 +24,7 @@ export interface AuthUser {
   readonly lastLoginAtUtc: string | null;
 
   readonly roles: readonly string[];
-  
+
   readonly permissions: readonly string[];
 }
 

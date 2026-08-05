@@ -92,7 +92,14 @@ body {
   margin: 0;
   background: var(--driveos-surface-ground);
   color: var(--driveos-text-primary);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -115,7 +122,10 @@ textarea {
     padding-inline: 0.875rem;
     font-size: 0.875rem;
     outline: none;
-    transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease,
+      background-color 160ms ease;
   }
 
   .driveos-field::placeholder {
@@ -153,7 +163,10 @@ textarea {
     font-size: 1rem;
     line-height: 1.5;
     outline: none;
-    transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease,
+      background-color 160ms ease;
   }
 
   .driveos-auth-input::placeholder {
@@ -186,7 +199,11 @@ textarea {
     line-height: 1.25;
     text-decoration: none;
     box-shadow: var(--driveos-shadow-sm);
-    transition: transform 140ms ease, box-shadow 140ms ease, background-color 140ms ease, opacity 140ms ease;
+    transition:
+      transform 140ms ease,
+      box-shadow 140ms ease,
+      background-color 140ms ease,
+      opacity 140ms ease;
   }
 
   .driveos-auth-primary {
@@ -284,7 +301,6 @@ textarea {
 }
 
 @layer components {
-
   .driveos-page {
     width: 100%;
     max-width: 88rem;
@@ -418,7 +434,6 @@ textarea {
     border-color: var(--driveos-primary-700);
     box-shadow: 0 0 0 3px rgb(29 78 216 / 14%);
   }
-
 }
 
 /* UI-001G — accessibility, responsive and motion stabilization */

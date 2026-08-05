@@ -5,5 +5,5 @@ import { AuthService } from '../../services/auth.service';
 export const guestGuard: CanActivateFn = async () => {
   const auth = inject(AuthService);
   const router = inject(Router);
-  return (await auth.checkAuth()) ? router.createUrlTree(['/organizations']) : true;
+  return (await auth.checkAuth()) ? router.createUrlTree(['/dashboard']) : true;
 };

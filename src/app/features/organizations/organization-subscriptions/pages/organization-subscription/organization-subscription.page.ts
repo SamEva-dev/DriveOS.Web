@@ -1,6 +1,13 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -15,7 +22,10 @@ import {
   DriveOsSpinnerComponent,
   DriveOsToastService,
 } from '../../../../../shared/ui';
-import { OrganizationSubscriptionsApiService, OrganizationSubscriptionStatusAction } from '../../data-access/organization-subscriptions-api.service';
+import {
+  OrganizationSubscriptionsApiService,
+  OrganizationSubscriptionStatusAction,
+} from '../../data-access/organization-subscriptions-api.service';
 import { ORGANIZATION_SUBSCRIPTION_PERMISSIONS as permissions } from '../../domain/organization-subscription-permissions';
 import {
   OrganizationSubscription,
@@ -111,15 +121,21 @@ export class OrganizationSubscriptionPage {
     return `organizations.subscription.billingCycle.${OrganizationSubscriptionBillingCycle[cycle]}`;
   }
 
-  statusVariant(status: OrganizationSubscriptionStatus): 'neutral' | 'info' | 'success' | 'warning' | 'danger' {
+  statusVariant(
+    status: OrganizationSubscriptionStatus,
+  ): 'neutral' | 'info' | 'success' | 'warning' | 'danger' {
     switch (status) {
-      case OrganizationSubscriptionStatus.Active: return 'success';
-      case OrganizationSubscriptionStatus.Trialing: return 'info';
+      case OrganizationSubscriptionStatus.Active:
+        return 'success';
+      case OrganizationSubscriptionStatus.Trialing:
+        return 'info';
       case OrganizationSubscriptionStatus.PastDue:
-      case OrganizationSubscriptionStatus.Restricted: return 'warning';
+      case OrganizationSubscriptionStatus.Restricted:
+        return 'warning';
       case OrganizationSubscriptionStatus.Suspended:
       case OrganizationSubscriptionStatus.Cancelled:
-      case OrganizationSubscriptionStatus.Expired: return 'danger';
+      case OrganizationSubscriptionStatus.Expired:
+        return 'danger';
     }
   }
 
@@ -134,16 +150,20 @@ export class OrganizationSubscriptionPage {
     return this.authorization.hasPermission(map[action]);
   }
 
-  openCreate(): void { this.showCreate.set(true); }
-  closeCreate(): void { if (!this.saving()) this.showCreate.set(false); }
+  openCreate(): void {
+    this.showCreate.set(true);
+  }
+  closeCreate(): void {
+    if (!this.saving()) this.showCreate.set(false);
+  }
 
   openPlan(): void {
     const value = this.subscription();
     if (!value) return;
     this.planForm.reset({
       planCode: value.planCode,
-      entitlementCodes: value.entitlements.map(x => x.code).join('\n'),
-      limits: value.limits.map(x => `${x.code}=${x.value}`).join('\n'),
+      entitlementCodes: value.entitlements.map((x) => x.code).join('\n'),
+      limits: value.limits.map((x) => `${x.code}=${x.value}`).join('\n'),
       reason: '',
     });
     this.showPlan.set(true);
@@ -156,63 +176,94 @@ export class OrganizationSubscriptionPage {
   }
 
   submitCreate(): void {
-    if (this.createForm.invalid || this.saving()) { this.createForm.markAllAsTouched(); return; }
+    if (this.createForm.invalid || this.saving()) {
+      this.createForm.markAllAsTouched();
+      return;
+    }
     const value = this.createForm.getRawValue();
     this.saving.set(true);
-    this.api.create(this.organizationId, {
-      planCode: value.planCode.trim(),
-      status: value.status,
-      billingCycle: value.billingCycle,
-      currentPeriodStartsAtUtc: this.toUtc(value.currentPeriodStartsAtUtc)!,
-      currentPeriodEndsAtUtc: this.toUtc(value.currentPeriodEndsAtUtc),
-      trialStartsAtUtc: this.toUtc(value.trialStartsAtUtc),
-      trialEndsAtUtc: this.toUtc(value.trialEndsAtUtc),
-      externalProvider: this.nullIfBlank(value.externalProvider),
-      externalSubscriptionId: this.nullIfBlank(value.externalSubscriptionId),
-    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: () => this.afterSave(), error: e => this.onError(e) });
+    this.api
+      .create(this.organizationId, {
+        planCode: value.planCode.trim(),
+        status: value.status,
+        billingCycle: value.billingCycle,
+        currentPeriodStartsAtUtc: this.toUtc(value.currentPeriodStartsAtUtc)!,
+        currentPeriodEndsAtUtc: this.toUtc(value.currentPeriodEndsAtUtc),
+        trialStartsAtUtc: this.toUtc(value.trialStartsAtUtc),
+        trialEndsAtUtc: this.toUtc(value.trialEndsAtUtc),
+        externalProvider: this.nullIfBlank(value.externalProvider),
+        externalSubscriptionId: this.nullIfBlank(value.externalSubscriptionId),
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({ next: () => this.afterSave(), error: (e) => this.onError(e) });
   }
 
   submitPlan(): void {
     const current = this.subscription();
-    if (!current || this.planForm.invalid || this.saving()) { this.planForm.markAllAsTouched(); return; }
+    if (!current || this.planForm.invalid || this.saving()) {
+      this.planForm.markAllAsTouched();
+      return;
+    }
     let limits: Record<string, number>;
-    try { limits = this.parseLimits(this.planForm.controls.limits.value); }
-    catch { this.toast.error(this.translate.instant('errors.title'), this.translate.instant('organizations.subscription.validation.invalidLimits')); return; }
+    try {
+      limits = this.parseLimits(this.planForm.controls.limits.value);
+    } catch {
+      this.toast.error(
+        this.translate.instant('errors.title'),
+        this.translate.instant('organizations.subscription.validation.invalidLimits'),
+      );
+      return;
+    }
     const value = this.planForm.getRawValue();
     this.saving.set(true);
-    this.api.changePlan(this.organizationId, {
-      planCode: value.planCode.trim(),
-      entitlementCodes: this.parseLines(value.entitlementCodes),
-      limits,
-      expectedVersion: current.version,
-      reason: value.reason.trim(),
-    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: () => this.afterSave(), error: e => this.onError(e) });
+    this.api
+      .changePlan(this.organizationId, {
+        planCode: value.planCode.trim(),
+        entitlementCodes: this.parseLines(value.entitlementCodes),
+        limits,
+        expectedVersion: current.version,
+        reason: value.reason.trim(),
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({ next: () => this.afterSave(), error: (e) => this.onError(e) });
   }
 
   submitStatus(): void {
     const current = this.subscription();
     const action = this.selectedStatusAction();
-    if (!current || !action || this.statusForm.invalid || this.saving()) { this.statusForm.markAllAsTouched(); return; }
+    if (!current || !action || this.statusForm.invalid || this.saving()) {
+      this.statusForm.markAllAsTouched();
+      return;
+    }
     const value = this.statusForm.getRawValue();
     this.saving.set(true);
-    this.api.changeStatus(this.organizationId, action, {
-      periodStartsAtUtc: this.toUtc(value.periodStartsAtUtc),
-      periodEndsAtUtc: this.toUtc(value.periodEndsAtUtc),
-      expectedVersion: current.version,
-      reason: value.reason.trim(),
-    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: () => this.afterSave(), error: e => this.onError(e) });
+    this.api
+      .changeStatus(this.organizationId, action, {
+        periodStartsAtUtc: this.toUtc(value.periodStartsAtUtc),
+        periodEndsAtUtc: this.toUtc(value.periodEndsAtUtc),
+        expectedVersion: current.version,
+        reason: value.reason.trim(),
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({ next: () => this.afterSave(), error: (e) => this.onError(e) });
   }
 
   submitCancel(): void {
     const current = this.subscription();
-    if (!current || this.cancelForm.invalid || this.saving()) { this.cancelForm.markAllAsTouched(); return; }
+    if (!current || this.cancelForm.invalid || this.saving()) {
+      this.cancelForm.markAllAsTouched();
+      return;
+    }
     const value = this.cancelForm.getRawValue();
     this.saving.set(true);
-    this.api.cancel(this.organizationId, {
-      effectiveAtUtc: this.toUtc(value.effectiveAtUtc)!,
-      expectedVersion: current.version,
-      reason: value.reason.trim(),
-    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: () => this.afterSave(), error: e => this.onError(e) });
+    this.api
+      .cancel(this.organizationId, {
+        effectiveAtUtc: this.toUtc(value.effectiveAtUtc)!,
+        expectedVersion: current.version,
+        reason: value.reason.trim(),
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({ next: () => this.afterSave(), error: (e) => this.onError(e) });
   }
 
   closeDialogs(): void {
@@ -225,14 +276,24 @@ export class OrganizationSubscriptionPage {
 
   private load(): void {
     this.loading.set(true);
-    this.api.get(this.organizationId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: value => { this.subscription.set(value); this.notFound.set(false); this.loading.set(false); },
-      error: (error: HttpErrorResponse) => {
-        this.loading.set(false);
-        if (error.status === 404) { this.notFound.set(true); return; }
-        this.onError(error);
-      },
-    });
+    this.api
+      .get(this.organizationId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (value) => {
+          this.subscription.set(value);
+          this.notFound.set(false);
+          this.loading.set(false);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading.set(false);
+          if (error.status === 404) {
+            this.notFound.set(true);
+            return;
+          }
+          this.onError(error);
+        },
+      });
   }
 
   private afterSave(): void {
@@ -250,17 +311,28 @@ export class OrganizationSubscriptionPage {
   }
 
   private parseLines(value: string): string[] {
-    return [...new Set(value.split(/[,\n]/).map(x => x.trim()).filter(Boolean))];
+    return [
+      ...new Set(
+        value
+          .split(/[,\n]/)
+          .map((x) => x.trim())
+          .filter(Boolean),
+      ),
+    ];
   }
 
   private parseLimits(value: string): Record<string, number> {
     const result: Record<string, number> = {};
-    for (const line of value.split('\n').map(x => x.trim()).filter(Boolean)) {
+    for (const line of value
+      .split('\n')
+      .map((x) => x.trim())
+      .filter(Boolean)) {
       const separator = line.lastIndexOf('=');
       if (separator <= 0) throw new Error('invalid');
       const code = line.slice(0, separator).trim();
       const amount = Number(line.slice(separator + 1).trim());
-      if (!code || !Number.isSafeInteger(amount) || amount < 0 || code in result) throw new Error('invalid');
+      if (!code || !Number.isSafeInteger(amount) || amount < 0 || code in result)
+        throw new Error('invalid');
       result[code] = amount;
     }
     return result;

@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+dt {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgb(100 116 139);
+}
+dd {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgb(15 23 42);
+}
+:host-context(.dark) dd {
+  color: rgb(241 245 249);
+}

@@ -1,98 +1,406 @@
 <section class="mx-auto max-w-5xl space-y-6">
-  <a [routerLink]="['/organizations', organizationId]" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-800 dark:text-slate-400 dark:hover:text-blue-300">
-    <i class="ph ph-arrow-left" aria-hidden="true"></i>
+  <a
+    [routerLink]="['/organizations', organizationId]"
+    class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-800 dark:text-slate-400 dark:hover:text-blue-300"
+  >
+    <i
+      class="ph ph-arrow-left"
+      aria-hidden="true"
+    ></i>
     {{ 'organizations.settings.back' | translate }}
   </a>
 
   @if (isLoading()) {
-    <div class="flex min-h-72 items-center justify-center"><drive-os-spinner size="lg" [label]="'common.actions.loading' | translate" /></div>
+    <div class="flex min-h-72 items-center justify-center">
+      <drive-os-spinner
+        size="lg"
+        [label]="'common.actions.loading' | translate"
+      />
+    </div>
   } @else if (loadFailed()) {
-    <drive-os-empty-state icon="ph-duotone ph-warning-circle" [title]="'organizations.settings.errors.loadTitle' | translate" [description]="'organizations.settings.errors.loadDescription' | translate" />
+    <drive-os-empty-state
+      icon="ph-duotone ph-warning-circle"
+      [title]="'organizations.settings.errors.loadTitle' | translate"
+      [description]="'organizations.settings.errors.loadDescription' | translate"
+    />
   } @else if (settingsMissing()) {
     <drive-os-card>
-      <drive-os-empty-state icon="ph-duotone ph-sliders-horizontal" [title]="'organizations.settings.empty.title' | translate" [description]="'organizations.settings.empty.description' | translate" />
+      <drive-os-empty-state
+        icon="ph-duotone ph-sliders-horizontal"
+        [title]="'organizations.settings.empty.title' | translate"
+        [description]="'organizations.settings.empty.description' | translate"
+      />
       @if (canCreate()) {
-        <div class="mt-6 flex justify-center"><drive-os-button icon="ph ph-plus" [loading]="initializing()" (pressed)="initialize()">{{ 'organizations.settings.actions.initialize' | translate }}</drive-os-button></div>
+        <div class="mt-6 flex justify-center">
+          <drive-os-button
+            icon="ph ph-plus"
+            [loading]="initializing()"
+            (pressed)="initialize()"
+          >
+            {{ 'organizations.settings.actions.initialize' | translate }}
+          </drive-os-button>
+        </div>
       }
     </drive-os-card>
   } @else if (settings(); as current) {
     <header class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p class="text-sm font-semibold uppercase tracking-wide text-orange-500">{{ organization()?.legalName }}</p>
-        <h1 class="mt-1 text-3xl font-bold text-slate-950 dark:text-slate-50">{{ 'organizations.settings.title' | translate }}</h1>
-        <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">{{ 'organizations.settings.description' | translate }}</p>
+        <p class="text-sm font-semibold uppercase tracking-wide text-orange-500">
+          {{ organization()?.legalName }}
+        </p>
+        <h1 class="mt-1 text-3xl font-bold text-slate-950 dark:text-slate-50">
+          {{ 'organizations.settings.title' | translate }}
+        </h1>
+        <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+          {{ 'organizations.settings.description' | translate }}
+        </p>
       </div>
-      <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ 'organizations.settings.version' | translate }} {{ current.version }}</span>
+      <span
+        class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+      >
+        {{ 'organizations.settings.version' | translate }} {{ current.version }}
+      </span>
     </header>
 
     <drive-os-card>
-      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="space-y-5">
-        <div><h2 class="text-lg font-semibold text-slate-950 dark:text-slate-50">{{ 'organizations.settings.profile.title' | translate }}</h2><p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ 'organizations.settings.profile.description' | translate }}</p></div>
-        <div class="grid gap-4 md:grid-cols-3">
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.tradeName' | translate }}</span><input formControlName="tradeName" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.registrationNumber' | translate }}</span><input formControlName="registrationNumber" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.taxNumber' | translate }}</span><input formControlName="taxNumber" class="driveos-field" /></label>
+      <form
+        [formGroup]="profileForm"
+        (ngSubmit)="saveProfile()"
+        class="space-y-5"
+      >
+        <div>
+          <h2 class="text-lg font-semibold text-slate-950 dark:text-slate-50">
+            {{ 'organizations.settings.profile.title' | translate }}
+          </h2>
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            {{ 'organizations.settings.profile.description' | translate }}
+          </p>
         </div>
-        @if (canUpdate()) { <div class="flex justify-end"><drive-os-button type="submit" [loading]="savingSection() === 'profile'">{{ 'common.actions.save' | translate }}</drive-os-button></div> }
+        <div class="grid gap-4 md:grid-cols-3">
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.tradeName' | translate }}</span>
+            <input
+              formControlName="tradeName"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.registrationNumber' | translate }}</span>
+            <input
+              formControlName="registrationNumber"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.taxNumber' | translate }}</span>
+            <input
+              formControlName="taxNumber"
+              class="driveos-field"
+            />
+          </label>
+        </div>
+        @if (canUpdate()) {
+          <div class="flex justify-end">
+            <drive-os-button
+              type="submit"
+              [loading]="savingSection() === 'profile'"
+            >
+              {{ 'common.actions.save' | translate }}
+            </drive-os-button>
+          </div>
+        }
       </form>
     </drive-os-card>
 
     <drive-os-card>
-      <form [formGroup]="contactForm" (ngSubmit)="saveContact()" class="space-y-5">
-        <div><h2 class="text-lg font-semibold text-slate-950 dark:text-slate-50">{{ 'organizations.settings.contact.title' | translate }}</h2></div>
-        <div class="grid gap-4 md:grid-cols-3">
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.email' | translate }}</span><input type="email" formControlName="email" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.phone' | translate }}</span><input formControlName="phone" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.website' | translate }}</span><input type="url" formControlName="website" class="driveos-field" /></label>
+      <form
+        [formGroup]="contactForm"
+        (ngSubmit)="saveContact()"
+        class="space-y-5"
+      >
+        <div>
+          <h2 class="text-lg font-semibold text-slate-950 dark:text-slate-50">
+            {{ 'organizations.settings.contact.title' | translate }}
+          </h2>
         </div>
-        @if (canUpdate()) { <div class="flex justify-end"><drive-os-button type="submit" [loading]="savingSection() === 'contact'">{{ 'common.actions.save' | translate }}</drive-os-button></div> }
+        <div class="grid gap-4 md:grid-cols-3">
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.email' | translate }}</span>
+            <input
+              type="email"
+              formControlName="email"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.phone' | translate }}</span>
+            <input
+              formControlName="phone"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.website' | translate }}</span>
+            <input
+              type="url"
+              formControlName="website"
+              class="driveos-field"
+            />
+          </label>
+        </div>
+        @if (canUpdate()) {
+          <div class="flex justify-end">
+            <drive-os-button
+              type="submit"
+              [loading]="savingSection() === 'contact'"
+            >
+              {{ 'common.actions.save' | translate }}
+            </drive-os-button>
+          </div>
+        }
       </form>
     </drive-os-card>
 
     <drive-os-card>
-      <form [formGroup]="addressForm" (ngSubmit)="saveAddress()" class="space-y-5">
-        <div><h2 class="text-lg font-semibold text-slate-950 dark:text-slate-50">{{ 'organizations.settings.address.title' | translate }}</h2></div>
+      <form
+        [formGroup]="addressForm"
+        (ngSubmit)="saveAddress()"
+        class="space-y-5"
+      >
+        <div>
+          <h2 class="text-lg font-semibold text-slate-950 dark:text-slate-50">
+            {{ 'organizations.settings.address.title' | translate }}
+          </h2>
+        </div>
         <div class="grid gap-4 md:grid-cols-2">
-          <label class="space-y-2 text-sm font-medium md:col-span-2"><span>{{ 'organizations.settings.fields.addressLine1' | translate }}</span><input formControlName="addressLine1" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium md:col-span-2"><span>{{ 'organizations.settings.fields.addressLine2' | translate }}</span><input formControlName="addressLine2" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.postalCode' | translate }}</span><input formControlName="postalCode" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.city' | translate }}</span><input formControlName="city" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.region' | translate }}</span><input formControlName="region" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.countryCode' | translate }}</span><input formControlName="addressCountryCode" maxlength="2" class="driveos-field uppercase" /></label>
+          <label class="space-y-2 text-sm font-medium md:col-span-2">
+            <span>{{ 'organizations.settings.fields.addressLine1' | translate }}</span>
+            <input
+              formControlName="addressLine1"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium md:col-span-2">
+            <span>{{ 'organizations.settings.fields.addressLine2' | translate }}</span>
+            <input
+              formControlName="addressLine2"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.postalCode' | translate }}</span>
+            <input
+              formControlName="postalCode"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.city' | translate }}</span>
+            <input
+              formControlName="city"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.region' | translate }}</span>
+            <input
+              formControlName="region"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.countryCode' | translate }}</span>
+            <input
+              formControlName="addressCountryCode"
+              maxlength="2"
+              class="driveos-field uppercase"
+            />
+          </label>
         </div>
-        @if (canUpdate()) { <div class="flex justify-end"><drive-os-button type="submit" [loading]="savingSection() === 'address'">{{ 'common.actions.save' | translate }}</drive-os-button></div> }
+        @if (canUpdate()) {
+          <div class="flex justify-end">
+            <drive-os-button
+              type="submit"
+              [loading]="savingSection() === 'address'"
+            >
+              {{ 'common.actions.save' | translate }}
+            </drive-os-button>
+          </div>
+        }
       </form>
     </drive-os-card>
 
     <drive-os-card>
-      <form [formGroup]="regionalForm" (ngSubmit)="saveRegional()" class="space-y-5">
-        <div><h2 class="text-lg font-semibold text-slate-950 dark:text-slate-50">{{ 'organizations.settings.regional.title' | translate }}</h2></div>
+      <form
+        [formGroup]="regionalForm"
+        (ngSubmit)="saveRegional()"
+        class="space-y-5"
+      >
+        <div>
+          <h2 class="text-lg font-semibold text-slate-950 dark:text-slate-50">
+            {{ 'organizations.settings.regional.title' | translate }}
+          </h2>
+        </div>
         <div class="grid gap-4 md:grid-cols-2">
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.defaultLanguage' | translate }}</span><input formControlName="defaultLanguage" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.supportedLanguages' | translate }}</span><input formControlName="supportedLanguagesText" class="driveos-field" placeholder="fr, en" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.timeZoneId' | translate }}</span><input formControlName="timeZoneId" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.currencyCode' | translate }}</span><input formControlName="currencyCode" maxlength="3" class="driveos-field uppercase" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.dateFormat' | translate }}</span><input formControlName="dateFormat" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.timeFormat' | translate }}</span><input formControlName="timeFormat" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.firstDayOfWeek' | translate }}</span><select formControlName="firstDayOfWeek" class="driveos-field"><option [ngValue]="1">{{ 'organizations.settings.days.monday' | translate }}</option><option [ngValue]="0">{{ 'organizations.settings.days.sunday' | translate }}</option></select></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.measurementSystem' | translate }}</span><select formControlName="measurementSystem" class="driveos-field"><option [ngValue]="0">{{ 'organizations.settings.measurement.metric' | translate }}</option><option [ngValue]="1">{{ 'organizations.settings.measurement.imperial' | translate }}</option></select></label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.defaultLanguage' | translate }}</span>
+            <input
+              formControlName="defaultLanguage"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.supportedLanguages' | translate }}</span>
+            <input
+              formControlName="supportedLanguagesText"
+              class="driveos-field"
+              placeholder="fr, en"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.timeZoneId' | translate }}</span>
+            <input
+              formControlName="timeZoneId"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.currencyCode' | translate }}</span>
+            <input
+              formControlName="currencyCode"
+              maxlength="3"
+              class="driveos-field uppercase"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.dateFormat' | translate }}</span>
+            <input
+              formControlName="dateFormat"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.timeFormat' | translate }}</span>
+            <input
+              formControlName="timeFormat"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.firstDayOfWeek' | translate }}</span>
+            <select
+              formControlName="firstDayOfWeek"
+              class="driveos-field"
+            >
+              <option [ngValue]="1">{{ 'organizations.settings.days.monday' | translate }}</option>
+              <option [ngValue]="0">{{ 'organizations.settings.days.sunday' | translate }}</option>
+            </select>
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.measurementSystem' | translate }}</span>
+            <select
+              formControlName="measurementSystem"
+              class="driveos-field"
+            >
+              <option [ngValue]="0">
+                {{ 'organizations.settings.measurement.metric' | translate }}
+              </option>
+              <option [ngValue]="1">
+                {{ 'organizations.settings.measurement.imperial' | translate }}
+              </option>
+            </select>
+          </label>
         </div>
-        @if (canUpdate()) { <div class="flex justify-end"><drive-os-button type="submit" [loading]="savingSection() === 'regional'">{{ 'common.actions.save' | translate }}</drive-os-button></div> }
+        @if (canUpdate()) {
+          <div class="flex justify-end">
+            <drive-os-button
+              type="submit"
+              [loading]="savingSection() === 'regional'"
+            >
+              {{ 'common.actions.save' | translate }}
+            </drive-os-button>
+          </div>
+        }
       </form>
     </drive-os-card>
 
     <drive-os-card>
-      <form [formGroup]="operationalForm" (ngSubmit)="saveOperational()" class="space-y-5">
-        <div><h2 class="text-lg font-semibold text-slate-950 dark:text-slate-50">{{ 'organizations.settings.operational.title' | translate }}</h2></div>
-        <div class="grid gap-4 md:grid-cols-3">
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.sessionDuration' | translate }}</span><input type="number" formControlName="defaultSessionDurationMinutes" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.bookingLeadTime' | translate }}</span><input type="number" formControlName="defaultBookingLeadTimeMinutes" class="driveos-field" /></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.cancellationDelay' | translate }}</span><input type="number" formControlName="defaultCancellationDelayHours" class="driveos-field" /></label>
-          <label class="flex items-center gap-3 text-sm font-medium"><input type="checkbox" formControlName="allowStudentSelfBooking" class="size-4 rounded border-slate-300 text-blue-800" /><span>{{ 'organizations.settings.fields.allowSelfBooking' | translate }}</span></label>
-          <label class="flex items-center gap-3 text-sm font-medium"><input type="checkbox" formControlName="requireBranchForOperations" class="size-4 rounded border-slate-300 text-blue-800" /><span>{{ 'organizations.settings.fields.requireBranch' | translate }}</span></label>
-          <label class="space-y-2 text-sm font-medium"><span>{{ 'organizations.settings.fields.defaultBranch' | translate }}</span><select formControlName="defaultBranchId" class="driveos-field"><option [ngValue]="null">{{ 'organizations.settings.noDefaultBranch' | translate }}</option>@for (branch of branches(); track branch.id) { <option [value]="branch.id">{{ branch.name }}</option> }</select></label>
+      <form
+        [formGroup]="operationalForm"
+        (ngSubmit)="saveOperational()"
+        class="space-y-5"
+      >
+        <div>
+          <h2 class="text-lg font-semibold text-slate-950 dark:text-slate-50">
+            {{ 'organizations.settings.operational.title' | translate }}
+          </h2>
         </div>
-        @if (canUpdate()) { <div class="flex justify-end"><drive-os-button type="submit" [loading]="savingSection() === 'operational'">{{ 'common.actions.save' | translate }}</drive-os-button></div> }
+        <div class="grid gap-4 md:grid-cols-3">
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.sessionDuration' | translate }}</span>
+            <input
+              type="number"
+              formControlName="defaultSessionDurationMinutes"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.bookingLeadTime' | translate }}</span>
+            <input
+              type="number"
+              formControlName="defaultBookingLeadTimeMinutes"
+              class="driveos-field"
+            />
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.cancellationDelay' | translate }}</span>
+            <input
+              type="number"
+              formControlName="defaultCancellationDelayHours"
+              class="driveos-field"
+            />
+          </label>
+          <label class="flex items-center gap-3 text-sm font-medium">
+            <input
+              type="checkbox"
+              formControlName="allowStudentSelfBooking"
+              class="size-4 rounded border-slate-300 text-blue-800"
+            />
+            <span>{{ 'organizations.settings.fields.allowSelfBooking' | translate }}</span>
+          </label>
+          <label class="flex items-center gap-3 text-sm font-medium">
+            <input
+              type="checkbox"
+              formControlName="requireBranchForOperations"
+              class="size-4 rounded border-slate-300 text-blue-800"
+            />
+            <span>{{ 'organizations.settings.fields.requireBranch' | translate }}</span>
+          </label>
+          <label class="space-y-2 text-sm font-medium">
+            <span>{{ 'organizations.settings.fields.defaultBranch' | translate }}</span>
+            <select
+              formControlName="defaultBranchId"
+              class="driveos-field"
+            >
+              <option [ngValue]="null">
+                {{ 'organizations.settings.noDefaultBranch' | translate }}
+              </option>
+              @for (branch of branches(); track branch.id) {
+                <option [value]="branch.id">{{ branch.name }}</option>
+              }
+            </select>
+          </label>
+        </div>
+        @if (canUpdate()) {
+          <div class="flex justify-end">
+            <drive-os-button
+              type="submit"
+              [loading]="savingSection() === 'operational'"
+            >
+              {{ 'common.actions.save' | translate }}
+            </drive-os-button>
+          </div>
+        }
       </form>
     </drive-os-card>
   }

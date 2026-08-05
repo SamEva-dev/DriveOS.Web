@@ -1,11 +1,25 @@
 <driveos-auth-shell [subtitle]="'auth.subtitle' | translate">
   <div class="text-center">
     <div class="text-7xl font-extrabold leading-none text-[var(--driveos-accent-500)]">403</div>
-    <h1 class="mt-5 text-2xl font-bold text-[var(--driveos-text-primary)]">{{ 'auth.forbidden.title' | translate }}</h1>
-    <p class="mt-4 text-base leading-7 text-[var(--driveos-text-secondary)]">{{ 'auth.forbidden.description' | translate }}</p>
+    <h1 class="mt-5 text-2xl font-bold text-[var(--driveos-text-primary)]">
+      {{ 'auth.forbidden.title' | translate }}
+    </h1>
+    <p class="mt-4 text-base leading-7 text-[var(--driveos-text-secondary)]">
+      {{ 'auth.forbidden.description' | translate }}
+    </p>
     <div class="mt-8 space-y-4">
-      <a class="driveos-auth-primary" [routerLink]="returnUrl()">{{ 'auth.forbidden.retry' | translate }}</a>
-      <a class="driveos-auth-secondary" routerLink="/organizations">{{ 'auth.forbidden.back' | translate }}</a>
+      <a
+        class="driveos-auth-primary"
+        [routerLink]="returnUrl()"
+      >
+        {{ 'auth.forbidden.retry' | translate }}
+      </a>
+      <a
+        class="driveos-auth-secondary"
+        routerLink="/organizations"
+      >
+        {{ 'auth.forbidden.back' | translate }}
+      </a>
     </div>
   </div>
 </driveos-auth-shell>

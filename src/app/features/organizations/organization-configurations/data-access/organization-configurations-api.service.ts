@@ -19,7 +19,9 @@ export class OrganizationConfigurationsApiService {
   private readonly apiConfig = inject<ApiConfig>(API_CONFIG);
 
   getVersions(organizationId: string): Observable<readonly OrganizationConfigurationListItem[]> {
-    return this.http.get<readonly OrganizationConfigurationListItem[]>(this.baseUrl(organizationId));
+    return this.http.get<readonly OrganizationConfigurationListItem[]>(
+      this.baseUrl(organizationId),
+    );
   }
 
   getById(organizationId: string, configurationId: string): Observable<OrganizationConfiguration> {
@@ -40,10 +42,7 @@ export class OrganizationConfigurationsApiService {
     configurationId: string,
     request: UpdateOrganizationConfigurationDraftRequest,
   ): Observable<void> {
-    return this.http.put<void>(
-      `${this.baseUrl(organizationId)}/${configurationId}`,
-      request,
-    );
+    return this.http.put<void>(`${this.baseUrl(organizationId)}/${configurationId}`, request);
   }
 
   publish(

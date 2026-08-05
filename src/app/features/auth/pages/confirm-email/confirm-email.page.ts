@@ -5,7 +5,6 @@ import { AuthApiService } from '../../../../core/auth/data-access/auth-api.servi
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { AuthShellComponent } from '../../components/auth-shell.component';
 
-
 @Component({
   selector: 'driveos-confirm-email-page',
   standalone: true,

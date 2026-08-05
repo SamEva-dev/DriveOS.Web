@@ -6,27 +6,45 @@
       <p class="dashboard-subtitle">{{ 'dashboard.subtitle' | translate }}</p>
     </div>
 
-    <div class="dashboard-period" aria-label="Période du tableau de bord">
+    <div
+      class="dashboard-period"
+      aria-label="Période du tableau de bord"
+    >
       <label>
         <span class="sr-only">{{ 'dashboard.filters.month' | translate }}</span>
-        <select [value]="selectedMonth()" (change)="setMonth($event)">
+        <select
+          [value]="selectedMonth()"
+          (change)="setMonth($event)"
+        >
           @for (month of months; track month) {
-            <option [value]="month">{{ ('dashboard.months.' + month) | translate }}</option>
+            <option [value]="month">{{ 'dashboard.months.' + month | translate }}</option>
           }
         </select>
       </label>
 
       <label>
         <span class="sr-only">{{ 'dashboard.filters.year' | translate }}</span>
-        <select [value]="selectedYear()" (change)="setYear($event)">
+        <select
+          [value]="selectedYear()"
+          (change)="setYear($event)"
+        >
           @for (year of years; track year) {
             <option [value]="year">{{ year }}</option>
           }
         </select>
       </label>
 
-      <button class="dashboard-refresh" type="button" [disabled]="refreshing()" (click)="refresh()">
-        <svg viewBox="0 0 24 24" aria-hidden="true" [class.is-spinning]="refreshing()">
+      <button
+        class="dashboard-refresh"
+        type="button"
+        [disabled]="refreshing()"
+        (click)="refresh()"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          [class.is-spinning]="refreshing()"
+        >
           <path [attr.d]="iconPath('refresh')"></path>
         </svg>
         <span>{{ 'common.actions.refresh' | translate }}</span>
@@ -34,21 +52,35 @@
     </div>
   </header>
 
-  <section class="dashboard-actions" aria-labelledby="quick-actions-title">
+  <section
+    class="dashboard-actions"
+    aria-labelledby="quick-actions-title"
+  >
     <div class="dashboard-section-heading">
       <div>
         <span class="dashboard-kicker">{{ 'dashboard.quickActions.kicker' | translate }}</span>
         <h2 id="quick-actions-title">{{ 'dashboard.quickActions.title' | translate }}</h2>
         <p>{{ 'dashboard.quickActions.subtitle' | translate }}</p>
       </div>
-      <span class="dashboard-device-note">{{ 'dashboard.quickActions.deviceNote' | translate }}</span>
+      <span class="dashboard-device-note">
+        {{ 'dashboard.quickActions.deviceNote' | translate }}
+      </span>
     </div>
 
     <div class="dashboard-actions-grid">
       @for (action of quickActions; track action.code) {
-        <a class="dashboard-action-card" [class.dashboard-action-card--accent]="action.tone === 'accent'" [routerLink]="action.route">
+        <a
+          class="dashboard-action-card"
+          [class.dashboard-action-card--accent]="action.tone === 'accent'"
+          [routerLink]="action.route"
+        >
           <span class="dashboard-action-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="iconPath(action.icon)"></path></svg>
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path [attr.d]="iconPath(action.icon)"></path>
+            </svg>
           </span>
           <span class="dashboard-action-copy">
             <span class="dashboard-action-title">
@@ -57,24 +89,42 @@
                 <span class="dashboard-action-badge">{{ action.badgeKey | translate }}</span>
               }
             </span>
-            <span class="dashboard-action-description">{{ action.descriptionKey | translate }}</span>
+            <span class="dashboard-action-description">
+              {{ action.descriptionKey | translate }}
+            </span>
           </span>
-          <span class="dashboard-action-arrow" aria-hidden="true">→</span>
+          <span
+            class="dashboard-action-arrow"
+            aria-hidden="true"
+          >
+            →
+          </span>
         </a>
       }
     </div>
   </section>
 
-  <section class="dashboard-metrics" aria-label="Indicateurs principaux">
+  <section
+    class="dashboard-metrics"
+    aria-label="Indicateurs principaux"
+  >
     @for (metric of metrics; track metric.code) {
-      <article class="dashboard-metric" [attr.data-tone]="metric.tone">
+      <article
+        class="dashboard-metric"
+        [attr.data-tone]="metric.tone"
+      >
         <div>
           <p>{{ metric.labelKey | translate }}</p>
           <strong>{{ metric.value }}</strong>
           <span>{{ metric.detailKey | translate }}</span>
         </div>
         <span class="dashboard-metric-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="iconPath(metric.icon)"></path></svg>
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path [attr.d]="iconPath(metric.icon)"></path>
+          </svg>
         </span>
       </article>
     }
@@ -93,7 +143,12 @@
       @if (agenda.length === 0) {
         <div class="dashboard-empty">
           <span class="dashboard-empty-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="iconPath('calendar')"></path></svg>
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path [attr.d]="iconPath('calendar')"></path>
+            </svg>
           </span>
           <h3>{{ 'dashboard.agenda.emptyTitle' | translate }}</h3>
           <p>{{ 'dashboard.agenda.emptyDescription' | translate }}</p>
@@ -130,7 +185,12 @@
       @if (activities.length === 0) {
         <div class="dashboard-empty dashboard-empty--horizontal">
           <span class="dashboard-empty-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="iconPath('chart')"></path></svg>
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path [attr.d]="iconPath('chart')"></path>
+            </svg>
           </span>
           <div>
             <h3>{{ 'dashboard.activity.emptyTitle' | translate }}</h3>
@@ -149,15 +209,29 @@
       </div>
 
       <div class="dashboard-readiness-list">
-        <div><span>{{ 'dashboard.readiness.organization' | translate }}</span><strong>100%</strong></div>
+        <div>
+          <span>{{ 'dashboard.readiness.organization' | translate }}</span>
+          <strong>100%</strong>
+        </div>
         <div class="dashboard-progress"><span style="width: 100%"></span></div>
-        <div><span>{{ 'dashboard.readiness.settings' | translate }}</span><strong>0%</strong></div>
+        <div>
+          <span>{{ 'dashboard.readiness.settings' | translate }}</span>
+          <strong>0%</strong>
+        </div>
         <div class="dashboard-progress"><span style="width: 0%"></span></div>
-        <div><span>{{ 'dashboard.readiness.subscription' | translate }}</span><strong>0%</strong></div>
+        <div>
+          <span>{{ 'dashboard.readiness.subscription' | translate }}</span>
+          <strong>0%</strong>
+        </div>
         <div class="dashboard-progress"><span style="width: 0%"></span></div>
       </div>
 
-      <a class="dashboard-readiness-action" routerLink="/organizations">{{ 'dashboard.readiness.action' | translate }}</a>
+      <a
+        class="dashboard-readiness-action"
+        routerLink="/organizations"
+      >
+        {{ 'dashboard.readiness.action' | translate }}
+      </a>
     </section>
   </div>
 </div>

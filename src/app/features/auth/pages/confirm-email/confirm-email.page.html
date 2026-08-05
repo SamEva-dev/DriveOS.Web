@@ -1,21 +1,74 @@
 <driveos-auth-shell [subtitle]="'auth.subtitle' | translate">
   @if (loading()) {
     <div class="py-8 text-center">
-      <svg class="mx-auto size-10 animate-spin text-[var(--driveos-primary-800)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.2-8.6"/></svg>
-      <p class="mt-4 text-sm text-[var(--driveos-text-secondary)]">{{ 'common.actions.loading' | translate }}</p>
+      <svg
+        class="mx-auto size-10 animate-spin text-[var(--driveos-primary-800)]"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <path d="M21 12a9 9 0 1 1-6.2-8.6" />
+      </svg>
+      <p class="mt-4 text-sm text-[var(--driveos-text-secondary)]">
+        {{ 'common.actions.loading' | translate }}
+      </p>
     </div>
   } @else if (success()) {
     <div class="text-center">
-      <div class="mx-auto flex size-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-700"><svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></div>
-      <h1 class="mt-6 text-2xl font-bold text-[var(--driveos-text-primary)]">{{ 'auth.confirmEmail.success' | translate }}</h1>
-      <button class="driveos-auth-primary mt-7" type="button" (click)="goLogin()">{{ 'auth.actions.login' | translate }}</button>
+      <div
+        class="mx-auto flex size-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-700"
+      >
+        <svg
+          class="size-8"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          aria-hidden="true"
+        >
+          <path d="m5 12 4 4L19 6" />
+        </svg>
+      </div>
+      <h1 class="mt-6 text-2xl font-bold text-[var(--driveos-text-primary)]">
+        {{ 'auth.confirmEmail.success' | translate }}
+      </h1>
+      <button
+        class="driveos-auth-primary mt-7"
+        type="button"
+        (click)="goLogin()"
+      >
+        {{ 'auth.actions.login' | translate }}
+      </button>
     </div>
   } @else {
     <div class="text-center">
-      <div class="mx-auto flex size-16 items-center justify-center rounded-full bg-red-100 text-red-700"><svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></div>
-      <h1 class="mt-6 text-2xl font-bold text-[var(--driveos-text-primary)]">{{ 'auth.confirmEmail.failed' | translate }}</h1>
+      <div
+        class="mx-auto flex size-16 items-center justify-center rounded-full bg-red-100 text-red-700"
+      >
+        <svg
+          class="size-8"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          aria-hidden="true"
+        >
+          <path d="m6 6 12 12M18 6 6 18" />
+        </svg>
+      </div>
+      <h1 class="mt-6 text-2xl font-bold text-[var(--driveos-text-primary)]">
+        {{ 'auth.confirmEmail.failed' | translate }}
+      </h1>
       <p class="mt-4 text-sm text-red-700">{{ error() }}</p>
-      <a routerLink="/check-email" [queryParams]="{ email: email, type: 'verify' }" class="driveos-auth-secondary mt-7">{{ 'auth.actions.resend' | translate }}</a>
+      <a
+        routerLink="/check-email"
+        [queryParams]="{ email: email, type: 'verify' }"
+        class="driveos-auth-secondary mt-7"
+      >
+        {{ 'auth.actions.resend' | translate }}
+      </a>
     </div>
   }
 </driveos-auth-shell>
