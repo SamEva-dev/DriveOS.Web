@@ -92,7 +92,7 @@ describe('BranchesApiService', () => {
 
     const request = httpTesting.expectOne((candidate) => candidate.url === baseUrl);
 
-    expect(request.request.params.has('search')).toBeFalse();
+    expect(request.request.params.has('search')).toBe(false);
 
     request.flush({
       items: [],

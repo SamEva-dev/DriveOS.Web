@@ -908,6 +908,74 @@
       "validation": {
         "reasonRequired": "A reason is required."
       }
+    },
+    "legalProfile": {
+      "eyebrow": "Legal identity",
+      "title": "Legal profile",
+      "description": "Manage the organization’s legal, tax and registered-office information.",
+      "organizationCardDescription": "Legal form, registration, taxation and registered office.",
+      "actions": {
+        "manage": "Manage",
+        "create": "Create profile",
+        "activate": "Activate",
+        "archive": "Archive"
+      },
+      "fields": {
+        "legalForm": "Legal form",
+        "registrationNumber": "Registration number",
+        "taxNumber": "Tax or VAT number",
+        "tradeName": "Trade name",
+        "incorporationDate": "Incorporation date",
+        "countryCode": "Country",
+        "addressLine1": "Address",
+        "addressLine2": "Address line 2",
+        "postalCode": "Postal code",
+        "city": "City",
+        "region": "Region",
+        "activateImmediately": "Activate the profile immediately"
+      },
+      "legalForms": {
+        "SoleProprietorship": "Sole proprietorship",
+        "LimitedLiabilityCompany": "Limited liability company",
+        "Corporation": "Corporation",
+        "Partnership": "Partnership",
+        "NonProfit": "Non-profit organization",
+        "PublicBody": "Public body",
+        "Cooperative": "Cooperative",
+        "Other": "Other"
+      },
+      "statuses": {
+        "Draft": "Draft",
+        "Active": "Active",
+        "Archived": "Archived"
+      },
+      "registeredAddress": {
+        "title": "Registered office",
+        "description": "This address must be consistent with the organization’s country."
+      },
+      "empty": {
+        "title": "No legal profile",
+        "descriptionReadonly": "No legal profile is available and you do not have permission to create one."
+      },
+      "loadError": {
+        "title": "Unable to load the legal profile",
+        "description": "Check your connection or try again in a few moments."
+      },
+      "messages": {
+        "created": "The legal profile was created.",
+        "updated": "The legal profile was updated.",
+        "activated": "The legal profile was activated.",
+        "archived": "The legal profile was archived.",
+        "conflictTitle": "Concurrent update",
+        "conflictDescription": "The profile was changed by another user. The latest data has been reloaded."
+      },
+      "confirmArchive": "Archive this legal profile permanently? It can no longer be edited.",
+      "audit": {
+        "title": "Audit trail",
+        "revision": "Revision",
+        "createdAt": "Created at",
+        "updatedAt": "Last updated"
+      }
     }
   },
   "refreshWarning": {

@@ -96,20 +96,21 @@ export const ORGANIZATIONS_ROUTES: Routes = [
   },
 
   {
-    path: ':organizationId/representatives',
-
-    loadComponent: () =>
-      import('./organization-representatives/pages/organization-representatives/organization-representatives.page').then(
-        (component) => component.OrganizationRepresentativesPage,
-      ),
-  },
-
-  {
     path: ':organizationId/configurations',
 
     loadComponent: () =>
       import('./organization-configurations/pages/organization-configurations/organization-configurations.page').then(
         (component) => component.OrganizationConfigurationsPage,
+      ),
+  },
+
+
+  {
+    path: ':organizationId/legal-profile',
+
+    loadComponent: () =>
+      import('./organization-legal-profile/pages/organization-legal-profile/organization-legal-profile.page').then(
+        (component) => component.OrganizationLegalProfilePage,
       ),
   },
 

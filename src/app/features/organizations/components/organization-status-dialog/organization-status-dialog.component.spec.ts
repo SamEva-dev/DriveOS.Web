@@ -58,7 +58,7 @@ describe('OrganizationStatusDialogComponent', () => {
 
     expect(emittedReason).toBeUndefined();
 
-    expect(component.reasonControl.invalid).toBeTrue();
+    expect(component.reasonControl.invalid).toBe(true);
   });
 
   it('should reject a whitespace-only reason', () => {
@@ -66,9 +66,9 @@ describe('OrganizationStatusDialogComponent', () => {
 
     component.submit();
 
-    expect(component.reasonControl.invalid).toBeTrue();
+    expect(component.reasonControl.invalid).toBe(true);
 
-    expect(component.reasonControl.hasError('blank')).toBeTrue();
+    expect(component.reasonControl.hasError('blank')).toBe(true);
   });
 
   it('should emit a trimmed reason', () => {
@@ -94,7 +94,7 @@ describe('OrganizationStatusDialogComponent', () => {
 
     component.close();
 
-    expect(cancelled).toBeFalse();
+    expect(cancelled).toBe(false);
   });
 
   it('should emit cancellation when Escape is pressed', () => {
@@ -104,6 +104,6 @@ describe('OrganizationStatusDialogComponent', () => {
 
     component.onEscape();
 
-    expect(cancelled).toBeTrue();
+    expect(cancelled).toBe(true);
   });
 });

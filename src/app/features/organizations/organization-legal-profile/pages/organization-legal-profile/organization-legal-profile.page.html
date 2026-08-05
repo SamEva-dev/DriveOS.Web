@@ -1,0 +1,163 @@
+<section class="mx-auto max-w-5xl space-y-6">
+  <div>
+    <a [routerLink]="['/organizations', organizationId]" class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-blue-800 dark:text-slate-300">
+      <i class="ph ph-arrow-left" aria-hidden="true"></i>
+      {{ 'organizations.detail.title' | translate }}
+    </a>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex min-h-72 items-center justify-center">
+      <drive-os-spinner size="lg" [label]="'common.actions.loading' | translate" />
+    </div>
+  } @else if (loadFailed()) {
+    <drive-os-empty-state
+      [title]="'organizations.legalProfile.loadError.title' | translate"
+      [description]="'organizations.legalProfile.loadError.description' | translate"
+    >
+      <drive-os-button icon="ph ph-arrow-clockwise" (pressed)="load()">
+        {{ 'common.actions.retry' | translate }}
+      </drive-os-button>
+    </drive-os-empty-state>
+  } @else {
+    <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-orange-500">
+          {{ 'organizations.legalProfile.eyebrow' | translate }}
+        </p>
+        <h1 class="mt-1 text-3xl font-bold text-slate-950 dark:text-slate-50">
+          {{ 'organizations.legalProfile.title' | translate }}
+        </h1>
+        <p class="mt-2 max-w-3xl text-sm text-slate-500 dark:text-slate-400">
+          {{ 'organizations.legalProfile.description' | translate }}
+        </p>
+      </div>
+
+      @if (profile(); as current) {
+        <drive-os-badge [variant]="statusBadgeVariant(current.status)">
+          {{ ('organizations.legalProfile.statuses.' + current.status) | translate }}
+        </drive-os-badge>
+      }
+    </header>
+
+    @if (!profile() && !canCreate()) {
+      <drive-os-empty-state
+        [title]="'organizations.legalProfile.empty.title' | translate"
+        [description]="'organizations.legalProfile.empty.descriptionReadonly' | translate"
+      />
+    } @else {
+      <drive-os-card>
+        <form [formGroup]="form" (ngSubmit)="save()" class="space-y-6">
+          <div class="grid gap-5 md:grid-cols-2">
+            <label class="space-y-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+              <span>{{ 'organizations.legalProfile.fields.legalForm' | translate }}</span>
+              <select formControlName="legalForm" class="driveos-field">
+                @for (form of legalForms; track form) {
+                  <option [value]="form">{{ ('organizations.legalProfile.legalForms.' + form) | translate }}</option>
+                }
+              </select>
+            </label>
+
+            <label class="space-y-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+              <span>{{ 'organizations.legalProfile.fields.registrationNumber' | translate }}</span>
+              <input formControlName="registrationNumber" class="driveos-field" autocomplete="off" />
+            </label>
+
+            <label class="space-y-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+              <span>{{ 'organizations.legalProfile.fields.taxNumber' | translate }}</span>
+              <input formControlName="taxNumber" class="driveos-field" autocomplete="off" />
+            </label>
+
+            <label class="space-y-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+              <span>{{ 'organizations.legalProfile.fields.tradeName' | translate }}</span>
+              <input formControlName="tradeName" class="driveos-field" />
+            </label>
+
+            <label class="space-y-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+              <span>{{ 'organizations.legalProfile.fields.incorporationDate' | translate }}</span>
+              <input type="date" formControlName="incorporationDate" class="driveos-field" />
+            </label>
+
+            <label class="space-y-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+              <span>{{ 'organizations.legalProfile.fields.countryCode' | translate }}</span>
+              <input formControlName="countryCode" maxlength="2" class="driveos-field uppercase" />
+            </label>
+          </div>
+
+          <div class="border-t border-slate-200 pt-6 dark:border-slate-700">
+            <h2 class="text-lg font-semibold text-slate-950 dark:text-slate-50">
+              {{ 'organizations.legalProfile.registeredAddress.title' | translate }}
+            </h2>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              {{ 'organizations.legalProfile.registeredAddress.description' | translate }}
+            </p>
+
+            <div class="mt-5 grid gap-5 md:grid-cols-2">
+              <label class="space-y-2 text-sm font-medium md:col-span-2">
+                <span>{{ 'organizations.legalProfile.fields.addressLine1' | translate }}</span>
+                <input formControlName="addressLine1" class="driveos-field" />
+              </label>
+              <label class="space-y-2 text-sm font-medium md:col-span-2">
+                <span>{{ 'organizations.legalProfile.fields.addressLine2' | translate }}</span>
+                <input formControlName="addressLine2" class="driveos-field" />
+              </label>
+              <label class="space-y-2 text-sm font-medium">
+                <span>{{ 'organizations.legalProfile.fields.postalCode' | translate }}</span>
+                <input formControlName="postalCode" class="driveos-field" />
+              </label>
+              <label class="space-y-2 text-sm font-medium">
+                <span>{{ 'organizations.legalProfile.fields.city' | translate }}</span>
+                <input formControlName="city" class="driveos-field" />
+              </label>
+              <label class="space-y-2 text-sm font-medium md:col-span-2">
+                <span>{{ 'organizations.legalProfile.fields.region' | translate }}</span>
+                <input formControlName="region" class="driveos-field" />
+              </label>
+            </div>
+          </div>
+
+          @if (!profile()) {
+            <label class="flex items-center gap-3 rounded-xl bg-blue-50 p-4 text-sm font-medium text-blue-950 dark:bg-blue-950 dark:text-blue-100">
+              <input type="checkbox" formControlName="activateImmediately" class="size-4 rounded border-slate-300 text-blue-800" />
+              <span>{{ 'organizations.legalProfile.fields.activateImmediately' | translate }}</span>
+            </label>
+          }
+
+          <div class="flex flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-between dark:border-slate-700">
+            <div class="flex flex-wrap gap-3">
+              @if (profile()?.status === 'Draft' && canActivate()) {
+                <drive-os-button type="button" variant="secondary" icon="ph ph-check-circle" [loading]="changingStatus()" (pressed)="activate()">
+                  {{ 'organizations.legalProfile.actions.activate' | translate }}
+                </drive-os-button>
+              }
+              @if (profile()?.status !== 'Archived' && canArchive()) {
+                <drive-os-button type="button" variant="danger" icon="ph ph-archive" [loading]="changingStatus()" (pressed)="archive()">
+                  {{ 'organizations.legalProfile.actions.archive' | translate }}
+                </drive-os-button>
+              }
+            </div>
+
+            @if ((!profile() && canCreate()) || (profile() && canUpdate() && !isReadOnly())) {
+              <drive-os-button type="submit" icon="ph ph-floppy-disk" [loading]="saving()">
+                {{ (profile() ? 'common.actions.save' : 'organizations.legalProfile.actions.create') | translate }}
+              </drive-os-button>
+            }
+          </div>
+        </form>
+      </drive-os-card>
+
+      @if (profile(); as current) {
+        <drive-os-card>
+          <h2 class="text-lg font-semibold text-slate-950 dark:text-slate-50">
+            {{ 'organizations.legalProfile.audit.title' | translate }}
+          </h2>
+          <dl class="mt-4 grid gap-4 text-sm sm:grid-cols-2">
+            <div><dt class="text-slate-500">{{ 'organizations.legalProfile.audit.revision' | translate }}</dt><dd class="mt-1 font-medium">{{ current.revision }}</dd></div>
+            <div><dt class="text-slate-500">{{ 'organizations.legalProfile.audit.createdAt' | translate }}</dt><dd class="mt-1 font-medium">{{ current.createdAtUtc }}</dd></div>
+            <div><dt class="text-slate-500">{{ 'organizations.legalProfile.audit.updatedAt' | translate }}</dt><dd class="mt-1 font-medium">{{ current.lastModifiedAtUtc || '—' }}</dd></div>
+          </dl>
+        </drive-os-card>
+      }
+    }
+  }
+</section>

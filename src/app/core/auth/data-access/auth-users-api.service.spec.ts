@@ -4,6 +4,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 
 import { TestBed } from '@angular/core/testing';
 
+import { AUTH_API_CONFIG } from '../auth-api-config';
 import { AuthUsersApiService } from './auth-users-api.service';
 
 describe('AuthUsersApiService', () => {

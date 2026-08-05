@@ -44,7 +44,7 @@ import { Organization } from '../../models/organization.model';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
 import { ORGANIZATION_SUBSCRIPTION_PERMISSIONS } from '../../organization-subscriptions/domain/organization-subscription-permissions';
 import { ORGANIZATION_CONFIGURATION_PERMISSIONS } from '../../organization-configurations/domain/organization-configuration-permissions';
-import { ORGANIZATION_REPRESENTATIVE_PERMISSIONS } from '../../organization-representatives/domain/organization-representative-permissions';
+import { ORGANIZATION_LEGAL_PROFILE_PERMISSIONS } from '../../organization-legal-profile/domain/organization-legal-profile-permissions';
 import {
   OrganizationLifecycleActionDefinition,
   getOrganizationLifecycleActions,
@@ -142,13 +142,13 @@ export class OrganizationDetailPage {
       : ['/organizations'],
   );
 
-  readonly canReadRepresentatives = computed(() =>
-    this.authorization.hasPermission(ORGANIZATION_REPRESENTATIVE_PERMISSIONS.read),
+  readonly canReadLegalProfile = computed(() =>
+    this.authorization.hasPermission(ORGANIZATION_LEGAL_PROFILE_PERMISSIONS.read),
   );
 
-  readonly representativesLink = computed(() =>
+  readonly legalProfileLink = computed(() =>
     this.organizationId
-      ? ['/organizations', this.organizationId, 'representatives']
+      ? ['/organizations', this.organizationId, 'legal-profile']
       : ['/organizations'],
   );
 

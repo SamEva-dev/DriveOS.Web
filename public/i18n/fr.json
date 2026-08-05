@@ -909,6 +909,74 @@
       "validation": {
         "reasonRequired": "Le motif est obligatoire."
       }
+    },
+    "legalProfile": {
+      "eyebrow": "Identité juridique",
+      "title": "Profil juridique",
+      "description": "Gérez les informations légales, fiscales et l’adresse du siège de l’organisation.",
+      "organizationCardDescription": "Forme juridique, immatriculation, fiscalité et adresse du siège.",
+      "actions": {
+        "manage": "Gérer",
+        "create": "Créer le profil",
+        "activate": "Activer",
+        "archive": "Archiver"
+      },
+      "fields": {
+        "legalForm": "Forme juridique",
+        "registrationNumber": "Numéro d’immatriculation",
+        "taxNumber": "Numéro fiscal ou TVA",
+        "tradeName": "Nom commercial",
+        "incorporationDate": "Date de constitution",
+        "countryCode": "Pays",
+        "addressLine1": "Adresse",
+        "addressLine2": "Complément d’adresse",
+        "postalCode": "Code postal",
+        "city": "Ville",
+        "region": "Région",
+        "activateImmediately": "Activer le profil immédiatement"
+      },
+      "legalForms": {
+        "SoleProprietorship": "Entreprise individuelle",
+        "LimitedLiabilityCompany": "Société à responsabilité limitée",
+        "Corporation": "Société par actions",
+        "Partnership": "Société de personnes",
+        "NonProfit": "Organisme à but non lucratif",
+        "PublicBody": "Organisme public",
+        "Cooperative": "Coopérative",
+        "Other": "Autre"
+      },
+      "statuses": {
+        "Draft": "Brouillon",
+        "Active": "Actif",
+        "Archived": "Archivé"
+      },
+      "registeredAddress": {
+        "title": "Adresse du siège social",
+        "description": "Cette adresse doit être cohérente avec le pays de l’organisation."
+      },
+      "empty": {
+        "title": "Aucun profil juridique",
+        "descriptionReadonly": "Aucun profil juridique n’est encore disponible et vous ne disposez pas du droit de le créer."
+      },
+      "loadError": {
+        "title": "Impossible de charger le profil juridique",
+        "description": "Vérifiez votre connexion ou réessayez dans quelques instants."
+      },
+      "messages": {
+        "created": "Le profil juridique a été créé.",
+        "updated": "Le profil juridique a été mis à jour.",
+        "activated": "Le profil juridique a été activé.",
+        "archived": "Le profil juridique a été archivé.",
+        "conflictTitle": "Modification concurrente",
+        "conflictDescription": "Le profil a été modifié par un autre utilisateur. Les dernières données ont été rechargées."
+      },
+      "confirmArchive": "Archiver définitivement ce profil juridique ? Il ne pourra plus être modifié.",
+      "audit": {
+        "title": "Traçabilité",
+        "revision": "Révision",
+        "createdAt": "Créé le",
+        "updatedAt": "Dernière modification"
+      }
     }
   },
   "statuses": {

@@ -23,11 +23,11 @@ describe('organization lifecycle', () => {
   });
 
   it('should allow reactivation from Restricted', () => {
-    expect(canApplyOrganizationLifecycleAction('Restricted', 'reactivate')).toBeTrue();
+    expect(canApplyOrganizationLifecycleAction('Restricted', 'reactivate')).toBe(true);
   });
 
   it('should reject direct activation from Draft', () => {
-    expect(canApplyOrganizationLifecycleAction('Draft', 'activate')).toBeFalse();
+    expect(canApplyOrganizationLifecycleAction('Draft', 'activate')).toBe(false);
   });
 
   it('should expose no action from Closed', () => {
