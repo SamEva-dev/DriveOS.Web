@@ -1,10 +1,10 @@
 export const ORGANIZATION_REPRESENTATIVE_PERMISSIONS = {
-  read: 'DriveOS.OrganizationRepresentatives.Read',
-  create: 'DriveOS.OrganizationRepresentatives.Create',
-  update: 'DriveOS.OrganizationRepresentatives.Update',
-  activate: 'DriveOS.OrganizationRepresentatives.Activate',
-  suspend: 'DriveOS.OrganizationRepresentatives.Suspend',
-  reactivate: 'DriveOS.OrganizationRepresentatives.Reactivate',
-  end: 'DriveOS.OrganizationRepresentatives.End',
-  setPrimaryOwner: 'DriveOS.OrganizationRepresentatives.SetPrimaryOwner',
+  read: 'OrganizationRepresentatives.Read',
+  create: 'OrganizationRepresentatives.Create',
+  update: 'OrganizationRepresentatives.Update',
+  activate: 'OrganizationRepresentatives.Activate',
+  suspend: 'OrganizationRepresentatives.Suspend',
+  reactivate: 'OrganizationRepresentatives.Reactivate',
+  end: 'OrganizationRepresentatives.End',
+  setPrimaryOwner: 'OrganizationRepresentatives.SetPrimaryOwner',
 } as const;

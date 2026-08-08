@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
 
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
@@ -26,6 +26,7 @@ import {
   DriveOsSpinnerComponent,
   DriveOsTableDirective,
 } from '../../../../shared/ui';
+import { AuthorizationService } from '../../../../core/auth/authorization.service';
 
 @Component({
   selector: 'driveos-organization-list-page',
@@ -63,6 +64,15 @@ export class OrganizationListPage {
   readonly searchControl = new FormControl('', {
     nonNullable: true,
   });
+  private readonly authorization = inject(AuthorizationService);
+
+readonly canCreateOrganization = computed(() =>
+  this.authorization.hasPermission('Organizations.Create'),
+);
+
+createOrganization(): void {
+  void this.router.navigate(['/organizations/create']);
+}
 
   constructor() {
     this.searchControl.valueChanges

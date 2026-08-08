@@ -1,0 +1,81 @@
+<section class="space-y-4">
+  @if (selectedUser(); as selected) {
+    <div class="rounded-2xl border border-blue-200 bg-blue-50/80 p-4 dark:border-blue-800 dark:bg-blue-950/30">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div class="min-w-0">
+          <p class="text-xs font-bold uppercase tracking-[0.15em] text-blue-700 dark:text-blue-300">
+            {{ 'shared.authUserPicker.selected' | translate }}
+          </p>
+          <p class="mt-1 truncate text-base font-bold text-slate-950 dark:text-white">
+            {{ displayName(selected) }}
+          </p>
+          <p class="mt-1 truncate text-sm text-slate-600 dark:text-slate-300">{{ selected.email }}</p>
+          @if (selected.phoneNumber) {
+            <p class="mt-1 truncate text-sm text-slate-500 dark:text-slate-400">{{ selected.phoneNumber }}</p>
+          }
+        </div>
+        <drive-os-button type="button" variant="secondary" size="sm" [disabled]="disabled" (pressed)="clear()">
+          {{ 'shared.authUserPicker.change' | translate }}
+        </drive-os-button>
+      </div>
+    </div>
+  } @else {
+    <label class="block">
+      <span class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-200">
+        {{ 'shared.authUserPicker.searchLabel' | translate }} @if (required) { <b class="text-orange-500">*</b> }
+      </span>
+      <input
+        driveOsInput
+        type="search"
+        autocomplete="off"
+        [formControl]="searchControl"
+        [placeholder]="'shared.authUserPicker.searchPlaceholder' | translate"
+      />
+      <small class="mt-2 block text-sm text-slate-500 dark:text-slate-400">
+        {{ 'shared.authUserPicker.searchHint' | translate }}
+      </small>
+    </label>
+
+    @if (loading() && users().length === 0) {
+      <div class="flex min-h-32 items-center justify-center"><drive-os-spinner size="md" /></div>
+    } @else if (errorMessages().length > 0) {
+      <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-300">
+        @for (message of errorMessages(); track $index) { <p>{{ message }}</p> }
+      </div>
+    } @else if (users().length === 0) {
+      <drive-os-empty-state
+        [title]="'shared.authUserPicker.emptyTitle' | translate"
+        [description]="'shared.authUserPicker.emptyDescription' | translate"
+      />
+    } @else {
+      <div class="max-h-80 space-y-2 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-slate-900">
+        @for (user of users(); track user.id) {
+          <button
+            type="button"
+            class="flex w-full items-center justify-between gap-4 rounded-xl px-4 py-3 text-left transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-slate-800"
+            [disabled]="disabled || !user.isActive"
+            (click)="choose(user)"
+          >
+            <span class="min-w-0">
+              <span class="block truncate font-semibold text-slate-950 dark:text-white">{{ displayName(user) }}</span>
+              <span class="mt-1 block truncate text-sm text-slate-600 dark:text-slate-300">{{ user.email }}</span>
+            </span>
+            <span class="flex shrink-0 gap-2">
+              @if (user.emailConfirmed) {
+                <drive-os-badge variant="success">{{ 'shared.authUserPicker.verified' | translate }}</drive-os-badge>
+              }
+            </span>
+          </button>
+        }
+      </div>
+
+      @if (page() < totalPages()) {
+        <div class="flex justify-center">
+          <drive-os-button type="button" variant="secondary" size="sm" [loading]="loading()" (pressed)="loadMore()">
+            {{ 'shared.authUserPicker.loadMore' | translate }}
+          </drive-os-button>
+        </div>
+      }
+    }
+  }
+</section>

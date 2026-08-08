@@ -1,0 +1,29 @@
+<section
+  class="rounded-3xl border border-slate-200/80 bg-white/95 p-4 shadow-sm shadow-slate-950/5 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95 sm:p-5"
+  [class.sticky]="sticky()"
+  [class.top-4]="sticky()"
+  [class.z-20]="sticky()"
+>
+  @if (title() || description()) {
+    <div class="mb-4">
+      @if (title()) {
+        <h2 class="text-base font-bold tracking-tight text-slate-950 dark:text-white">{{ title() }}</h2>
+      }
+      @if (description()) {
+        <p class="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{{ description() }}</p>
+      }
+    </div>
+  }
+
+  <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+    <div class="min-w-0 flex-1">
+      <ng-content select="[driveOsToolbarPrimary]" />
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2 lg:justify-end">
+      <ng-content select="[driveOsToolbarActions]" />
+    </div>
+  </div>
+
+  <ng-content select="[driveOsToolbarSecondary]" />
+</section>

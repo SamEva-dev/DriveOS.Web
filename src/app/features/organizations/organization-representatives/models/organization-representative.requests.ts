@@ -1,6 +1,6 @@
 import { OrganizationRepresentativeType } from './organization-representative.model';
 export interface CreateOrganizationRepresentativeRequest {
-  personId: string;
+  personId: string | null;
   userId: string | null;
   representativeType: OrganizationRepresentativeType;
   authorityScope: string;

@@ -1,0 +1,17 @@
+<section class="overflow-hidden rounded-3xl border border-red-200 bg-white shadow-sm dark:border-red-900/70 dark:bg-slate-900">
+  <div class="flex items-start gap-4 border-b border-red-100 bg-red-50/70 px-6 py-5 dark:border-red-950 dark:bg-red-950/20 sm:px-7">
+    <div class="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-red-100 text-red-700 dark:bg-red-950/70 dark:text-red-300">
+      <drive-os-icon name="triangle-alert" />
+    </div>
+    <div>
+      <h2 class="text-base font-bold text-red-950 dark:text-red-100">{{ title() }}</h2>
+      @if (description()) {
+        <p class="mt-1 text-sm leading-6 text-red-800/80 dark:text-red-200/75">{{ description() }}</p>
+      }
+    </div>
+  </div>
+
+  <div class="divide-y divide-slate-200 dark:divide-slate-800">
+    <ng-content />
+  </div>
+</section>

@@ -1,8 +1,8 @@
 export const ORGANIZATION_SEQUENCE_PERMISSIONS = {
-  read: 'DriveOS.OrganizationSequences.Read',
-  create: 'DriveOS.OrganizationSequences.Create',
-  reserve: 'DriveOS.OrganizationSequences.Reserve',
-  suspend: 'DriveOS.OrganizationSequences.Suspend',
-  reactivate: 'DriveOS.OrganizationSequences.Reactivate',
-  archive: 'DriveOS.OrganizationSequences.Archive',
+  read: 'OrganizationSequences.Read',
+  create: 'OrganizationSequences.Create',
+  reserve: 'OrganizationSequences.Reserve',
+  suspend: 'OrganizationSequences.Suspend',
+  reactivate: 'OrganizationSequences.Reactivate',
+  archive: 'OrganizationSequences.Archive',
 } as const;

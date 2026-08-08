@@ -1,0 +1,49 @@
+<section class="mt-4 overflow-hidden rounded-3xl border border-slate-200/80 bg-slate-50/70 dark:border-slate-800 dark:bg-slate-950/40">
+  <div class="flex items-center justify-between gap-3 px-4 py-3 sm:px-5">
+    <button
+      type="button"
+      class="flex min-w-0 items-center gap-3 text-left"
+      [disabled]="!collapsible()"
+      (click)="toggle()"
+    >
+      <span class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-800 dark:bg-blue-950/50 dark:text-blue-300">
+        <i class="ph ph-funnel" aria-hidden="true"></i>
+      </span>
+      <span class="min-w-0">
+        <span class="block text-sm font-bold text-slate-900 dark:text-white">{{ title() }}</span>
+        @if (activeCount() > 0) {
+          <span class="mt-0.5 block text-xs font-medium text-orange-600 dark:text-orange-400">
+            {{ activeCount() }} filtre(s) actif(s)
+          </span>
+        }
+      </span>
+      @if (collapsible()) {
+        <i
+          class="ph text-slate-400 transition-transform"
+          [class.ph-caret-up]="expanded()"
+          [class.ph-caret-down]="!expanded()"
+          aria-hidden="true"
+        ></i>
+      }
+    </button>
+
+    @if (activeCount() > 0) {
+      <drive-os-button
+        variant="ghost"
+        size="sm"
+        icon="ph ph-arrow-counter-clockwise"
+        (pressed)="clear()"
+      >
+        {{ clearLabel() }}
+      </drive-os-button>
+    }
+  </div>
+
+  @if (expanded()) {
+    <div class="border-t border-slate-200/80 px-4 py-4 dark:border-slate-800 sm:px-5">
+      <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <ng-content />
+      </div>
+    </div>
+  }
+</section>

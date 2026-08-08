@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
 
 import { TranslatePipe } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 import { ThemeService } from '../theme/theme.service';
 
 import { ThemeMode } from '../theme/theme-mode';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'driveos-app-topbar',
@@ -114,15 +116,44 @@ import { ThemeMode } from '../theme/theme-mode';
           ></i>
         </button>
 
-        <button
-          type="button"
+        <div class="hidden text-right md:block">
+          <p class="max-w-48 truncate text-sm font-medium">
+            {{ auth.user()?.fullName ?? auth.user()?.email }}
+          </p>
+          <p class="max-w-48 truncate text-xs text-[var(--driveos-text-muted)]">
+            {{ auth.user()?.email }}
+          </p>
+        </div>
+
+        <div
           class="flex size-10 items-center
                  justify-center rounded-full
                  bg-[var(--driveos-primary)]
                  font-semibold text-white"
-          aria-label="Profil utilisateur"
+          [attr.aria-label]="'layout.userProfile' | translate"
         >
-          SF
+          {{ initials() }}
+        </div>
+
+        <button
+          type="button"
+          class="flex h-10 items-center gap-2 rounded-lg
+                 px-3 text-sm font-medium text-slate-600
+                 transition-colors hover:bg-slate-100 hover:text-slate-900
+                 focus-visible:outline-none focus-visible:ring-2
+                 focus-visible:ring-blue-700 disabled:cursor-not-allowed
+                 disabled:opacity-60 dark:text-slate-300
+                 dark:hover:bg-slate-800 dark:hover:text-white"
+          [disabled]="isSigningOut()"
+          (click)="signOut()"
+        >
+          <i
+            class="ph ph-sign-out text-lg"
+            aria-hidden="true"
+          ></i>
+          <span class="hidden sm:inline">
+            {{ (isSigningOut() ? 'auth.signingOut' : 'auth.logout') | translate }}
+          </span>
         </button>
       </div>
     </header>
@@ -133,6 +164,33 @@ export class AppTopbarComponent {
   readonly menuRequested = output<void>();
 
   readonly themeService = inject(ThemeService);
+  readonly auth = inject(AuthService);
+
+  private readonly router = inject(Router);
+  readonly isSigningOut = signal(false);
+  readonly initials = computed(() => {
+    const user = this.auth.user();
+    const source = user?.fullName?.trim() || user?.email || 'U';
+    const words = source.split(/\s+/).filter(Boolean);
+
+    if (words.length >= 2) {
+      return `${words[0][0]}${words[1][0]}`.toUpperCase();
+    }
+
+    return source.slice(0, 2).toUpperCase();
+  });
+
+  async signOut(): Promise<void> {
+    if (this.isSigningOut()) return;
+
+    this.isSigningOut.set(true);
+    try {
+      await this.auth.signOut();
+      await this.router.navigate(['/login']);
+    } finally {
+      this.isSigningOut.set(false);
+    }
+  }
 
   changeTheme(event: Event): void {
     const select = event.target as HTMLSelectElement;

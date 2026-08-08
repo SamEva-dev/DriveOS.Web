@@ -121,6 +121,7 @@
             </div>
 
             @if (navigationFor(requirement); as navigation) {
+              @if (canNavigateTo(navigation)) {
               <a
                 [routerLink]="navigation.routerLink"
                 class="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg border border-slate-300 px-4 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-800"
@@ -128,6 +129,11 @@
                 {{ navigation.labelKey | translate }}
                 <i class="ph ph-arrow-right" aria-hidden="true"></i>
               </a>
+              } @else {
+                <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  {{ 'organizations.activationReadiness.actions.permissionRequired' | translate }}
+                </span>
+              }
             }
           </div>
         </drive-os-card>

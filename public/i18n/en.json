@@ -877,7 +877,11 @@
         "effectiveTo": "End date",
         "period": "Period",
         "reason": "Reason",
-        "activateImmediately": "Activate immediately"
+        "activateImmediately": "Activate immediately",
+        "personId": "Person identifier",
+        "userId": "User account",
+        "revision": "Revision",
+        "account": "Person / DriveOS account"
       },
       "types": {
         "Owner": "Owner",
@@ -906,8 +910,52 @@
         "conflict": "The data was changed by another user. The list has been refreshed."
       },
       "validation": {
-        "reasonRequired": "A reason is required."
-      }
+        "reasonRequired": "A reason is required.",
+        "formInvalidTitle": "Incomplete form",
+        "formInvalid": "Review the highlighted required fields before saving.",
+        "personId": "A valid Person identifier is required.",
+        "userId": "UserId must be a valid GUID or left empty.",
+        "authorityRequired": "Authority scope is required.",
+        "effectiveFrom": "Start date is required.",
+        "dateRange": "End date cannot be earlier than start date.",
+        "userRequired": "Select the person who will represent the organization."
+      },
+      "eyebrow": "Organization governance",
+      "listEyebrow": "Governance",
+      "createEyebrow": "New authority",
+      "createDescription": "Identify the person, define their role and the period during which they may act on behalf of the organization.",
+      "governance": "Governance",
+      "stats": {
+        "total": "Total",
+        "active": "Active",
+        "owners": "Owners",
+        "primaryOwner": "Primary owner",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "sections": {
+        "identity": "Person and account",
+        "identityHelp": "Search by name or email. DriveOS handles technical identifiers automatically.",
+        "authority": "Role and authority",
+        "authorityHelp": "Define the nature and scope of the representation precisely.",
+        "period": "Effective period",
+        "periodHelp": "The representation may be permanent or limited in time."
+      },
+      "placeholders": {
+        "personId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "userId": "Optional — account identifier",
+        "authority": "E.g. Administrative management, contract signing and partner representation."
+      },
+      "hints": {
+        "personId": "Person identifier for the representative. It must be a valid GUID.",
+        "userId": "Leave blank if the person does not have a DriveOS account yet.",
+        "authority": "Describe what this person is authorized to do on behalf of the organization.",
+        "primaryOwner": "Use only for a representative of type Owner.",
+        "activateImmediately": "Activates the representation at creation time when business invariants are met.",
+        "personIdGenerated": "No GUID to enter: DriveOS automatically generates the internal Person identifier when saving."
+      },
+      "personWithoutAccount": "Person without a DriveOS account",
+      "loadingIdentity": "Loading identity…"
     },
     "legalProfile": {
       "eyebrow": "Legal identity",
@@ -989,7 +1037,8 @@
         "openRepresentatives": "Manage owners",
         "openSubscription": "Manage subscription",
         "openConfigurations": "Configure organization",
-        "openBranches": "Manage branches"
+        "openBranches": "Manage branches",
+        "permissionRequired": "Permission required"
       },
       "summary": {
         "completed": "requirements satisfied",
@@ -1013,25 +1062,41 @@
       },
       "requirements": {
         "legalProfile": {
-          "active": "The legal profile must be active."
+          "active": "The legal profile must be active.",
+          "satisfied": "The legal profile is active.",
+          "missing": "An active legal profile is missing."
         },
         "activeOwner": {
-          "present": "At least one active owner must be present."
+          "present": "At least one active owner must be present.",
+          "satisfied": "An active owner is present.",
+          "missing": "No active owner is defined."
         },
         "primaryOwner": {
-          "present": "An active primary owner must be defined."
+          "present": "An active primary owner must be defined.",
+          "satisfied": "An active primary owner is defined.",
+          "missing": "No active primary owner is defined."
         },
         "activeSubscription": {
           "present": "An active or trial subscription is required."
         },
         "operationalSettings": {
-          "present": "Operational settings must be configured."
+          "present": "Operational settings must be configured.",
+          "satisfied": "Operational settings are configured.",
+          "missing": "Operational settings are not configured."
         },
         "primaryBranch": {
-          "present": "A primary branch must be defined."
+          "present": "A primary branch must be defined.",
+          "satisfied": "A primary branch is defined.",
+          "missing": "No active primary branch is defined."
         },
         "primaryBranchManager": {
-          "present": "The primary branch must have an active manager."
+          "present": "The primary branch must have an active manager.",
+          "satisfied": "The primary branch has an active manager.",
+          "missing": "The primary branch has no active manager."
+        },
+        "subscription": {
+          "satisfied": "An active or trial subscription is present.",
+          "missing": "No active or trial subscription is present."
         }
       }
     },
@@ -1242,6 +1307,19 @@
     },
     "actions": {
       "viewPlanning": "View full planning"
+    }
+  },
+  "shared": {
+    "authUserPicker": {
+      "selected": "Selected person",
+      "change": "Change",
+      "searchLabel": "Search for a person",
+      "searchPlaceholder": "Name or email address",
+      "searchHint": "Select an active account from this organization. DriveOS manages the technical identifier automatically.",
+      "emptyTitle": "No person found",
+      "emptyDescription": "No active account in this organization matches your search.",
+      "verified": "Email verified",
+      "loadMore": "Show more"
     }
   }
 }

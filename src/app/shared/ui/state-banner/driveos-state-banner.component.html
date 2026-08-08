@@ -1,0 +1,12 @@
+<div [class]="classes()" role="status">
+  <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/70 text-lg shadow-sm dark:bg-black/20" aria-hidden="true">
+    @if (icon()) { <i [class]="icon()"></i> } @else { <span>•</span> }
+  </div>
+  <div class="min-w-0 flex-1">
+    <p class="font-bold">{{ title() }}</p>
+    @if (description()) {
+      <p class="mt-1 text-sm leading-6 opacity-80">{{ description() }}</p>
+    }
+    <div class="mt-3"><ng-content /></div>
+  </div>
+</div>

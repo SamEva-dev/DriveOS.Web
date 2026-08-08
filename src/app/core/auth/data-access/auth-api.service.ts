@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { AUTH_API_CONFIG } from '../auth-api-config';
 import { environment } from '../../../../environments/environment';
@@ -36,6 +36,18 @@ export class AuthApiService {
 
   refresh(refreshToken: string) {
     return this.http.post<LoginResponse>(`${this.baseUrl}/Auth/refresh`, { refreshToken });
+  }
+
+  logout(accessToken: string) {
+    return this.http.post<void>(
+      `${this.baseUrl}/Auth/logout`,
+      {},
+      {
+        headers: new HttpHeaders({
+          Authorization: `Bearer ${accessToken}`,
+        }),
+      },
+    );
   }
 
   requestPasswordReset(email: string) {

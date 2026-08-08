@@ -94,6 +94,20 @@ export class AuthService {
     return !!this.userSignal();
   }
 
+  async signOut(): Promise<void> {
+    const accessToken = this.accessToken();
+
+    try {
+      if (accessToken) {
+        await firstValueFrom(this.api.logout(accessToken));
+      }
+    } catch {
+      // La déconnexion locale doit toujours aboutir, même si AuthGate est indisponible.
+    } finally {
+      this.logout();
+    }
+  }
+
   logout(): void {
     this.tokens.clear();
     this.tokensSignal.set(null);

@@ -1,50 +1,24 @@
 <section class="driveos-page-narrow space-y-6">
   <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
     <div>
-      <a
-        [routerLink]="['/organizations', organizationId]"
-        class="text-sm font-medium text-blue-800 hover:underline dark:text-blue-300"
-      >
+      <a [routerLink]="['/organizations', organizationId]" class="text-sm font-medium text-blue-800 hover:underline dark:text-blue-300">
         ← {{ 'organizations.detail.title' | translate }}
       </a>
-      <h1 class="mt-2 text-2xl font-bold text-slate-950 dark:text-slate-50">
-        {{ 'organizations.subscription.title' | translate }}
-      </h1>
-      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-        {{ 'organizations.subscription.description' | translate }}
-      </p>
+      <h1 class="mt-2 text-2xl font-bold text-slate-950 dark:text-slate-50">{{ 'organizations.subscription.title' | translate }}</h1>
+      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ 'organizations.subscription.description' | translate }}</p>
     </div>
   </div>
 
   @if (loading()) {
-    <div class="flex min-h-72 items-center justify-center">
-      <drive-os-spinner
-        size="lg"
-        [label]="'common.actions.loading' | translate"
-      />
-    </div>
+    <div class="flex min-h-72 items-center justify-center"><drive-os-spinner size="lg" [label]="'common.actions.loading' | translate" /></div>
   } @else if (notFound()) {
     <drive-os-card>
       <div class="py-10 text-center">
-        <i
-          class="ph-duotone ph-credit-card text-5xl text-slate-400"
-          aria-hidden="true"
-        ></i>
-        <h2 class="mt-4 text-lg font-semibold text-slate-950 dark:text-slate-50">
-          {{ 'organizations.subscription.empty.title' | translate }}
-        </h2>
-        <p class="mx-auto mt-2 max-w-xl text-sm text-slate-500 dark:text-slate-400">
-          {{ 'organizations.subscription.empty.description' | translate }}
-        </p>
+        <i class="ph-duotone ph-credit-card text-5xl text-slate-400" aria-hidden="true"></i>
+        <h2 class="mt-4 text-lg font-semibold text-slate-950 dark:text-slate-50">{{ 'organizations.subscription.empty.title' | translate }}</h2>
+        <p class="mx-auto mt-2 max-w-xl text-sm text-slate-500 dark:text-slate-400">{{ 'organizations.subscription.empty.description' | translate }}</p>
         @if (canCreate()) {
-          <div class="mt-5">
-            <drive-os-button
-              icon="ph ph-plus"
-              (pressed)="openCreate()"
-            >
-              {{ 'organizations.subscription.actions.create' | translate }}
-            </drive-os-button>
-          </div>
+          <div class="mt-5"><drive-os-button icon="ph ph-plus" (pressed)="openCreate()">{{ 'organizations.subscription.actions.create' | translate }}</drive-os-button></div>
         }
       </div>
     </drive-os-card>
@@ -53,483 +27,108 @@
       <drive-os-card class="lg:col-span-2">
         <div class="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              {{ 'organizations.subscription.plan' | translate }}
-            </p>
-            <h2 class="mt-1 text-3xl font-bold text-slate-950 dark:text-slate-50">
-              {{ item.planCode }}
-            </h2>
-            <p class="mt-2 text-sm text-slate-500">
-              {{ billingCycleLabel(item.billingCycle) | translate }}
-            </p>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ 'organizations.subscription.plan' | translate }}</p>
+            <h2 class="mt-1 text-3xl font-bold text-slate-950 dark:text-slate-50">{{ item.planCode }}</h2>
+            <p class="mt-2 text-sm text-slate-500">{{ billingCycleLabel(item.billingCycle) | translate }}</p>
           </div>
-          <drive-os-badge [variant]="statusVariant(item.status)">
-            {{ statusLabel(item.status) | translate }}
-          </drive-os-badge>
+          <drive-os-badge [variant]="statusVariant(item.status)">{{ statusLabel(item.status) | translate }}</drive-os-badge>
         </div>
-        <dl
-          class="mt-6 grid gap-4 border-t border-slate-200 pt-5 sm:grid-cols-2 dark:border-slate-700"
-        >
-          <div>
-            <dt class="text-xs text-slate-500">
-              {{ 'organizations.subscription.currentPeriod' | translate }}
-            </dt>
-            <dd class="mt-1 text-sm font-medium">
-              {{ item.currentPeriod.startsAtUtc | date: 'mediumDate' }} —
-              {{
-                item.currentPeriod.endsAtUtc
-                  ? (item.currentPeriod.endsAtUtc | date: 'mediumDate')
-                  : ('organizations.subscription.openEnded' | translate)
-              }}
-            </dd>
-          </div>
-          <div>
-            <dt class="text-xs text-slate-500">
-              {{ 'organizations.subscription.version' | translate }}
-            </dt>
-            <dd class="mt-1 text-sm font-medium">{{ item.version }}</dd>
-          </div>
-          <div>
-            <dt class="text-xs text-slate-500">
-              {{ 'organizations.subscription.externalProvider' | translate }}
-            </dt>
-            <dd class="mt-1 text-sm font-medium">{{ item.externalProvider || '—' }}</dd>
-          </div>
-          <div>
-            <dt class="text-xs text-slate-500">
-              {{ 'organizations.subscription.externalReference' | translate }}
-            </dt>
-            <dd class="mt-1 break-all text-sm font-medium">
-              {{ item.externalSubscriptionId || '—' }}
-            </dd>
-          </div>
+        <dl class="mt-6 grid gap-4 border-t border-slate-200 pt-5 sm:grid-cols-2 dark:border-slate-700">
+          <div><dt class="text-xs text-slate-500">{{ 'organizations.subscription.currentPeriod' | translate }}</dt><dd class="mt-1 text-sm font-medium">{{ item.currentPeriod.startsAtUtc | date:'mediumDate' }} — {{ item.currentPeriod.endsAtUtc ? (item.currentPeriod.endsAtUtc | date:'mediumDate') : ('organizations.subscription.openEnded' | translate) }}</dd></div>
+          <div><dt class="text-xs text-slate-500">{{ 'organizations.subscription.version' | translate }}</dt><dd class="mt-1 text-sm font-medium">{{ item.version }}</dd></div>
+          <div><dt class="text-xs text-slate-500">{{ 'organizations.subscription.externalProvider' | translate }}</dt><dd class="mt-1 text-sm font-medium">{{ item.externalProvider || '—' }}</dd></div>
+          <div><dt class="text-xs text-slate-500">{{ 'organizations.subscription.externalReference' | translate }}</dt><dd class="mt-1 break-all text-sm font-medium">{{ item.externalSubscriptionId || '—' }}</dd></div>
         </dl>
       </drive-os-card>
 
       <drive-os-card>
-        <h2 class="text-lg font-semibold">
-          {{ 'organizations.subscription.actions.title' | translate }}
-        </h2>
+        <h2 class="text-lg font-semibold">{{ 'organizations.subscription.actions.title' | translate }}</h2>
         <div class="mt-4 flex flex-col gap-2">
-          @if (canChangePlan()) {
-            <drive-os-button
-              variant="outline"
-              fullWidth
-              (pressed)="openPlan()"
-            >
-              {{ 'organizations.subscription.actions.changePlan' | translate }}
-            </drive-os-button>
-          }
-          @if (canRun('activate')) {
-            <drive-os-button
-              variant="outline"
-              fullWidth
-              (pressed)="openStatus('activate')"
-            >
-              {{ 'organizations.subscription.actions.activate' | translate }}
-            </drive-os-button>
-          }
-          @if (canRun('mark-past-due')) {
-            <drive-os-button
-              variant="outline"
-              fullWidth
-              (pressed)="openStatus('mark-past-due')"
-            >
-              {{ 'organizations.subscription.actions.markPastDue' | translate }}
-            </drive-os-button>
-          }
-          @if (canRun('restrict')) {
-            <drive-os-button
-              variant="outline"
-              fullWidth
-              (pressed)="openStatus('restrict')"
-            >
-              {{ 'organizations.subscription.actions.restrict' | translate }}
-            </drive-os-button>
-          }
-          @if (canRun('suspend')) {
-            <drive-os-button
-              variant="outline"
-              fullWidth
-              (pressed)="openStatus('suspend')"
-            >
-              {{ 'organizations.subscription.actions.suspend' | translate }}
-            </drive-os-button>
-          }
-          @if (canRun('expire')) {
-            <drive-os-button
-              variant="outline"
-              fullWidth
-              (pressed)="openStatus('expire')"
-            >
-              {{ 'organizations.subscription.actions.expire' | translate }}
-            </drive-os-button>
-          }
-          @if (canCancel()) {
-            <drive-os-button
-              variant="danger"
-              fullWidth
-              (pressed)="showCancel.set(true)"
-            >
-              {{ 'organizations.subscription.actions.cancel' | translate }}
-            </drive-os-button>
-          }
+          @if (canChangePlan()) { <drive-os-button variant="outline" fullWidth (pressed)="openPlan()">{{ 'organizations.subscription.actions.changePlan' | translate }}</drive-os-button> }
+          @if (canRun('activate')) { <drive-os-button variant="outline" fullWidth (pressed)="openStatus('activate')">{{ 'organizations.subscription.actions.activate' | translate }}</drive-os-button> }
+          @if (canRun('mark-past-due')) { <drive-os-button variant="outline" fullWidth (pressed)="openStatus('mark-past-due')">{{ 'organizations.subscription.actions.markPastDue' | translate }}</drive-os-button> }
+          @if (canRun('restrict')) { <drive-os-button variant="outline" fullWidth (pressed)="openStatus('restrict')">{{ 'organizations.subscription.actions.restrict' | translate }}</drive-os-button> }
+          @if (canRun('suspend')) { <drive-os-button variant="outline" fullWidth (pressed)="openStatus('suspend')">{{ 'organizations.subscription.actions.suspend' | translate }}</drive-os-button> }
+          @if (canRun('expire')) { <drive-os-button variant="outline" fullWidth (pressed)="openStatus('expire')">{{ 'organizations.subscription.actions.expire' | translate }}</drive-os-button> }
+          @if (canCancel()) { <drive-os-button variant="danger" fullWidth (pressed)="showCancel.set(true)">{{ 'organizations.subscription.actions.cancel' | translate }}</drive-os-button> }
         </div>
       </drive-os-card>
     </div>
 
     <div class="grid gap-6 lg:grid-cols-2">
       <drive-os-card>
-        <h2 class="text-lg font-semibold">
-          {{ 'organizations.subscription.entitlements.title' | translate }}
-        </h2>
+        <h2 class="text-lg font-semibold">{{ 'organizations.subscription.entitlements.title' | translate }}</h2>
         <div class="mt-4 flex flex-wrap gap-2">
-          @for (entitlement of item.entitlements; track entitlement.code) {
-            <drive-os-badge variant="info">{{ entitlement.code }}</drive-os-badge>
-          } @empty {
-            <p class="text-sm text-slate-500">
-              {{ 'organizations.subscription.entitlements.empty' | translate }}
-            </p>
-          }
+          @for (entitlement of item.entitlements; track entitlement.code) { <drive-os-badge variant="info">{{ entitlement.code }}</drive-os-badge> }
+          @empty { <p class="text-sm text-slate-500">{{ 'organizations.subscription.entitlements.empty' | translate }}</p> }
         </div>
       </drive-os-card>
       <drive-os-card>
-        <h2 class="text-lg font-semibold">
-          {{ 'organizations.subscription.limits.title' | translate }}
-        </h2>
+        <h2 class="text-lg font-semibold">{{ 'organizations.subscription.limits.title' | translate }}</h2>
         <div class="mt-4 divide-y divide-slate-200 dark:divide-slate-700">
-          @for (limit of item.limits; track limit.code) {
-            <div class="flex items-center justify-between gap-4 py-3">
-              <span class="text-sm text-slate-600 dark:text-slate-300">{{ limit.code }}</span>
-              <strong class="text-sm">{{ limit.value }}</strong>
-            </div>
-          } @empty {
-            <p class="text-sm text-slate-500">
-              {{ 'organizations.subscription.limits.empty' | translate }}
-            </p>
-          }
+          @for (limit of item.limits; track limit.code) { <div class="flex items-center justify-between gap-4 py-3"><span class="text-sm text-slate-600 dark:text-slate-300">{{ limit.code }}</span><strong class="text-sm">{{ limit.value }}</strong></div> }
+          @empty { <p class="text-sm text-slate-500">{{ 'organizations.subscription.limits.empty' | translate }}</p> }
         </div>
       </drive-os-card>
     </div>
   }
 
   @if (showCreate()) {
-    <div
-      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4"
-      role="dialog"
-      aria-modal="true"
-    >
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true">
       <drive-os-card class="max-h-[90vh] w-full max-w-2xl overflow-y-auto">
-        <h2 class="text-xl font-semibold">
-          {{ 'organizations.subscription.create.title' | translate }}
-        </h2>
-        <form
-          class="mt-5 grid gap-4 sm:grid-cols-2"
-          [formGroup]="createForm"
-          (ngSubmit)="submitCreate()"
-        >
-          <label class="space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.plan' | translate }}
-            </span>
-            <input
-              dosInput
-              formControlName="planCode"
-            />
-          </label>
-          <label class="space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.status.label' | translate }}
-            </span>
-            <select
-              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
-              formControlName="status"
-            >
-              <option [ngValue]="1">Trialing</option>
-              <option [ngValue]="2">Active</option>
-            </select>
-          </label>
-          <label class="space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.billingCycle.label' | translate }}
-            </span>
-            <select
-              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
-              formControlName="billingCycle"
-            >
-              <option [ngValue]="0">None</option>
-              <option [ngValue]="1">Monthly</option>
-              <option [ngValue]="2">Quarterly</option>
-              <option [ngValue]="3">Yearly</option>
-              <option [ngValue]="4">Custom</option>
-            </select>
-          </label>
-          <label class="space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.currentPeriodStart' | translate }}
-            </span>
-            <input
-              dosInput
-              type="datetime-local"
-              formControlName="currentPeriodStartsAtUtc"
-            />
-          </label>
-          <label class="space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.currentPeriodEnd' | translate }}
-            </span>
-            <input
-              dosInput
-              type="datetime-local"
-              formControlName="currentPeriodEndsAtUtc"
-            />
-          </label>
-          <label class="space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.trialStart' | translate }}
-            </span>
-            <input
-              dosInput
-              type="datetime-local"
-              formControlName="trialStartsAtUtc"
-            />
-          </label>
-          <label class="space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.trialEnd' | translate }}
-            </span>
-            <input
-              dosInput
-              type="datetime-local"
-              formControlName="trialEndsAtUtc"
-            />
-          </label>
-          <label class="space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.externalProvider' | translate }}
-            </span>
-            <input
-              dosInput
-              formControlName="externalProvider"
-            />
-          </label>
-          <label class="space-y-1 sm:col-span-2">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.externalReference' | translate }}
-            </span>
-            <input
-              dosInput
-              formControlName="externalSubscriptionId"
-            />
-          </label>
-          <div class="flex justify-end gap-3 sm:col-span-2">
-            <drive-os-button
-              variant="ghost"
-              (pressed)="closeDialogs()"
-            >
-              {{ 'common.actions.cancel' | translate }}
-            </drive-os-button>
-            <drive-os-button
-              type="submit"
-              [loading]="saving()"
-            >
-              {{ 'common.actions.save' | translate }}
-            </drive-os-button>
-          </div>
+        <h2 class="text-xl font-semibold">{{ 'organizations.subscription.create.title' | translate }}</h2>
+        <form class="mt-5 grid gap-4 sm:grid-cols-2" [formGroup]="createForm" (ngSubmit)="submitCreate()">
+          <label class="space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.plan' | translate }}</span><input dosInput formControlName="planCode" /></label>
+          <label class="space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.status.label' | translate }}</span><select class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100" formControlName="status"><option [ngValue]="1">Trialing</option><option [ngValue]="2">Active</option></select></label>
+          <label class="space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.billingCycle.label' | translate }}</span><select class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100" formControlName="billingCycle"><option [ngValue]="0">None</option><option [ngValue]="1">Monthly</option><option [ngValue]="2">Quarterly</option><option [ngValue]="3">Yearly</option><option [ngValue]="4">Custom</option></select></label>
+          <label class="space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.currentPeriodStart' | translate }}</span><input dosInput type="datetime-local" formControlName="currentPeriodStartsAtUtc" /></label>
+          <label class="space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.currentPeriodEnd' | translate }}</span><input dosInput type="datetime-local" formControlName="currentPeriodEndsAtUtc" /></label>
+          <label class="space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.trialStart' | translate }}</span><input dosInput type="datetime-local" formControlName="trialStartsAtUtc" /></label>
+          <label class="space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.trialEnd' | translate }}</span><input dosInput type="datetime-local" formControlName="trialEndsAtUtc" /></label>
+          <label class="space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.externalProvider' | translate }}</span><input dosInput formControlName="externalProvider" /></label>
+          <label class="space-y-1 sm:col-span-2"><span class="text-sm font-medium">{{ 'organizations.subscription.externalReference' | translate }}</span><input dosInput formControlName="externalSubscriptionId" /></label>
+          <div class="flex justify-end gap-3 sm:col-span-2"><drive-os-button variant="ghost" (pressed)="closeDialogs()">{{ 'common.actions.cancel' | translate }}</drive-os-button><drive-os-button type="submit" [loading]="saving()">{{ 'common.actions.save' | translate }}</drive-os-button></div>
         </form>
       </drive-os-card>
     </div>
   }
 
   @if (showPlan()) {
-    <div
-      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4"
-      role="dialog"
-      aria-modal="true"
-    >
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true">
       <drive-os-card class="max-h-[90vh] w-full max-w-2xl overflow-y-auto">
-        <h2 class="text-xl font-semibold">
-          {{ 'organizations.subscription.actions.changePlan' | translate }}
-        </h2>
-        <form
-          class="mt-5 space-y-4"
-          [formGroup]="planForm"
-          (ngSubmit)="submitPlan()"
-        >
-          <label class="block space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.plan' | translate }}
-            </span>
-            <input
-              dosInput
-              formControlName="planCode"
-            />
-          </label>
-          <label class="block space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.entitlements.codes' | translate }}
-            </span>
-            <textarea
-              dosInput
-              rows="6"
-              formControlName="entitlementCodes"
-            ></textarea>
-          </label>
-          <label class="block space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.limits.format' | translate }}
-            </span>
-            <textarea
-              dosInput
-              rows="6"
-              formControlName="limits"
-            ></textarea>
-          </label>
-          <label class="block space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.reason' | translate }}
-            </span>
-            <textarea
-              dosInput
-              rows="3"
-              formControlName="reason"
-            ></textarea>
-          </label>
-          <div class="flex justify-end gap-3">
-            <drive-os-button
-              variant="ghost"
-              (pressed)="closeDialogs()"
-            >
-              {{ 'common.actions.cancel' | translate }}
-            </drive-os-button>
-            <drive-os-button
-              type="submit"
-              [loading]="saving()"
-            >
-              {{ 'common.actions.save' | translate }}
-            </drive-os-button>
-          </div>
+        <h2 class="text-xl font-semibold">{{ 'organizations.subscription.actions.changePlan' | translate }}</h2>
+        <form class="mt-5 space-y-4" [formGroup]="planForm" (ngSubmit)="submitPlan()">
+          <label class="block space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.plan' | translate }}</span><input dosInput formControlName="planCode" /></label>
+          <label class="block space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.entitlements.codes' | translate }}</span><textarea dosInput rows="6" formControlName="entitlementCodes"></textarea></label>
+          <label class="block space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.limits.format' | translate }}</span><textarea dosInput rows="6" formControlName="limits"></textarea></label>
+          <label class="block space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.reason' | translate }}</span><textarea dosInput rows="3" formControlName="reason"></textarea></label>
+          <div class="flex justify-end gap-3"><drive-os-button variant="ghost" (pressed)="closeDialogs()">{{ 'common.actions.cancel' | translate }}</drive-os-button><drive-os-button type="submit" [loading]="saving()">{{ 'common.actions.save' | translate }}</drive-os-button></div>
         </form>
       </drive-os-card>
     </div>
   }
 
   @if (selectedStatusAction()) {
-    <div
-      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4"
-      role="dialog"
-      aria-modal="true"
-    >
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true">
       <drive-os-card class="w-full max-w-xl">
-        <h2 class="text-xl font-semibold">
-          {{ 'organizations.subscription.statusChange.title' | translate }}
-        </h2>
-        <form
-          class="mt-5 space-y-4"
-          [formGroup]="statusForm"
-          (ngSubmit)="submitStatus()"
-        >
-          <div class="grid gap-4 sm:grid-cols-2">
-            <label class="space-y-1">
-              <span class="text-sm font-medium">
-                {{ 'organizations.subscription.currentPeriodStart' | translate }}
-              </span>
-              <input
-                dosInput
-                type="datetime-local"
-                formControlName="periodStartsAtUtc"
-              />
-            </label>
-            <label class="space-y-1">
-              <span class="text-sm font-medium">
-                {{ 'organizations.subscription.currentPeriodEnd' | translate }}
-              </span>
-              <input
-                dosInput
-                type="datetime-local"
-                formControlName="periodEndsAtUtc"
-              />
-            </label>
-          </div>
-          <label class="block space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.reason' | translate }}
-            </span>
-            <textarea
-              dosInput
-              rows="4"
-              formControlName="reason"
-            ></textarea>
-          </label>
-          <div class="flex justify-end gap-3">
-            <drive-os-button
-              variant="ghost"
-              (pressed)="closeDialogs()"
-            >
-              {{ 'common.actions.cancel' | translate }}
-            </drive-os-button>
-            <drive-os-button
-              type="submit"
-              [loading]="saving()"
-            >
-              {{ 'common.actions.confirm' | translate }}
-            </drive-os-button>
-          </div>
+        <h2 class="text-xl font-semibold">{{ 'organizations.subscription.statusChange.title' | translate }}</h2>
+        <form class="mt-5 space-y-4" [formGroup]="statusForm" (ngSubmit)="submitStatus()">
+          <div class="grid gap-4 sm:grid-cols-2"><label class="space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.currentPeriodStart' | translate }}</span><input dosInput type="datetime-local" formControlName="periodStartsAtUtc" /></label><label class="space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.currentPeriodEnd' | translate }}</span><input dosInput type="datetime-local" formControlName="periodEndsAtUtc" /></label></div>
+          <label class="block space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.reason' | translate }}</span><textarea dosInput rows="4" formControlName="reason"></textarea></label>
+          <div class="flex justify-end gap-3"><drive-os-button variant="ghost" (pressed)="closeDialogs()">{{ 'common.actions.cancel' | translate }}</drive-os-button><drive-os-button type="submit" [loading]="saving()">{{ 'common.actions.confirm' | translate }}</drive-os-button></div>
         </form>
       </drive-os-card>
     </div>
   }
 
   @if (showCancel()) {
-    <div
-      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4"
-      role="dialog"
-      aria-modal="true"
-    >
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true">
       <drive-os-card class="w-full max-w-xl">
-        <h2 class="text-xl font-semibold text-red-700">
-          {{ 'organizations.subscription.cancel.title' | translate }}
-        </h2>
-        <form
-          class="mt-5 space-y-4"
-          [formGroup]="cancelForm"
-          (ngSubmit)="submitCancel()"
-        >
-          <label class="block space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.cancel.effectiveAt' | translate }}
-            </span>
-            <input
-              dosInput
-              type="datetime-local"
-              formControlName="effectiveAtUtc"
-            />
-          </label>
-          <label class="block space-y-1">
-            <span class="text-sm font-medium">
-              {{ 'organizations.subscription.reason' | translate }}
-            </span>
-            <textarea
-              dosInput
-              rows="4"
-              formControlName="reason"
-            ></textarea>
-          </label>
-          <div class="flex justify-end gap-3">
-            <drive-os-button
-              variant="ghost"
-              (pressed)="closeDialogs()"
-            >
-              {{ 'common.actions.cancel' | translate }}
-            </drive-os-button>
-            <drive-os-button
-              type="submit"
-              variant="danger"
-              [loading]="saving()"
-            >
-              {{ 'organizations.subscription.actions.cancel' | translate }}
-            </drive-os-button>
-          </div>
+        <h2 class="text-xl font-semibold text-red-700">{{ 'organizations.subscription.cancel.title' | translate }}</h2>
+        <form class="mt-5 space-y-4" [formGroup]="cancelForm" (ngSubmit)="submitCancel()">
+          <label class="block space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.cancel.effectiveAt' | translate }}</span><input dosInput type="datetime-local" formControlName="effectiveAtUtc" /></label>
+          <label class="block space-y-1"><span class="text-sm font-medium">{{ 'organizations.subscription.reason' | translate }}</span><textarea dosInput rows="4" formControlName="reason"></textarea></label>
+          <div class="flex justify-end gap-3"><drive-os-button variant="ghost" (pressed)="closeDialogs()">{{ 'common.actions.cancel' | translate }}</drive-os-button><drive-os-button type="submit" variant="danger" [loading]="saving()">{{ 'organizations.subscription.actions.cancel' | translate }}</drive-os-button></div>
         </form>
       </drive-os-card>
     </div>

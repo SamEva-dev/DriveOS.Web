@@ -11,6 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
+import { AuthorizationService } from '../../../../../core/auth/authorization.service';
 import { ApiErrorService } from '../../../../../core/errors/api-error.service';
 import {
   DriveOsButtonComponent,
@@ -28,6 +29,7 @@ import {
 interface RequirementNavigation {
   readonly routerLink: readonly string[];
   readonly labelKey: string;
+  readonly requiredPermission: string;
 }
 
 @Component({
@@ -48,6 +50,7 @@ export class OrganizationActivationReadinessPage {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly api = inject(OrganizationActivationReadinessApiService);
+  private readonly authorization = inject(AuthorizationService);
   private readonly apiErrorService = inject(ApiErrorService);
   private readonly translate = inject(TranslateService);
   private readonly toast = inject(DriveOsToastService);
@@ -89,6 +92,7 @@ export class OrganizationActivationReadinessPage {
         return {
           routerLink: [...base, 'legal-profile'],
           labelKey: 'organizations.activationReadiness.actions.openLegalProfile',
+          requiredPermission: 'OrganizationLegalProfiles.Read',
         };
 
       case 'organization.primary-owner':
@@ -96,18 +100,21 @@ export class OrganizationActivationReadinessPage {
         return {
           routerLink: [...base, 'representatives'],
           labelKey: 'organizations.activationReadiness.actions.openRepresentatives',
+          requiredPermission: 'OrganizationRepresentatives.Read',
         };
 
       case 'organization.active-subscription':
         return {
           routerLink: [...base, 'subscription'],
           labelKey: 'organizations.activationReadiness.actions.openSubscription',
+          requiredPermission: 'OrganizationSubscriptions.Read',
         };
 
       case 'organization.operational-settings':
         return {
-          routerLink: [...base, 'configurations'],
+          routerLink: [...base, 'settings'],
           labelKey: 'organizations.activationReadiness.actions.openConfigurations',
+          requiredPermission: 'OrganizationSettings.Read',
         };
 
       case 'organization.primary-branch':
@@ -115,11 +122,17 @@ export class OrganizationActivationReadinessPage {
         return {
           routerLink: [...base, 'branches'],
           labelKey: 'organizations.activationReadiness.actions.openBranches',
+          requiredPermission: 'Branches.Read',
         };
 
       default:
         return null;
     }
+  }
+
+
+  canNavigateTo(navigation: RequirementNavigation): boolean {
+    return this.authorization.hasPermission(navigation.requiredPermission);
   }
 
   trackRequirement(_: number, requirement: OrganizationActivationRequirement): string {

@@ -126,11 +126,12 @@
           </drive-os-button>
 
           <drive-os-button
-            type="submit"
+            type="button"
             [variant]="currentAction.buttonVariant"
             [icon]="currentAction.icon"
             [loading]="submitting()"
             [disabled]="reasonControl.invalid || submitting()"
+            (pressed)="submit()"
           >
             {{ currentAction.labelKey | translate }}
           </drive-os-button>

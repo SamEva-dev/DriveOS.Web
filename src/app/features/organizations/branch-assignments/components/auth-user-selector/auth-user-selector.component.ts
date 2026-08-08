@@ -89,8 +89,22 @@ export class AuthUserSelectorComponent implements OnInit, OnDestroy {
     }
   }
 
+  private disabledValue = false;
+
   @Input()
-  disabled = false;
+  set disabled(value: boolean) {
+    this.disabledValue = value;
+
+    if (value) {
+      this.searchControl.disable({ emitEvent: false });
+    } else {
+      this.searchControl.enable({ emitEvent: false });
+    }
+  }
+
+  get disabled(): boolean {
+    return this.disabledValue;
+  }
 
   @Output()
   readonly userSelected = new EventEmitter<AuthUser | null>();

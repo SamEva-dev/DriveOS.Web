@@ -1,0 +1,28 @@
+<button
+  type="button"
+  class="group flex w-full items-start gap-4 rounded-[var(--driveos-radius-lg)] border p-4 text-left transition-[border-color,background-color,box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--driveos-primary-700)] disabled:cursor-not-allowed disabled:opacity-60"
+  [class.border-[var(--driveos-primary-700)]]="checked()"
+  [class.bg-[var(--driveos-primary-50)]]="checked()"
+  [class.border-[var(--driveos-border)]]="!checked()"
+  [class.bg-[var(--driveos-surface-card)]]="!checked()"
+  [disabled]="disabled()"
+  [attr.aria-pressed]="checked()"
+  (click)="toggle()"
+>
+  <span
+    class="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md border text-xs font-black transition-colors"
+    [class.border-[var(--driveos-primary-800)]]="checked()"
+    [class.bg-[var(--driveos-primary-800)]]="checked()"
+    [class.text-white]="checked()"
+    [class.border-[var(--driveos-border-strong)]]="!checked()"
+    [class.text-transparent]="!checked()"
+    aria-hidden="true"
+  >✓</span>
+
+  <span class="min-w-0">
+    <span class="block font-extrabold text-[var(--driveos-text-primary)]">{{ title() }}</span>
+    @if (description()) {
+      <span class="mt-1 block text-sm leading-5 text-[var(--driveos-text-secondary)]">{{ description() }}</span>
+    }
+  </span>
+</button>

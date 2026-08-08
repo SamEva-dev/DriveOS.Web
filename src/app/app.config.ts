@@ -65,6 +65,7 @@ export const appConfig: ApplicationConfig = {
 
       useValue: {
         baseUrl: environment.BASE_AUTH_API,
+        clientId: environment.AUTH_CLIENT_ID,
       },
     },
   ],

@@ -877,7 +877,11 @@
         "effectiveTo": "Date de fin",
         "period": "Période",
         "reason": "Motif",
-        "activateImmediately": "Activer immédiatement"
+        "activateImmediately": "Activer immédiatement",
+        "personId": "Identifiant de la personne",
+        "userId": "Compte utilisateur",
+        "revision": "Révision",
+        "account": "Personne / compte DriveOS"
       },
       "types": {
         "Owner": "Propriétaire",
@@ -906,8 +910,52 @@
         "conflict": "Les données ont été modifiées par un autre utilisateur. La liste a été rechargée."
       },
       "validation": {
-        "reasonRequired": "Le motif est obligatoire."
-      }
+        "reasonRequired": "Le motif est obligatoire.",
+        "formInvalidTitle": "Formulaire incomplet",
+        "formInvalid": "Vérifiez les champs obligatoires signalés avant d’enregistrer.",
+        "personId": "Un identifiant Person valide est obligatoire.",
+        "userId": "Le UserId doit être un GUID valide ou rester vide.",
+        "authorityRequired": "Le périmètre d’autorité est obligatoire.",
+        "effectiveFrom": "La date de début est obligatoire.",
+        "dateRange": "La date de fin ne peut pas précéder la date de début.",
+        "userRequired": "Sélectionnez la personne qui représentera l’organisation."
+      },
+      "eyebrow": "Gouvernance organisationnelle",
+      "listEyebrow": "Gouvernance",
+      "createEyebrow": "Nouvelle habilitation",
+      "createDescription": "Identifiez la personne, définissez son rôle et la période pendant laquelle elle peut agir au nom de l’organisation.",
+      "governance": "Gouvernance",
+      "stats": {
+        "total": "Total",
+        "active": "Actifs",
+        "owners": "Propriétaires",
+        "primaryOwner": "Propriétaire principal",
+        "yes": "Oui",
+        "no": "Non"
+      },
+      "sections": {
+        "identity": "Personne et compte",
+        "identityHelp": "Recherchez la personne par son nom ou son e-mail. DriveOS s’occupe des identifiants techniques.",
+        "authority": "Rôle et autorité",
+        "authorityHelp": "Définissez précisément la nature de la représentation et son périmètre.",
+        "period": "Période d’effet",
+        "periodHelp": "La représentation peut être permanente ou limitée dans le temps."
+      },
+      "placeholders": {
+        "personId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "userId": "Optionnel — identifiant du compte",
+        "authority": "Ex. Gestion administrative, signature des contrats et représentation auprès des partenaires."
+      },
+      "hints": {
+        "personId": "Identifiant Person du représentant. Il doit être un GUID valide.",
+        "userId": "Laissez vide si la personne ne possède pas encore de compte DriveOS.",
+        "authority": "Décrivez ce que cette personne est autorisée à faire au nom de l’organisation.",
+        "primaryOwner": "À utiliser uniquement pour un représentant de type Propriétaire.",
+        "activateImmediately": "Active la représentation dès sa création si les invariants métier sont satisfaits.",
+        "personIdGenerated": "Aucun GUID à saisir : DriveOS génère automatiquement l’identifiant Person interne lors de l’enregistrement."
+      },
+      "personWithoutAccount": "Personne sans compte DriveOS",
+      "loadingIdentity": "Chargement de l’identité…"
     },
     "legalProfile": {
       "eyebrow": "Identité juridique",
@@ -989,7 +1037,8 @@
         "openRepresentatives": "Gérer les propriétaires",
         "openSubscription": "Gérer l’abonnement",
         "openConfigurations": "Configurer l’organisation",
-        "openBranches": "Gérer les agences"
+        "openBranches": "Gérer les agences",
+        "permissionRequired": "Permission requise"
       },
       "summary": {
         "completed": "prérequis satisfaits",
@@ -1013,25 +1062,41 @@
       },
       "requirements": {
         "legalProfile": {
-          "active": "Le profil juridique doit être actif."
+          "active": "Le profil juridique doit être actif.",
+          "satisfied": "Profil juridique actif.",
+          "missing": "Le profil juridique actif est manquant."
         },
         "activeOwner": {
-          "present": "Au moins un propriétaire actif doit être présent."
+          "present": "Au moins un propriétaire actif doit être présent.",
+          "satisfied": "Un propriétaire actif est présent.",
+          "missing": "Aucun propriétaire actif n’est défini."
         },
         "primaryOwner": {
-          "present": "Un propriétaire principal actif doit être défini."
+          "present": "Un propriétaire principal actif doit être défini.",
+          "satisfied": "Un propriétaire principal actif est défini.",
+          "missing": "Aucun propriétaire principal actif n’est défini."
         },
         "activeSubscription": {
           "present": "Un abonnement actif ou en période d’essai est requis."
         },
         "operationalSettings": {
-          "present": "Les paramètres opérationnels doivent être configurés."
+          "present": "Les paramètres opérationnels doivent être configurés.",
+          "satisfied": "Les paramètres opérationnels sont configurés.",
+          "missing": "Les paramètres opérationnels ne sont pas configurés."
         },
         "primaryBranch": {
-          "present": "Une agence principale doit être définie."
+          "present": "Une agence principale doit être définie.",
+          "satisfied": "Une agence principale est définie.",
+          "missing": "Aucune agence principale active n’est définie."
         },
         "primaryBranchManager": {
-          "present": "L’agence principale doit avoir un responsable actif."
+          "present": "L’agence principale doit avoir un responsable actif.",
+          "satisfied": "L’agence principale possède un responsable actif.",
+          "missing": "L’agence principale ne possède pas de responsable actif."
+        },
+        "subscription": {
+          "satisfied": "Un abonnement actif ou en période d’essai est présent.",
+          "missing": "Aucun abonnement actif ou en période d’essai n’est présent."
         }
       }
     },
@@ -1242,6 +1307,19 @@
     },
     "actions": {
       "viewPlanning": "Voir tout le planning"
+    }
+  },
+  "shared": {
+    "authUserPicker": {
+      "selected": "Personne sélectionnée",
+      "change": "Changer",
+      "searchLabel": "Rechercher une personne",
+      "searchPlaceholder": "Nom, prénom ou adresse e-mail",
+      "searchHint": "Sélectionnez un compte actif de cette organisation. L’identifiant technique est géré automatiquement par DriveOS.",
+      "emptyTitle": "Aucune personne trouvée",
+      "emptyDescription": "Aucun compte actif de cette organisation ne correspond à votre recherche.",
+      "verified": "E-mail vérifié",
+      "loadMore": "Afficher plus"
     }
   }
 }

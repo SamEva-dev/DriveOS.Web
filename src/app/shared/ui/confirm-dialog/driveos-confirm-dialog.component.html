@@ -1,0 +1,39 @@
+<drive-os-modal
+  [open]="open()"
+  [title]="title()"
+  size="sm"
+  [closeDisabled]="loading()"
+  [closeOnBackdrop]="!loading()"
+  (closeRequested)="cancelRequested.emit()"
+>
+  <div class="flex gap-4">
+    <div class="flex size-12 shrink-0 items-center justify-center rounded-2xl" [class]="iconClass()">
+      <drive-os-icon [name]="iconName()" />
+    </div>
+    <div class="min-w-0">
+      <p class="text-base font-semibold leading-6 text-slate-900 dark:text-white">{{ message() }}</p>
+      @if (detail()) {
+        <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{{ detail() }}</p>
+      }
+    </div>
+  </div>
+
+  <div driveOsModalFooter class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+    <drive-os-button
+      variant="outline"
+      [disabled]="loading()"
+      (pressed)="cancelRequested.emit()"
+    >
+      {{ cancelLabel() }}
+    </drive-os-button>
+
+    <drive-os-button
+      [variant]="tone() === 'danger' ? 'danger' : 'secondary'"
+      [loading]="loading()"
+      [disabled]="loading()"
+      (pressed)="confirmed.emit()"
+    >
+      {{ confirmLabel() }}
+    </drive-os-button>
+  </div>
+</drive-os-modal>

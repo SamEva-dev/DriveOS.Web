@@ -1,0 +1,11 @@
+<main
+  class="mx-auto w-full px-4 py-5 sm:px-6 lg:px-8"
+  [class.max-w-7xl]="width() === 'xl'"
+  [class.max-w-[96rem]]="width() === '2xl'"
+  [class.max-w-none]="width() === 'full'"
+  [class.space-y-4]="spacing() === 'compact'"
+  [class.space-y-6]="spacing() === 'normal'"
+  [class.space-y-8]="spacing() === 'relaxed'"
+>
+  <ng-content />
+</main>

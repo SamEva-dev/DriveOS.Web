@@ -1,0 +1,16 @@
+<div
+  class="flex flex-col gap-4 rounded-[var(--driveos-radius-lg)] border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 shadow-[var(--driveos-shadow-sm)] sm:flex-row sm:items-center sm:justify-between"
+  [class.sticky]="sticky()"
+  [class.bottom-4]="sticky()"
+  [class.z-20]="sticky()"
+>
+  <div class="min-w-0">
+    @if (description()) {
+      <p class="text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ description() }}</p>
+    }
+    <ng-content select="[driveosActionInfo]" />
+  </div>
+  <div class="flex shrink-0 flex-wrap justify-end gap-3">
+    <ng-content />
+  </div>
+</div>

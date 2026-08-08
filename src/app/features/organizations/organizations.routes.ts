@@ -11,10 +11,13 @@ export const ORGANIZATIONS_ROUTES: Routes = [
   },
 
   {
-    path: 'create',
-    pathMatch: 'full',
-    redirectTo: '',
-  },
+  path: 'create',
+
+  loadComponent: () =>
+    import('./pages/organization-create/organization-create.page').then(
+      (component) => component.OrganizationCreatePage,
+    ),
+},
 
   {
     path: ':organizationId/branches',
@@ -101,6 +104,16 @@ export const ORGANIZATIONS_ROUTES: Routes = [
     loadComponent: () =>
       import('./organization-configurations/pages/organization-configurations/organization-configurations.page').then(
         (component) => component.OrganizationConfigurationsPage,
+      ),
+  },
+
+
+  {
+    path: ':organizationId/settings',
+
+    loadComponent: () =>
+      import('./organization-settings/pages/organization-settings/organization-settings.page').then(
+        (component) => component.OrganizationSettingsPage,
       ),
   },
 

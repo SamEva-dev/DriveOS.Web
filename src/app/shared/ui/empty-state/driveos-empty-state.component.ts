@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { DriveOsIconComponent } from '../icon/driveos-icon.component';
 
+export type DriveOsEmptyStateTone = 'default' | 'search' | 'success';
+
 @Component({
   selector: 'drive-os-empty-state',
   standalone: true,
@@ -12,4 +14,6 @@ export class DriveOsEmptyStateComponent {
   readonly icon = input('building-2');
   readonly title = input.required<string>();
   readonly description = input.required<string>();
+  readonly tone = input<DriveOsEmptyStateTone>('default');
+  readonly compact = input(false);
 }

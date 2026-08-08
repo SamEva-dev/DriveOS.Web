@@ -4,10 +4,27 @@ import { Router } from '@angular/router';
 import { catchError, from, switchMap, throwError } from 'rxjs';
 
 import { API_CONFIG } from '../../config/api-config';
-import { AUTH_API_CONFIG } from '../auth-api-config';
 import { AuthService } from '../../services/auth.service';
+import { AUTH_API_CONFIG } from '../auth-api-config';
 
 const RETRY_AFTER_REFRESH = 'x-driveos-auth-retry';
+
+/**
+ * AuthGate endpoints that must stay callable without an access token.
+ * In particular refresh must never receive an expired bearer token from this interceptor,
+ * otherwise a 401 could recursively trigger another refresh.
+ */
+const PUBLIC_AUTH_PATHS = [
+  '/api/Auth/prelogin',
+  '/api/Auth/login',
+  '/api/Auth/register-with-tenant',
+  '/api/Auth/refresh',
+  '/api/Auth/validate-email',
+  '/api/Auth/resend-confirm-email',
+  '/api/PasswordReset/request',
+  '/api/PasswordReset/reset',
+  '/api/Jwks',
+];
 
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const auth = inject(AuthService);
@@ -21,10 +38,17 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const isAuthRequest = request.url.startsWith(authBaseUrl);
   const isDriveOsApiRequest = request.url.startsWith(driveOsApiBaseUrl);
 
-  if (isAuthRequest || !isDriveOsApiRequest) {
+  // Requests unrelated to DriveOS.Api/AuthGate are intentionally untouched.
+  if (!isAuthRequest && !isDriveOsApiRequest) {
     return next(request);
   }
 
+  // Authentication bootstrap endpoints are anonymous by design.
+  if (isAuthRequest && isPublicAuthRequest(request.url, authBaseUrl)) {
+    return next(request);
+  }
+
+  // Protected AuthGate endpoints (e.g. /api/users) use the same DriveOS access token.
   const requestWithToken = attachAccessToken(request, auth.accessToken());
 
   return next(requestWithToken).pipe(
@@ -93,6 +117,12 @@ function attachAccessToken(request: Parameters<HttpInterceptorFn>[0], accessToke
       Authorization: `Bearer ${accessToken}`,
     },
   });
+}
+
+function isPublicAuthRequest(url: string, authBaseUrl: string): boolean {
+  const normalizedUrl = url.split('?')[0];
+
+  return PUBLIC_AUTH_PATHS.some((path) => normalizedUrl === `${authBaseUrl}${path}`);
 }
 
 function normalizeBaseUrl(value: string): string {
