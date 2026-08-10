@@ -1,0 +1,41 @@
+<drive-os-page-shell width="2xl" spacing="relaxed">
+  <drive-os-page-header
+    kicker="Développement commercial"
+    title="CRM & Admissions"
+    description="Pilotez le parcours du prospect depuis le premier contact jusqu’à la conversion en élève, sans mélanger le CRM avec le dossier élève."
+    icon="ph ph-funnel"
+    badge="BC-04"
+  />
+
+  <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <article class="rounded-[var(--driveos-radius-xl)] border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-[var(--driveos-shadow-sm)]">
+      <p class="text-xs font-extrabold uppercase tracking-[0.14em] text-[var(--driveos-text-secondary)]">Étape 1</p>
+      <h2 class="mt-2 text-lg font-black text-[var(--driveos-text-primary)]">Prospects</h2>
+      <p class="mt-2 text-sm leading-6 text-[var(--driveos-text-secondary)]">Capturer, affecter et qualifier les demandes sans créer prématurément un compte utilisateur.</p>
+    </article>
+
+    <article class="rounded-[var(--driveos-radius-xl)] border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-[var(--driveos-shadow-sm)]">
+      <p class="text-xs font-extrabold uppercase tracking-[0.14em] text-[var(--driveos-text-secondary)]">Étape 2</p>
+      <h2 class="mt-2 text-lg font-black text-[var(--driveos-text-primary)]">Évaluation initiale</h2>
+      <p class="mt-2 text-sm leading-6 text-[var(--driveos-text-secondary)]">Planifier puis conserver une évaluation traçable avec son auteur et ses recommandations.</p>
+    </article>
+
+    <article class="rounded-[var(--driveos-radius-xl)] border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-[var(--driveos-shadow-sm)]">
+      <p class="text-xs font-extrabold uppercase tracking-[0.14em] text-[var(--driveos-text-secondary)]">Étape 3</p>
+      <h2 class="mt-2 text-lg font-black text-[var(--driveos-text-primary)]">Offres & devis</h2>
+      <p class="mt-2 text-sm leading-6 text-[var(--driveos-text-secondary)]">Construire des propositions commerciales versionnées et figer toute offre acceptée.</p>
+    </article>
+
+    <article class="rounded-[var(--driveos-radius-xl)] border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-[var(--driveos-shadow-sm)]">
+      <p class="text-xs font-extrabold uppercase tracking-[0.14em] text-[var(--driveos-text-secondary)]">Étape 4</p>
+      <h2 class="mt-2 text-lg font-black text-[var(--driveos-text-primary)]">Conversion élève</h2>
+      <p class="mt-2 text-sm leading-6 text-[var(--driveos-text-secondary)]">Déclencher explicitement la création du dossier élève tout en conservant l’historique CRM.</p>
+    </article>
+  </section>
+
+  @if (!canReadLeads) {
+    <section class="rounded-[var(--driveos-radius-xl)] border border-amber-200 bg-amber-50 p-5 text-sm text-amber-950 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100">
+      Votre compte ne possède pas encore la permission <strong>Crm.Leads.Read</strong>. Le menu CRM est masqué tant que les permissions AuthGate ne sont pas synchronisées.
+    </section>
+  }
+</drive-os-page-shell>

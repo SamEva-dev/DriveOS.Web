@@ -70,6 +70,11 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'crm',
+        loadChildren: () =>
+          import('./features/crm/crm.routes').then((module) => module.CRM_ROUTES),
+      },
+      {
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/pages/dashboard/dashboard.page').then(

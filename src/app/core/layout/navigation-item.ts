@@ -3,4 +3,6 @@ export interface NavigationItem {
   readonly icon: string;
   readonly routerLink: string;
   readonly exact?: boolean;
+  readonly disabled?: boolean;
+  readonly badgeKey?: string;
 }

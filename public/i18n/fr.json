@@ -16,7 +16,8 @@
       "loading": "Chargement en cours",
       "actions": "Actions",
       "reset": "Réinitialiser",
-      "retry": "Réessayer"
+      "retry": "Réessayer",
+      "confirm": "Confirmer"
     },
     "filters": {
       "all": "Tous"
@@ -26,7 +27,8 @@
       "empty": "Aucune donnée disponible"
     },
     "comingSoon": "Ce module sera développé dans un prochain sprint.",
-    "loading": "Chargement en cours"
+    "loading": "Chargement en cours",
+    "soon": "Bientôt"
   },
   "navigation": {
     "dashboard": "Tableau de bord",
@@ -36,7 +38,27 @@
     "instructors": "Enseignants",
     "vehicles": "Véhicules",
     "billing": "Finance",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "groups": {
+      "operations": "Opérations",
+      "platform": "DriveOS"
+    },
+    "crm": {
+      "label": "CRM & Admissions",
+      "dashboard": "CRM — Tableau de bord",
+      "prospects": "Prospects",
+      "activities": "Activités",
+      "appointments": "Rendez-vous",
+      "tasks": "Tâches",
+      "pipeline": "Pipeline",
+      "offers": "Offres",
+      "communications": "Communications",
+      "acquisition": "Acquisition",
+      "duplicates": "Doublons",
+      "conversions": "Conversions",
+      "losses": "Pertes",
+      "analytics": "Analytics"
+    }
   },
   "theme": {
     "label": "Thème",
@@ -48,6 +70,30 @@
     "title": "Une erreur est survenue",
     "generic": "Une erreur inattendue est survenue.",
     "network": "Impossible de contacter le serveur.",
+    "crm": {
+      "leads": {
+        "id": { "empty": "L’identifiant du prospect est obligatoire." },
+        "organizationId": { "empty": "L’organisation est obligatoire." },
+        "currentTenant": { "required": "Aucune organisation active n’a été trouvée." },
+        "currentUser": { "required": "Votre session utilisateur est invalide." },
+        "firstName": { "required": "Le prénom est obligatoire.", "tooLong": "Le prénom est trop long." },
+        "lastName": { "required": "Le nom est obligatoire.", "tooLong": "Le nom est trop long." },
+        "email": { "invalid": "L’adresse e-mail est invalide." },
+        "phone": { "tooLong": "Le numéro de téléphone est trop long." },
+        "licenseCategory": { "required": "La formation recherchée est obligatoire.", "tooLong": "La formation recherchée est trop longue." },
+        "transmission": { "invalid": "La préférence de boîte de vitesses est invalide." },
+        "preferredLocation": { "tooLong": "Le lieu préféré est trop long." },
+        "source": { "invalid": "La source est invalide.", "detailTooLong": "La précision sur la source est trop longue.", "detailRequired": "Précisez la source sélectionnée." },
+        "notFound": "Le prospect demandé est introuvable.",
+        "status": {
+          "invalid": "Le statut demandé est invalide.",
+          "alreadyApplied": "Ce statut est déjà appliqué au prospect.",
+          "invalidTransition": "Cette transition n’est pas autorisée depuis le statut actuel."
+        },
+        "lossReason": { "required": "Le motif de perte est obligatoire." },
+        "statusReason": { "tooLong": "Le motif ne peut pas dépasser 500 caractères." }
+      }
+    },
     "organizations": {
       "id": {
         "empty": "L’identifiant de l’organisation est vide.",
@@ -1134,7 +1180,19 @@
     "archived": "Archivée"
   },
   "layout": {
-    "workspace": "Espace de travail"
+    "workspace": "Espace de travail",
+    "schoolName": "Auto-école Horizon",
+    "branchLabel": "Agence",
+    "branchName": "Nice Centre",
+    "mainNavigation": "Navigation principale",
+    "openMenu": "Ouvrir le menu",
+    "collapseMenu": "Réduire le menu",
+    "globalSearch": "Recherche globale",
+    "searchPlaceholder": "Rechercher un élève, véhicule, contrat…",
+    "online": "En ligne",
+    "notifications": "Notifications",
+    "userProfile": "Profil utilisateur",
+    "logout": "Se déconnecter"
   },
   "refreshWarning": {
     "title": "Actualisation incomplète",
@@ -1307,6 +1365,76 @@
     },
     "actions": {
       "viewPlanning": "Voir tout le planning"
+    }
+  },
+  "crm": {
+    "kicker": "CRM & Admissions",
+    "pipeline": {
+      "title": "Pipeline commercial",
+      "description": "Suivez l’avancement de chaque prospect et appliquez uniquement les transitions autorisées.",
+      "emptyColumn": "Aucun prospect",
+      "loadError": { "title": "Impossible de charger le pipeline", "description": "Vérifiez votre connexion puis réessayez." },
+      "limit": { "title": "Vue partielle", "description": "Le pipeline affiche les 100 prospects les plus récents. Utilisez la liste pour consulter l’ensemble." }
+    },
+    "lifecycle": {
+      "title": "Cycle de vie du prospect",
+      "changeSuccess": "Le statut du prospect a été mis à jour.",
+      "lossReasonLabel": "Motif de perte",
+      "actions": {
+        "contact": "Contacté", "qualify": "Qualifier", "schedule-assessment": "Planifier l’évaluation",
+        "send-offer": "Offre envoyée", "start-negotiation": "Négocier", "win": "Gagné",
+        "lose": "Perdu", "put-on-hold": "Mettre en sommeil", "reactivate": "Réactiver"
+      }
+    },
+    "leads": {
+      "title": "Prospects",
+      "description": "Centralisez les demandes et préparez leur qualification commerciale.",
+      "searchPlaceholder": "Nom, e-mail ou téléphone...",
+      "fields": {
+        "lead": "Prospect", "contact": "Contact", "firstName": "Prénom", "lastName": "Nom",
+        "email": "E-mail", "phone": "Téléphone", "training": "Formation recherchée",
+        "transmission": "Boîte de vitesses", "preferredLocation": "Lieu préféré",
+        "source": "Source", "sourceDetail": "Précision sur la source", "status": "Statut",
+        "createdAt": "Créé le"
+      },
+      "filters": { "unassigned": "Sans conseiller" },
+      "empty": { "title": "Aucun prospect trouvé", "description": "Créez votre premier prospect ou modifiez les filtres." },
+      "loadError": { "title": "Impossible de charger les prospects", "description": "Vérifiez votre connexion puis réessayez." },
+      "validation": { "required": "Ce champ est obligatoire.", "email": "Saisissez une adresse e-mail valide." },
+      "create": {
+        "title": "Nouveau prospect", "description": "Enregistrez les informations utiles à la première prise de contact.",
+        "action": "Nouveau prospect", "success": "Le prospect a été créé."
+      },
+      "detail": {
+        "title": "Fiche prospect",
+        "description": "Vue d’ensemble des informations commerciales actuellement disponibles.",
+        "open": "Ouvrir la fiche prospect",
+        "back": "Retour aux prospects",
+        "loadError": { "title": "Impossible de charger le prospect", "description": "La fiche est indisponible. Vérifiez vos droits ou réessayez." },
+        "contact": { "title": "Identité et coordonnées" },
+        "training": { "title": "Projet de formation" },
+        "sales": {
+          "title": "Suivi commercial", "branch": "Agence", "advisor": "Conseiller",
+          "organizationScope": "Toutes les agences", "unassigned": "Non affecté"
+        },
+        "activity": {
+          "title": "Activité commerciale", "emptyTitle": "Aucune activité disponible",
+          "emptyDescription": "Les appels, notes, rendez-vous et relances seront ajoutés dans les prochaines stories CRM."
+        },
+        "audit": { "title": "Suivi de la fiche", "updatedAt": "Dernière modification" }
+      },
+      "statuses": {
+        "New": "Nouveau", "Contacted": "Contacté", "Qualified": "Qualifié",
+        "AssessmentScheduled": "Évaluation planifiée", "OfferSent": "Offre envoyée",
+        "Negotiation": "Négociation", "Won": "Gagné", "Lost": "Perdu", "Dormant": "En sommeil"
+      },
+      "transmissions": { "Unspecified": "Non précisée", "Manual": "Manuelle", "Automatic": "Automatique" },
+      "sources": {
+        "Website": "Site web", "DriveOsForm": "Formulaire DriveOS", "PhoneCall": "Appel téléphonique",
+        "WalkIn": "Visite en agence", "Referral": "Recommandation", "SocialMedia": "Réseaux sociaux",
+        "AdvertisingCampaign": "Campagne publicitaire", "PartnerDrivingSchool": "Auto-école partenaire",
+        "FreelanceInstructor": "Enseignant indépendant", "ExternalImport": "Import externe", "Other": "Autre"
+      }
     }
   },
   "shared": {

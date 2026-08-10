@@ -1,0 +1,99 @@
+<section class="driveos-page">
+  <div class="driveos-page-header">
+    <div>
+      <p class="driveos-kicker">{{ 'crm.kicker' | translate }}</p>
+      <h1 class="driveos-page-title">{{ 'crm.leads.title' | translate }}</h1>
+      <p class="driveos-page-subtitle">{{ 'crm.leads.description' | translate }}</p>
+    </div>
+    @if (canCreate()) {
+      <drive-os-button icon="ph-bold ph-plus" (pressed)="createLead()">
+        {{ 'crm.leads.create.action' | translate }}
+      </drive-os-button>
+    }
+  </div>
+
+  @if (store.error()) {
+    <drive-os-state-banner class="mt-5 block" tone="danger" icon="ph ph-warning-circle"
+      [title]="'crm.leads.loadError.title' | translate"
+      [description]="'crm.leads.loadError.description' | translate">
+      <drive-os-button variant="outline" size="sm" (pressed)="store.reload()">
+        {{ 'common.actions.retry' | translate }}
+      </drive-os-button>
+    </drive-os-state-banner>
+  }
+
+  <div class="driveos-toolbar items-end">
+    <div class="relative w-full sm:max-w-sm">
+      <i class="ph ph-magnifying-glass pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input dosInput type="search" class="pl-10" [formControl]="searchControl"
+        [placeholder]="'crm.leads.searchPlaceholder' | translate" />
+    </div>
+    <form class="flex flex-1 flex-wrap items-end gap-3" [formGroup]="filters">
+      <label class="text-sm font-medium text-slate-600 dark:text-slate-300">
+        {{ 'crm.leads.fields.status' | translate }}
+        <select formControlName="status" class="mt-1 block rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-700 dark:bg-slate-900">
+          <option value="">{{ 'common.filters.all' | translate }}</option>
+          @for (status of ['New','Contacted','Qualified','AssessmentScheduled','OfferSent','Negotiation','Won','Lost','Dormant']; track status) {
+            <option [value]="status">{{ statusKey($any(status)) | translate }}</option>
+          }
+        </select>
+      </label>
+      <label class="text-sm font-medium text-slate-600 dark:text-slate-300">
+        {{ 'crm.leads.fields.source' | translate }}
+        <select formControlName="sourceType" class="mt-1 block rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-700 dark:bg-slate-900">
+          <option value="">{{ 'common.filters.all' | translate }}</option>
+          @for (source of ['Website','DriveOsForm','PhoneCall','WalkIn','Referral','SocialMedia','AdvertisingCampaign','PartnerDrivingSchool','FreelanceInstructor','ExternalImport','Other']; track source) {
+            <option [value]="source">{{ sourceKey($any(source)) | translate }}</option>
+          }
+        </select>
+      </label>
+      <label class="mb-2 inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+        <input type="checkbox" formControlName="unassignedOnly" class="rounded border-slate-300 text-blue-800" />
+        {{ 'crm.leads.filters.unassigned' | translate }}
+      </label>
+    </form>
+    <drive-os-button variant="outline" icon="ph ph-arrows-clockwise" [loading]="store.isLoading()" (pressed)="store.reload()">
+      {{ 'common.actions.refresh' | translate }}
+    </drive-os-button>
+  </div>
+
+  <div class="mt-6 driveos-table-shell overflow-x-auto">
+    <table dosTable>
+      <thead class="bg-slate-50 dark:bg-slate-950"><tr>
+        <th class="px-4 py-3"><button type="button" (click)="toggleSorting('lastName')">{{ 'crm.leads.fields.lead' | translate }}</button></th>
+        <th class="px-4 py-3">{{ 'crm.leads.fields.contact' | translate }}</th>
+        <th class="px-4 py-3"><button type="button" (click)="toggleSorting('licenseCategory')">{{ 'crm.leads.fields.training' | translate }}</button></th>
+        <th class="px-4 py-3"><button type="button" (click)="toggleSorting('sourceType')">{{ 'crm.leads.fields.source' | translate }}</button></th>
+        <th class="px-4 py-3"><button type="button" (click)="toggleSorting('status')">{{ 'crm.leads.fields.status' | translate }}</button></th>
+        <th class="px-4 py-3"><button type="button" (click)="toggleSorting('createdAtUtc')">{{ 'crm.leads.fields.createdAt' | translate }}</button></th>
+      </tr></thead>
+      <tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-800 dark:bg-slate-900">
+        @if (store.isLoading()) {
+          <tr><td colspan="6" class="px-4 py-16 text-center"><drive-os-spinner size="lg" [label]="'common.loading' | translate" /></td></tr>
+        } @else {
+          @for (lead of store.leads(); track lead.id) {
+            <tr class="cursor-pointer hover:bg-slate-50 focus-within:bg-slate-50 dark:hover:bg-slate-800/60 dark:focus-within:bg-slate-800/60"
+              (click)="openLead(lead.id)">
+              <td class="px-4 py-4"><span class="font-semibold text-slate-900 dark:text-slate-100">{{ lead.firstName }} {{ lead.lastName }}</span></td>
+              <td class="px-4 py-4 text-sm"><div>{{ lead.email || '—' }}</div><div class="text-slate-500">{{ lead.phone || '—' }}</div></td>
+              <td class="px-4 py-4">{{ lead.licenseCategory }} · {{ ('crm.leads.transmissions.' + lead.transmission) | translate }}</td>
+              <td class="px-4 py-4">{{ sourceKey(lead.sourceType) | translate }}</td>
+              <td class="px-4 py-4"><drive-os-badge [variant]="statusVariant(lead.status)">{{ statusKey(lead.status) | translate }}</drive-os-badge></td>
+              <td class="px-4 py-4 text-slate-500">
+                <span>{{ lead.createdAtUtc | date:'mediumDate' }}</span>
+                <button type="button" class="sr-only" (click)="$event.stopPropagation(); openLead(lead.id)">
+                  {{ 'crm.leads.detail.open' | translate }}
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="6"><drive-os-empty-state icon="ph-duotone ph-users-three" [title]="'crm.leads.empty.title' | translate" [description]="'crm.leads.empty.description' | translate" /></td></tr>
+          }
+        }
+      </tbody>
+    </table>
+    <drive-os-paginator [pageNumber]="store.page().pageNumber" [pageSize]="store.page().pageSize"
+      [totalCount]="store.page().totalCount" [totalPages]="store.page().totalPages"
+      [disabled]="store.isLoading()" [pageSizeOptions]="[10,20,50,100]" (pageChange)="onPageChange($event)" />
+  </div>
+</section>

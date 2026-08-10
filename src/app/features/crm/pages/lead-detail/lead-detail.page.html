@@ -1,0 +1,88 @@
+<section class="driveos-page">
+  <button type="button" class="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-blue-800 hover:text-blue-900 dark:text-blue-300"
+    (click)="goBack()">
+    <i class="ph ph-arrow-left"></i>{{ 'crm.leads.detail.back' | translate }}
+  </button>
+
+  @if (isLoading()) {
+    <div class="flex min-h-80 items-center justify-center">
+      <drive-os-spinner size="lg" [label]="'common.loading' | translate" />
+    </div>
+  } @else if (hasError()) {
+    <drive-os-state-banner tone="danger" icon="ph ph-warning-circle"
+      [title]="'crm.leads.detail.loadError.title' | translate"
+      [description]="'crm.leads.detail.loadError.description' | translate">
+      <drive-os-button variant="outline" size="sm" (pressed)="reload()">
+        {{ 'common.actions.retry' | translate }}
+      </drive-os-button>
+    </drive-os-state-banner>
+  } @else if (lead(); as currentLead) {
+    <div class="driveos-page-header items-start">
+      <div class="flex min-w-0 items-start gap-4">
+        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-100 text-xl font-bold text-blue-800 dark:bg-blue-950 dark:text-blue-200">
+          {{ currentLead.firstName.charAt(0) }}{{ currentLead.lastName.charAt(0) }}
+        </div>
+        <div>
+          <p class="driveos-kicker">{{ 'crm.kicker' | translate }}</p>
+          <div class="flex flex-wrap items-center gap-3">
+            <h1 class="driveos-page-title">{{ displayName() }}</h1>
+            <drive-os-badge [variant]="statusVariant(currentLead.status)">
+              {{ statusKey(currentLead.status) | translate }}
+            </drive-os-badge>
+          </div>
+          <p class="driveos-page-subtitle">{{ 'crm.leads.detail.description' | translate }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
+      <div class="space-y-6">
+        <drive-os-card>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">{{ 'crm.leads.detail.contact.title' | translate }}</h2>
+          <dl class="mt-5 grid gap-5 sm:grid-cols-2">
+            <div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ 'crm.leads.fields.email' | translate }}</dt><dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ currentLead.email || '—' }}</dd></div>
+            <div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ 'crm.leads.fields.phone' | translate }}</dt><dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ currentLead.phone || '—' }}</dd></div>
+          </dl>
+        </drive-os-card>
+
+        <drive-os-card>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">{{ 'crm.leads.detail.training.title' | translate }}</h2>
+          <dl class="mt-5 grid gap-5 sm:grid-cols-2">
+            <div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ 'crm.leads.fields.training' | translate }}</dt><dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ currentLead.licenseCategory }}</dd></div>
+            <div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ 'crm.leads.fields.transmission' | translate }}</dt><dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ ('crm.leads.transmissions.' + currentLead.transmission) | translate }}</dd></div>
+            <div class="sm:col-span-2"><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ 'crm.leads.fields.preferredLocation' | translate }}</dt><dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ currentLead.preferredLocation || '—' }}</dd></div>
+          </dl>
+        </drive-os-card>
+
+        <drive-os-card>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">{{ 'crm.leads.detail.activity.title' | translate }}</h2>
+          <div class="mt-5 rounded-xl border border-dashed border-slate-300 p-6 text-center dark:border-slate-700">
+            <i class="ph-duotone ph-clock-counter-clockwise text-3xl text-slate-400"></i>
+            <p class="mt-2 text-sm font-semibold text-slate-700 dark:text-slate-200">{{ 'crm.leads.detail.activity.emptyTitle' | translate }}</p>
+            <p class="mt-1 text-sm text-slate-500">{{ 'crm.leads.detail.activity.emptyDescription' | translate }}</p>
+          </div>
+        </drive-os-card>
+      </div>
+
+      <aside class="space-y-6">
+        <drive-os-card>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">{{ 'crm.leads.detail.sales.title' | translate }}</h2>
+          <dl class="mt-5 space-y-5">
+            <div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ 'crm.leads.fields.source' | translate }}</dt><dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ sourceKey(currentLead.sourceType) | translate }}</dd></div>
+            <div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ 'crm.leads.fields.sourceDetail' | translate }}</dt><dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ currentLead.sourceDetail || '—' }}</dd></div>
+            <div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ 'crm.leads.detail.sales.branch' | translate }}</dt><dd class="mt-1 break-all text-sm text-slate-900 dark:text-slate-100">{{ currentLead.branchId || ('crm.leads.detail.sales.organizationScope' | translate) }}</dd></div>
+            <div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ 'crm.leads.detail.sales.advisor' | translate }}</dt><dd class="mt-1 break-all text-sm text-slate-900 dark:text-slate-100">{{ currentLead.assignedAdvisorId || ('crm.leads.detail.sales.unassigned' | translate) }}</dd></div>
+          </dl>
+        </drive-os-card>
+
+        <drive-os-card>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">{{ 'crm.leads.detail.audit.title' | translate }}</h2>
+          <dl class="mt-5 space-y-5">
+            <div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ 'crm.leads.fields.createdAt' | translate }}</dt><dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ currentLead.createdAtUtc | date:'medium' }}</dd></div>
+            <div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ 'crm.leads.detail.audit.updatedAt' | translate }}</dt><dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ currentLead.lastModifiedAtUtc ? (currentLead.lastModifiedAtUtc | date:'medium') : '—' }}</dd></div>
+          </dl>
+        </drive-os-card>
+      </aside>
+    </div>
+  }
+</section>

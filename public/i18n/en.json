@@ -16,7 +16,8 @@
       "loading": "Loading",
       "actions": "Actions",
       "reset": "Reset",
-      "retry": "Retry"
+      "retry": "Retry",
+      "confirm": "Confirm"
     },
     "filters": {
       "all": "All"
@@ -26,7 +27,8 @@
       "empty": "No data available"
     },
     "comingSoon": "This module will be developed in a future sprint.",
-    "loading": "Loading"
+    "loading": "Loading",
+    "soon": "Soon"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -36,7 +38,27 @@
     "instructors": "Instructors",
     "vehicles": "Vehicles",
     "billing": "Finance",
-    "settings": "Settings"
+    "settings": "Settings",
+    "groups": {
+      "operations": "Operations",
+      "platform": "DriveOS"
+    },
+    "crm": {
+      "label": "CRM & Admissions",
+      "dashboard": "CRM — Dashboard",
+      "prospects": "Prospects",
+      "activities": "Activities",
+      "appointments": "Appointments",
+      "tasks": "Tasks",
+      "pipeline": "Pipeline",
+      "offers": "Offers",
+      "communications": "Communications",
+      "acquisition": "Acquisition",
+      "duplicates": "Duplicates",
+      "conversions": "Conversions",
+      "losses": "Losses",
+      "analytics": "Analytics"
+    }
   },
   "theme": {
     "label": "Theme",
@@ -48,6 +70,30 @@
     "title": "An error occurred",
     "generic": "An unexpected error occurred.",
     "network": "Unable to contact the server.",
+    "crm": {
+      "leads": {
+        "id": { "empty": "The lead identifier is required." },
+        "organizationId": { "empty": "The organization is required." },
+        "currentTenant": { "required": "No active organization was found." },
+        "currentUser": { "required": "Your user session is invalid." },
+        "firstName": { "required": "First name is required.", "tooLong": "First name is too long." },
+        "lastName": { "required": "Last name is required.", "tooLong": "Last name is too long." },
+        "email": { "invalid": "The email address is invalid." },
+        "phone": { "tooLong": "The phone number is too long." },
+        "licenseCategory": { "required": "Requested training is required.", "tooLong": "Requested training is too long." },
+        "transmission": { "invalid": "The transmission preference is invalid." },
+        "preferredLocation": { "tooLong": "The preferred location is too long." },
+        "source": { "invalid": "The source is invalid.", "detailTooLong": "The source details are too long.", "detailRequired": "Specify the selected source." },
+        "notFound": "The requested lead was not found.",
+        "status": {
+          "invalid": "The requested status is invalid.",
+          "alreadyApplied": "This status is already applied to the lead.",
+          "invalidTransition": "This transition is not allowed from the current status."
+        },
+        "lossReason": { "required": "A loss reason is required." },
+        "statusReason": { "tooLong": "The reason cannot exceed 500 characters." }
+      }
+    },
     "organizations": {
       "id": {
         "empty": "The organization identifier is empty.",
@@ -1129,7 +1175,19 @@
     "description": "The status was changed, but the page could not be refreshed. Reload the page."
   },
   "layout": {
-    "workspace": "Workspace"
+    "workspace": "Workspace",
+    "schoolName": "Horizon Driving School",
+    "branchLabel": "Branch",
+    "branchName": "Nice Centre",
+    "mainNavigation": "Main navigation",
+    "openMenu": "Open menu",
+    "collapseMenu": "Collapse menu",
+    "globalSearch": "Global search",
+    "searchPlaceholder": "Search a student, vehicle, contract…",
+    "online": "Online",
+    "notifications": "Notifications",
+    "userProfile": "User profile",
+    "logout": "Sign out"
   },
   "pagination": {
     "page": "Page {{current}} of {{total}}",
@@ -1307,6 +1365,75 @@
     },
     "actions": {
       "viewPlanning": "View full planning"
+    }
+  },
+  "crm": {
+    "kicker": "CRM & Admissions",
+    "pipeline": {
+      "title": "Sales pipeline",
+      "description": "Track every lead and apply only lifecycle transitions allowed from its current status.",
+      "emptyColumn": "No leads",
+      "loadError": { "title": "Unable to load the pipeline", "description": "Check your connection and try again." },
+      "limit": { "title": "Partial view", "description": "The pipeline displays the 100 most recent leads. Use the list to view all leads." }
+    },
+    "lifecycle": {
+      "title": "Lead lifecycle",
+      "changeSuccess": "The lead status was updated.",
+      "lossReasonLabel": "Loss reason",
+      "actions": {
+        "contact": "Contacted", "qualify": "Qualify", "schedule-assessment": "Schedule assessment",
+        "send-offer": "Offer sent", "start-negotiation": "Negotiate", "win": "Won",
+        "lose": "Lost", "put-on-hold": "Put on hold", "reactivate": "Reactivate"
+      }
+    },
+    "leads": {
+      "title": "Leads",
+      "description": "Centralize enquiries and prepare their sales qualification.",
+      "searchPlaceholder": "Name, email or phone...",
+      "fields": {
+        "lead": "Lead", "contact": "Contact", "firstName": "First name", "lastName": "Last name",
+        "email": "Email", "phone": "Phone", "training": "Requested training",
+        "transmission": "Transmission", "preferredLocation": "Preferred location",
+        "source": "Source", "sourceDetail": "Source details", "status": "Status", "createdAt": "Created on"
+      },
+      "filters": { "unassigned": "Without advisor" },
+      "empty": { "title": "No lead found", "description": "Create your first lead or change the filters." },
+      "loadError": { "title": "Unable to load leads", "description": "Check your connection and try again." },
+      "validation": { "required": "This field is required.", "email": "Enter a valid email address." },
+      "create": {
+        "title": "New lead", "description": "Record the information needed for the first contact.",
+        "action": "New lead", "success": "The lead was created."
+      },
+      "detail": {
+        "title": "Lead record",
+        "description": "Overview of the sales information currently available.",
+        "open": "Open lead record",
+        "back": "Back to leads",
+        "loadError": { "title": "Unable to load the lead", "description": "The record is unavailable. Check your permissions or try again." },
+        "contact": { "title": "Identity and contact details" },
+        "training": { "title": "Training project" },
+        "sales": {
+          "title": "Sales follow-up", "branch": "Branch", "advisor": "Advisor",
+          "organizationScope": "All branches", "unassigned": "Unassigned"
+        },
+        "activity": {
+          "title": "Sales activity", "emptyTitle": "No activity available",
+          "emptyDescription": "Calls, notes, appointments and reminders will be added in upcoming CRM stories."
+        },
+        "audit": { "title": "Record tracking", "updatedAt": "Last updated" }
+      },
+      "statuses": {
+        "New": "New", "Contacted": "Contacted", "Qualified": "Qualified",
+        "AssessmentScheduled": "Assessment scheduled", "OfferSent": "Offer sent",
+        "Negotiation": "Negotiation", "Won": "Won", "Lost": "Lost", "Dormant": "Dormant"
+      },
+      "transmissions": { "Unspecified": "Unspecified", "Manual": "Manual", "Automatic": "Automatic" },
+      "sources": {
+        "Website": "Website", "DriveOsForm": "DriveOS form", "PhoneCall": "Phone call",
+        "WalkIn": "Walk-in", "Referral": "Referral", "SocialMedia": "Social media",
+        "AdvertisingCampaign": "Advertising campaign", "PartnerDrivingSchool": "Partner driving school",
+        "FreelanceInstructor": "Freelance instructor", "ExternalImport": "External import", "Other": "Other"
+      }
     }
   },
   "shared": {

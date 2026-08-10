@@ -1,0 +1,40 @@
+<section class="driveos-page">
+  <div class="mx-auto max-w-4xl">
+    <div class="mb-6">
+      <p class="driveos-kicker">{{ 'crm.kicker' | translate }}</p>
+      <h1 class="driveos-page-title">{{ 'crm.leads.create.title' | translate }}</h1>
+      <p class="driveos-page-subtitle">{{ 'crm.leads.create.description' | translate }}</p>
+    </div>
+    <drive-os-card>
+      <form class="grid gap-6 md:grid-cols-2" [formGroup]="form" (ngSubmit)="submit()">
+        <label class="space-y-2"><span>{{ 'crm.leads.fields.firstName' | translate }} *</span><input dosInput class="w-full" formControlName="firstName" />
+          @if (form.controls.firstName.touched && form.controls.firstName.invalid) { <small class="text-red-600">{{ 'crm.leads.validation.required' | translate }}</small> }
+        </label>
+        <label class="space-y-2"><span>{{ 'crm.leads.fields.lastName' | translate }} *</span><input dosInput class="w-full" formControlName="lastName" />
+          @if (form.controls.lastName.touched && form.controls.lastName.invalid) { <small class="text-red-600">{{ 'crm.leads.validation.required' | translate }}</small> }
+        </label>
+        <label class="space-y-2"><span>{{ 'crm.leads.fields.email' | translate }}</span><input dosInput class="w-full" type="email" formControlName="email" />
+          @if (form.controls.email.touched && form.controls.email.hasError('email')) { <small class="text-red-600">{{ 'crm.leads.validation.email' | translate }}</small> }
+        </label>
+        <label class="space-y-2"><span>{{ 'crm.leads.fields.phone' | translate }}</span><input dosInput class="w-full" type="tel" formControlName="phone" /></label>
+        <label class="space-y-2"><span>{{ 'crm.leads.fields.training' | translate }} *</span><input dosInput class="w-full" formControlName="licenseCategory" /></label>
+        <label class="space-y-2"><span>{{ 'crm.leads.fields.transmission' | translate }}</span>
+          <select formControlName="transmission" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-700 dark:bg-slate-900">
+            @for (item of ['Unspecified','Manual','Automatic']; track item) { <option [value]="item">{{ ('crm.leads.transmissions.' + item) | translate }}</option> }
+          </select>
+        </label>
+        <label class="space-y-2"><span>{{ 'crm.leads.fields.preferredLocation' | translate }}</span><input dosInput class="w-full" formControlName="preferredLocation" /></label>
+        <label class="space-y-2"><span>{{ 'crm.leads.fields.source' | translate }} *</span>
+          <select formControlName="sourceType" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-700 dark:bg-slate-900">
+            @for (source of ['Website','DriveOsForm','PhoneCall','WalkIn','Referral','SocialMedia','AdvertisingCampaign','PartnerDrivingSchool','FreelanceInstructor','ExternalImport','Other']; track source) { <option [value]="source">{{ ('crm.leads.sources.' + source) | translate }}</option> }
+          </select>
+        </label>
+        <label class="space-y-2 md:col-span-2"><span>{{ 'crm.leads.fields.sourceDetail' | translate }}</span><textarea dosInput class="min-h-24 w-full" formControlName="sourceDetail"></textarea></label>
+        <div class="flex justify-end gap-3 md:col-span-2">
+          <drive-os-button variant="outline" (pressed)="cancel()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
+          <drive-os-button type="submit" icon="ph-bold ph-check" [loading]="isSubmitting()" [disabled]="form.invalid">{{ 'common.actions.create' | translate }}</drive-os-button>
+        </div>
+      </form>
+    </drive-os-card>
+  </div>
+</section>

@@ -19,11 +19,11 @@ import { DriveOsDrawerComponent } from '../../shared/ui';
     <div
       class="min-h-screen
              bg-[var(--driveos-surface-ground)]
-             text-[var(--driveos-text-color)]"
+             text-[var(--driveos-text-primary)]"
     >
       <div
         class="fixed inset-y-0 left-0
-               z-30 hidden w-72 lg:block"
+               z-30 hidden w-64 lg:block"
       >
         <driveos-app-sidebar />
       </div>
@@ -36,12 +36,12 @@ import { DriveOsDrawerComponent } from '../../shared/ui';
         <driveos-app-sidebar />
       </drive-os-drawer>
 
-      <div class="min-h-screen lg:pl-72">
+      <div class="min-h-screen lg:pl-64">
         <div class="sticky top-0 z-20">
           <driveos-app-topbar (menuRequested)="openMobileMenu()" />
         </div>
 
-        <main class="p-4 md:p-6">
+        <main class="p-4 md:p-5 lg:p-6">
           <router-outlet />
         </main>
       </div>
