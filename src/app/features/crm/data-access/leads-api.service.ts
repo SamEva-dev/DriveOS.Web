@@ -11,6 +11,7 @@ import { LeadListItem } from '../models/lead.model';
 import { PagedResponse } from '../../../core/models/paged-response';
 import { LeadLifecycleAction } from '../domain/lead-lifecycle';
 import { QualifyLeadRequest } from '../models/qualify-lead-request';
+import { GetLeadsParameters } from '../models/get-leads-parameters';
 
 export interface ConvertLeadResponse {
   conversionId: string;
@@ -49,6 +50,17 @@ export class LeadsApiService {
       .set('sortBy', 'createdAtUtc')
       .set('sortDirection', 'desc');
     return this.http.get<PagedResponse<LeadListItem>>(this.baseUrl, { params });
+  }
+
+  exportCsv(parameters: GetLeadsParameters): Observable<Blob> {
+    let params = new HttpParams()
+      .set('search', parameters.search)
+      .set('unassignedOnly', parameters.unassignedOnly);
+    if (parameters.status) params = params.set('status', parameters.status);
+    if (parameters.sourceType) params = params.set('sourceType', parameters.sourceType);
+    if (parameters.branchId) params = params.set('branchId', parameters.branchId);
+    if (parameters.assignedAdvisorId) params = params.set('assignedAdvisorId', parameters.assignedAdvisorId);
+    return this.http.get(`${this.baseUrl}/export`, { params, responseType: 'blob' });
   }
 
   changeStatus(leadId: string, action: LeadLifecycleAction, reason?: string): Observable<void> {

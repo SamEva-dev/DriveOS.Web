@@ -33,6 +33,14 @@ export const CRM_PERMISSIONS = {
     setDormant: 'Crm.Leads.SetDormant',
     reopen: 'Crm.Leads.Reopen',
     referToPartner: 'Crm.Leads.ReferToPartner',
+    export: 'Crm.Leads.Export',
+    tabs: {
+      nominal: 'Crm.Leads.Tabs.Nominal', empty: 'Crm.Leads.Tabs.Empty',
+      noResults: 'Crm.Leads.Tabs.NoResults', loading: 'Crm.Leads.Tabs.Loading',
+      error: 'Crm.Leads.Tabs.Error', partialData: 'Crm.Leads.Tabs.PartialData',
+      readOnly: 'Crm.Leads.Tabs.ReadOnly', limitedPermission: 'Crm.Leads.Tabs.LimitedPermission',
+      duplicates: 'Crm.Leads.Tabs.Duplicates', staleData: 'Crm.Leads.Tabs.StaleData',
+    },
   },
   activities: {
     read: 'Crm.Activities.Read',

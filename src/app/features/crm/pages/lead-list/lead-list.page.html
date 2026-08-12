@@ -1,99 +1,54 @@
-<section class="driveos-page">
+<section class="driveos-page relative">
   <div class="driveos-page-header">
-    <div>
-      <p class="driveos-kicker">{{ 'crm.kicker' | translate }}</p>
-      <h1 class="driveos-page-title">{{ 'crm.leads.title' | translate }}</h1>
-      <p class="driveos-page-subtitle">{{ 'crm.leads.description' | translate }}</p>
-    </div>
-    @if (canCreate()) {
-      <drive-os-button icon="ph-bold ph-plus" (pressed)="createLead()">
-        {{ 'crm.leads.create.action' | translate }}
-      </drive-os-button>
-    }
+    <div><p class="driveos-kicker">{{ 'crm.kicker' | translate }}</p><h1 class="driveos-page-title">{{ 'crm.leads.title' | translate }}</h1><p class="driveos-page-subtitle">{{ 'crm.leads.description' | translate }}</p></div>
+    <div class="flex flex-wrap gap-2">@if (canCreate()) { <drive-os-button icon="ph-bold ph-plus" (pressed)="createLead()">{{ 'crm.leads.create.action' | translate }}</drive-os-button> }@if (canExport()) { <drive-os-button variant="outline" icon="ph ph-download-simple" [loading]="exportInProgress()" (pressed)="exportCsv()">{{ 'crm.leads.list.export' | translate }}</drive-os-button> }</div>
   </div>
 
-  @if (store.error()) {
-    <drive-os-state-banner class="mt-5 block" tone="danger" icon="ph ph-warning-circle"
-      [title]="'crm.leads.loadError.title' | translate"
-      [description]="'crm.leads.loadError.description' | translate">
-      <drive-os-button variant="outline" size="sm" (pressed)="store.reload()">
-        {{ 'common.actions.retry' | translate }}
-      </drive-os-button>
-    </drive-os-state-banner>
+  @if (visibleStateTabs().length) {
+    <nav class="mt-5 flex flex-nowrap items-center gap-3 overflow-x-auto whitespace-nowrap rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-subtle)] px-3 py-2" [attr.aria-label]="'crm.leads.list.states.navigation' | translate">
+      @if (stateTabsVisible()) { <div class="flex min-w-max items-center gap-2"><strong class="text-[11px] uppercase tracking-wide text-[var(--driveos-text-secondary)]">{{ 'crm.leads.list.states.label' | translate }}</strong>@for (tab of visibleStateTabs(); track tab.id) { <button type="button" class="rounded-full border border-[var(--driveos-border)] px-3 py-1 text-xs" [class.border-blue-800]="selectedState() === tab.id" [class.bg-blue-50]="selectedState() === tab.id" [class.font-bold]="selectedState() === tab.id" [class.text-blue-800]="selectedState() === tab.id" (click)="selectState(tab.id)">{{ ('crm.leads.list.states.' + tab.id) | translate }}</button> }</div> }
+      <button type="button" class="ml-auto inline-flex size-8 min-w-8 items-center justify-center rounded-md border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]" [attr.aria-expanded]="stateTabsVisible()" [attr.aria-label]="'crm.leads.list.states.toggle' | translate" (click)="toggleStateTabs()"><i class="ph" [class.ph-eye]="!stateTabsVisible()" [class.ph-eye-slash]="stateTabsVisible()"></i></button>
+    </nav>
   }
 
-  <div class="driveos-toolbar items-end">
-    <div class="relative w-full sm:max-w-sm">
-      <i class="ph ph-magnifying-glass pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-      <input dosInput type="search" class="pl-10" [formControl]="searchControl"
-        [placeholder]="'crm.leads.searchPlaceholder' | translate" />
+  @if (selectedState() === 'partialData') { <drive-os-state-banner class="mt-4 block" tone="warning" icon="ph ph-warning" [title]="'crm.leads.list.banners.partial' | translate" /> }
+  @if (selectedState() === 'readOnly') { <drive-os-state-banner class="mt-4 block" tone="info" icon="ph ph-eye" [title]="'crm.leads.list.banners.readOnly' | translate" /> }
+  @if (selectedState() === 'limitedPermission') { <drive-os-state-banner class="mt-4 block" tone="warning" icon="ph ph-lock" [title]="'crm.leads.list.banners.limited' | translate" /> }
+  @if (selectedState() === 'duplicates') { <drive-os-state-banner class="mt-4 block" tone="warning" icon="ph ph-copy" [title]="'crm.leads.list.banners.duplicates' | translate" /> }
+  @if (selectedState() === 'staleData') { <drive-os-state-banner class="mt-4 block" tone="warning" icon="ph ph-clock-counter-clockwise" [title]="'crm.leads.list.banners.stale' | translate" /> }
+  @if (viewError()) { <drive-os-state-banner class="mt-4 block" tone="danger" icon="ph ph-warning-circle" [title]="'crm.leads.loadError.title' | translate" [description]="'crm.leads.loadError.description' | translate"><drive-os-button variant="outline" size="sm" (pressed)="store.reload()">{{ 'common.actions.retry' | translate }}</drive-os-button></drive-os-state-banner> }
+  @if (exportError()) { <drive-os-state-banner class="mt-4 block" tone="danger" icon="ph ph-download-simple" [title]="'crm.leads.list.exportError' | translate" /> }
+
+  <div class="mt-5 grid gap-3 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-3 shadow-sm">
+    <div class="flex flex-wrap items-center gap-3">
+      <div class="relative min-w-64 flex-1"><i class="ph ph-magnifying-glass pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i><input dosInput type="search" class="pl-10" [formControl]="searchControl" [placeholder]="'crm.leads.searchPlaceholder' | translate" /></div>
+      <button type="button" class="inline-flex min-h-10 items-center gap-2 rounded-lg border border-[var(--driveos-border)] px-3 text-sm font-semibold" (click)="toggleAdvancedFilters()"><i class="ph ph-funnel"></i>{{ 'crm.leads.list.filters.advanced' | translate }}@if (activeFilterCount()) { <span class="rounded-full bg-blue-800 px-2 py-0.5 text-xs text-white">{{ activeFilterCount() }}</span> }</button>
+      <drive-os-button variant="outline" icon="ph ph-arrows-clockwise" [loading]="viewLoading()" (pressed)="store.reload()">{{ 'common.actions.refresh' | translate }}</drive-os-button>
     </div>
-    <form class="flex flex-1 flex-wrap items-end gap-3" [formGroup]="filters">
-      <label class="text-sm font-medium text-slate-600 dark:text-slate-300">
-        {{ 'crm.leads.fields.status' | translate }}
-        <select formControlName="status" class="mt-1 block rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-700 dark:bg-slate-900">
-          <option value="">{{ 'common.filters.all' | translate }}</option>
-          @for (status of ['New','Contacted','Qualified','AssessmentScheduled','OfferSent','Negotiation','Won','Lost','Dormant']; track status) {
-            <option [value]="status">{{ statusKey($any(status)) | translate }}</option>
-          }
-        </select>
-      </label>
-      <label class="text-sm font-medium text-slate-600 dark:text-slate-300">
-        {{ 'crm.leads.fields.source' | translate }}
-        <select formControlName="sourceType" class="mt-1 block rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-700 dark:bg-slate-900">
-          <option value="">{{ 'common.filters.all' | translate }}</option>
-          @for (source of ['Website','DriveOsForm','PhoneCall','WalkIn','Referral','SocialMedia','AdvertisingCampaign','PartnerDrivingSchool','FreelanceInstructor','ExternalImport','Other']; track source) {
-            <option [value]="source">{{ sourceKey($any(source)) | translate }}</option>
-          }
-        </select>
-      </label>
-      <label class="mb-2 inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
-        <input type="checkbox" formControlName="unassignedOnly" class="rounded border-slate-300 text-blue-800" />
-        {{ 'crm.leads.filters.unassigned' | translate }}
-      </label>
+    <form class="flex flex-wrap items-center gap-2" [formGroup]="filters">
+      <select formControlName="status" class="min-h-9 rounded-full border border-[var(--driveos-border)] bg-transparent px-3 text-xs"><option value="">{{ 'crm.leads.list.filters.allStages' | translate }}</option>@for (status of statuses; track status) { <option [value]="status">{{ statusKey(status) | translate }}</option> }</select>
+      <select formControlName="sourceType" class="min-h-9 rounded-full border border-[var(--driveos-border)] bg-transparent px-3 text-xs"><option value="">{{ 'crm.leads.list.filters.allSources' | translate }}</option>@for (source of sources; track source) { <option [value]="source">{{ sourceKey(source) | translate }}</option> }</select>
+      <label class="inline-flex min-h-9 items-center gap-2 rounded-full border border-[var(--driveos-border)] px-3 text-xs"><input type="checkbox" formControlName="unassignedOnly" />{{ 'crm.leads.filters.unassigned' | translate }}</label>
+      @if (activeFilterCount() || searchControl.value) { <button type="button" class="ml-auto text-xs font-bold text-blue-800" (click)="clearFilters()">{{ 'crm.leads.list.filters.reset' | translate }}</button> }
     </form>
-    <drive-os-button variant="outline" icon="ph ph-arrows-clockwise" [loading]="store.isLoading()" (pressed)="store.reload()">
-      {{ 'common.actions.refresh' | translate }}
-    </drive-os-button>
   </div>
 
-  <div class="mt-6 driveos-table-shell overflow-x-auto">
-    <table dosTable>
-      <thead class="bg-slate-50 dark:bg-slate-950"><tr>
-        <th class="px-4 py-3"><button type="button" (click)="toggleSorting('lastName')">{{ 'crm.leads.fields.lead' | translate }}</button></th>
-        <th class="px-4 py-3">{{ 'crm.leads.fields.contact' | translate }}</th>
-        <th class="px-4 py-3"><button type="button" (click)="toggleSorting('licenseCategory')">{{ 'crm.leads.fields.training' | translate }}</button></th>
-        <th class="px-4 py-3"><button type="button" (click)="toggleSorting('sourceType')">{{ 'crm.leads.fields.source' | translate }}</button></th>
-        <th class="px-4 py-3"><button type="button" (click)="toggleSorting('status')">{{ 'crm.leads.fields.status' | translate }}</button></th>
-        <th class="px-4 py-3"><button type="button" (click)="toggleSorting('createdAtUtc')">{{ 'crm.leads.fields.createdAt' | translate }}</button></th>
-      </tr></thead>
-      <tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-800 dark:bg-slate-900">
-        @if (store.isLoading()) {
-          <tr><td colspan="6" class="px-4 py-16 text-center"><drive-os-spinner size="lg" [label]="'common.loading' | translate" /></td></tr>
-        } @else {
-          @for (lead of store.leads(); track lead.id) {
-            <tr class="cursor-pointer hover:bg-slate-50 focus-within:bg-slate-50 dark:hover:bg-slate-800/60 dark:focus-within:bg-slate-800/60"
-              (click)="openLead(lead.id)">
-              <td class="px-4 py-4"><span class="font-semibold text-slate-900 dark:text-slate-100">{{ lead.firstName }} {{ lead.lastName }}</span></td>
-              <td class="px-4 py-4 text-sm"><div>{{ lead.email || '—' }}</div><div class="text-slate-500">{{ lead.phone || '—' }}</div></td>
-              <td class="px-4 py-4">{{ lead.licenseCategory }} · {{ ('crm.leads.transmissions.' + lead.transmission) | translate }}</td>
-              <td class="px-4 py-4">{{ sourceKey(lead.sourceType) | translate }}</td>
-              <td class="px-4 py-4"><drive-os-badge [variant]="statusVariant(lead.status)">{{ statusKey(lead.status) | translate }}</drive-os-badge></td>
-              <td class="px-4 py-4 text-slate-500">
-                <span>{{ lead.createdAtUtc | date:'mediumDate' }}</span>
-                <button type="button" class="sr-only" (click)="$event.stopPropagation(); openLead(lead.id)">
-                  {{ 'crm.leads.detail.open' | translate }}
-                </button>
-              </td>
-            </tr>
-          } @empty {
-            <tr><td colspan="6"><drive-os-empty-state icon="ph-duotone ph-users-three" [title]="'crm.leads.empty.title' | translate" [description]="'crm.leads.empty.description' | translate" /></td></tr>
-          }
-        }
-      </tbody>
-    </table>
-    <drive-os-paginator [pageNumber]="store.page().pageNumber" [pageSize]="store.page().pageSize"
-      [totalCount]="store.page().totalCount" [totalPages]="store.page().totalPages"
-      [disabled]="store.isLoading()" [pageSizeOptions]="[10,20,50,100]" (pageChange)="onPageChange($event)" />
+  @if (!viewError()) {
+  @if (selectedLeadIds().length) { <div class="mt-3 flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900"><strong>{{ selectedLeadIds().length }} {{ 'crm.leads.list.selected' | translate }}</strong><span class="ml-auto">{{ 'crm.leads.list.bulkHint' | translate }}</span></div> }
+
+  <div class="mt-5 hidden driveos-table-shell overflow-x-auto lg:block">
+    <table dosTable class="min-w-[72rem]"><thead class="bg-slate-50 dark:bg-slate-950"><tr>
+      <th class="px-3 py-3"><input type="checkbox" [checked]="selectedLeadIds().length === displayedLeads().length && displayedLeads().length > 0" (change)="toggleAll($any($event.target).checked)" /></th>
+      <th class="px-3 py-3"><button type="button" (click)="toggleSorting('lastName')">{{ 'crm.leads.fields.lead' | translate }}</button></th><th class="px-3 py-3">{{ 'crm.leads.fields.status' | translate }}</th><th class="px-3 py-3">{{ 'crm.leads.list.columns.nextAction' | translate }}</th><th class="px-3 py-3">{{ 'crm.leads.list.columns.advisor' | translate }}</th><th class="px-3 py-3"><button type="button" (click)="toggleSorting('licenseCategory')">{{ 'crm.leads.fields.training' | translate }}</button></th><th class="px-3 py-3">{{ 'crm.leads.list.columns.branch' | translate }}</th><th class="px-3 py-3"><button type="button" (click)="toggleSorting('sourceType')">{{ 'crm.leads.fields.source' | translate }}</button></th><th class="px-3 py-3">{{ 'crm.leads.list.columns.lastActivity' | translate }}</th><th class="px-3 py-3"><button type="button" (click)="toggleSorting('createdAtUtc')">{{ 'crm.leads.fields.createdAt' | translate }}</button></th><th class="px-3 py-3">{{ 'crm.leads.fields.contact' | translate }}</th>
+    </tr></thead><tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-800 dark:bg-slate-900">
+      @if (viewLoading()) { <tr><td colspan="11" class="px-4 py-16 text-center"><drive-os-spinner size="lg" [label]="'common.loading' | translate" /></td></tr> }
+      @else { @for (lead of displayedLeads(); track lead.id) { <tr class="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/60" (click)="openLead(lead.id)"><td class="px-3 py-4" (click)="$event.stopPropagation()"><input type="checkbox" [checked]="isSelected(lead.id)" (change)="toggleLeadSelection(lead.id, $any($event.target).checked)" /></td><td class="px-3 py-4 font-semibold"><span>{{ lead.firstName }} {{ lead.lastName }}</span>@if (lead.hasPotentialDuplicate) { <span class="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">{{ 'crm.leads.list.duplicate' | translate }}</span> }</td><td class="px-3 py-4"><drive-os-badge [variant]="statusVariant(lead.status)">{{ statusKey(lead.status) | translate }}</drive-os-badge></td><td class="px-3 py-4 text-sm"><div [class.font-bold]="lead.isNextActionOverdue" [class.text-red-600]="lead.isNextActionOverdue">{{ lead.nextActionTitle || '—' }}</div>@if (lead.nextActionDueAtUtc) { <time class="text-xs text-slate-500">{{ lead.nextActionDueAtUtc | date:'short' }}</time> }</td><td class="px-3 py-4 text-sm">{{ lead.assignedAdvisorId || ('crm.leads.list.unassigned' | translate) }}</td><td class="px-3 py-4">{{ lead.licenseCategory }} · {{ ('crm.leads.transmissions.' + lead.transmission) | translate }}</td><td class="px-3 py-4 text-sm">{{ lead.branchId || '—' }}</td><td class="px-3 py-4">{{ sourceKey(lead.sourceType) | translate }}</td><td class="px-3 py-4 text-slate-500">{{ (lead.lastActivityAtUtc || lead.lastModifiedAtUtc) | date:'mediumDate' }}</td><td class="px-3 py-4 text-slate-500">{{ lead.createdAtUtc | date:'mediumDate' }}</td><td class="px-3 py-4 text-sm"><div>{{ lead.phone || '—' }}</div><div class="text-slate-500">{{ lead.email || '—' }}</div></td></tr> } @empty { <tr><td colspan="11"><drive-os-empty-state icon="ph-duotone ph-users-three" [title]="(selectedState() === 'noResults' ? 'crm.leads.list.noResults' : 'crm.leads.empty.title') | translate" [description]="'crm.leads.empty.description' | translate" /></td></tr> } }
+    </tbody></table>
+    <drive-os-paginator [pageNumber]="store.page().pageNumber" [pageSize]="store.page().pageSize" [totalCount]="store.page().totalCount" [totalPages]="store.page().totalPages" [disabled]="viewLoading()" [pageSizeOptions]="[10,20,50,100]" (pageChange)="onPageChange($event)" />
   </div>
+
+  <div class="mt-5 grid gap-3 lg:hidden">@if (viewLoading()) { <drive-os-spinner size="lg" [label]="'common.loading' | translate" /> } @else { @for (lead of displayedLeads(); track lead.id) { <article class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 shadow-sm" (click)="openLead(lead.id)"><div class="flex items-start gap-3"><input type="checkbox" [checked]="isSelected(lead.id)" (click)="$event.stopPropagation()" (change)="toggleLeadSelection(lead.id, $any($event.target).checked)" /><div class="min-w-0 flex-1"><div class="flex flex-wrap items-center justify-between gap-2"><strong>{{ lead.firstName }} {{ lead.lastName }}</strong><drive-os-badge [variant]="statusVariant(lead.status)">{{ statusKey(lead.status) | translate }}</drive-os-badge></div>@if (lead.hasPotentialDuplicate) { <span class="mt-2 inline-flex rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">{{ 'crm.leads.list.duplicate' | translate }}</span> }<p class="mt-2 text-sm">{{ lead.licenseCategory }} · {{ ('crm.leads.transmissions.' + lead.transmission) | translate }}</p>@if (lead.nextActionTitle) { <div class="mt-2 rounded-lg bg-[var(--driveos-surface-subtle)] p-2 text-xs" [class.text-red-600]="lead.isNextActionOverdue"><strong>{{ 'crm.leads.list.columns.nextAction' | translate }} :</strong> {{ lead.nextActionTitle }} · {{ lead.nextActionDueAtUtc | date:'short' }}</div> }<p class="mt-2 truncate text-xs text-slate-500">{{ lead.phone || '—' }} · {{ lead.email || '—' }}</p><div class="mt-3 flex justify-between text-xs text-slate-500"><span>{{ sourceKey(lead.sourceType) | translate }}</span><span>{{ lead.createdAtUtc | date:'shortDate' }}</span></div></div></div></article> } @empty { <drive-os-empty-state icon="ph-duotone ph-users-three" [title]="'crm.leads.empty.title' | translate" [description]="'crm.leads.empty.description' | translate" /> } }</div>
+  }
+
+  @if (advancedFiltersOpen()) { <button type="button" class="fixed inset-0 z-40 bg-slate-950/45" [attr.aria-label]="'common.actions.close' | translate" (click)="toggleAdvancedFilters()"></button><aside class="fixed inset-y-0 right-0 z-50 w-full max-w-md overflow-y-auto border-l border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-2xl" [formGroup]="filters"><div class="flex items-center justify-between"><div><h2 class="text-lg font-extrabold">{{ 'crm.leads.list.filters.title' | translate }}</h2><p class="text-sm text-slate-500">{{ 'crm.leads.list.filters.description' | translate }}</p></div><button type="button" class="size-9 rounded-lg border border-[var(--driveos-border)]" (click)="toggleAdvancedFilters()"><i class="ph ph-x"></i></button></div><div class="mt-6 grid gap-5"><label class="grid gap-2 text-sm font-bold">{{ 'crm.leads.fields.status' | translate }}<select formControlName="status" class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"><option value="">{{ 'common.filters.all' | translate }}</option>@for (status of statuses; track status) { <option [value]="status">{{ statusKey(status) | translate }}</option> }</select></label><label class="grid gap-2 text-sm font-bold">{{ 'crm.leads.fields.source' | translate }}<select formControlName="sourceType" class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"><option value="">{{ 'common.filters.all' | translate }}</option>@for (source of sources; track source) { <option [value]="source">{{ sourceKey(source) | translate }}</option> }</select></label><label class="grid gap-2 text-sm font-bold">{{ 'crm.leads.list.filters.branchId' | translate }}<input dosInput formControlName="branchId" /></label><label class="grid gap-2 text-sm font-bold">{{ 'crm.leads.list.filters.advisorId' | translate }}<input dosInput formControlName="assignedAdvisorId" /></label><label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" formControlName="unassignedOnly" />{{ 'crm.leads.filters.unassigned' | translate }}</label></div><div class="mt-8 flex justify-end gap-2"><drive-os-button variant="outline" (pressed)="clearFilters()">{{ 'crm.leads.list.filters.reset' | translate }}</drive-os-button><drive-os-button (pressed)="toggleAdvancedFilters()">{{ 'crm.leads.list.filters.apply' | translate }}</drive-os-button></div></aside> }
 </section>

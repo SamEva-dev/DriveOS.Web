@@ -1410,7 +1410,6 @@
       "freshness": "Fraîcheur : à l’instant",
       "navigationLabel": "États et périmètres du tableau de bord CRM",
       "demoLabel": "Démo — état :",
-      "diagnostics": { "show": "Afficher les états de diagnostic", "hide": "Masquer les états de diagnostic" },
       "scopeTabLabel": "Périmètre :",
       "tabs": {
         "nominal": "Nominal",
@@ -1642,6 +1641,13 @@
         "createdAt": "Créé le"
       },
       "filters": { "unassigned": "Sans conseiller" },
+      "list": {
+        "export": "Exporter", "exportError": "L’export des prospects n’a pas pu être généré.", "selected": "prospect(s) sélectionné(s)", "bulkHint": "Les actions de masse respectent les permissions individuelles.", "unassigned": "Non affecté", "noResults": "Aucun prospect ne correspond aux filtres actuels.",
+        "columns": { "nextAction": "Prochaine action", "advisor": "Responsable", "branch": "Agence", "lastActivity": "Dernière activité" }, "duplicate": "Doublon potentiel",
+        "states": { "navigation": "États de la liste des prospects", "label": "Démo — état :", "toggle": "Afficher ou masquer les états", "nominal": "Nominal", "empty": "Liste vide", "noResults": "Filtres sans résultat", "loading": "Chargement", "error": "Erreur", "partialData": "Résultat partiel", "readOnly": "Lecture seule", "limitedPermission": "Permission limitée", "duplicates": "Doublons potentiels", "staleData": "Données obsolètes" },
+        "banners": { "partial": "Certains enrichissements sont indisponibles ; la liste principale reste consultable.", "readOnly": "Vous consultez cette liste en lecture seule.", "limited": "Certaines données et actions sont masquées selon vos permissions.", "duplicates": "Des doublons potentiels nécessitent une comparaison avant toute fusion.", "stale": "Certaines données n’ont pas été actualisées récemment." },
+        "filters": { "advanced": "Filtres", "title": "Filtres avancés", "description": "Affinez la liste sans quitter le contexte commercial.", "allStages": "Toutes les étapes", "allSources": "Toutes les sources", "branchId": "Identifiant de l’agence", "advisorId": "Identifiant du conseiller", "reset": "Réinitialiser", "apply": "Afficher les résultats" }
+      },
       "empty": { "title": "Aucun prospect trouvé", "description": "Créez votre premier prospect ou modifiez les filtres." },
       "loadError": { "title": "Impossible de charger les prospects", "description": "Vérifiez votre connexion puis réessayez." },
       "validation": { "required": "Ce champ est obligatoire.", "email": "Saisissez une adresse e-mail valide." },

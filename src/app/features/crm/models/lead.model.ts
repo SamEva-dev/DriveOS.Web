@@ -59,6 +59,12 @@ export interface LeadListItem {
   assignedAdvisorId: string | null;
   status: LeadStatus;
   createdAtUtc: string;
+  lastModifiedAtUtc?: string | null;
+  lastActivityAtUtc?: string | null;
+  nextActionTitle?: string | null;
+  nextActionDueAtUtc?: string | null;
+  isNextActionOverdue?: boolean;
+  hasPotentialDuplicate?: boolean;
 }
 
 export interface LeadDetails extends LeadListItem {

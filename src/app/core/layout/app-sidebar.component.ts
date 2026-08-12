@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { filter, startWith } from 'rxjs';
@@ -11,6 +11,7 @@ import { NavigationItem } from './navigation-item';
 interface NavigationGroup {
   readonly labelKey: string;
   readonly items: readonly NavigationItem[];
+  readonly collapsible?: boolean;
 }
 
 @Component({
@@ -36,11 +37,13 @@ interface NavigationGroup {
 
       <nav class="min-h-0 flex-1 overflow-y-auto px-2 py-3" [attr.aria-label]="'layout.mainNavigation' | translate">
         @for (group of visibleGroups(); track group.labelKey) {
-          <p class="px-2 pb-1 pt-1 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--driveos-text-tertiary)]">
-            {{ group.labelKey | translate }}
-          </p>
+          @if (group.collapsible) {
+            <button type="button" class="mb-1 flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 text-left text-sm font-bold text-[var(--driveos-text-primary)] hover:bg-[var(--driveos-surface-hover)]" [attr.aria-expanded]="crmExpanded()" aria-controls="driveos-crm-navigation" (click)="toggleCrm()"><i class="ph ph-funnel text-lg"></i><span class="min-w-0 flex-1 truncate">{{ group.labelKey | translate }}</span><i class="ph text-sm" [class.ph-caret-up]="crmExpanded()" [class.ph-caret-down]="!crmExpanded()"></i></button>
+          } @else {
+            <p class="px-2 pb-1 pt-1 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--driveos-text-tertiary)]">{{ group.labelKey | translate }}</p>
+          }
 
-          <div class="mb-3 space-y-0.5">
+          <div class="mb-3 space-y-0.5" [id]="group.collapsible ? 'driveos-crm-navigation' : null" [hidden]="group.collapsible && !crmExpanded()">
             @for (item of group.items; track item.routerLink) {
               <a
                 [routerLink]="item.routerLink"
@@ -78,6 +81,14 @@ export class AppSidebarComponent {
     ),
     { initialValue: new NavigationEnd(0, this.router.url, this.router.url) },
   );
+  readonly crmExpanded = signal(sessionStorage.getItem('driveos.sidebar.crm.expanded') !== 'false'
+    || this.router.url.startsWith('/crm'));
+
+  constructor() {
+    effect(() => {
+      if (this.currentUrl().urlAfterRedirects.startsWith('/crm')) this.crmExpanded.set(true);
+    });
+  }
 
   private readonly mainItems: readonly NavigationItem[] = [
     { labelKey: 'navigation.dashboard', icon: 'ph ph-squares-four', routerLink: '/dashboard', exact: true },
@@ -108,10 +119,11 @@ export class AppSidebarComponent {
 
   readonly visibleGroups = computed<readonly NavigationGroup[]>(() => {
     this.authorization.permissions();
-    const inCrm = this.currentUrl().urlAfterRedirects.startsWith('/crm');
+    this.currentUrl();
     const canReadDashboard = this.authorization.hasPermission(CRM_PERMISSIONS.dashboard.read);
     const canReadLeads = this.authorization.hasPermission(CRM_PERMISSIONS.leads.read);
     const visibleCrmItems = this.crmItems.filter((item) => {
+      if (item.disabled) return false;
       if (item.routerLink === '/crm/dashboard') return canReadDashboard;
       if (item.routerLink === '/crm/leads' || item.routerLink === '/crm/pipeline') return canReadLeads;
       if (item.routerLink === '/crm/activities') return this.authorization.hasPermission(CRM_PERMISSIONS.activities.read);
@@ -119,19 +131,17 @@ export class AppSidebarComponent {
       return true;
     });
 
-    if (inCrm && (canReadDashboard || canReadLeads)) {
-      return [
-        { labelKey: 'navigation.groups.operations', items: visibleCrmItems },
-        { labelKey: 'navigation.groups.platform', items: this.mainItems },
-      ];
-    }
-
-    const crmEntryLink = canReadDashboard ? '/crm/dashboard' : '/crm/leads';
-    const items = canReadDashboard || canReadLeads
-      ? [...this.mainItems.slice(0, 2), { labelKey: 'navigation.crm.label', icon: 'ph ph-funnel', routerLink: crmEntryLink }, ...this.mainItems.slice(2)]
-      : this.mainItems;
-    return [{ labelKey: 'navigation.groups.platform', items }];
+    return canReadDashboard || canReadLeads
+      ? [{ labelKey: 'navigation.crm.label', items: visibleCrmItems, collapsible: true },
+        { labelKey: 'navigation.groups.platform', items: this.mainItems }]
+      : [{ labelKey: 'navigation.groups.platform', items: this.mainItems }];
   });
+
+  toggleCrm(): void {
+    const expanded = !this.crmExpanded();
+    this.crmExpanded.set(expanded);
+    sessionStorage.setItem('driveos.sidebar.crm.expanded', `${expanded}`);
+  }
 
   preventDisabledNavigation(event: Event, item: NavigationItem): void {
     if (item.disabled) event.preventDefault();

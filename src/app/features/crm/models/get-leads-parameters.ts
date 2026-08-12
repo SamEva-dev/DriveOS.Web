@@ -16,6 +16,8 @@ export interface GetLeadsParameters {
   search: string;
   status: LeadStatus | '';
   sourceType: LeadSourceType | '';
+  branchId: string;
+  assignedAdvisorId: string;
   unassignedOnly: boolean;
   sortBy: LeadSortField;
   sortDirection: SortDirection;

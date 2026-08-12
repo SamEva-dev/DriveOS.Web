@@ -1410,7 +1410,6 @@
       "freshness": "Freshness: just now",
       "navigationLabel": "CRM dashboard states and scopes",
       "demoLabel": "Demo — state:",
-      "diagnostics": { "show": "Show diagnostic states", "hide": "Hide diagnostic states" },
       "scopeTabLabel": "Scope:",
       "tabs": {
         "nominal": "Nominal",
@@ -1641,6 +1640,13 @@
         "source": "Source", "sourceDetail": "Source details", "status": "Status", "createdAt": "Created on"
       },
       "filters": { "unassigned": "Without advisor" },
+      "list": {
+        "export": "Export", "exportError": "The lead export could not be generated.", "selected": "selected lead(s)", "bulkHint": "Bulk actions respect individual permissions.", "unassigned": "Unassigned", "noResults": "No lead matches the current filters.",
+        "columns": { "nextAction": "Next action", "advisor": "Owner", "branch": "Branch", "lastActivity": "Last activity" }, "duplicate": "Potential duplicate",
+        "states": { "navigation": "Lead list states", "label": "Demo — state:", "toggle": "Show or hide states", "nominal": "Nominal", "empty": "Empty list", "noResults": "No filter results", "loading": "Loading", "error": "Error", "partialData": "Partial result", "readOnly": "Read only", "limitedPermission": "Limited permission", "duplicates": "Potential duplicates", "staleData": "Stale data" },
+        "banners": { "partial": "Some enrichments are unavailable; the main list remains accessible.", "readOnly": "You are viewing this list in read-only mode.", "limited": "Some data and actions are hidden according to your permissions.", "duplicates": "Potential duplicates require comparison before any merge.", "stale": "Some data has not been refreshed recently." },
+        "filters": { "advanced": "Filters", "title": "Advanced filters", "description": "Refine the list without leaving the sales context.", "allStages": "All stages", "allSources": "All sources", "branchId": "Branch identifier", "advisorId": "Advisor identifier", "reset": "Reset", "apply": "Show results" }
+      },
       "empty": { "title": "No lead found", "description": "Create your first lead or change the filters." },
       "loadError": { "title": "Unable to load leads", "description": "Check your connection and try again." },
       "validation": { "required": "This field is required.", "email": "Enter a valid email address." },

@@ -25,6 +25,8 @@ export class LeadsListStore {
     search: '',
     status: '',
     sourceType: '',
+    branchId: '',
+    assignedAdvisorId: '',
     unassignedOnly: false,
     sortBy: 'createdAtUtc',
     sortDirection: 'desc',
@@ -44,6 +46,8 @@ export class LeadsListStore {
 
     if (parameters.status) params = params.set('status', parameters.status);
     if (parameters.sourceType) params = params.set('sourceType', parameters.sourceType);
+    if (parameters.branchId) params = params.set('branchId', parameters.branchId);
+    if (parameters.assignedAdvisorId) params = params.set('assignedAdvisorId', parameters.assignedAdvisorId);
 
     return { url: `${this.apiConfig.baseUrl}/crm/leads`, method: 'GET', params };
   }, { defaultValue: EMPTY_PAGE });
@@ -61,9 +65,11 @@ export class LeadsListStore {
     this.parametersSignal.update((current) => ({ ...current, search: search.trim(), pageNumber: 1 }));
   }
 
-  setFilters(status: LeadStatus | '', sourceType: LeadSourceType | '', unassignedOnly: boolean): void {
+  setFilters(status: LeadStatus | '', sourceType: LeadSourceType | '', unassignedOnly: boolean,
+    branchId = '', assignedAdvisorId = ''): void {
     this.parametersSignal.update((current) => ({
-      ...current, status, sourceType, unassignedOnly, pageNumber: 1,
+      ...current, status, sourceType, unassignedOnly, branchId: branchId.trim(),
+      assignedAdvisorId: assignedAdvisorId.trim(), pageNumber: 1,
     }));
   }
 
