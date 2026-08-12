@@ -1,7 +1,7 @@
 import { LeadStatus } from '../models/lead.model';
 
 export type LeadLifecycleAction =
-  | 'contact' | 'qualify' | 'schedule-assessment' | 'send-offer'
+  | 'contact' | 'schedule-assessment' | 'send-offer'
   | 'start-negotiation' | 'win' | 'lose' | 'put-on-hold' | 'reactivate';
 
 export interface LeadLifecycleActionDefinition {
@@ -20,14 +20,21 @@ const action = (
 
 const actionsByStatus: Record<LeadStatus, readonly LeadLifecycleActionDefinition[]> = {
   New: [action('contact', 'Contacted'), action('lose', 'Lost', true, true), action('put-on-hold', 'Dormant')],
-  Contacted: [action('qualify', 'Qualified'), action('lose', 'Lost', true, true), action('put-on-hold', 'Dormant')],
+  Contacted: [action('lose', 'Lost', true, true), action('put-on-hold', 'Dormant')],
   Qualified: [action('schedule-assessment', 'AssessmentScheduled'), action('send-offer', 'OfferSent'), action('lose', 'Lost', true, true), action('put-on-hold', 'Dormant')],
-  AssessmentScheduled: [action('qualify', 'Qualified'), action('send-offer', 'OfferSent'), action('lose', 'Lost', true, true), action('put-on-hold', 'Dormant')],
+  AssessmentScheduled: [action('send-offer', 'OfferSent'), action('lose', 'Lost', true, true), action('put-on-hold', 'Dormant')],
   OfferSent: [action('start-negotiation', 'Negotiation'), action('win', 'Won'), action('lose', 'Lost', true, true), action('put-on-hold', 'Dormant')],
   Negotiation: [action('win', 'Won'), action('lose', 'Lost', true, true), action('put-on-hold', 'Dormant')],
   Won: [],
   Lost: [action('reactivate', 'New')],
   Dormant: [action('reactivate', 'New')],
+  NotEligible: [],
+  OutOfScope: [],
+  Duplicate: [],
+  TransferredToPartner: [],
+  NoResponse: [],
+  CancelledByLead: [],
+  ConvertedElsewhere: [],
 };
 
 export function getLeadLifecycleActions(status: LeadStatus): readonly LeadLifecycleActionDefinition[] {

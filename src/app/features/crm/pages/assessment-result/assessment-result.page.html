@@ -1,0 +1,125 @@
+<section class="mx-auto max-w-7xl space-y-6 p-4 sm:p-6">
+  <header class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <div>
+      <button type="button" class="mb-2 text-sm font-semibold text-blue-800 hover:text-blue-900" (click)="back()">
+        ← {{ 'crm.assessments.result.back' | translate }}
+      </button>
+      <h1 class="text-2xl font-bold text-slate-950 dark:text-white">{{ 'crm.assessments.result.title' | translate }}</h1>
+      <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">{{ 'crm.assessments.result.description' | translate }}</p>
+    </div>
+    @if (result(); as current) {
+      <span class="w-fit rounded-full px-3 py-1 text-sm font-semibold"
+        [class.bg-amber-100]="current.status === 'Draft' || current.status === 'CorrectionRequested'"
+        [class.text-amber-800]="current.status === 'Draft' || current.status === 'CorrectionRequested'"
+        [class.bg-emerald-100]="current.status === 'Validated' || current.status === 'Shared'"
+        [class.text-emerald-800]="current.status === 'Validated' || current.status === 'Shared'">
+        {{ ('crm.assessments.result.statuses.' + current.status) | translate }} · v{{ current.revision }}
+      </span>
+    }
+  </header>
+
+  @if (!canRead()) {
+    <drive-os-state-banner tone="warning" [title]="'crm.assessments.result.restricted.title' | translate"
+      [description]="'crm.assessments.result.restricted.description' | translate" />
+  } @else if (loading()) {
+    <div class="flex min-h-64 items-center justify-center"><drive-os-spinner /></div>
+  } @else if (loadFailed()) {
+    <drive-os-state-banner tone="danger" [title]="'crm.assessments.result.loadError.title' | translate"
+      [description]="'crm.assessments.result.loadError.description' | translate" />
+  } @else if (result(); as current) {
+    @if (current.correctionReason && current.status === 'CorrectionRequested') {
+      <drive-os-state-banner tone="warning" [title]="'crm.assessments.result.correction.title' | translate"
+        [description]="current.correctionReason" />
+    }
+
+    <form [formGroup]="form" class="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
+      <div class="space-y-6">
+        <drive-os-card>
+          <div class="space-y-5 p-5">
+            <div><h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ 'crm.assessments.result.sections.synthesis' | translate }}</h2>
+              <p class="text-sm text-slate-500">{{ 'crm.assessments.result.sections.synthesisHint' | translate }}</p></div>
+            <label class="block space-y-2"><span class="text-sm font-semibold">{{ 'crm.assessments.result.fields.summary' | translate }} *</span>
+              <textarea dosInput rows="5" class="w-full" formControlName="summary"></textarea></label>
+            <div class="grid gap-4 md:grid-cols-3">
+              <label class="space-y-2"><span class="text-sm font-semibold">{{ 'crm.assessments.result.fields.masteredPoints' | translate }}</span>
+                <textarea dosInput rows="6" class="w-full" formControlName="masteredPoints"></textarea></label>
+              <label class="space-y-2"><span class="text-sm font-semibold">{{ 'crm.assessments.result.fields.improvementPoints' | translate }}</span>
+                <textarea dosInput rows="6" class="w-full" formControlName="improvementPoints"></textarea></label>
+              <label class="space-y-2"><span class="text-sm font-semibold">{{ 'crm.assessments.result.fields.supportNeeds' | translate }}</span>
+                <textarea dosInput rows="6" class="w-full" formControlName="supportNeeds"></textarea></label>
+            </div>
+          </div>
+        </drive-os-card>
+
+        <drive-os-card>
+          <div class="space-y-5 p-5">
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ 'crm.assessments.result.sections.path' | translate }}</h2>
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              @for (field of ['theoryHours','practicalHoursMin','practicalHoursMax','simulatorHours','roadHours','intermediateAssessments']; track field) {
+                <label class="space-y-2"><span class="text-sm font-semibold">{{ ('crm.assessments.result.fields.' + field) | translate }}</span>
+                  <input dosInput type="number" min="0" step="1" class="w-full" [formControlName]="$any(field)" /></label>
+              }
+            </div>
+            <p class="rounded-xl bg-blue-50 p-3 text-sm text-blue-900 dark:bg-blue-950/40 dark:text-blue-100">
+              {{ 'crm.assessments.result.estimateDisclaimer' | translate }}
+            </p>
+            <div class="grid gap-4 md:grid-cols-2">
+              <label class="space-y-2"><span class="text-sm font-semibold">{{ 'crm.assessments.result.fields.recommendedTraining' | translate }} *</span>
+                <textarea dosInput rows="3" class="w-full" formControlName="recommendedTraining"></textarea></label>
+              <label class="space-y-2"><span class="text-sm font-semibold">{{ 'crm.assessments.result.fields.recommendedDeliveryMode' | translate }}</span>
+                <input dosInput class="w-full" formControlName="recommendedDeliveryMode" /></label>
+              <label class="space-y-2 md:col-span-2"><span class="text-sm font-semibold">{{ 'crm.assessments.result.fields.alternatives' | translate }}</span>
+                <textarea dosInput rows="3" class="w-full" formControlName="alternatives"></textarea></label>
+            </div>
+            <div class="flex flex-wrap gap-6 text-sm">
+              <label class="flex items-center gap-2"><input type="checkbox" formControlName="languageSupportRequired" class="rounded border-slate-300 text-blue-800" />{{ 'crm.assessments.result.fields.languageSupportRequired' | translate }}</label>
+              <label class="flex items-center gap-2"><input type="checkbox" formControlName="adaptedEquipmentRequired" class="rounded border-slate-300 text-blue-800" />{{ 'crm.assessments.result.fields.adaptedEquipmentRequired' | translate }}</label>
+            </div>
+          </div>
+        </drive-os-card>
+
+        <drive-os-card><div class="space-y-4 p-5">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ 'crm.assessments.result.sections.prospect' | translate }}</h2>
+          <textarea dosInput rows="5" class="w-full" formControlName="prospectComment"></textarea>
+          <p class="text-xs text-slate-500">{{ 'crm.assessments.result.prospectSafety' | translate }}</p>
+        </div></drive-os-card>
+      </div>
+
+      <aside class="space-y-6">
+        <drive-os-card><div class="space-y-4 p-5">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ 'crm.assessments.result.sections.confidence' | translate }}</h2>
+          <select dosInput class="w-full" formControlName="confidence">
+            @for (level of ['Low','Medium','High']; track level) { <option [value]="level">{{ ('crm.assessments.result.confidences.' + level) | translate }}</option> }
+          </select>
+        </div></drive-os-card>
+
+        @if (aiSuggestion(); as suggestion) {
+          <drive-os-card><div class="space-y-3 border-l-4 border-orange-500 p-5">
+            <h2 class="font-bold text-slate-900 dark:text-white">{{ 'crm.assessments.result.ai.title' | translate }}</h2>
+            <p class="text-xs text-slate-500">{{ 'crm.assessments.result.ai.disclaimer' | translate }}</p>
+            <pre class="max-h-64 overflow-auto whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-xs dark:bg-slate-950">{{ suggestion | json }}</pre>
+          </div></drive-os-card>
+        }
+
+        @if (canValidate() && current.status !== 'Shared') {
+          <drive-os-card><div class="space-y-3 p-5">
+            <h2 class="font-bold text-slate-900 dark:text-white">{{ 'crm.assessments.result.correction.actionTitle' | translate }}</h2>
+            <textarea dosInput rows="3" class="w-full" formControlName="correctionReason"></textarea>
+            <drive-os-button variant="secondary" [fullWidth]="true" [disabled]="working() || !form.controls.correctionReason.value.trim()" (pressed)="requestCorrection()">
+              {{ 'crm.assessments.result.actions.requestCorrection' | translate }}
+            </drive-os-button>
+          </div></drive-os-card>
+        }
+
+        <div class="sticky bottom-4 space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+          @if (editable()) { <drive-os-button [fullWidth]="true" [loading]="working()" [disabled]="form.invalid" (pressed)="save()">{{ 'crm.assessments.result.actions.save' | translate }}</drive-os-button> }
+          @if (canValidate() && current.status === 'Draft') { <drive-os-button [fullWidth]="true" [loading]="working()" [disabled]="!current.resultJson" (pressed)="validate()">{{ 'crm.assessments.result.actions.validate' | translate }}</drive-os-button> }
+          @if (canShare() && current.status === 'Validated') { <drive-os-button [fullWidth]="true" [loading]="working()" (pressed)="share()">{{ 'crm.assessments.result.actions.share' | translate }}</drive-os-button> }
+          @if (canCreateOffer() && validated()) { <drive-os-button variant="secondary" [fullWidth]="true" [disabled]="working()" (pressed)="createOffer()">{{ 'crm.assessments.result.actions.createOffer' | translate }}</drive-os-button> }
+          @if (current.validatedAtUtc) { <p class="text-xs text-slate-500">{{ 'crm.assessments.result.validatedAt' | translate }} {{ current.validatedAtUtc | date:'short' }}</p> }
+          @if (current.sharedAtUtc) { <p class="text-xs text-slate-500">{{ 'crm.assessments.result.sharedAt' | translate }} {{ current.sharedAtUtc | date:'short' }}</p> }
+        </div>
+      </aside>
+    </form>
+  }
+</section>

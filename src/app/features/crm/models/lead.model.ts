@@ -7,7 +7,19 @@ export type LeadStatus =
   | 'Negotiation'
   | 'Won'
   | 'Lost'
-  | 'Dormant';
+  | 'Dormant'
+  | 'NotEligible'
+  | 'OutOfScope'
+  | 'Duplicate'
+  | 'TransferredToPartner'
+  | 'NoResponse'
+  | 'CancelledByLead'
+  | 'ConvertedElsewhere';
+
+export type LeadClosureReason = 'PriceTooHigh' | 'FinancingRejected' | 'DelayTooLong'
+  | 'TrainingUnavailable' | 'AreaNotCovered' | 'CompetitorChosen' | 'Unavailable'
+  | 'ProjectPostponed' | 'NoResponse' | 'EligibilityConditionNotMet' | 'Duplicate'
+  | 'PartnerReferral' | 'CancelledByLead' | 'ConvertedElsewhere' | 'Other';
 
 export type LeadSourceType =
   | 'Website'
@@ -23,6 +35,16 @@ export type LeadSourceType =
   | 'Other';
 
 export type TransmissionPreference = 'Unspecified' | 'Manual' | 'Automatic';
+export type FinancingOption = 'Unknown' | 'SelfFunded' | 'CPF' | 'Employer' | 'PublicFunding' | 'Installments' | 'Other';
+
+export interface LeadQualification {
+  need: string;
+  licenseCategory: string;
+  availability: string;
+  targetDate: string | null;
+  financing: FinancingOption;
+  notes: string | null;
+}
 
 export interface LeadListItem {
   id: string;
@@ -46,4 +68,19 @@ export interface LeadDetails extends LeadListItem {
   createdByUserId: string | null;
   lastModifiedAtUtc: string | null;
   lastModifiedByUserId: string | null;
+  qualification: LeadQualification | null;
+  convertedPersonId: string | null;
+  draftEnrollmentId: string | null;
+  convertedAtUtc: string | null;
+  closureReason: LeadClosureReason | null;
+  closureComment: string | null;
+  closedAtUtc: string | null;
+  resumeAtUtc: string | null;
+  dormancyResponsibleUserId: string | null;
+  dormancyCampaignCode: string | null;
+  referredPartnerName: string | null;
+  sharedDataDescription: string | null;
+  referralConsentCollectedAtUtc: string | null;
+  reopenedAtUtc: string | null;
+  automaticFollowUpsEnabled: boolean;
 }

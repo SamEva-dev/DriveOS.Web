@@ -1,0 +1,37 @@
+<section class="mx-auto grid max-w-5xl gap-5 p-4 md:p-6">
+  <header><p class="text-sm font-bold text-blue-800">{{ 'crm.conversion.eyebrow' | translate }}</p>
+    <h1 class="text-2xl font-black text-slate-950 dark:text-white">{{ 'crm.conversion.title' | translate }}</h1>
+    <p class="mt-1 text-sm text-slate-500">{{ 'crm.conversion.description' | translate }}</p></header>
+  @if (loading()) { <drive-os-spinner /> } @else if (result(); as conversion) {
+    <drive-os-card><div class="p-6"><h2 class="text-xl font-black">{{ 'crm.conversion.requestedTitle' | translate }}</h2>
+      <p class="mt-2 text-sm text-slate-600">{{ 'crm.conversion.requestedDescription' | translate }}</p>
+      <div class="mt-5 grid gap-2 sm:grid-cols-2">@for (item of conversion.checklist; track item.code) {
+        <div class="rounded-lg border p-3 text-sm" [class.border-emerald-300]="item.completed">{{ item.completed ? '✓' : '○' }} {{ ('crm.conversion.checklist.' + item.code) | translate }}</div>
+      }</div><div class="mt-6"><drive-os-button (pressed)="cancel()">{{ 'crm.conversion.back' | translate }}</drive-os-button></div></div></drive-os-card>
+  } @else {
+    <nav class="grid grid-cols-4 gap-2 md:grid-cols-7">@for (item of steps; track item; let i = $index) {
+      <button type="button" class="rounded-lg px-2 py-3 text-xs font-bold" [class.bg-blue-800]="step() === i" [class.text-white]="step() === i" (click)="step.set(i)">{{ i + 1 }}. {{ ('crm.conversion.steps.' + item) | translate }}</button>
+    }</nav>
+    <form [formGroup]="form" (ngSubmit)="submit()"><drive-os-card><div class="grid gap-5 p-6">
+      @switch (step()) {
+        @case (0) { <h2 class="text-lg font-black">{{ 'crm.conversion.steps.identity' | translate }}</h2>
+          <p>{{ lead()?.firstName }} {{ lead()?.lastName }} · {{ lead()?.email || lead()?.phone }}</p>
+          <label class="flex gap-3"><input type="checkbox" formControlName="identityVerified">{{ 'crm.conversion.fields.identityVerified' | translate }}</label>
+          <label class="flex gap-3"><input type="checkbox" formControlName="duplicateCheckCompleted">{{ 'crm.conversion.fields.duplicates' | translate }}</label>
+          <label class="flex gap-3"><input type="checkbox" formControlName="consentsVerified">{{ 'crm.conversion.fields.consents' | translate }}</label> }
+        @case (1) { <label>{{ 'crm.conversion.fields.branch' | translate }}<input driveOsInput formControlName="branchId"></label>
+          <label>{{ 'crm.conversion.fields.responsible' | translate }}<input driveOsInput formControlName="responsibleUserId"></label> }
+        @case (2) { <label>{{ 'crm.conversion.fields.training' | translate }}<input driveOsInput formControlName="trainingCode"></label> }
+        @case (3) { <label>{{ 'crm.conversion.fields.guardian' | translate }}<textarea driveOsInput rows="4" formControlName="guardianSummary"></textarea></label>
+          <label>{{ 'crm.conversion.fields.payer' | translate }}<textarea driveOsInput rows="4" formControlName="payerSummary"></textarea></label> }
+        @case (4) { <label>{{ 'crm.conversion.fields.documents' | translate }}<input driveOsInput formControlName="requiredDocumentCodes"><span class="text-xs text-slate-500">{{ 'crm.conversion.fields.documentsHelp' | translate }}</span></label> }
+        @case (5) { <label>{{ 'crm.conversion.fields.offer' | translate }}<select driveOsInput formControlName="acceptedOfferId">@for (offer of offers(); track offer.id) {<option [value]="offer.id">#{{ offer.version }} · {{ offer.amount | number:'1.2-2' }} {{ offer.currency }}</option>}</select></label>
+          @if (!offers().length) { <p class="rounded-lg bg-amber-50 p-4 text-amber-900">{{ 'crm.conversion.noAcceptedOffer' | translate }}</p> } }
+        @case (6) { <h2 class="text-lg font-black">{{ 'crm.conversion.confirmation' | translate }}</h2><p class="text-sm text-slate-600">{{ 'crm.conversion.boundaryNotice' | translate }}</p> }
+      }
+      <footer class="flex justify-between border-t pt-5"><drive-os-button variant="secondary" type="button" (pressed)="step() ? previous() : cancel()">{{ step() ? ('crm.conversion.previous' | translate) : ('common.cancel' | translate) }}</drive-os-button>
+        @if (step() < steps.length - 1) { <drive-os-button type="button" (pressed)="next()">{{ 'crm.conversion.next' | translate }}</drive-os-button> }
+        @else { <drive-os-button type="submit" [loading]="saving()" [disabled]="form.invalid || !offers().length">{{ 'crm.conversion.action' | translate }}</drive-os-button> }</footer>
+    </div></drive-os-card></form>
+  }
+</section>

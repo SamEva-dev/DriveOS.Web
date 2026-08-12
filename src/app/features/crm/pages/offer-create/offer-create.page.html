@@ -1,0 +1,158 @@
+<div class="mx-auto max-w-7xl space-y-6 p-4 sm:p-6 lg:p-8">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <p class="text-sm font-semibold text-orange-600">{{ 'crm.offers.eyebrow' | translate }}</p>
+      <h1 class="mt-1 text-2xl font-bold text-slate-950 dark:text-white">{{ 'crm.offers.create.title' | translate }}</h1>
+      <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ 'crm.offers.create.subtitle' | translate }}</p>
+    </div>
+    <drive-os-button variant="outline" (pressed)="back()">{{ 'crm.offers.actions.back' | translate }}</drive-os-button>
+  </div>
+
+  @if (loading()) {
+    <div class="flex min-h-64 items-center justify-center"><drive-os-spinner /></div>
+  } @else if (!canCreate()) {
+    <drive-os-state-banner tone="warning" [title]="'crm.offers.states.restrictedTitle' | translate"
+      [description]="'crm.offers.states.restrictedDescription' | translate" />
+  } @else if (loadFailed()) {
+    <drive-os-state-banner tone="danger" [title]="'crm.offers.states.invalidTitle' | translate"
+      [description]="'crm.offers.states.invalidDescription' | translate" />
+  } @else {
+    <nav class="overflow-x-auto rounded-xl border border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-slate-900" aria-label="Offer steps">
+      <ol class="flex min-w-max gap-1">
+        @for (item of steps; track item; let index = $index) {
+          <li><button type="button" (click)="step.set(index)"
+            class="rounded-lg px-3 py-2 text-sm font-medium transition"
+            [class.bg-blue-800]="step() === index" [class.text-white]="step() === index"
+            [class.text-slate-600]="step() !== index" [class.dark:text-slate-300]="step() !== index">
+            {{ index + 1 }}. {{ ('crm.offers.steps.' + item) | translate }}
+          </button></li>
+        }
+      </ol>
+    </nav>
+
+    <form [formGroup]="form" class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
+      <drive-os-card>
+        @if (step() === 0) {
+          <section class="space-y-5">
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ 'crm.offers.sections.training' | translate }}</h2>
+            <label class="block text-sm font-medium">{{ 'crm.offers.fields.trainingCode' | translate }}
+              <input driveOsInput formControlName="trainingCode" class="mt-2 w-full" />
+            </label>
+            <label class="block text-sm font-medium">{{ 'crm.offers.fields.branchId' | translate }}
+              <input driveOsInput formControlName="branchId" class="mt-2 w-full" />
+            </label>
+          </section>
+        }
+
+        @if (step() === 1 || step() === 2 || step() === 3) {
+          <section class="space-y-5" formArrayName="lines">
+            <div class="flex items-center justify-between gap-4">
+              <h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ 'crm.offers.sections.lines' | translate }}</h2>
+              <drive-os-button size="sm" variant="outline" (pressed)="addLine()">{{ 'crm.offers.actions.addLine' | translate }}</drive-os-button>
+            </div>
+            @for (line of lines.controls; track line; let index = $index) {
+              <article [formGroupName]="index" class="space-y-4 rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+                <div class="grid gap-4 md:grid-cols-2">
+                  <label class="text-sm font-medium">{{ 'crm.offers.fields.type' | translate }}
+                    <select driveOsInput formControlName="type" class="mt-2 w-full">
+                      @for (type of lineTypes; track type) { <option [value]="type">{{ ('crm.offers.lineTypes.' + type) | translate }}</option> }
+                    </select>
+                  </label>
+                  <label class="text-sm font-medium">{{ 'crm.offers.fields.description' | translate }}
+                    <input driveOsInput formControlName="description" class="mt-2 w-full" />
+                  </label>
+                  <label class="text-sm font-medium">{{ 'crm.offers.fields.quantity' | translate }}
+                    <input driveOsInput type="number" min="0.01" step="0.01" formControlName="quantity" class="mt-2 w-full" />
+                  </label>
+                  <label class="text-sm font-medium">{{ 'crm.offers.fields.unit' | translate }}
+                    <input driveOsInput formControlName="unit" class="mt-2 w-full" />
+                  </label>
+                  <label class="text-sm font-medium">{{ 'crm.offers.fields.unitPrice' | translate }}
+                    <input driveOsInput type="number" min="0" step="0.01" formControlName="unitPrice" class="mt-2 w-full" />
+                  </label>
+                  <label class="text-sm font-medium">{{ 'crm.offers.fields.discount' | translate }}
+                    <input driveOsInput type="number" min="0" step="0.01" formControlName="discountAmount" class="mt-2 w-full" />
+                  </label>
+                  <label class="text-sm font-medium">{{ 'crm.offers.fields.taxRate' | translate }}
+                    <input driveOsInput type="number" min="0" max="100" step="0.01" formControlName="taxRate" class="mt-2 w-full" />
+                  </label>
+                  <label class="text-sm font-medium">{{ 'crm.offers.fields.priceSource' | translate }}
+                    <select driveOsInput formControlName="priceSource" class="mt-2 w-full">
+                      @for (source of priceSources; track source) { <option [value]="source">{{ ('crm.offers.priceSources.' + source) | translate }}</option> }
+                    </select>
+                  </label>
+                </div>
+                @if (line.get('priceSource')?.value === 'ManualOverride') {
+                  <label class="block text-sm font-medium text-amber-700 dark:text-amber-300">{{ 'crm.offers.fields.overrideReason' | translate }}
+                    <textarea driveOsInput formControlName="manualOverrideReason" rows="2" class="mt-2 w-full"></textarea>
+                  </label>
+                }
+                <div class="flex items-center justify-between">
+                  <label class="flex items-center gap-2 text-sm"><input type="checkbox" formControlName="mandatory" /> {{ 'crm.offers.fields.mandatory' | translate }}</label>
+                  <drive-os-button size="sm" variant="ghost" [disabled]="line.get('mandatory')?.value" (pressed)="removeLine(index)">{{ 'crm.offers.actions.delete' | translate }}</drive-os-button>
+                </div>
+              </article>
+            }
+          </section>
+        }
+
+        @if (step() === 4) {
+          <section class="space-y-5">
+            <h2 class="text-lg font-bold">{{ 'crm.offers.sections.funding' | translate }}</h2>
+            <label class="block text-sm font-medium">{{ 'crm.offers.fields.estimatedFunding' | translate }}
+              <input driveOsInput type="number" min="0" step="0.01" formControlName="estimatedFundingAmount" class="mt-2 w-full" />
+            </label>
+            <p class="rounded-lg bg-blue-50 p-3 text-sm text-blue-900 dark:bg-blue-950 dark:text-blue-100">{{ 'crm.offers.hints.estimatedFunding' | translate }}</p>
+            <label class="block text-sm font-medium">{{ 'crm.offers.fields.financingNotes' | translate }}
+              <textarea driveOsInput rows="5" formControlName="financingNotes" class="mt-2 w-full"></textarea>
+            </label>
+          </section>
+        }
+
+        @if (step() === 5) {
+          <section class="space-y-5">
+            <h2 class="text-lg font-bold">{{ 'crm.offers.sections.conditions' | translate }}</h2>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <label class="text-sm font-medium">{{ 'crm.offers.fields.currency' | translate }}<input driveOsInput maxlength="3" formControlName="currency" class="mt-2 w-full" /></label>
+              <label class="text-sm font-medium">{{ 'crm.offers.fields.validUntil' | translate }}<input driveOsInput type="date" formControlName="validUntil" class="mt-2 w-full" /></label>
+            </div>
+            <label class="block text-sm font-medium">{{ 'crm.offers.fields.conditions' | translate }}<textarea driveOsInput rows="6" formControlName="conditions" class="mt-2 w-full"></textarea></label>
+            <label class="block text-sm font-medium">{{ 'crm.offers.fields.internalNotes' | translate }}<textarea driveOsInput rows="4" formControlName="internalNotes" class="mt-2 w-full"></textarea></label>
+          </section>
+        }
+
+        @if (step() === 6) {
+          <section class="space-y-5">
+            <h2 class="text-lg font-bold">{{ 'crm.offers.sections.preview' | translate }}</h2>
+            @if (preview(); as offer) {
+              <drive-os-state-banner tone="success" [title]="'crm.offers.preview.createdTitle' | translate"
+                [description]="('crm.offers.preview.createdDescription' | translate:{ version: offer.version })" />
+            } @else {
+              <p class="text-sm text-slate-600 dark:text-slate-300">{{ 'crm.offers.preview.description' | translate }}</p>
+              <drive-os-button [loading]="saving()" [disabled]="form.invalid || lines.length === 0" (pressed)="generate()">{{ 'crm.offers.actions.generate' | translate }}</drive-os-button>
+            }
+          </section>
+        }
+
+        <div class="mt-8 flex justify-between border-t border-slate-200 pt-5 dark:border-slate-700">
+          <drive-os-button variant="outline" [disabled]="step() === 0" (pressed)="previous()">{{ 'crm.offers.actions.previous' | translate }}</drive-os-button>
+          @if (step() < 6) { <drive-os-button (pressed)="next()">{{ 'crm.offers.actions.next' | translate }}</drive-os-button> }
+        </div>
+      </drive-os-card>
+
+      <aside>
+        <drive-os-card>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">{{ 'crm.offers.summary.title' | translate }}</h2>
+          <dl class="mt-5 space-y-3 text-sm">
+            <div class="flex justify-between gap-4"><dt>{{ 'crm.offers.summary.catalog' | translate }}</dt><dd>{{ catalogAmount() | number:'1.2-2' }} {{ form.controls.currency.value }}</dd></div>
+            <div class="flex justify-between gap-4 text-emerald-700"><dt>{{ 'crm.offers.summary.discount' | translate }}</dt><dd>-{{ discountAmount() | number:'1.2-2' }}</dd></div>
+            <div class="flex justify-between gap-4"><dt>{{ 'crm.offers.summary.tax' | translate }}</dt><dd>{{ taxAmount() | number:'1.2-2' }}</dd></div>
+            <div class="flex justify-between gap-4 border-t pt-3 font-bold"><dt>{{ 'crm.offers.summary.proposed' | translate }}</dt><dd>{{ totalAmount() | number:'1.2-2' }}</dd></div>
+            <div class="flex justify-between gap-4 text-blue-700"><dt>{{ 'crm.offers.summary.funding' | translate }}</dt><dd>-{{ form.controls.estimatedFundingAmount.value | number:'1.2-2' }}</dd></div>
+            <div class="flex justify-between gap-4 rounded-lg bg-orange-50 p-3 font-bold text-orange-900 dark:bg-orange-950 dark:text-orange-100"><dt>{{ 'crm.offers.summary.remaining' | translate }}</dt><dd>{{ remainingAmount() | number:'1.2-2' }}</dd></div>
+          </dl>
+        </drive-os-card>
+      </aside>
+    </form>
+  }
+</div>

@@ -93,9 +93,9 @@ export class AppSidebarComponent {
   private readonly crmItems: readonly NavigationItem[] = [
     { labelKey: 'navigation.crm.dashboard', icon: 'ph ph-user-plus', routerLink: '/crm/dashboard', exact: true },
     { labelKey: 'navigation.crm.prospects', icon: 'ph ph-users', routerLink: '/crm/leads' },
-    { labelKey: 'navigation.crm.activities', icon: 'ph ph-waveform', routerLink: '/crm/activities', disabled: true },
+    { labelKey: 'navigation.crm.activities', icon: 'ph ph-waveform', routerLink: '/crm/activities' },
     { labelKey: 'navigation.crm.appointments', icon: 'ph ph-calendar-check', routerLink: '/crm/appointments', disabled: true },
-    { labelKey: 'navigation.crm.tasks', icon: 'ph ph-check-square', routerLink: '/crm/tasks', disabled: true },
+    { labelKey: 'navigation.crm.tasks', icon: 'ph ph-check-square', routerLink: '/crm/tasks' },
     { labelKey: 'navigation.crm.pipeline', icon: 'ph ph-git-branch', routerLink: '/crm/pipeline' },
     { labelKey: 'navigation.crm.offers', icon: 'ph ph-file-text', routerLink: '/crm/offers', disabled: true },
     { labelKey: 'navigation.crm.communications', icon: 'ph ph-chat-centered', routerLink: '/crm/communications', disabled: true },
@@ -107,16 +107,28 @@ export class AppSidebarComponent {
   ];
 
   readonly visibleGroups = computed<readonly NavigationGroup[]>(() => {
+    this.authorization.permissions();
     const inCrm = this.currentUrl().urlAfterRedirects.startsWith('/crm');
-    if (inCrm && this.authorization.hasPermission(CRM_PERMISSIONS.leads.read)) {
+    const canReadDashboard = this.authorization.hasPermission(CRM_PERMISSIONS.dashboard.read);
+    const canReadLeads = this.authorization.hasPermission(CRM_PERMISSIONS.leads.read);
+    const visibleCrmItems = this.crmItems.filter((item) => {
+      if (item.routerLink === '/crm/dashboard') return canReadDashboard;
+      if (item.routerLink === '/crm/leads' || item.routerLink === '/crm/pipeline') return canReadLeads;
+      if (item.routerLink === '/crm/activities') return this.authorization.hasPermission(CRM_PERMISSIONS.activities.read);
+      if (item.routerLink === '/crm/tasks') return this.authorization.hasPermission(CRM_PERMISSIONS.tasks.read);
+      return true;
+    });
+
+    if (inCrm && (canReadDashboard || canReadLeads)) {
       return [
-        { labelKey: 'navigation.groups.operations', items: this.crmItems },
+        { labelKey: 'navigation.groups.operations', items: visibleCrmItems },
         { labelKey: 'navigation.groups.platform', items: this.mainItems },
       ];
     }
 
-    const items = this.authorization.hasPermission(CRM_PERMISSIONS.leads.read)
-      ? [...this.mainItems.slice(0, 2), { labelKey: 'navigation.crm.label', icon: 'ph ph-funnel', routerLink: '/crm' }, ...this.mainItems.slice(2)]
+    const crmEntryLink = canReadDashboard ? '/crm/dashboard' : '/crm/leads';
+    const items = canReadDashboard || canReadLeads
+      ? [...this.mainItems.slice(0, 2), { labelKey: 'navigation.crm.label', icon: 'ph ph-funnel', routerLink: crmEntryLink }, ...this.mainItems.slice(2)]
       : this.mainItems;
     return [{ labelKey: 'navigation.groups.platform', items }];
   });

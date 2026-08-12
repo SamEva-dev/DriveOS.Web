@@ -91,7 +91,40 @@
           "invalidTransition": "This transition is not allowed from the current status."
         },
         "lossReason": { "required": "A loss reason is required." },
-        "statusReason": { "tooLong": "The reason cannot exceed 500 characters." }
+        "statusReason": { "tooLong": "The reason cannot exceed 500 characters." },
+        "qualification": {
+          "notAllowed": "The lead must be contacted before qualification.",
+          "need": { "invalid": "The need is required and cannot exceed 1,000 characters." },
+          "category": { "invalid": "The category is required and cannot exceed 30 characters." },
+          "availability": { "invalid": "Availability is required and cannot exceed 500 characters." },
+          "financing": { "invalid": "The selected funding option is invalid." },
+          "notes": { "tooLong": "The note cannot exceed 2,000 characters." }
+        }
+      },
+      "conversions": {
+        "leadMustBeWon": "The lead must be marked as won before conversion.",
+        "qualificationRequired": "The lead needs must be qualified before conversion.",
+        "alreadyConverted": "This lead has already been converted.",
+        "acceptedOffer": { "required": "An accepted offer linked to this lead is required." },
+        "preconditions": { "incomplete": "Identity, consents and duplicate checks must be validated." },
+        "target": { "invalid": "The conversion target is invalid." }
+      },
+      "tasks": {
+        "notFound": "The requested task was not found.", "alreadyClosed": "This task is already completed or cancelled.",
+        "title": { "required": "The task subject is required.", "tooLong": "The task subject is too long." },
+        "notes": { "tooLong": "Notes cannot exceed 2,000 characters." },
+        "dueDate": { "required": "The due date is required." }
+      },
+      "activities": {
+        "subject": { "required": "The activity subject is required.", "tooLong": "The activity subject is too long." },
+        "details": { "tooLong": "Details cannot exceed 4,000 characters." },
+        "occurredAt": { "required": "The occurrence date is required." },
+        "direction": { "notAllowed": "An internal note cannot be inbound or outbound." }
+      },
+      "dashboard": {
+        "scopeUnsupported": "The requested scope is not supported.",
+        "branchRequired": "Select a branch to display this scope.",
+        "branchNotAvailable": "This branch does not belong to the active organization or is no longer available."
       }
     },
     "organizations": {
@@ -1369,6 +1402,121 @@
   },
   "crm": {
     "kicker": "CRM & Admissions",
+    "dashboard": {
+      "title": "CRM dashboard",
+      "description": "Sales overview of leads, opportunities and follow-ups.",
+      "scopeLabel": "Scope",
+      "lastRefresh": "Refreshed at",
+      "freshness": "Freshness: just now",
+      "navigationLabel": "CRM dashboard states and scopes",
+      "demoLabel": "Demo — state:",
+      "diagnostics": { "show": "Show diagnostic states", "hide": "Hide diagnostic states" },
+      "scopeTabLabel": "Scope:",
+      "tabs": {
+        "nominal": "Nominal",
+        "empty": "No leads",
+        "partialData": "Partial data",
+        "restrictedFinancial": "No financial access",
+        "activeFilters": "Active filters",
+        "integrationIncident": "Integration incident",
+        "loading": "Loading",
+        "widgetError": "Widget error"
+      },
+      "scopes": { "branch": "Branch", "organization": "Organization", "network": "Network" },
+      "actions": { "newLead": "New lead", "recordCall": "Record a call", "viewAllLeads": "View all leads", "viewAll": "View all" },
+      "awaitingDataTitle": "Data connection in progress",
+      "awaitingData": "No data is available for this scope.",
+      "liveData": "Live data refreshed",
+      "loadError": "The dashboard could not be loaded.",
+      "noPriorities": "No priority action.",
+      "contactRequired": "First contact required",
+      "noActivities": "No recent activity.",
+      "noTasks": "No follow-up scheduled.",
+      "noAppointments": "No upcoming assessment appointment.",
+      "noInactiveLeads": "No lead inactive for 14 days.",
+      "futureWidget": "This widget will be connected in CRM‑001M‑D.",
+      "organizationLevel": "No branch",
+      "branchLabel": "Branch",
+      "convertedRatio": "Converted / total",
+      "days": "days",
+      "pipelineColumns": { "stage": "Stage", "volume": "Volume" },
+      "filters": { "from": "From", "to": "To", "source": "Source", "status": "Status", "advisor": "Advisor", "advisorPlaceholder": "Advisor identifier", "all": "All", "apply": "Apply", "clear": "Clear" },
+      "priorityKinds": { "LeadToContact": "First contact required", "OverdueTask": "Overdue follow-up", "OfferExpiring": "Offer nearing expiration", "AssessmentToValidate": "Assessment result to validate", "ConversionFailed": "Conversion failed", "DormantToWake": "Lead to reactivate" },
+      "unavailable": {
+        "appointmentsTitle": "Appointments not connected",
+        "appointments": "The future Appointment aggregate will feed this widget. No appointment is inferred from status changes alone."
+      },
+      "scopeData": {
+        "branchPending": "Select an active branch to load this scope.",
+        "branchSelector": "Displayed branch",
+        "noBranch": "No branch is available for this organization.",
+        "networkIncluded": "{{count}} consolidated organization(s):"
+      },
+      "networkMembers": {
+        "title": "Network member organizations",
+        "description": "Manage the driving schools included in the network sales consolidation.",
+        "readRestricted": "You are not allowed to view this network's members.",
+        "loadError": "Unable to load member organizations.",
+        "candidateLabel": "Add a driving school",
+        "candidatePlaceholder": "Select a candidate organization",
+        "add": "Add to network",
+        "remove": "Remove",
+        "joinedAt": "Member since",
+        "empty": "No driving school is currently attached to this network.",
+        "mutationError": "The change could not be saved. Check your permissions and the organization's current state."
+      },
+      "states": {
+        "filtersTitle": "Active filters",
+        "filterPeriod": "Period: last 30 days",
+        "filterOwner": "Owner: all",
+        "integrationIncident": "The phone integration is experiencing an incident. Other data remains available.",
+        "partialData": "Some widgets are temporarily unavailable. Available data remains accessible.",
+        "financialRestricted": "Financial indicators are hidden according to your permissions.",
+        "hiddenFinancial": "Financial information not authorized",
+        "emptyPriorities": "Create your first lead to start organizing sales actions.",
+        "noData": "No data for this scope",
+        "pipelineUnavailable": "The pipeline could not be loaded",
+        "phoneEventsUnavailable": "Some phone events could not be loaded.",
+        "widgetErrorTitle": "This widget could not be loaded",
+        "widgetErrorDescription": "The incident remains isolated: the rest of the dashboard continues to work."
+      },
+      "kpis": {
+        "newLeads": "New leads", "toContact": "To contact", "overdueFollowUps": "Overdue follow-ups",
+        "upcomingAppointments": "Upcoming appointments", "pendingOffers": "Pending offers", "conversionRate": "Conversion rate",
+        "firstContactDelay": "Average first contact delay", "pipelineValue": "Pipeline value",
+        "unassignedLeads": "Unassigned leads", "expiringOpportunities": "Expiring opportunities"
+      },
+      "widgets": {
+        "priorities": "Priority actions", "indicators": "CRM indicators", "pipeline": "Sales pipeline",
+        "pipelineSubtitle": "By stage · value & volume", "recentActivity": "Recent activity", "followUps": "Upcoming follow-ups",
+        "appointments": "Appointments", "sources": "Acquisition sources", "conversions": "Conversions by branch",
+        "inactiveLeads": "Leads without recent activity"
+      },
+      "views": { "funnel": "Funnel", "table": "Table" }
+    },
+    "conversion": {
+      "eyebrow": "CRM · Admission", "title": "Convert lead to student",
+      "description": "Verify prerequisites, then submit a request to the Students and Enrollments domains without losing CRM history.",
+      "action": "Request conversion", "requested": "The conversion request was recorded.",
+      "requestedTitle": "Conversion requested", "requestedDescription": "Owning domains will create the student profile and enrollment. The request is idempotent.",
+      "convertedTitle": "Lead converted", "convertedDescription": "The student profile and enrollment were created by their owning domains.",
+      "previous": "Previous", "next": "Next", "back": "Back to lead", "confirmation": "Confirm request",
+      "noAcceptedOffer": "No accepted offer is available. Conversion cannot be requested.",
+      "boundaryNotice": "CRM keeps the request and its references. It does not directly create any Students table or aggregate.",
+      "steps": { "identity": "Identity", "organization": "Organization", "training": "Training", "relations": "Representatives", "documents": "Documents", "offer": "Offer", "confirmation": "Confirmation" },
+      "fields": { "identityVerified": "Minimum identity has been verified", "duplicates": "Duplicate search is complete", "consents": "Required consents have been collected", "branch": "Branch", "responsible": "Owner", "training": "Training and path", "guardian": "Legal guardian", "payer": "Payer", "documents": "Outstanding documents", "documentsHelp": "Comma-separated codes", "offer": "Accepted offer" },
+      "checklist": { "identity": "Identity verified", "duplicates": "Duplicates checked", "consents": "Consents collected", "studentProfile": "Student profile created", "enrollment": "Enrollment created", "contract": "Contract to generate", "documents": "Documents complete" }
+    },
+    "qualification": {
+      "title": "Needs qualification",
+      "description": "Formalize the project before assessment and the commercial proposal.",
+      "action": "Qualify lead",
+      "edit": "Edit",
+      "success": "The lead qualification has been saved.",
+      "empty": "This lead has not been qualified yet.",
+      "fields": { "need": "Expressed need", "category": "Category", "availability": "Availability", "targetDate": "Target date", "financing": "Expected funding", "notes": "Sales note" },
+      "financing": { "Unknown": "To be determined", "SelfFunded": "Self-funded", "CPF": "CPF", "Employer": "Employer", "PublicFunding": "Public funding", "Installments": "Installments", "Other": "Other" }
+    },
     "pipeline": {
       "title": "Sales pipeline",
       "description": "Track every lead and apply only lifecycle transitions allowed from its current status.",
@@ -1385,6 +1533,102 @@
         "send-offer": "Offer sent", "start-negotiation": "Negotiate", "win": "Won",
         "lose": "Lost", "put-on-hold": "Put on hold", "reactivate": "Reactivate"
       }
+    },
+    "tasks": {
+      "title": "Tasks and follow-ups", "description": "Plan the next action for this lead.", "pageDescription": "View upcoming actions and overdue follow-ups.",
+      "add": "Add task", "created": "The task was created.", "complete": "Complete",
+      "empty": "No task or follow-up for this lead.", "noPending": "No upcoming action.", "overdue": "Overdue follow-up",
+      "fields": { "type": "Type", "title": "Subject", "notes": "Notes", "dueAt": "Due date" },
+      "types": { "Call": "Call", "Email": "Email", "Sms": "SMS", "Appointment": "Appointment", "FollowUp": "Follow-up", "Other": "Other" },
+      "statuses": { "Pending": "Pending", "Completed": "Completed", "Cancelled": "Cancelled" }
+    },
+    "activities": {
+      "title": "Sales activities", "description": "Keep a factual record of completed interactions and actions.",
+      "pageDescription": "View the 200 most recent sales activities.",
+      "add": "Add activity", "created": "The activity was recorded.",
+      "empty": "No sales activity recorded.",
+      "fields": { "type": "Type", "direction": "Direction", "subject": "Subject", "details": "Details", "occurredAt": "Occurred at" },
+      "types": { "Call": "Call", "Email": "Email", "Sms": "SMS", "Meeting": "Meeting", "Note": "Internal note" },
+      "directions": { "None": "Not applicable", "Inbound": "Inbound", "Outbound": "Outbound" }
+    },
+    "assessments": {
+      "perform": {
+        "title": "Perform the initial assessment",
+        "back": "Back to lead",
+        "readyTitle": "The assessment is ready to start",
+        "readyText": "Verify the lead's identity and assessment conditions before creating the educational session.",
+        "notStartable": "This appointment can no longer be started in its current state.",
+        "start": "Start assessment",
+        "progress": "Progress",
+        "autosave": "Autosave enabled",
+        "saving": "Saving…",
+        "lastSaved": "Last saved:",
+        "saved": "The draft has been saved.",
+        "submitted": "The assessment has been submitted and closed.",
+        "submit": "Submit and close",
+        "previous": "Previous",
+        "next": "Next",
+        "summaryTitle": "Review before submission",
+        "answered": "Completed criteria",
+        "status": "Session status",
+        "incomplete": "All required criteria must be completed before submission.",
+        "steps": { "criteria": "Criteria", "analysis": "Analysis", "summary": "Summary" },
+        "fields": {
+          "factualObservations": "Factual observations",
+          "pedagogicalInterpretation": "Educational interpretation",
+          "recommendation": "Training recommendation",
+          "internalNotes": "Internal notes",
+          "prospectComment": "Comment visible to the lead"
+        }
+      },
+      "result": {
+        "title": "Assessment result and recommendation",
+        "description": "Turn the assessment into a clear, reasoned and actionable recommendation.",
+        "back": "Back to assessment",
+        "restricted": { "title": "Restricted access", "description": "You do not have permission to view this result." },
+        "loadError": { "title": "Result unavailable", "description": "Check your permissions or try again." },
+        "sections": {
+          "synthesis": "Educational summary", "synthesisHint": "Enter one item per line in list fields.",
+          "path": "Training path estimate", "prospect": "Comment visible to the lead", "confidence": "Confidence level"
+        },
+        "fields": {
+          "summary": "Summary", "masteredPoints": "Mastered points", "improvementPoints": "Points to improve",
+          "supportNeeds": "Risks or support needs", "theoryHours": "Theory hours",
+          "practicalHoursMin": "Minimum practical hours", "practicalHoursMax": "Maximum practical hours",
+          "simulatorHours": "Simulator hours", "roadHours": "On-road hours",
+          "intermediateAssessments": "Intermediate reviews", "languageSupportRequired": "Language support",
+          "adaptedEquipmentRequired": "Adapted equipment", "recommendedDeliveryMode": "Recommended delivery mode",
+          "recommendedTraining": "Recommended training", "alternatives": "Alternatives"
+        },
+        "estimateDisclaimer": "This is an educational estimate range. It may change with the learner's actual progress.",
+        "prospectSafety": "Internal notes and unvalidated suggestions are never included in shared content.",
+        "statuses": { "None": "To prepare", "Draft": "Draft", "CorrectionRequested": "Correction requested", "Validated": "Validated", "Shared": "Shared" },
+        "confidences": { "Low": "Low", "Medium": "Medium", "High": "High" },
+        "ai": { "title": "DriveOS AI suggestion", "disclaimer": "AI suggestions are never validated automatically. The decision remains human." },
+        "correction": { "title": "A correction was requested", "actionTitle": "Educational review" },
+        "actions": { "save": "Save result", "requestCorrection": "Request correction", "validate": "Validate result", "share": "Share result", "createOffer": "Create offer" },
+        "messages": { "saved": "The result was saved.", "correctionRequested": "The correction was requested.", "validated": "The result was validated.", "shared": "The result was shared." },
+        "validatedAt": "Validated on", "sharedAt": "Shared on"
+      }
+    },
+    "offers": {
+      "eyebrow": "CRM · Commercial proposal",
+      "create": { "title": "Create a commercial offer", "subtitle": "Build a traceable proposal from the validated assessment result." },
+      "steps": { "training": "Training", "services": "Services", "options": "Options", "pricing": "Pricing", "funding": "Funding", "conditions": "Conditions", "preview": "Preview" },
+      "sections": { "training": "Recommended training", "lines": "Services, options and pricing", "funding": "Estimated funding", "conditions": "Validity and conditions", "preview": "Preview before sending" },
+      "fields": { "trainingCode": "Training code or title", "branchId": "Branch identifier (optional)", "type": "Line type", "description": "Description", "quantity": "Quantity", "unit": "Unit", "unitPrice": "Unit price", "discount": "Discount", "taxRate": "Tax (%)", "priceSource": "Price source", "overrideReason": "Required reason for manual price", "mandatory": "Mandatory service", "estimatedFunding": "Estimated funding", "financingNotes": "Funding assumptions", "currency": "Currency", "validUntil": "Valid until", "conditions": "Visible conditions", "internalNotes": "Internal notes" },
+      "actions": { "back": "Back to result", "addLine": "Add line", "delete": "Delete", "previous": "Previous", "next": "Next", "generate": "Generate offer" },
+      "summary": { "title": "Financial summary", "catalog": "Catalog price", "discount": "Discount", "tax": "Taxes", "proposed": "Proposed price", "funding": "Estimated funding", "remaining": "Lead remainder" },
+      "hints": { "estimatedFunding": "Funding is an estimate separate from the proposed price and is not an agreement from the funding body." },
+      "states": { "restrictedTitle": "Restricted access", "restrictedDescription": "The permission to create offers is required.", "invalidTitle": "Unable to create", "invalidDescription": "The result must be validated or shared and belong to the selected lead." },
+      "preview": { "description": "Review lines, discounts, funding and conditions. Generation creates an immutable version available before any sending.", "createdTitle": "Offer generated", "createdDescription": "Version {{version}} has been saved. It has not been sent to the lead." },
+      "messages": { "created": "The commercial offer was generated." },
+      "defaults": { "assessment": "Initial assessment", "practical": "Recommended practical lessons" },
+      "lineTypes": { "RegistrationFee": "Registration fee", "TheoryTraining": "Theory training", "PracticalLesson": "Practical lesson", "SimulatorLesson": "Simulator lesson", "InitialAssessment": "Initial assessment", "PedagogicalReview": "Educational review", "ExamSupport": "Exam support", "VehicleExamRental": "Exam vehicle rental", "DigitalAccess": "Digital access", "AdministrativeService": "Administrative service", "PartnerTraining": "Partner training", "Other": "Other" },
+      "priceSources": { "StandardCatalog": "Standard catalog", "BranchCatalog": "Branch catalog", "NegotiatedPrice": "Negotiated price", "Campaign": "Campaign", "PartnerAgreement": "Partner agreement", "ManualOverride": "Manual override" },
+      "compare": { "title": "Compare and customize packages", "subtitle": "Highlight key differences, then save the selected configuration as a new version.", "forbidden": "Permission to read offers is required.", "error": "Unable to load packages.", "empty": "No offer is available for this lead.", "selected": "Selected package", "criterion": "Criterion", "driving": "Driving hours", "simulator": "Simulator", "options": "Optional items", "price": "Price", "quantity": "Quantity", "discount": "Discount", "removeOption": "Remove option", "mandatory": "Mandatory item", "saveVariant": "Save variant" },
+      "send": { "title": "Send offer", "subtitle": "Review the frozen version, recipients, message and security before delivery.", "back": "Back to offers", "loadError": "Unable to load the offer.", "submitReview": "Submit for review", "approve": "Approve", "approvalRequired": "The offer must be approved before it can be sent.", "channel": "Channel", "language": "Language", "recipients": "Explicit recipients", "addRecipient": "Add", "name": "Recipient name", "address": "Email, phone or portal identifier", "subject": "Subject", "message": "Message", "document": "Frozen document", "attachments": "Attachments — one reference per line", "security": "Secure link", "linkLifetime": "Validity period (hours)", "securityHint": "The raw token is shown once only. Only its hash is stored.", "action": "Prepare delivery", "ready": "Delivery prepared", "oneTimeToken": "One-time delivery token — do not log", "defaultSubject": "Your training offer — version {{version}}", "defaultMessage": "Hello,\n\nFollowing your assessment, please find your training proposal.\nThis offer is valid until {{date}}.\n\nYou can view it through the secure link.", "messages": { "prepared": "The offer delivery has been prepared." }, "channels": { "Email": "Email", "SmsLink": "SMS link", "StudentPortal": "Student portal", "GuardianPortal": "Guardian portal", "Printed": "Printed", "SecureLink": "Secure link" }, "recipientTypes": { "Prospect": "Lead", "LegalRepresentative": "Legal representative", "Payer": "Payer", "Company": "Company", "Funder": "Authorized funder" } },
+      "detail": { "title": "Offer tracking", "eyebrow": "CRM · Tracking and negotiation", "loadError": "Unable to load offer tracking.", "remind": "Follow up", "revise": "Create new version", "accept": "Mark accepted", "reject": "Mark rejected", "withdraw": "Withdraw offer", "sentAt": "Sent at", "views": "Views", "lastContact": "Last contact", "nextFollowUp": "Next follow-up", "timeline": "Timeline", "noHistory": "No event recorded.", "exchange": "Add exchange", "saveExchange": "Save exchange", "followUp": "Schedule follow-up", "schedule": "Schedule", "reason": "Required reason", "types": { "Created": "Offer created", "Sent": "Offer sent", "Viewed": "Offer viewed", "QuestionReceived": "Question received", "ModificationRequested": "Modification requested", "FollowUpScheduled": "Follow-up scheduled", "FollowUpCompleted": "Follow-up completed", "Accepted": "Offer accepted", "Rejected": "Offer rejected", "Withdrawn": "Offer withdrawn", "Expired": "Offer expired", "VersionCreated": "New version created" } }
     },
     "leads": {
       "title": "Leads",

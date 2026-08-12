@@ -1,0 +1,46 @@
+<div class="mx-auto max-w-6xl space-y-6 p-4 sm:p-6 lg:p-8">
+  <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div><p class="text-sm font-semibold text-orange-600">{{ 'crm.offers.eyebrow' | translate }}</p>
+      <h1 class="mt-1 text-2xl font-bold text-slate-950 dark:text-white">{{ 'crm.offers.send.title' | translate }}</h1>
+      <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ 'crm.offers.send.subtitle' | translate }}</p></div>
+    <drive-os-button variant="outline" (pressed)="back()">{{ 'crm.offers.send.back' | translate }}</drive-os-button>
+  </header>
+
+  @if (loading()) { <div class="flex min-h-64 items-center justify-center"><drive-os-spinner /></div> }
+  @else if (loadFailed()) { <drive-os-state-banner tone="danger" [title]="'crm.offers.send.loadError' | translate" /> }
+  @else if (offer(); as current) {
+    <drive-os-card>
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div><h2 class="font-bold text-slate-900 dark:text-white">{{ current.trainingCode }} · v{{ current.version }}</h2>
+          <p class="text-sm text-slate-500">{{ current.amount | currency:current.currency }} · {{ current.status }}</p></div>
+        <div class="flex gap-2">
+          @if (current.status === 'Draft' && canSubmit()) { <drive-os-button variant="outline" [disabled]="saving()" (pressed)="submitForReview()">{{ 'crm.offers.send.submitReview' | translate }}</drive-os-button> }
+          @if (current.status === 'InternalReview' && canApprove()) { <drive-os-button variant="outline" [disabled]="saving()" (pressed)="approve()">{{ 'crm.offers.send.approve' | translate }}</drive-os-button> }
+        </div>
+      </div>
+    </drive-os-card>
+
+    @if (current.status !== 'Approved' && current.status !== 'Sent') {
+      <drive-os-state-banner tone="warning" [title]="'crm.offers.send.approvalRequired' | translate" />
+    }
+
+    <form [formGroup]="form" class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <drive-os-card><div class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="text-sm font-medium">{{ 'crm.offers.send.channel' | translate }}<select driveOsInput formControlName="channel" class="mt-2 w-full">@for (channel of channels; track channel) { <option [value]="channel">{{ ('crm.offers.send.channels.' + channel) | translate }}</option> }</select></label>
+          <label class="text-sm font-medium">{{ 'crm.offers.send.language' | translate }}<input driveOsInput formControlName="language" class="mt-2 w-full" /></label>
+        </div>
+        <section formArrayName="recipients" class="space-y-3"><div class="flex items-center justify-between"><h3 class="font-semibold">{{ 'crm.offers.send.recipients' | translate }}</h3><drive-os-button size="sm" variant="outline" (pressed)="addRecipient()">{{ 'crm.offers.send.addRecipient' | translate }}</drive-os-button></div>
+          @for (recipient of recipients.controls; track recipient; let i = $index) { <div [formGroupName]="i" class="grid gap-3 rounded-xl border border-slate-200 p-4 sm:grid-cols-3 dark:border-slate-700"><select driveOsInput formControlName="type">@for (type of recipientTypes; track type) { <option [value]="type">{{ ('crm.offers.send.recipientTypes.' + type) | translate }}</option> }</select><input driveOsInput formControlName="displayName" [placeholder]="'crm.offers.send.name' | translate" /><input driveOsInput formControlName="address" [placeholder]="'crm.offers.send.address' | translate" /><drive-os-button size="sm" variant="ghost" [disabled]="recipients.length === 1" (pressed)="removeRecipient(i)">{{ 'crm.offers.actions.delete' | translate }}</drive-os-button></div> }
+        </section>
+        <label class="block text-sm font-medium">{{ 'crm.offers.send.subject' | translate }}<input driveOsInput formControlName="subject" class="mt-2 w-full" /></label>
+        <label class="block text-sm font-medium">{{ 'crm.offers.send.message' | translate }}<textarea driveOsInput formControlName="message" rows="7" class="mt-2 w-full"></textarea></label>
+        <label class="block text-sm font-medium">{{ 'crm.offers.send.document' | translate }}<input driveOsInput formControlName="documentReference" class="mt-2 w-full" /></label>
+        <label class="block text-sm font-medium">{{ 'crm.offers.send.attachments' | translate }}<textarea driveOsInput formControlName="attachmentReferences" rows="3" class="mt-2 w-full"></textarea></label>
+      </div></drive-os-card>
+      <aside class="space-y-4"><drive-os-card><div class="space-y-3"><h2 class="font-bold">{{ 'crm.offers.send.security' | translate }}</h2><label class="block text-sm font-medium">{{ 'crm.offers.send.linkLifetime' | translate }}<input driveOsInput type="number" min="1" max="720" formControlName="secureLinkLifetimeHours" class="mt-2 w-full" /></label><p class="text-xs text-slate-500">{{ 'crm.offers.send.securityHint' | translate }}</p><drive-os-button class="w-full" [disabled]="saving() || !canSend() || (current.status !== 'Approved' && current.status !== 'Sent')" (pressed)="send()">{{ 'crm.offers.send.action' | translate }}</drive-os-button></div></drive-os-card>
+        @if (result(); as sent) { <drive-os-state-banner tone="success" [title]="'crm.offers.send.ready' | translate" [description]="sent.deliveryStatus" />@if (sent.secureLinkToken) { <div class="break-all rounded-xl bg-blue-50 p-4 text-sm text-blue-900 dark:bg-blue-950 dark:text-blue-100"><strong>{{ 'crm.offers.send.oneTimeToken' | translate }}</strong><p class="mt-2 font-mono">{{ sent.secureLinkToken }}</p></div> } }
+      </aside>
+    </form>
+  }
+</div>

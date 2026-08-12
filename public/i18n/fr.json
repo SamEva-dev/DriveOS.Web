@@ -91,7 +91,40 @@
           "invalidTransition": "Cette transition n’est pas autorisée depuis le statut actuel."
         },
         "lossReason": { "required": "Le motif de perte est obligatoire." },
-        "statusReason": { "tooLong": "Le motif ne peut pas dépasser 500 caractères." }
+        "statusReason": { "tooLong": "Le motif ne peut pas dépasser 500 caractères." },
+        "qualification": {
+          "notAllowed": "Le prospect doit être contacté avant d’être qualifié.",
+          "need": { "invalid": "Le besoin est obligatoire et ne peut pas dépasser 1 000 caractères." },
+          "category": { "invalid": "La catégorie est obligatoire et ne peut pas dépasser 30 caractères." },
+          "availability": { "invalid": "Les disponibilités sont obligatoires et ne peuvent pas dépasser 500 caractères." },
+          "financing": { "invalid": "Le financement sélectionné est invalide." },
+          "notes": { "tooLong": "La note ne peut pas dépasser 2 000 caractères." }
+        }
+      },
+      "conversions": {
+        "leadMustBeWon": "Le prospect doit être marqué comme gagné avant sa conversion.",
+        "qualificationRequired": "Le besoin du prospect doit être qualifié avant sa conversion.",
+        "alreadyConverted": "Ce prospect a déjà été converti.",
+        "acceptedOffer": { "required": "Une offre acceptée liée à ce prospect est obligatoire." },
+        "preconditions": { "incomplete": "L’identité, les consentements et la recherche de doublons doivent être validés." },
+        "target": { "invalid": "La cible de conversion est invalide." }
+      },
+      "tasks": {
+        "notFound": "La tâche demandée est introuvable.", "alreadyClosed": "Cette tâche est déjà terminée ou annulée.",
+        "title": { "required": "L’objet de la tâche est obligatoire.", "tooLong": "L’objet de la tâche est trop long." },
+        "notes": { "tooLong": "La note ne peut pas dépasser 2 000 caractères." },
+        "dueDate": { "required": "L’échéance est obligatoire." }
+      },
+      "activities": {
+        "subject": { "required": "L’objet de l’activité est obligatoire.", "tooLong": "L’objet de l’activité est trop long." },
+        "details": { "tooLong": "Le détail ne peut pas dépasser 4 000 caractères." },
+        "occurredAt": { "required": "La date de réalisation est obligatoire." },
+        "direction": { "notAllowed": "Une note interne ne peut pas avoir de sens entrant ou sortant." }
+      },
+      "dashboard": {
+        "scopeUnsupported": "Le périmètre demandé n’est pas pris en charge.",
+        "branchRequired": "Sélectionnez une agence pour afficher ce périmètre.",
+        "branchNotAvailable": "Cette agence n’appartient pas à l’organisation active ou n’est plus disponible."
       }
     },
     "organizations": {
@@ -1369,6 +1402,121 @@
   },
   "crm": {
     "kicker": "CRM & Admissions",
+    "dashboard": {
+      "title": "Tableau de bord CRM",
+      "description": "Vue commerciale des prospects, opportunités et relances.",
+      "scopeLabel": "Périmètre",
+      "lastRefresh": "Actualisé à",
+      "freshness": "Fraîcheur : à l’instant",
+      "navigationLabel": "États et périmètres du tableau de bord CRM",
+      "demoLabel": "Démo — état :",
+      "diagnostics": { "show": "Afficher les états de diagnostic", "hide": "Masquer les états de diagnostic" },
+      "scopeTabLabel": "Périmètre :",
+      "tabs": {
+        "nominal": "Nominal",
+        "empty": "Aucun prospect",
+        "partialData": "Données partielles",
+        "restrictedFinancial": "Sans droit financier",
+        "activeFilters": "Filtres actifs",
+        "integrationIncident": "Incident intégration",
+        "loading": "Chargement",
+        "widgetError": "Erreur widget"
+      },
+      "scopes": { "branch": "Agence", "organization": "Organisation", "network": "Réseau" },
+      "actions": { "newLead": "Nouveau prospect", "recordCall": "Enregistrer un appel", "viewAllLeads": "Voir tous les prospects", "viewAll": "Voir tout" },
+      "awaitingDataTitle": "Connexion des données en préparation",
+      "awaitingData": "Aucune donnée disponible pour ce périmètre.",
+      "liveData": "Données réelles actualisées",
+      "loadError": "Le tableau de bord n’a pas pu être chargé.",
+      "noPriorities": "Aucune action prioritaire.",
+      "contactRequired": "Premier contact à effectuer",
+      "noActivities": "Aucune activité récente.",
+      "noTasks": "Aucune relance planifiée.",
+      "noAppointments": "Aucun rendez-vous d’évaluation à venir.",
+      "noInactiveLeads": "Aucun prospect inactif depuis 14 jours.",
+      "futureWidget": "Ce widget sera raccordé dans CRM‑001M‑D.",
+      "organizationLevel": "Sans agence",
+      "branchLabel": "Agence",
+      "convertedRatio": "Convertis / total",
+      "days": "jours",
+      "pipelineColumns": { "stage": "Étape", "volume": "Volume" },
+      "filters": { "from": "Du", "to": "Au", "source": "Source", "status": "Statut", "advisor": "Conseiller", "advisorPlaceholder": "Identifiant du conseiller", "all": "Tous", "apply": "Appliquer", "clear": "Effacer" },
+      "priorityKinds": { "LeadToContact": "Premier contact à effectuer", "OverdueTask": "Relance en retard", "OfferExpiring": "Offre proche de l’expiration", "AssessmentToValidate": "Résultat d’évaluation à valider", "ConversionFailed": "Conversion en échec", "DormantToWake": "Prospect à réveiller" },
+      "unavailable": {
+        "appointmentsTitle": "Rendez-vous non raccordés",
+        "appointments": "Le futur agrégat Rendez-vous alimentera ce widget. Aucun rendez-vous n’est déduit des simples changements de statut."
+      },
+      "scopeData": {
+        "branchPending": "Sélectionnez une agence active pour charger ce périmètre.",
+        "branchSelector": "Agence affichée",
+        "noBranch": "Aucune agence disponible pour cette organisation.",
+        "networkIncluded": "{{count}} organisation(s) consolidée(s) :"
+      },
+      "networkMembers": {
+        "title": "Organisations membres du réseau",
+        "description": "Gérez les auto-écoles incluses dans la consolidation commerciale du réseau.",
+        "readRestricted": "Vous n’avez pas l’autorisation de consulter les membres de ce réseau.",
+        "loadError": "Impossible de charger les organisations membres.",
+        "candidateLabel": "Ajouter une auto-école",
+        "candidatePlaceholder": "Sélectionner une organisation candidate",
+        "add": "Ajouter au réseau",
+        "remove": "Retirer",
+        "joinedAt": "Membre depuis le",
+        "empty": "Aucune auto-école n’est encore rattachée à ce réseau.",
+        "mutationError": "La modification n’a pas pu être enregistrée. Vérifiez les droits et l’état actuel de l’organisation."
+      },
+      "states": {
+        "filtersTitle": "Filtres actifs",
+        "filterPeriod": "Période : 30 derniers jours",
+        "filterOwner": "Responsable : tous",
+        "integrationIncident": "L’intégration téléphonique rencontre un incident. Les autres données restent disponibles.",
+        "partialData": "Certains widgets sont temporairement indisponibles. Les données disponibles restent consultables.",
+        "financialRestricted": "Les indicateurs financiers sont masqués selon vos permissions.",
+        "hiddenFinancial": "Information financière non autorisée",
+        "emptyPriorities": "Créez votre premier prospect pour commencer à organiser les actions commerciales.",
+        "noData": "Aucune donnée pour ce périmètre",
+        "pipelineUnavailable": "Le pipeline n’a pas pu être chargé",
+        "phoneEventsUnavailable": "Certains événements de téléphonie n’ont pas pu être chargés.",
+        "widgetErrorTitle": "Ce widget n’a pas pu être chargé",
+        "widgetErrorDescription": "L’incident reste isolé : le reste du tableau de bord continue de fonctionner."
+      },
+      "kpis": {
+        "newLeads": "Nouveaux prospects", "toContact": "À contacter", "overdueFollowUps": "Relances en retard",
+        "upcomingAppointments": "RDV à venir", "pendingOffers": "Offres en attente", "conversionRate": "Taux de conversion",
+        "firstContactDelay": "Délai moyen 1er contact", "pipelineValue": "Valeur pipeline",
+        "unassignedLeads": "Prospects sans responsable", "expiringOpportunities": "Opportunités expirant"
+      },
+      "widgets": {
+        "priorities": "Actions prioritaires", "indicators": "Indicateurs CRM", "pipeline": "Pipeline commercial",
+        "pipelineSubtitle": "Par étape · valeur & volume", "recentActivity": "Activité récente", "followUps": "Prochaines relances",
+        "appointments": "Rendez-vous", "sources": "Sources d’acquisition", "conversions": "Conversions par agence",
+        "inactiveLeads": "Prospects sans activité récente"
+      },
+      "views": { "funnel": "Funnel", "table": "Tableau" }
+    },
+    "conversion": {
+      "eyebrow": "CRM · Admission", "title": "Convertir le prospect en élève",
+      "description": "Vérifiez les prérequis puis transmettez une demande aux domaines Students et Enrollments sans perdre l’historique CRM.",
+      "action": "Demander la conversion", "requested": "La demande de conversion a été enregistrée.",
+      "requestedTitle": "Conversion demandée", "requestedDescription": "Les domaines propriétaires vont créer le profil élève et l’inscription. La demande est idempotente.",
+      "convertedTitle": "Prospect converti", "convertedDescription": "Le profil élève et l’inscription ont été créés par leurs domaines propriétaires.",
+      "previous": "Précédent", "next": "Suivant", "back": "Retour au prospect", "confirmation": "Confirmer la demande",
+      "noAcceptedOffer": "Aucune offre acceptée n’est disponible. La conversion ne peut pas être demandée.",
+      "boundaryNotice": "CRM conserve la demande et ses références. Il ne crée directement aucune table ni aucun agrégat du module Students.",
+      "steps": { "identity": "Identité", "organization": "Organisation", "training": "Formation", "relations": "Représentants", "documents": "Documents", "offer": "Offre", "confirmation": "Confirmation" },
+      "fields": { "identityVerified": "L’identité minimale est vérifiée", "duplicates": "La recherche de doublons est terminée", "consents": "Les consentements requis sont recueillis", "branch": "Agence", "responsible": "Responsable", "training": "Formation et parcours", "guardian": "Représentant légal", "payer": "Payeur", "documents": "Documents encore requis", "documentsHelp": "Codes séparés par des virgules", "offer": "Offre acceptée" },
+      "checklist": { "identity": "Identité vérifiée", "duplicates": "Doublons vérifiés", "consents": "Consentements recueillis", "studentProfile": "Profil élève créé", "enrollment": "Inscription créée", "contract": "Contrat à générer", "documents": "Documents complets" }
+    },
+    "qualification": {
+      "title": "Qualification du besoin",
+      "description": "Formalisez le projet avant l’évaluation et la proposition commerciale.",
+      "action": "Qualifier le prospect",
+      "edit": "Modifier",
+      "success": "La qualification du prospect a été enregistrée.",
+      "empty": "Ce prospect n’a pas encore été qualifié.",
+      "fields": { "need": "Besoin exprimé", "category": "Catégorie", "availability": "Disponibilités", "targetDate": "Échéance souhaitée", "financing": "Financement envisagé", "notes": "Note commerciale" },
+      "financing": { "Unknown": "À déterminer", "SelfFunded": "Financement personnel", "CPF": "CPF", "Employer": "Employeur", "PublicFunding": "Financement public", "Installments": "Paiement échelonné", "Other": "Autre" }
+    },
     "pipeline": {
       "title": "Pipeline commercial",
       "description": "Suivez l’avancement de chaque prospect et appliquez uniquement les transitions autorisées.",
@@ -1385,6 +1533,102 @@
         "send-offer": "Offre envoyée", "start-negotiation": "Négocier", "win": "Gagné",
         "lose": "Perdu", "put-on-hold": "Mettre en sommeil", "reactivate": "Réactiver"
       }
+    },
+    "tasks": {
+      "title": "Tâches et relances", "description": "Planifiez la prochaine action à mener pour ce prospect.", "pageDescription": "Retrouvez les prochaines actions et les relances en retard.",
+      "add": "Ajouter une tâche", "created": "La tâche a été créée.", "complete": "Terminer",
+      "empty": "Aucune tâche ou relance pour ce prospect.", "noPending": "Aucune prochaine action à réaliser.", "overdue": "Relance en retard",
+      "fields": { "type": "Type", "title": "Objet", "notes": "Notes", "dueAt": "Échéance" },
+      "types": { "Call": "Appel", "Email": "E-mail", "Sms": "SMS", "Appointment": "Rendez-vous", "FollowUp": "Relance", "Other": "Autre" },
+      "statuses": { "Pending": "À faire", "Completed": "Terminée", "Cancelled": "Annulée" }
+    },
+    "activities": {
+      "title": "Activités commerciales", "description": "Conservez la trace factuelle des échanges et actions déjà réalisés.",
+      "pageDescription": "Consultez les 200 activités commerciales les plus récentes.",
+      "add": "Ajouter une activité", "created": "L’activité a été enregistrée.",
+      "empty": "Aucune activité commerciale enregistrée.",
+      "fields": { "type": "Type", "direction": "Sens", "subject": "Objet", "details": "Détails", "occurredAt": "Réalisée le" },
+      "types": { "Call": "Appel", "Email": "E-mail", "Sms": "SMS", "Meeting": "Rendez-vous", "Note": "Note interne" },
+      "directions": { "None": "Sans objet", "Inbound": "Entrant", "Outbound": "Sortant" }
+    },
+    "assessments": {
+      "perform": {
+        "title": "Réaliser l’évaluation initiale",
+        "back": "Retour au prospect",
+        "readyTitle": "L’évaluation est prête à démarrer",
+        "readyText": "Vérifiez l’identité du prospect et les conditions de réalisation avant de créer la session pédagogique.",
+        "notStartable": "Ce rendez-vous ne peut plus être démarré dans son état actuel.",
+        "start": "Démarrer l’évaluation",
+        "progress": "Progression",
+        "autosave": "Sauvegarde automatique activée",
+        "saving": "Sauvegarde…",
+        "lastSaved": "Dernière sauvegarde :",
+        "saved": "Le brouillon a été sauvegardé.",
+        "submitted": "L’évaluation a été soumise et clôturée.",
+        "submit": "Soumettre et clôturer",
+        "previous": "Précédent",
+        "next": "Suivant",
+        "summaryTitle": "Vérification avant soumission",
+        "answered": "Critères renseignés",
+        "status": "État de la session",
+        "incomplete": "Tous les critères obligatoires doivent être renseignés avant la soumission.",
+        "steps": { "criteria": "Critères", "analysis": "Analyse", "summary": "Synthèse" },
+        "fields": {
+          "factualObservations": "Observations factuelles",
+          "pedagogicalInterpretation": "Interprétation pédagogique",
+          "recommendation": "Recommandation de formation",
+          "internalNotes": "Notes internes",
+          "prospectComment": "Commentaire visible par le prospect"
+        }
+      },
+      "result": {
+        "title": "Résultat et recommandation",
+        "description": "Transformez l’évaluation en recommandation claire, argumentée et exploitable.",
+        "back": "Retour à l’évaluation",
+        "restricted": { "title": "Accès restreint", "description": "Vous ne disposez pas de la permission de consulter ce résultat." },
+        "loadError": { "title": "Résultat indisponible", "description": "Vérifiez vos droits ou réessayez." },
+        "sections": {
+          "synthesis": "Synthèse pédagogique", "synthesisHint": "Une information par ligne pour les listes.",
+          "path": "Estimation du parcours", "prospect": "Commentaire visible par le prospect", "confidence": "Niveau de confiance"
+        },
+        "fields": {
+          "summary": "Synthèse", "masteredPoints": "Points maîtrisés", "improvementPoints": "Points à travailler",
+          "supportNeeds": "Risques ou besoins d’accompagnement", "theoryHours": "Heures théoriques",
+          "practicalHoursMin": "Heures pratiques minimum", "practicalHoursMax": "Heures pratiques maximum",
+          "simulatorHours": "Heures de simulateur", "roadHours": "Heures en circulation",
+          "intermediateAssessments": "Bilans intermédiaires", "languageSupportRequired": "Accompagnement linguistique",
+          "adaptedEquipmentRequired": "Matériel adapté", "recommendedDeliveryMode": "Modalité recommandée",
+          "recommendedTraining": "Formation recommandée", "alternatives": "Alternatives"
+        },
+        "estimateDisclaimer": "Cette estimation est une fourchette pédagogique. Elle pourra évoluer selon la progression réelle.",
+        "prospectSafety": "Les notes internes et les suggestions non validées ne sont jamais incluses dans le contenu partagé.",
+        "statuses": { "None": "À préparer", "Draft": "Brouillon", "CorrectionRequested": "Correction demandée", "Validated": "Validé", "Shared": "Partagé" },
+        "confidences": { "Low": "Faible", "Medium": "Moyen", "High": "Élevé" },
+        "ai": { "title": "Suggestion DriveOS AI", "disclaimer": "Aucune suggestion IA n’est validée automatiquement. La décision reste humaine." },
+        "correction": { "title": "Une correction a été demandée", "actionTitle": "Contrôle pédagogique" },
+        "actions": { "save": "Enregistrer le résultat", "requestCorrection": "Demander une correction", "validate": "Valider le résultat", "share": "Partager le résultat", "createOffer": "Créer une offre" },
+        "messages": { "saved": "Le résultat a été enregistré.", "correctionRequested": "La correction a été demandée.", "validated": "Le résultat a été validé.", "shared": "Le résultat a été partagé." },
+        "validatedAt": "Validé le", "sharedAt": "Partagé le"
+      }
+    },
+    "offers": {
+      "eyebrow": "CRM · Proposition commerciale",
+      "create": { "title": "Créer une offre commerciale", "subtitle": "Composez une proposition traçable depuis le résultat validé de l’évaluation." },
+      "steps": { "training": "Formation", "services": "Prestations", "options": "Options", "pricing": "Tarification", "funding": "Financement", "conditions": "Conditions", "preview": "Aperçu" },
+      "sections": { "training": "Formation recommandée", "lines": "Prestations, options et tarification", "funding": "Financement estimatif", "conditions": "Validité et conditions", "preview": "Aperçu avant envoi" },
+      "fields": { "trainingCode": "Code ou intitulé de formation", "branchId": "Identifiant de l’agence (optionnel)", "type": "Type de ligne", "description": "Description", "quantity": "Quantité", "unit": "Unité", "unitPrice": "Prix unitaire", "discount": "Remise", "taxRate": "TVA (%)", "priceSource": "Origine du prix", "overrideReason": "Motif obligatoire du prix manuel", "mandatory": "Prestation obligatoire", "estimatedFunding": "Financement estimé", "financingNotes": "Hypothèses de financement", "currency": "Devise", "validUntil": "Valable jusqu’au", "conditions": "Conditions visibles", "internalNotes": "Notes internes" },
+      "actions": { "back": "Retour au résultat", "addLine": "Ajouter une ligne", "delete": "Supprimer", "previous": "Précédent", "next": "Suivant", "generate": "Générer l’offre" },
+      "summary": { "title": "Résumé financier", "catalog": "Prix catalogue", "discount": "Remise", "tax": "Taxes", "proposed": "Prix proposé", "funding": "Financement estimé", "remaining": "Reste prospect" },
+      "hints": { "estimatedFunding": "Le financement est une estimation distincte du prix proposé et ne constitue pas un accord du financeur." },
+      "states": { "restrictedTitle": "Accès restreint", "restrictedDescription": "La permission de créer une offre est requise.", "invalidTitle": "Création impossible", "invalidDescription": "Le résultat doit être validé ou partagé et appartenir au prospect indiqué." },
+      "preview": { "description": "Vérifiez les lignes, les remises, le financement et les conditions. La génération crée une version immuable consultable avant tout envoi.", "createdTitle": "Offre générée", "createdDescription": "La version {{version}} est enregistrée. Elle n’a pas été envoyée au prospect." },
+      "messages": { "created": "L’offre commerciale a été générée." },
+      "defaults": { "assessment": "Évaluation initiale", "practical": "Leçons pratiques recommandées" },
+      "lineTypes": { "RegistrationFee": "Frais d’inscription", "TheoryTraining": "Formation théorique", "PracticalLesson": "Leçon pratique", "SimulatorLesson": "Simulateur", "InitialAssessment": "Évaluation initiale", "PedagogicalReview": "Bilan pédagogique", "ExamSupport": "Accompagnement examen", "VehicleExamRental": "Location véhicule examen", "DigitalAccess": "Accès numérique", "AdministrativeService": "Service administratif", "PartnerTraining": "Formation partenaire", "Other": "Autre" },
+      "priceSources": { "StandardCatalog": "Catalogue standard", "BranchCatalog": "Catalogue agence", "NegotiatedPrice": "Prix négocié", "Campaign": "Campagne", "PartnerAgreement": "Accord partenaire", "ManualOverride": "Modification manuelle" },
+      "compare": { "title": "Comparer et personnaliser les formules", "subtitle": "Identifiez les différences importantes puis enregistrez la configuration retenue comme une nouvelle version.", "forbidden": "La permission de consulter les offres est requise.", "error": "Impossible de charger les formules.", "empty": "Aucune offre n’est disponible pour ce prospect.", "selected": "Formule sélectionnée", "criterion": "Critère", "driving": "Heures de conduite", "simulator": "Simulateur", "options": "Options facultatives", "price": "Prix", "quantity": "Quantité", "discount": "Remise", "removeOption": "Retirer l’option", "mandatory": "Élément obligatoire", "saveVariant": "Enregistrer une variante" },
+      "send": { "title": "Envoyer l’offre", "subtitle": "Contrôlez la version figée, les destinataires, le message et la sécurité avant transmission.", "back": "Retour aux offres", "loadError": "Impossible de charger l’offre.", "submitReview": "Soumettre en revue", "approve": "Approuver", "approvalRequired": "L’offre doit être approuvée avant tout envoi.", "channel": "Canal", "language": "Langue", "recipients": "Destinataires explicites", "addRecipient": "Ajouter", "name": "Nom du destinataire", "address": "E-mail, téléphone ou identifiant portail", "subject": "Objet", "message": "Message", "document": "Document figé", "attachments": "Pièces jointes — une référence par ligne", "security": "Lien sécurisé", "linkLifetime": "Durée de validité (heures)", "securityHint": "Le token brut n’est affiché qu’une fois. Seule son empreinte est conservée.", "action": "Préparer l’envoi", "ready": "Transmission préparée", "oneTimeToken": "Token à usage de transmission — à ne pas journaliser", "defaultSubject": "Votre offre de formation — version {{version}}", "defaultMessage": "Bonjour,\n\nÀ la suite de votre évaluation, vous trouverez votre proposition de formation.\nCette offre est valable jusqu’au {{date}}.\n\nVous pouvez la consulter depuis le lien sécurisé.", "messages": { "prepared": "La transmission de l’offre a été préparée." }, "channels": { "Email": "E-mail", "SmsLink": "Lien SMS", "StudentPortal": "Portail élève", "GuardianPortal": "Portail représentant légal", "Printed": "Impression", "SecureLink": "Lien sécurisé" }, "recipientTypes": { "Prospect": "Prospect", "LegalRepresentative": "Représentant légal", "Payer": "Payeur", "Company": "Entreprise", "Funder": "Financeur autorisé" } },
+      "detail": { "title": "Suivi de l’offre", "eyebrow": "CRM · Suivi et négociation", "loadError": "Impossible de charger le suivi de l’offre.", "remind": "Relancer", "revise": "Créer une nouvelle version", "accept": "Marquer acceptée", "reject": "Marquer refusée", "withdraw": "Retirer l’offre", "sentAt": "Envoyée le", "views": "Consultations", "lastContact": "Dernier contact", "nextFollowUp": "Prochaine relance", "timeline": "Historique", "noHistory": "Aucun événement enregistré.", "exchange": "Ajouter un échange", "saveExchange": "Enregistrer l’échange", "followUp": "Programmer une relance", "schedule": "Planifier", "reason": "Motif obligatoire", "types": { "Created": "Offre créée", "Sent": "Offre envoyée", "Viewed": "Offre consultée", "QuestionReceived": "Question reçue", "ModificationRequested": "Modification demandée", "FollowUpScheduled": "Relance programmée", "FollowUpCompleted": "Relance effectuée", "Accepted": "Offre acceptée", "Rejected": "Offre refusée", "Withdrawn": "Offre retirée", "Expired": "Offre expirée", "VersionCreated": "Nouvelle version créée" } }
     },
     "leads": {
       "title": "Prospects",
