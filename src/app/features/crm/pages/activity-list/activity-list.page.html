@@ -1,35 +1,826 @@
-<section class="driveos-page">
+<section class="driveos-page relative">
   <div class="driveos-page-header">
     <div>
-      <p class="driveos-kicker">{{ 'crm.kicker' | translate }}</p>
-      <h1 class="driveos-page-title">{{ 'crm.activities.title' | translate }}</h1>
-      <p class="driveos-page-subtitle">{{ 'crm.activities.pageDescription' | translate }}</p>
+      <p class="driveos-kicker">{{ "crm.kicker" | translate }}</p>
+      <h1 class="driveos-page-title">
+        {{ "crm.activities.title" | translate }}
+      </h1>
+      <p class="driveos-page-subtitle">
+        {{ "crm.activities.pageDescription" | translate }}
+      </p>
+    </div>
+    @if (canCreate()) {
+      <drive-os-button icon="ph ph-plus" (pressed)="drawerOpen.set(true)">{{
+        "crm.activities.create.action" | translate
+      }}</drive-os-button>
+    }
+  </div>
+  @if (visibleTabs().length) {
+    <nav
+      class="mt-5 flex flex-nowrap items-center gap-3 overflow-x-auto whitespace-nowrap rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-subtle)] px-3 py-2"
+      [attr.aria-label]="'crm.activities.states.navigation' | translate"
+    >
+      @if (tabsVisible()) {
+        <div class="flex min-w-max items-center gap-2">
+          <strong
+            class="text-[11px] uppercase tracking-wide text-[var(--driveos-text-secondary)]"
+            >{{ "crm.activities.states.label" | translate }}</strong
+          >
+          @for (tab of visibleTabs(); track tab.id) {
+            <button
+              type="button"
+              class="rounded-full border border-[var(--driveos-border)] px-3 py-1 text-xs"
+              [class.border-blue-800]="selectedState() === tab.id"
+              [class.bg-blue-800]="selectedState() === tab.id"
+              [class.text-white]="selectedState() === tab.id"
+              (click)="selectState(tab.id)"
+            >
+              {{ stateKey(tab.id) | translate }}
+            </button>
+          }
+        </div>
+      }
+      <button
+        type="button"
+        class="ml-auto inline-flex size-8 min-w-8 items-center justify-center rounded-md border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]"
+        [attr.aria-expanded]="tabsVisible()"
+        (click)="toggleTabs()"
+      >
+        <i
+          class="ph"
+          [class.ph-eye]="!tabsVisible()"
+          [class.ph-eye-slash]="tabsVisible()"
+        ></i>
+      </button>
+    </nav>
+  }
+  @if (selectedState() === "readOnly") {
+    <drive-os-state-banner
+      class="mt-4 block"
+      tone="warning"
+      icon="ph ph-warning"
+      [title]="'crm.activities.banners.readOnly' | translate"
+    />
+  }
+  @if (selectedState() === "syncError") {
+    <drive-os-state-banner
+      class="mt-4 block"
+      tone="warning"
+      icon="ph ph-cloud-warning"
+      [title]="'crm.activities.banners.sync' | translate"
+    />
+  }
+  @if (selectedState() === "partialError") {
+    <drive-os-state-banner
+      class="mt-4 block"
+      tone="warning"
+      icon="ph ph-warning-circle"
+      [title]="'crm.activities.banners.partial' | translate"
+    />
+  }
+  @if (error() || actionError()) {
+    <drive-os-state-banner
+      class="mt-4 block"
+      tone="danger"
+      icon="ph ph-warning-circle"
+      [title]="'crm.activities.loadError' | translate"
+      ><drive-os-button size="sm" variant="outline" (pressed)="load()">{{
+        "common.actions.retry" | translate
+      }}</drive-os-button></drive-os-state-banner
+    >
+  }
+  <div
+    class="mt-5 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-3 shadow-sm"
+  >
+    <div class="flex flex-wrap items-center gap-2">
+      <div class="relative min-w-60 flex-1">
+        <i
+          class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+        ></i
+        ><input
+          dosInput
+          class="pl-10"
+          [formControl]="search"
+          [placeholder]="'crm.activities.filters.search' | translate"
+        />
+      </div>
+      <button
+        type="button"
+        class="min-h-10 rounded-lg border border-[var(--driveos-border)] px-3 text-sm font-semibold"
+        (click)="filtersOpen.set(true)"
+      >
+        <i class="ph ph-sliders-horizontal mr-2"></i
+        >{{ "crm.activities.filters.all" | translate }}
+        @if (activeFilterCount()) {
+          <span
+            class="rounded-full bg-blue-800 px-2 py-0.5 text-xs text-white"
+            >{{ activeFilterCount() }}</span
+          >
+        }
+      </button>
+      <button
+        type="button"
+        class="px-3 text-sm font-bold"
+        (click)="resetFilters()"
+      >
+        {{ "common.actions.reset" | translate }}
+      </button>
+    </div>
+    <div class="mt-3 flex flex-wrap gap-2" [formGroup]="filters">
+      <label class="rounded-full border px-3 py-2 text-xs"
+        ><input
+          class="mr-2"
+          type="checkbox"
+          formControlName="unattachedOnly"
+        />{{ "crm.activities.filters.unattached" | translate }}</label
+      ><label class="rounded-full border px-3 py-2 text-xs"
+        ><input class="mr-2" type="checkbox" formControlName="importedOnly" />{{
+          "crm.activities.filters.imported" | translate
+        }}</label
+      ><label class="rounded-full border px-3 py-2 text-xs"
+        ><input
+          class="mr-2"
+          type="checkbox"
+          formControlName="unfollowedOnly"
+        />{{ "crm.activities.filters.unfollowed" | translate }}</label
+      ><label class="rounded-full border px-3 py-2 text-xs"
+        ><input
+          class="mr-2"
+          type="checkbox"
+          formControlName="regularizationOnly"
+        />{{ "crm.activities.filters.regularization" | translate }}</label
+      >
     </div>
   </div>
-
-  @if (loading()) {
-    <div class="flex min-h-72 items-center justify-center"><drive-os-spinner size="lg" /></div>
-  } @else {
-    <drive-os-card>
-      <div class="space-y-3">
-        @for (activity of activities(); track activity.id) {
-          <button type="button" class="w-full rounded-xl border p-4 text-left transition hover:border-blue-400 dark:border-slate-700" (click)="open(activity)">
-            <div class="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p class="font-semibold text-slate-900 dark:text-white">{{ activity.subject }}</p>
-                <p class="mt-1 text-sm text-slate-500">
-                  {{ ('crm.activities.types.' + activity.type) | translate }}
-                  @if (activity.direction !== 'None') { · {{ ('crm.activities.directions.' + activity.direction) | translate }} }
-                </p>
-                @if (activity.details) { <p class="mt-2 line-clamp-2 text-sm text-slate-600 dark:text-slate-300">{{ activity.details }}</p> }
-              </div>
-              <time class="text-xs font-semibold text-slate-500">{{ activity.occurredAtUtc | date:'medium' }}</time>
+  <div class="mt-5 flex items-center justify-between text-sm">
+    <strong
+      >{{ page().totalCount }} {{ "crm.activities.count" | translate }}</strong
+    ><span class="text-slate-500">{{ "crm.activities.sort" | translate }}</span>
+  </div>
+  <div
+    class="mt-3 hidden overflow-visible rounded-xl border border-[var(--driveos-border)] lg:block"
+  >
+    <table dosTable class="w-full">
+      <thead>
+        <tr>
+          <th>{{ "crm.activities.columns.type" | translate }}</th>
+          <th>{{ "crm.activities.columns.lead" | translate }}</th>
+          <th>{{ "crm.activities.columns.advisor" | translate }}</th>
+          <th>{{ "crm.activities.columns.date" | translate }}</th>
+          <th>{{ "crm.activities.columns.result" | translate }}</th>
+          <th>{{ "crm.activities.columns.duration" | translate }}</th>
+          <th>{{ "crm.activities.columns.detail" | translate }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (viewLoading()) {
+          @for (i of [1, 2, 3, 4, 5]; track i) {
+            <tr>
+              <td colspan="8">
+                <div
+                  class="h-10 animate-pulse rounded bg-slate-100 dark:bg-slate-800"
+                ></div>
+              </td>
+            </tr>
+          }
+        } @else {
+          @for (a of displayed(); track a.id) {
+            <tr>
+              <td>
+                <span class="font-bold"
+                  ><i [class]="'ph mr-2 ' + icon(a)"></i
+                  >{{ typeKey(a.type) | translate }}</span
+                >
+                @if (a.isInternal) {
+                  <drive-os-badge variant="warning">{{
+                    "crm.activities.badges.internal" | translate
+                  }}</drive-os-badge>
+                }
+                @if (a.origin === "Imported") {
+                  <drive-os-badge variant="info">{{
+                    "crm.activities.badges.imported" | translate
+                  }}</drive-os-badge>
+                }
+                @if (a.hasPotentialDuplicate) {
+                  <drive-os-badge variant="danger">{{
+                    "crm.activities.badges.duplicate" | translate
+                  }}</drive-os-badge>
+                }
+              </td>
+              <td>
+                @if (a.leadId) {
+                  <button
+                    class="font-bold hover:text-blue-700"
+                    (click)="openLead(a)"
+                  >
+                    {{ a.leadName || a.leadId }}
+                  </button>
+                } @else {
+                  <span class="italic text-slate-500">{{
+                    "crm.activities.unattached" | translate
+                  }}</span>
+                }
+              </td>
+              <td>{{ a.advisorName || "—" }}</td>
+              <td>{{ a.occurredAtUtc | date: "short" }}</td>
+              <td>
+                @if (a.result) {
+                  <drive-os-badge
+                    [variant]="a.result === 'Reached' ? 'success' : 'warning'"
+                    >{{ a.result }}</drive-os-badge
+                  >
+                } @else {
+                  —
+                }
+              </td>
+              <td>
+                {{
+                  a.durationMinutes !== null ? a.durationMinutes + " min" : "—"
+                }}
+              </td>
+              <td>
+                <p class="max-w-sm truncate">{{ a.details || a.subject }}</p>
+                @if (a.requiresRegularization) {
+                  <drive-os-badge variant="danger">{{
+                    "crm.activities.badges.regularize" | translate
+                  }}</drive-os-badge>
+                }
+                @if (a.attachmentName && canReadAttachment()) {
+                  <button
+                    type="button"
+                    class="block text-xs text-blue-700"
+                    (click)="downloadAttachment(a)"
+                  >
+                    <i class="ph ph-paperclip"></i>{{ a.attachmentName }}
+                  </button>
+                }
+              </td>
+              <td class="relative">
+                <button class="size-8 rounded" (click)="toggleMenu(a.id)">
+                  <i class="ph ph-dots-three"></i>
+                </button>
+                @if (actionMenuId() === a.id) {
+                  <div
+                    class="absolute right-3 top-9 z-30 w-52 rounded-lg border bg-white p-2 shadow-xl dark:bg-slate-900"
+                  >
+                    <button
+                      class="block w-full rounded px-3 py-2 text-left"
+                      [disabled]="!a.leadId"
+                      (click)="openLead(a)"
+                    >
+                      {{ "crm.activities.actions.openLead" | translate }}
+                    </button>
+                    @if (!a.leadId && canAttach()) {
+                      <button
+                        class="block w-full rounded px-3 py-2 text-left"
+                        (click)="openAttach(a)"
+                      >
+                        {{ "crm.activities.actions.attach" | translate }}
+                      </button>
+                    }
+                    @if (a.syncStatus === "Failed" && canSync()) {
+                      <button
+                        class="block w-full rounded px-3 py-2 text-left"
+                        (click)="retry(a)"
+                      >
+                        {{ "crm.activities.actions.retry" | translate }}</button
+                      ><button
+                        class="block w-full rounded px-3 py-2 text-left"
+                        (click)="abandon(a)"
+                      >
+                        {{ "crm.activities.actions.abandon" | translate }}
+                      </button>
+                    }
+                    @if (a.attachmentName && canReadAttachment()) {
+                      <button
+                        class="block w-full rounded px-3 py-2 text-left"
+                        (click)="downloadAttachment(a)"
+                      >
+                        {{
+                          "crm.activities.actions.downloadAttachment"
+                            | translate
+                        }}
+                      </button>
+                    }
+                    @if (a.attachmentName && canDeleteAttachment()) {
+                      <button
+                        class="block w-full rounded px-3 py-2 text-left text-red-600"
+                        (click)="deleteAttachment(a)"
+                      >
+                        {{
+                          "crm.activities.actions.deleteAttachment" | translate
+                        }}
+                      </button>
+                    }
+                    @if (canInvalidate()) {
+                      <button
+                        class="block w-full rounded px-3 py-2 text-left text-red-600"
+                        (click)="openInvalidate(a)"
+                      >
+                        {{ "crm.activities.actions.invalidate" | translate }}
+                      </button>
+                    }
+                  </div>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8">
+                <drive-os-empty-state
+                  icon="ph-duotone ph-waveform"
+                  [title]="'crm.activities.empty' | translate"
+                  [description]="'crm.activities.emptyDescription' | translate"
+                />
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+    <drive-os-paginator
+      [pageNumber]="page().pageNumber"
+      [pageSize]="page().pageSize"
+      [totalCount]="page().totalCount"
+      [totalPages]="page().totalPages"
+      [disabled]="viewLoading()"
+      [pageSizeOptions]="[10, 20, 50, 100]"
+      (pageChange)="onPageChange($event)"
+    />
+  </div>
+  <div class="mt-3 grid gap-3 lg:hidden">
+    @if (viewLoading()) {
+      <drive-os-spinner size="lg" />
+    } @else {
+      @for (a of displayed(); track a.id) {
+        <article
+          class="relative rounded-xl border bg-[var(--driveos-surface-card)] p-4"
+        >
+          <div class="flex justify-between gap-3">
+            <strong
+              ><i [class]="'ph mr-2 ' + icon(a)"></i
+              >{{ typeKey(a.type) | translate }}</strong
+            >
+            <div class="flex items-center gap-2">
+              <time class="text-xs">{{ a.occurredAtUtc | date: "short" }}</time
+              ><button
+                type="button"
+                class="size-8 rounded border"
+                (click)="toggleMenu(a.id)"
+              >
+                <i class="ph ph-dots-three"></i>
+              </button>
             </div>
+          </div>
+          <p class="mt-2 font-bold">
+            {{ a.leadName || ("crm.activities.unattached" | translate) }}
+          </p>
+          <p class="mt-2 text-sm text-slate-500">
+            {{ a.details || a.subject }}
+          </p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            @if (a.origin === "Imported") {
+              <drive-os-badge variant="info">{{
+                "crm.activities.badges.imported" | translate
+              }}</drive-os-badge>
+            }
+            @if (a.requiresRegularization) {
+              <drive-os-badge variant="danger">{{
+                "crm.activities.badges.regularize" | translate
+              }}</drive-os-badge>
+            }
+          </div>
+          @if (actionMenuId() === a.id) {
+            <div
+              class="absolute right-4 top-12 z-30 w-52 rounded-lg border bg-white p-2 shadow-xl dark:bg-slate-900"
+            >
+              @if (a.leadId) {
+                <button
+                  class="block w-full rounded px-3 py-2 text-left"
+                  (click)="openLead(a)"
+                >
+                  {{ "crm.activities.actions.openLead" | translate }}
+                </button>
+              }
+              @if (!a.leadId && canAttach()) {
+                <button
+                  class="block w-full rounded px-3 py-2 text-left"
+                  (click)="openAttach(a)"
+                >
+                  {{ "crm.activities.actions.attach" | translate }}
+                </button>
+              }
+              @if (a.syncStatus === "Failed" && canSync()) {
+                <button
+                  class="block w-full rounded px-3 py-2 text-left"
+                  (click)="retry(a)"
+                >
+                  {{ "crm.activities.actions.retry" | translate }}</button
+                ><button
+                  class="block w-full rounded px-3 py-2 text-left"
+                  (click)="abandon(a)"
+                >
+                  {{ "crm.activities.actions.abandon" | translate }}
+                </button>
+              }
+              @if (a.attachmentName && canReadAttachment()) {
+                <button
+                  class="block w-full rounded px-3 py-2 text-left"
+                  (click)="downloadAttachment(a)"
+                >
+                  {{ "crm.activities.actions.downloadAttachment" | translate }}
+                </button>
+              }
+              @if (a.attachmentName && canDeleteAttachment()) {
+                <button
+                  class="block w-full rounded px-3 py-2 text-left text-red-600"
+                  (click)="deleteAttachment(a)"
+                >
+                  {{ "crm.activities.actions.deleteAttachment" | translate }}
+                </button>
+              }
+              @if (canInvalidate()) {
+                <button
+                  class="block w-full rounded px-3 py-2 text-left text-red-600"
+                  (click)="openInvalidate(a)"
+                >
+                  {{ "crm.activities.actions.invalidate" | translate }}
+                </button>
+              }
+            </div>
+          }
+        </article>
+      } @empty {
+        <drive-os-empty-state
+          icon="ph-duotone ph-waveform"
+          [title]="'crm.activities.empty' | translate"
+          [description]="'crm.activities.emptyDescription' | translate"
+        />
+      }
+    }
+  </div>
+  @if (drawerOpen()) {
+    <button
+      class="fixed inset-0 z-40 bg-slate-950/60"
+      (click)="drawerOpen.set(false)"
+    ></button>
+    <aside
+      class="fixed inset-y-0 right-0 z-50 w-full max-w-xl overflow-y-auto border-l bg-[var(--driveos-surface-card)] shadow-2xl"
+    >
+      <form class="p-6" [formGroup]="createForm" (ngSubmit)="submit()">
+        <div class="flex justify-between">
+          <div>
+            <h2 class="text-xl font-extrabold">
+              {{ "crm.activities.create.title" | translate }}
+            </h2>
+            <p class="text-sm text-slate-500">
+              {{ "crm.activities.create.description" | translate }}
+            </p>
+          </div>
+          <button
+            type="button"
+            class="size-9 rounded border"
+            (click)="drawerOpen.set(false)"
+          >
+            <i class="ph ph-x"></i>
           </button>
-        } @empty {
-          <p class="rounded-xl border border-dashed p-6 text-center text-sm text-slate-500 dark:border-slate-700">{{ 'crm.activities.empty' | translate }}</p>
+        </div>
+        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+          <div
+            class="rounded-xl border border-blue-200 bg-blue-50 p-4 sm:col-span-2 dark:border-blue-900 dark:bg-blue-950/30"
+          >
+            <p class="mb-3 text-sm font-extrabold">
+              {{ "crm.activities.create.nextAction" | translate }}
+            </p>
+            <div class="grid gap-3 sm:grid-cols-2">
+              <input
+                dosInput
+                formControlName="nextActionTitle"
+                [placeholder]="'crm.activities.create.nextAction' | translate"
+              /><input
+                dosInput
+                type="datetime-local"
+                formControlName="nextActionDueAtUtc"
+                [attr.aria-label]="
+                  'crm.activities.create.nextActionDate' | translate
+                "
+              />
+            </div>
+            @if (hasCreateError("nextAction")) {
+              <p class="mt-2 text-sm font-semibold text-red-600">
+                {{ "crm.activities.validation.nextAction" | translate }}
+              </p>
+            }
+          </div>
+          <div class="grid gap-1 text-sm font-bold sm:col-span-2">
+            {{ "crm.activities.create.lead" | translate
+            }}<drive-os-crm-lead-picker
+              [selectedLeadId]="createForm.controls.leadId.value"
+              [required]="!canCreateUnattached()"
+              (leadSelected)="selectCreateLead($event)"
+            />
+          </div>
+          <label class="grid gap-1 text-sm font-bold"
+            >{{ "crm.activities.create.type" | translate
+            }}<select
+              class="min-h-10 rounded-lg border bg-transparent px-3"
+              formControlName="type"
+            >
+              @for (t of activityTypes; track t) {
+                <option [value]="t">{{ typeKey(t) | translate }}</option>
+              }
+            </select></label
+          ><label class="grid gap-1 text-sm font-bold"
+            >{{ "crm.activities.create.direction" | translate
+            }}<select
+              class="min-h-10 rounded-lg border bg-transparent px-3"
+              formControlName="direction"
+            >
+              <option value="None">—</option>
+              <option value="Inbound">
+                {{ "crm.activities.directions.Inbound" | translate }}
+              </option>
+              <option value="Outbound">
+                {{ "crm.activities.directions.Outbound" | translate }}
+              </option>
+            </select></label
+          ><label class="grid gap-1 text-sm font-bold sm:col-span-2"
+            >{{ "crm.activities.create.subject" | translate
+            }}<input dosInput formControlName="subject" /></label
+          ><label class="grid gap-1 text-sm font-bold"
+            >{{ "crm.activities.create.date" | translate
+            }}<input
+              dosInput
+              type="datetime-local"
+              formControlName="occurredAtUtc"
+            />
+            @if (hasCreateError("activityDate")) {
+              <span class="text-red-600">{{
+                "crm.activities.validation.futureDate" | translate
+              }}</span>
+            }</label
+          ><label class="grid gap-1 text-sm font-bold"
+            >{{ "crm.activities.create.duration" | translate
+            }}<input
+              dosInput
+              type="number"
+              min="0"
+              max="1440"
+              formControlName="durationMinutes"
+            />
+            @if (
+              createForm.controls.durationMinutes.invalid &&
+              createForm.controls.durationMinutes.touched
+            ) {
+              <span class="text-red-600">{{
+                "crm.activities.validation.duration" | translate
+              }}</span>
+            }</label
+          ><label class="grid gap-1 text-sm font-bold"
+            >{{ "crm.activities.create.result" | translate
+            }}<input dosInput formControlName="result"
+          /></label>
+          <div class="grid gap-1 text-sm font-bold">
+            {{ "crm.activities.create.advisor" | translate
+            }}<drive-os-auth-user-picker
+              [organizationId]="organizationId()"
+              [selectedUserId]="createForm.controls.advisorUserId.value"
+              [required]="false"
+              (userSelected)="selectCreateAdvisor($event)"
+            />
+          </div>
+          <label class="grid gap-1 text-sm font-bold sm:col-span-2"
+            >{{ "crm.activities.create.note" | translate
+            }}<textarea
+              class="min-h-28 rounded-lg border bg-transparent p-3"
+              formControlName="details"
+            ></textarea>
+          </label>
+          @if (canUploadAttachment()) {
+            <label class="grid gap-2 text-sm font-bold sm:col-span-2">
+              {{ "crm.activities.create.attachment" | translate }}
+              <input
+                class="rounded-lg border border-[var(--driveos-border)] p-3"
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png,.txt,application/pdf,image/jpeg,image/png,text/plain"
+                (change)="selectAttachment($event)"
+              />
+              <span class="text-xs font-normal text-slate-500">{{
+                "crm.activities.create.attachmentHint" | translate
+              }}</span>
+              @if (attachmentFile(); as file) {
+                <span class="text-xs text-blue-700"
+                  >{{ file.name }} —
+                  {{ file.size / 1024 | number: "1.0-0" }} Ko</span
+                >
+              }
+            </label>
+          }
+          ><label class="flex gap-2 text-sm"
+            ><input type="checkbox" formControlName="isInternal" />{{
+              "crm.activities.create.internal" | translate
+            }}</label
+          ><label class="flex gap-2 text-sm"
+            ><input type="checkbox" formControlName="isUnfollowed" />{{
+              "crm.activities.create.unfollowed" | translate
+            }}</label
+          >
+        </div>
+        <div class="mt-8 flex justify-end gap-2">
+          <drive-os-button
+            type="button"
+            variant="outline"
+            (pressed)="drawerOpen.set(false)"
+            >{{ "common.actions.cancel" | translate }}</drive-os-button
+          ><drive-os-button
+            type="submit"
+            [disabled]="createForm.invalid"
+            [loading]="saving()"
+            >{{ "common.actions.save" | translate }}</drive-os-button
+          >
+        </div>
+      </form>
+    </aside>
+  }
+  @if (filtersOpen()) {
+    <button
+      class="fixed inset-0 z-40 bg-slate-950/60"
+      (click)="filtersOpen.set(false)"
+    ></button>
+    <aside
+      class="fixed inset-y-0 right-0 z-50 w-full max-w-md overflow-y-auto border-l bg-[var(--driveos-surface-card)] p-6 shadow-2xl"
+      [formGroup]="filters"
+    >
+      <div class="flex justify-between">
+        <h2 class="text-xl font-extrabold">
+          {{ "crm.activities.filters.title" | translate }}
+        </h2>
+        <button class="size-9 rounded border" (click)="filtersOpen.set(false)">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+      <div class="mt-6 grid gap-4">
+        <label class="grid gap-1 text-sm font-bold"
+          >{{ "crm.activities.columns.type" | translate
+          }}<select
+            class="min-h-10 rounded-lg border bg-transparent px-3"
+            formControlName="type"
+          >
+            <option value="">—</option>
+            @for (t of activityTypes; track t) {
+              <option [value]="t">{{ typeKey(t) | translate }}</option>
+            }
+          </select></label
+        >
+        <div class="grid gap-1 text-sm font-bold">
+          {{ "crm.activities.columns.advisor" | translate
+          }}<drive-os-auth-user-picker
+            [organizationId]="organizationId()"
+            [selectedUserId]="filters.controls.advisorUserId.value"
+            [required]="false"
+            (userSelected)="selectFilterAdvisor($event)"
+          />
+        </div>
+        <div class="grid gap-1 text-sm font-bold">
+          {{ "crm.activities.columns.lead" | translate
+          }}<drive-os-crm-lead-picker
+            [selectedLeadId]="filters.controls.leadId.value"
+            [required]="false"
+            (leadSelected)="selectFilterLead($event)"
+          />
+        </div>
+        <label class="grid gap-1 text-sm font-bold"
+          >{{ "crm.activities.filters.from" | translate
+          }}<input
+            dosInput
+            type="datetime-local"
+            formControlName="fromUtc" /></label
+        ><label class="grid gap-1 text-sm font-bold"
+          >{{ "crm.activities.filters.to" | translate
+          }}<input dosInput type="datetime-local" formControlName="toUtc"
+        /></label>
+        @for (
+          item of [
+            { c: "syncErrorsOnly", k: "syncErrors" },
+            { c: "duplicatesOnly", k: "duplicates" },
+            { c: "regularizationOnly", k: "regularization" },
+          ];
+          track item.c
+        ) {
+          <label class="flex gap-2 text-sm"
+            ><input type="checkbox" [formControlName]="item.c" />{{
+              "crm.activities.filters." + item.k | translate
+            }}</label
+          >
         }
       </div>
-    </drive-os-card>
+      <div class="mt-8 flex justify-end gap-2">
+        <drive-os-button variant="outline" (pressed)="resetFilters()">{{
+          "common.actions.reset" | translate
+        }}</drive-os-button
+        ><drive-os-button (pressed)="filtersOpen.set(false)">{{
+          "common.actions.apply" | translate
+        }}</drive-os-button>
+      </div>
+    </aside>
+  }
+  @if (attachDrawerOpen()) {
+    <button
+      class="fixed inset-0 z-40 bg-slate-950/60"
+      (click)="attachDrawerOpen.set(false)"
+    ></button>
+    <aside
+      class="fixed inset-y-0 right-0 z-50 w-full max-w-md overflow-y-auto border-l bg-[var(--driveos-surface-card)] p-6 shadow-2xl"
+    >
+      <form
+        [formGroup]="attachForm"
+        (ngSubmit)="submitAttach()"
+        class="space-y-6"
+      >
+        <div class="flex justify-between">
+          <h2 class="text-xl font-extrabold">
+            {{ "crm.activities.attach.title" | translate }}
+          </h2>
+          <button
+            type="button"
+            class="size-9 rounded border"
+            (click)="attachDrawerOpen.set(false)"
+          >
+            <i class="ph ph-x"></i>
+          </button>
+        </div>
+        <div class="grid gap-2 text-sm font-bold">
+          {{ "crm.activities.create.lead" | translate
+          }}<drive-os-crm-lead-picker
+            [selectedLeadId]="attachForm.controls.leadId.value"
+            (leadSelected)="selectAttachLead($event)"
+          />
+        </div>
+        <div class="flex justify-end gap-2">
+          <drive-os-button
+            type="button"
+            variant="outline"
+            (pressed)="attachDrawerOpen.set(false)"
+            >{{ "common.actions.cancel" | translate }}</drive-os-button
+          ><drive-os-button
+            type="submit"
+            [disabled]="attachForm.invalid"
+            [loading]="saving()"
+            >{{ "common.actions.save" | translate }}</drive-os-button
+          >
+        </div>
+      </form>
+    </aside>
+  }
+  @if (invalidateDrawerOpen()) {
+    <button
+      class="fixed inset-0 z-40 bg-slate-950/60"
+      (click)="invalidateDrawerOpen.set(false)"
+    ></button>
+    <aside
+      class="fixed inset-y-0 right-0 z-50 w-full max-w-md border-l bg-[var(--driveos-surface-card)] p-6 shadow-2xl"
+    >
+      <form
+        [formGroup]="invalidateForm"
+        (ngSubmit)="submitInvalidate()"
+        class="space-y-6"
+      >
+        <div class="flex justify-between">
+          <h2 class="text-xl font-extrabold">
+            {{ "crm.activities.invalidate.title" | translate }}
+          </h2>
+          <button
+            type="button"
+            class="size-9 rounded border"
+            (click)="invalidateDrawerOpen.set(false)"
+          >
+            <i class="ph ph-x"></i>
+          </button>
+        </div>
+        <label class="grid gap-2 text-sm font-bold"
+          >{{ "crm.activities.invalidate.reason" | translate
+          }}<textarea
+            class="min-h-32 rounded-lg border bg-transparent p-3"
+            formControlName="reason"
+          ></textarea>
+        </label>
+        <div class="flex justify-end gap-2">
+          <drive-os-button
+            type="button"
+            variant="outline"
+            (pressed)="invalidateDrawerOpen.set(false)"
+            >{{ "common.actions.cancel" | translate }}</drive-os-button
+          ><drive-os-button
+            type="submit"
+            [disabled]="invalidateForm.invalid"
+            [loading]="saving()"
+            >{{
+              "crm.activities.actions.invalidate" | translate
+            }}</drive-os-button
+          >
+        </div>
+      </form>
+    </aside>
   }
 </section>

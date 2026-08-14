@@ -154,6 +154,17 @@ export class LeadDetailPage {
       type: value.type, direction, subject: value.subject.trim(),
       details: value.details.trim() || null,
       occurredAtUtc: new Date(value.occurredAtUtc).toISOString(),
+      advisorUserId: null,
+      result: null,
+      durationMinutes: null,
+      isInternal: value.type === 'Note',
+      isUnfollowed: false,
+      requiresRegularization: false,
+      attachmentName: null,
+      attachmentReference: null,
+      nextActionTitle: null,
+      nextActionDueAtUtc: null,
+      nextActionType: 'FollowUp',
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.isSavingActivity.set(false); this.isCreatingActivity.set(false);

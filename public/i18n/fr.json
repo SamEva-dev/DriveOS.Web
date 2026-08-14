@@ -18,6 +18,7 @@
       "reset": "Réinitialiser",
       "retry": "Réessayer",
       "confirm": "Confirmer"
+      ,"apply": "Appliquer", "clear": "Effacer"
     },
     "filters": {
       "all": "Tous"
@@ -1542,13 +1543,16 @@
       "statuses": { "Pending": "À faire", "Completed": "Terminée", "Cancelled": "Annulée" }
     },
     "activities": {
-      "title": "Activités commerciales", "description": "Conservez la trace factuelle des échanges et actions déjà réalisés.",
-      "pageDescription": "Consultez les 200 activités commerciales les plus récentes.",
-      "add": "Ajouter une activité", "created": "L’activité a été enregistrée.",
-      "empty": "Aucune activité commerciale enregistrée.",
-      "fields": { "type": "Type", "direction": "Sens", "subject": "Objet", "details": "Détails", "occurredAt": "Réalisée le" },
-      "types": { "Call": "Appel", "Email": "E-mail", "Sms": "SMS", "Meeting": "Rendez-vous", "Note": "Note interne" },
-      "directions": { "None": "Sans objet", "Inbound": "Entrant", "Outbound": "Sortant" }
+      "title":"Activités commerciales","description":"Conservez la trace factuelle des échanges et actions déjà réalisés.","pageDescription":"Journal chronologique des interactions par prospect et par conseiller.","add":"Ajouter une activité","created":"L’activité a été enregistrée.","empty":"Aucune activité enregistrée","emptyDescription":"Enregistrez votre premier appel, e-mail, SMS, rendez-vous ou visite.","count":"activité(s)","sort":"Tri par défaut : plus récentes d’abord","loadError":"Impossible de charger les activités.","unattached":"— (à rattacher)",
+      "fields":{"type":"Type","direction":"Sens","subject":"Objet","details":"Détails","occurredAt":"Réalisée le"},"types":{"Call":"Appel","Email":"E-mail","Sms":"SMS","Meeting":"Rendez-vous","Note":"Note interne","BranchVisit":"Visite en agence","StageChanged":"Changement d’étape","OfferSent":"Offre envoyée","DocumentReceived":"Document reçu","SystemEvent":"Événement système"},"directions":{"None":"Sans objet","Inbound":"Entrant","Outbound":"Sortant"},
+      "columns":{"type":"Type","lead":"Prospect","advisor":"Conseiller","date":"Date","result":"Résultat","duration":"Durée","detail":"Détail"},"states":{"navigation":"États de la liste des activités","label":"Démo — état :","nominal":"Activité nominale","empty":"Aucune activité","unattached":"Sans prospect","imported":"Activité importée","syncError":"Erreur de synchronisation","readOnly":"Lecture seule","duplicate":"Doublon","loading":"Chargement","partialError":"Erreur partielle"},
+      "banners":{"readOnly":"Vue en lecture seule : les modifications sont désactivées.","sync":"Certaines activités sont en erreur de synchronisation et doivent être régularisées.","partial":"Une source secondaire est indisponible ; le journal principal reste consultable."},"badges":{"internal":"Interne","imported":"Importé","duplicate":"Doublon","regularize":"À régulariser"},
+      "filters":{"search":"Rechercher une activité ou un détail…","all":"Tous les filtres","title":"Filtres avancés","unattached":"Sans prospect","imported":"Importées","unfollowed":"Sans suite","regularization":"À régulariser","syncErrors":"Erreurs de synchronisation","duplicates":"Doublons","from":"Du","to":"Au","apply":"Afficher les résultats"},"actions":{"openLead":"Ouvrir le prospect","attach":"Rattacher à un prospect","retry":"Retenter la synchronisation","abandon":"Abandonner la synchronisation","invalidate":"Invalider (audité)"},
+      "create":{"action":"Enregistrer une activité","title":"Enregistrer une activité","description":"Ajoutez rapidement une interaction commerciale.","lead":"Prospect","leadPlaceholder":"Identifiant du prospect — facultatif selon permission","type":"Type d’activité","direction":"Sens","subject":"Objet","date":"Date et heure","duration":"Durée en minutes","result":"Résultat","advisor":"Conseiller","note":"Note","attachmentName":"Nom de la pièce jointe","attachmentReference":"Référence sécurisée","internal":"Note interne","unfollowed":"Sans suite","nextAction":"Prochaine action","nextActionDate":"Échéance de la prochaine action"},
+      "attach":{"title":"Rattacher l’activité"},"invalidate":{"title":"Invalider l’activité","reason":"Motif obligatoire"},
+      "pickers":{"leadSearch":"Rechercher un prospect par nom, e-mail ou téléphone","loadError":"La recherche est temporairement indisponible.","noLead":"Aucun prospect trouvé"},
+      "validation":{"futureDate":"La date de l’activité ne peut pas être future.","duration":"La durée doit être comprise entre 0 et 1 440 minutes.","nextAction":"Renseignez un prospect, un titre et une échéance future pour la prochaine action."},
+      "feedback":{"created":"Activité enregistrée","updated":"Activité mise à jour","attached":"Activité rattachée au prospect","invalidated":"Activité invalidée","error":"L’opération n’a pas pu être réalisée"}
     },
     "assessments": {
       "perform": {
@@ -1643,6 +1647,8 @@
       "filters": { "unassigned": "Sans conseiller" },
       "list": {
         "export": "Exporter", "exportError": "L’export des prospects n’a pas pu être généré.", "selected": "prospect(s) sélectionné(s)", "bulkHint": "Les actions de masse respectent les permissions individuelles.", "unassigned": "Non affecté", "noResults": "Aucun prospect ne correspond aux filtres actuels.",
+        "savedViews": { "label": "Vues enregistrées", "none": "Vue actuelle", "shared": "partagée", "name": "Nom de la vue", "scope": "Partage", "private": "Privée", "organization": "Organisation", "default": "Vue par défaut", "save": "Enregistrer", "error": "Les vues enregistrées sont temporairement indisponibles." },
+        "bulk": { "action": "Action", "changeStatus": "Changer l’étape", "assign": "Affecter un conseiller", "status": "Nouvelle étape", "advisor": "Identifiant du conseiller", "reason": "Motif", "apply": "Appliquer", "result": "{{succeeded}} réussite(s), {{failed}} échec(s)." },
         "columns": { "nextAction": "Prochaine action", "advisor": "Responsable", "branch": "Agence", "lastActivity": "Dernière activité" }, "duplicate": "Doublon potentiel",
         "states": { "navigation": "États de la liste des prospects", "label": "Démo — état :", "toggle": "Afficher ou masquer les états", "nominal": "Nominal", "empty": "Liste vide", "noResults": "Filtres sans résultat", "loading": "Chargement", "error": "Erreur", "partialData": "Résultat partiel", "readOnly": "Lecture seule", "limitedPermission": "Permission limitée", "duplicates": "Doublons potentiels", "staleData": "Données obsolètes" },
         "banners": { "partial": "Certains enrichissements sont indisponibles ; la liste principale reste consultable.", "readOnly": "Vous consultez cette liste en lecture seule.", "limited": "Certaines données et actions sont masquées selon vos permissions.", "duplicates": "Des doublons potentiels nécessitent une comparaison avant toute fusion.", "stale": "Certaines données n’ont pas été actualisées récemment." },

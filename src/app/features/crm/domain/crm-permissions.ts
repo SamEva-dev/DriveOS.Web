@@ -34,6 +34,9 @@ export const CRM_PERMISSIONS = {
     reopen: 'Crm.Leads.Reopen',
     referToPartner: 'Crm.Leads.ReferToPartner',
     export: 'Crm.Leads.Export',
+    manageSavedViews: 'Crm.Leads.SavedViews.Manage',
+    shareSavedViews: 'Crm.Leads.SavedViews.Share',
+    bulkManage: 'Crm.Leads.Bulk.Manage',
     tabs: {
       nominal: 'Crm.Leads.Tabs.Nominal', empty: 'Crm.Leads.Tabs.Empty',
       noResults: 'Crm.Leads.Tabs.NoResults', loading: 'Crm.Leads.Tabs.Loading',
@@ -45,6 +48,23 @@ export const CRM_PERMISSIONS = {
   activities: {
     read: 'Crm.Activities.Read',
     create: 'Crm.Activities.Create',
+    createUnattached: 'Crm.Activities.CreateUnattached',
+    attach: 'Crm.Activities.Attach',
+    invalidate: 'Crm.Activities.Invalidate',
+    syncManage: 'Crm.Activities.Sync.Manage',
+    import: 'Crm.Activities.Import',
+    internalNotesRead: 'Crm.Activities.InternalNotes.Read',
+    internalNotesCreate: 'Crm.Activities.InternalNotes.Create',
+    attachmentsUpload: 'Crm.Activities.Attachments.Upload',
+    attachmentsRead: 'Crm.Activities.Attachments.Read',
+    attachmentsDelete: 'Crm.Activities.Attachments.Delete',
+    tabs: {
+      nominal: 'Crm.Activities.Tabs.Nominal', empty: 'Crm.Activities.Tabs.Empty',
+      unattached: 'Crm.Activities.Tabs.Unattached', imported: 'Crm.Activities.Tabs.Imported',
+      syncError: 'Crm.Activities.Tabs.SyncError', readOnly: 'Crm.Activities.Tabs.ReadOnly',
+      duplicate: 'Crm.Activities.Tabs.Duplicate', loading: 'Crm.Activities.Tabs.Loading',
+      partialError: 'Crm.Activities.Tabs.PartialError',
+    },
   },
   tasks: {
     read: 'Crm.Tasks.Read',

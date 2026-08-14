@@ -18,6 +18,7 @@
       "reset": "Reset",
       "retry": "Retry",
       "confirm": "Confirm"
+      ,"apply": "Apply", "clear": "Clear"
     },
     "filters": {
       "all": "All"
@@ -1542,13 +1543,16 @@
       "statuses": { "Pending": "Pending", "Completed": "Completed", "Cancelled": "Cancelled" }
     },
     "activities": {
-      "title": "Sales activities", "description": "Keep a factual record of completed interactions and actions.",
-      "pageDescription": "View the 200 most recent sales activities.",
-      "add": "Add activity", "created": "The activity was recorded.",
-      "empty": "No sales activity recorded.",
-      "fields": { "type": "Type", "direction": "Direction", "subject": "Subject", "details": "Details", "occurredAt": "Occurred at" },
-      "types": { "Call": "Call", "Email": "Email", "Sms": "SMS", "Meeting": "Meeting", "Note": "Internal note" },
-      "directions": { "None": "Not applicable", "Inbound": "Inbound", "Outbound": "Outbound" }
+      "title":"Sales activities","description":"Keep a factual record of completed interactions and actions.","pageDescription":"Chronological interaction log by lead and advisor.","add":"Add activity","created":"The activity was recorded.","empty":"No activity recorded","emptyDescription":"Record your first call, email, SMS, meeting or branch visit.","count":"activity/activities","sort":"Default sort: newest first","loadError":"Unable to load activities.","unattached":"— (to attach)",
+      "fields":{"type":"Type","direction":"Direction","subject":"Subject","details":"Details","occurredAt":"Occurred at"},"types":{"Call":"Call","Email":"Email","Sms":"SMS","Meeting":"Meeting","Note":"Internal note","BranchVisit":"Branch visit","StageChanged":"Stage changed","OfferSent":"Offer sent","DocumentReceived":"Document received","SystemEvent":"System event"},"directions":{"None":"Not applicable","Inbound":"Inbound","Outbound":"Outbound"},
+      "columns":{"type":"Type","lead":"Lead","advisor":"Advisor","date":"Date","result":"Result","duration":"Duration","detail":"Details"},"states":{"navigation":"Activity list states","label":"Demo — state:","nominal":"Nominal activity","empty":"No activity","unattached":"No lead","imported":"Imported activity","syncError":"Synchronization error","readOnly":"Read only","duplicate":"Duplicate","loading":"Loading","partialError":"Partial error"},
+      "banners":{"readOnly":"Read-only view: changes are disabled.","sync":"Some activities have synchronization errors and require attention.","partial":"A secondary source is unavailable; the main log remains accessible."},"badges":{"internal":"Internal","imported":"Imported","duplicate":"Duplicate","regularize":"Requires attention"},
+      "filters":{"search":"Search an activity or detail…","all":"All filters","title":"Advanced filters","unattached":"Without lead","imported":"Imported","unfollowed":"No follow-up","regularization":"Requires attention","syncErrors":"Synchronization errors","duplicates":"Duplicates","from":"From","to":"To","apply":"Show results"},"actions":{"openLead":"Open lead","attach":"Attach to a lead","retry":"Retry synchronization","abandon":"Abandon synchronization","invalidate":"Invalidate (audited)","downloadAttachment":"Download attachment","deleteAttachment":"Delete attachment"},
+      "create":{"action":"Record an activity","title":"Record an activity","description":"Quickly add a sales interaction.","lead":"Lead","leadPlaceholder":"Lead identifier — optional with permission","type":"Activity type","direction":"Direction","subject":"Subject","date":"Date and time","duration":"Duration in minutes","result":"Result","advisor":"Advisor","note":"Note","attachment":"Attachment","attachmentHint":"PDF, JPEG, PNG or TXT — maximum 10 MB.","attachmentName":"Attachment name","attachmentReference":"Secure reference","internal":"Internal note","unfollowed":"No follow-up","nextAction":"Next action","nextActionDate":"Next action due date"},
+      "attach":{"title":"Attach activity"},"invalidate":{"title":"Invalidate activity","reason":"Required reason"},
+      "pickers":{"leadSearch":"Search leads by name, email or phone","loadError":"Search is temporarily unavailable.","noLead":"No lead found","noLeadDescription":"Change your search or verify that the lead exists in this organization."},
+      "validation":{"futureDate":"The activity date cannot be in the future.","duration":"Duration must be between 0 and 1,440 minutes.","nextAction":"Select a lead, enter a title and choose a future due date for the next action."},
+      "feedback":{"created":"Activity recorded","updated":"Activity updated","attached":"Activity attached to lead","invalidated":"Activity invalidated","attachmentDeleted":"Attachment deleted","error":"The operation could not be completed"}
     },
     "assessments": {
       "perform": {
@@ -1642,6 +1646,8 @@
       "filters": { "unassigned": "Without advisor" },
       "list": {
         "export": "Export", "exportError": "The lead export could not be generated.", "selected": "selected lead(s)", "bulkHint": "Bulk actions respect individual permissions.", "unassigned": "Unassigned", "noResults": "No lead matches the current filters.",
+        "savedViews": { "label": "Saved views", "none": "Current view", "shared": "shared", "name": "View name", "scope": "Sharing", "private": "Private", "organization": "Organization", "default": "Default view", "save": "Save", "error": "Saved views are temporarily unavailable." },
+        "bulk": { "action": "Action", "changeStatus": "Change stage", "assign": "Assign advisor", "status": "New stage", "advisor": "Advisor identifier", "reason": "Reason", "apply": "Apply", "result": "{{succeeded}} succeeded, {{failed}} failed." },
         "columns": { "nextAction": "Next action", "advisor": "Owner", "branch": "Branch", "lastActivity": "Last activity" }, "duplicate": "Potential duplicate",
         "states": { "navigation": "Lead list states", "label": "Demo — state:", "toggle": "Show or hide states", "nominal": "Nominal", "empty": "Empty list", "noResults": "No filter results", "loading": "Loading", "error": "Error", "partialData": "Partial result", "readOnly": "Read only", "limitedPermission": "Limited permission", "duplicates": "Potential duplicates", "staleData": "Stale data" },
         "banners": { "partial": "Some enrichments are unavailable; the main list remains accessible.", "readOnly": "You are viewing this list in read-only mode.", "limited": "Some data and actions are hidden according to your permissions.", "duplicates": "Potential duplicates require comparison before any merge.", "stale": "Some data has not been refreshed recently." },

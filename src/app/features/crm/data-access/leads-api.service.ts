@@ -43,6 +43,29 @@ export class LeadsApiService {
     return this.http.get<LeadDetails>(`${this.baseUrl}/${leadId}`);
   }
 
+  search(search: string, pageNumber = 1, pageSize = 20): Observable<PagedResponse<LeadListItem>> {
+    const params = new HttpParams()
+      .set('pageNumber', pageNumber)
+      .set('pageSize', pageSize)
+      .set('search', search.trim())
+      .set('unassignedOnly', false)
+      .set('sortBy', 'lastName')
+      .set('sortDirection', 'asc');
+
+    return this.http.get<PagedResponse<LeadListItem>>(this.baseUrl, { params });
+  }
+
+  exportCsv(parameters: GetLeadsParameters): Observable<Blob> {
+    let params = new HttpParams()
+      .set('search', parameters.search.trim())
+      .set('unassignedOnly', parameters.unassignedOnly)
+      .set('sortBy', parameters.sortBy)
+      .set('sortDirection', parameters.sortDirection);
+    if (parameters.status) params = params.set('status', parameters.status);
+    if (parameters.sourceType) params = params.set('sourceType', parameters.sourceType);
+    return this.http.get(`${this.baseUrl}/export`, { params, responseType: 'blob' });
+  }
+
   getPipeline(): Observable<PagedResponse<LeadListItem>> {
     const params = new HttpParams()
       .set('pageNumber', 1)
@@ -50,17 +73,6 @@ export class LeadsApiService {
       .set('sortBy', 'createdAtUtc')
       .set('sortDirection', 'desc');
     return this.http.get<PagedResponse<LeadListItem>>(this.baseUrl, { params });
-  }
-
-  exportCsv(parameters: GetLeadsParameters): Observable<Blob> {
-    let params = new HttpParams()
-      .set('search', parameters.search)
-      .set('unassignedOnly', parameters.unassignedOnly);
-    if (parameters.status) params = params.set('status', parameters.status);
-    if (parameters.sourceType) params = params.set('sourceType', parameters.sourceType);
-    if (parameters.branchId) params = params.set('branchId', parameters.branchId);
-    if (parameters.assignedAdvisorId) params = params.set('assignedAdvisorId', parameters.assignedAdvisorId);
-    return this.http.get(`${this.baseUrl}/export`, { params, responseType: 'blob' });
   }
 
   changeStatus(leadId: string, action: LeadLifecycleAction, reason?: string): Observable<void> {
