@@ -25,10 +25,7 @@ export class OrganizationLegalProfileApiService {
     return this.http.post<{ readonly id: string }>(this.url(organizationId), request);
   }
 
-  update(
-    organizationId: string,
-    request: UpdateOrganizationLegalProfileRequest,
-  ): Observable<void> {
+  update(organizationId: string, request: UpdateOrganizationLegalProfileRequest): Observable<void> {
     return this.http.put<void>(this.url(organizationId), request);
   }
 

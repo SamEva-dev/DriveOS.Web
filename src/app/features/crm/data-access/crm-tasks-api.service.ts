@@ -13,7 +13,9 @@ export class CrmTasksApiService {
   getByLead(leadId: string): Observable<CrmTask[]> {
     return this.http.get<CrmTask[]>(`${this.baseUrl}/leads/${leadId}/tasks`);
   }
-  getPending(): Observable<CrmTask[]> { return this.http.get<CrmTask[]>(`${this.baseUrl}/tasks`); }
+  getPending(): Observable<CrmTask[]> {
+    return this.http.get<CrmTask[]>(`${this.baseUrl}/tasks`);
+  }
   create(leadId: string, request: CreateCrmTaskRequest): Observable<{ taskId: string }> {
     return this.http.post<{ taskId: string }>(`${this.baseUrl}/leads/${leadId}/tasks`, request);
   }

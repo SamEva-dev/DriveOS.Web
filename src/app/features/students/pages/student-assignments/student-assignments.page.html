@@ -1,0 +1,88 @@
+<section>
+  <div>
+    <h2 class="text-xl font-extrabold">{{ 'students.assignments.title' | translate }}</h2>
+    <p class="text-sm text-slate-500">{{ 'students.assignments.description' | translate }}</p>
+  </div>
+  @if (visibleTabs().length) {
+    <nav
+      class="mt-4 flex gap-2 overflow-x-auto"
+      [attr.aria-label]="'students.assignments.tabs.navigation' | translate"
+    >
+      @for (tab of visibleTabs(); track tab.id) {
+        <a
+          [routerLink]="['/students', studentId, 'assignments', tab.route]"
+          routerLinkActive="border-blue-800 bg-blue-50 text-blue-800"
+          class="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full border border-[var(--driveos-border)] px-4 text-sm font-bold"
+        >
+          <i
+            class="ph"
+            [class]="'ph ' + tab.icon"
+          ></i>
+          {{ tab.labelKey | translate }}
+        </a>
+      }
+    </nav>
+  }
+  @if (loading()) {
+    <div class="grid min-h-64 place-items-center">
+      <drive-os-spinner
+        size="lg"
+        [label]="'common.loading' | translate"
+      />
+    </div>
+  } @else if (selected() === 'branches' && branches(); as value) {
+    <driveos-student-branches-panel
+      [studentId]="studentId"
+      [branches]="value"
+      (refreshed)="load()"
+    />
+  } @else if (selected() === 'instructors' && instructors(); as value) {
+    <driveos-student-instructors-panel
+      [studentId]="studentId"
+      [instructors]="value"
+      [primaryBranchId]="branches()?.primaryBranchId ?? null"
+      (refreshed)="load()"
+    />
+  } @else if (selected() === 'history' && instructors(); as value) {
+    <section
+      class="mt-5 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+    >
+      <div class="grid gap-4">
+        @for (item of value.history; track item.id) {
+          <div class="flex gap-3">
+            <span
+              class="mt-1 grid size-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-600"
+            >
+              <i class="ph ph-clock-counter-clockwise"></i>
+            </span>
+            <div>
+              <strong class="text-sm">{{ item.action }}</strong>
+              <p class="text-sm text-slate-600">{{ item.reason }}</p>
+              <time class="text-xs text-slate-500">{{ item.occurredAtUtc | date: 'short' }}</time>
+            </div>
+          </div>
+        } @empty {
+          <drive-os-empty-state
+            icon="ph-duotone ph-clock-counter-clockwise"
+            [title]="'students.assignments.noHistory' | translate"
+            [description]="'students.assignments.noHistoryDescription' | translate"
+          />
+        }
+      </div>
+    </section>
+  } @else if (!visibleTabs().length) {
+    <drive-os-state-banner
+      class="mt-5 block"
+      tone="warning"
+      icon="ph ph-lock"
+      [title]="'students.assignments.restricted' | translate"
+    />
+  } @else {
+    <drive-os-state-banner
+      class="mt-5 block"
+      tone="warning"
+      icon="ph ph-warning"
+      [title]="'students.assignments.unavailable' | translate"
+    />
+  }
+</section>

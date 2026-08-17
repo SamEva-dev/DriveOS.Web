@@ -1,10 +1,4 @@
-import {
-  booleanAttribute,
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  output,
-} from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'drive-os-choice-card',

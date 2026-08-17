@@ -31,15 +31,17 @@ describe('AssessmentSessionsApiService', () => {
   });
 
   it('saves the structured draft', () => {
-    service.saveDraft('appointment-1', {
-      answers: [{ questionId: 'q1', value: 'acquired' }],
-      factualObservations: null,
-      pedagogicalInterpretation: null,
-      recommendation: null,
-      internalNotes: null,
-      prospectComment: null,
-      draftCompleted: false,
-    }).subscribe();
+    service
+      .saveDraft('appointment-1', {
+        answers: [{ questionId: 'q1', value: 'acquired' }],
+        factualObservations: null,
+        pedagogicalInterpretation: null,
+        recommendation: null,
+        internalNotes: null,
+        prospectComment: null,
+        draftCompleted: false,
+      })
+      .subscribe();
     const request = http.expectOne('/api/crm/assessments/appointment-1/session/draft');
     expect(request.request.method).toBe('PUT');
     request.flush(null);
@@ -53,19 +55,31 @@ describe('AssessmentSessionsApiService', () => {
   });
 
   it('saves the result with its expected revision', () => {
-    service.saveResult('appointment-1', {
-      expectedRevision: 4,
-      confidence: 'Medium',
-      aiSuggestion: null,
-      result: {
-        summary: 'Summary', masteredPoints: [], improvementPoints: [], supportNeeds: [],
-        theoryHours: null, practicalHoursMin: 20, practicalHoursMax: 26,
-        simulatorHours: 2, roadHours: 20, intermediateAssessments: 1,
-        languageSupportRequired: false, adaptedEquipmentRequired: false,
-        recommendedDeliveryMode: 'OnSite', recommendedTraining: 'Driving licence B',
-        alternatives: [], prospectComment: 'Estimate may change.',
-      },
-    }).subscribe();
+    service
+      .saveResult('appointment-1', {
+        expectedRevision: 4,
+        confidence: 'Medium',
+        aiSuggestion: null,
+        result: {
+          summary: 'Summary',
+          masteredPoints: [],
+          improvementPoints: [],
+          supportNeeds: [],
+          theoryHours: null,
+          practicalHoursMin: 20,
+          practicalHoursMax: 26,
+          simulatorHours: 2,
+          roadHours: 20,
+          intermediateAssessments: 1,
+          languageSupportRequired: false,
+          adaptedEquipmentRequired: false,
+          recommendedDeliveryMode: 'OnSite',
+          recommendedTraining: 'Driving licence B',
+          alternatives: [],
+          prospectComment: 'Estimate may change.',
+        },
+      })
+      .subscribe();
     const request = http.expectOne('/api/crm/assessments/appointment-1/result');
     expect(request.request.method).toBe('PUT');
     expect(request.request.body.expectedRevision).toBe(4);

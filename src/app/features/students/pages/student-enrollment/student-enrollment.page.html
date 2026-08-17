@@ -1,0 +1,121 @@
+<section>
+  <div>
+    <h2 class="text-xl font-extrabold">{{ 'students.enrollment.title' | translate }}</h2>
+    <p class="text-sm text-slate-500">{{ 'students.enrollment.description' | translate }}</p>
+  </div>
+  @if (visibleTabs().length) {
+    <nav
+      class="mt-4 flex gap-2 overflow-x-auto"
+      [attr.aria-label]="'students.enrollment.tabs.navigation' | translate"
+    >
+      @for (tab of visibleTabs(); track tab.id) {
+        <a
+          [routerLink]="['/students', studentId, 'enrollment', tab.route]"
+          routerLinkActive="border-blue-800 bg-blue-50 text-blue-800"
+          class="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full border border-[var(--driveos-border)] px-4 text-sm font-bold"
+        >
+          <i
+            class="ph"
+            [class]="'ph ' + tab.icon"
+          ></i>
+          {{ tab.labelKey | translate }}
+        </a>
+      }
+    </nav>
+  }
+  @if (loading()) {
+    <div class="grid min-h-64 place-items-center">
+      <drive-os-spinner
+        size="lg"
+        [label]="'common.loading' | translate"
+      />
+    </div>
+  } @else if (selected() === 'summary' && overview(); as value) {
+    @if (value.activeEnrollment; as enrollment) {
+      <div class="mt-5 grid gap-5 lg:grid-cols-3">
+        <article class="rounded-xl border border-blue-200 bg-blue-50 p-5 lg:col-span-2">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-wider text-blue-700">
+                {{ 'students.enrollment.active' | translate }}
+              </p>
+              <h3 class="mt-1 text-2xl font-black text-blue-950">{{ enrollment.trainingCode }}</h3>
+            </div>
+            <drive-os-badge variant="success">{{ enrollment.status }}</drive-os-badge>
+          </div>
+          <dl class="mt-6 grid gap-4 sm:grid-cols-3">
+            <div>
+              <dt class="text-xs uppercase text-slate-500">
+                {{ 'students.enrollment.fields.started' | translate }}
+              </dt>
+              <dd class="font-bold">{{ enrollment.startedAtUtc | date: 'mediumDate' }}</dd>
+            </div>
+            <div>
+              <dt class="text-xs uppercase text-slate-500">
+                {{ 'students.enrollment.fields.source' | translate }}
+              </dt>
+              <dd>{{ enrollment.source }}</dd>
+            </div>
+            <div>
+              <dt class="text-xs uppercase text-slate-500">
+                {{ 'students.enrollment.fields.branch' | translate }}
+              </dt>
+              <dd class="truncate">{{ enrollment.branchId }}</dd>
+            </div>
+          </dl>
+        </article>
+        <aside
+          class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <span
+            class="grid size-11 place-items-center rounded-xl bg-orange-100 text-xl text-orange-700"
+          >
+            <i class="ph-duotone ph-identification-badge"></i>
+          </span>
+          <h3 class="mt-4 font-extrabold">{{ 'students.enrollment.reference' | translate }}</h3>
+          <p class="mt-2 break-all text-sm text-slate-500">{{ enrollment.enrollmentId }}</p>
+        </aside>
+      </div>
+    } @else {
+      <div class="mt-5">
+        <drive-os-empty-state
+          icon="ph-duotone ph-file-dashed"
+          [title]="'students.enrollment.noActive' | translate"
+          [description]="'students.enrollment.noActiveDescription' | translate"
+        />
+      </div>
+    }
+  } @else if (selected() === 'checklist' && checklist(); as value) {
+    <div class="mt-5">
+      <driveos-student-enrollment-checklist-panel
+        [studentId]="studentId"
+        [checklist]="value"
+        (refreshed)="load()"
+      />
+    </div>
+  } @else if (selected() === 'documents' && documents(); as value) {
+    <div class="mt-5">
+      <driveos-student-documents-panel
+        [studentId]="studentId"
+        [documents]="value"
+        [enrollmentId]="overview()?.activeEnrollment?.enrollmentId ?? null"
+        (refreshed)="load()"
+      />
+    </div>
+  } @else if (!visibleTabs().length) {
+    <drive-os-state-banner
+      class="mt-5 block"
+      tone="warning"
+      icon="ph ph-lock"
+      [title]="'students.enrollment.restricted' | translate"
+    />
+  } @else {
+    <div class="mt-5">
+      <drive-os-state-banner
+        tone="warning"
+        icon="ph ph-warning"
+        [title]="'students.enrollment.unavailable' | translate"
+      />
+    </div>
+  }
+</section>

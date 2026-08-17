@@ -1,20 +1,51 @@
 <div class="grid gap-2">
   @if (selected(); as lead) {
-    <div class="flex items-center justify-between rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-900 dark:bg-blue-950/30">
-      <div><strong>{{ display(lead) }}</strong><p class="text-xs text-slate-500">{{ lead.email || lead.phone || lead.id }}</p></div>
-      @if (!required) { <drive-os-button type="button" size="sm" variant="ghost" (pressed)="clear()">{{ 'common.actions.clear' | translate }}</drive-os-button> }
+    <div
+      class="flex items-center justify-between rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-900 dark:bg-blue-950/30"
+    >
+      <div>
+        <strong>{{ display(lead) }}</strong>
+        <p class="text-xs text-slate-500">{{ lead.email || lead.phone || lead.id }}</p>
+      </div>
+      @if (!required) {
+        <drive-os-button
+          type="button"
+          size="sm"
+          variant="ghost"
+          (pressed)="clear()"
+        >
+          {{ 'common.actions.clear' | translate }}
+        </drive-os-button>
+      }
     </div>
   }
-  <input dosInput [formControl]="searchControl" [placeholder]="'crm.activities.pickers.leadSearch' | translate" />
-  @if (loading()) { <drive-os-spinner size="sm" /> }
-  @else if (failed()) { <p class="text-sm text-red-600">{{ 'crm.activities.pickers.loadError' | translate }}</p> }
-  @else {
+  <input
+    dosInput
+    [formControl]="searchControl"
+    [placeholder]="'crm.activities.pickers.leadSearch' | translate"
+  />
+  @if (loading()) {
+    <drive-os-spinner size="sm" />
+  } @else if (failed()) {
+    <p class="text-sm text-red-600">{{ 'crm.activities.pickers.loadError' | translate }}</p>
+  } @else {
     <div class="max-h-52 overflow-y-auto rounded-lg border border-[var(--driveos-border)]">
       @for (lead of leads(); track lead.id) {
-        <button type="button" class="block w-full border-b px-3 py-2 text-left last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800" (click)="choose(lead)">
-          <strong>{{ display(lead) }}</strong><span class="ml-2 text-xs text-slate-500">{{ lead.email || lead.phone }}</span>
+        <button
+          type="button"
+          class="block w-full border-b px-3 py-2 text-left last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800"
+          (click)="choose(lead)"
+        >
+          <strong>{{ display(lead) }}</strong>
+          <span class="ml-2 text-xs text-slate-500">{{ lead.email || lead.phone }}</span>
         </button>
-      } @empty { <drive-os-empty-state icon="ph-duotone ph-users" [title]="'crm.activities.pickers.noLead' | translate" [description]="'crm.activities.pickers.noLeadDescription' | translate" /> }
+      } @empty {
+        <drive-os-empty-state
+          icon="ph-duotone ph-users"
+          [title]="'crm.activities.pickers.noLead' | translate"
+          [description]="'crm.activities.pickers.noLeadDescription' | translate"
+        />
+      }
     </div>
   }
 </div>

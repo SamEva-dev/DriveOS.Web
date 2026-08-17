@@ -9,10 +9,7 @@ import {
   AssessmentSession,
   SaveAssessmentDraftRequest,
 } from '../models/assessment-session.model';
-import {
-  AssessmentResult,
-  SaveAssessmentResultRequest,
-} from '../models/assessment-result.model';
+import { AssessmentResult, SaveAssessmentResultRequest } from '../models/assessment-result.model';
 
 @Injectable({ providedIn: 'root' })
 export class AssessmentSessionsApiService {
@@ -25,7 +22,9 @@ export class AssessmentSessionsApiService {
   }
 
   getByLead(leadId: string): Observable<AssessmentAppointment[]> {
-    return this.http.get<AssessmentAppointment[]>(`${this.apiConfig.baseUrl}/crm/leads/${leadId}/assessments`);
+    return this.http.get<AssessmentAppointment[]>(
+      `${this.apiConfig.baseUrl}/crm/leads/${leadId}/assessments`,
+    );
   }
 
   getSession(appointmentId: string): Observable<AssessmentSession> {
@@ -61,7 +60,11 @@ export class AssessmentSessionsApiService {
     return this.http.put<void>(`${this.baseUrl}/${appointmentId}/result`, request);
   }
 
-  requestResultCorrection(appointmentId: string, expectedRevision: number, reason: string): Observable<void> {
+  requestResultCorrection(
+    appointmentId: string,
+    expectedRevision: number,
+    reason: string,
+  ): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/${appointmentId}/result/request-correction`, {
       expectedRevision,
       reason,
@@ -69,10 +72,14 @@ export class AssessmentSessionsApiService {
   }
 
   validateResult(appointmentId: string, expectedRevision: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${appointmentId}/result/validate`, { expectedRevision });
+    return this.http.post<void>(`${this.baseUrl}/${appointmentId}/result/validate`, {
+      expectedRevision,
+    });
   }
 
   shareResult(appointmentId: string, expectedRevision: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${appointmentId}/result/share`, { expectedRevision });
+    return this.http.post<void>(`${this.baseUrl}/${appointmentId}/result/share`, {
+      expectedRevision,
+    });
   }
 }

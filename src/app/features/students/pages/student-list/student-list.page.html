@@ -1,0 +1,153 @@
+<section class="driveos-page">
+  <div class="driveos-page-header">
+    <div>
+      <p class="driveos-kicker">{{ 'students.kicker' | translate }}</p>
+      <h1 class="driveos-page-title">{{ 'students.list.title' | translate }}</h1>
+      <p class="driveos-page-subtitle">{{ 'students.list.description' | translate }}</p>
+    </div>
+  </div>
+  <div
+    class="mt-5 flex flex-wrap gap-3 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"
+  >
+    <div class="relative min-w-64 flex-1">
+      <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input
+        dosInput
+        type="search"
+        class="pl-10"
+        [formControl]="search"
+        [placeholder]="'students.list.search' | translate"
+      />
+    </div>
+    <select
+      dosInput
+      class="max-w-52"
+      [formControl]="status"
+    >
+      <option value="">{{ 'students.list.allStatuses' | translate }}</option>
+      <option value="Active">{{ 'students.status.Active' | translate }}</option>
+      <option value="Inactive">{{ 'students.status.Inactive' | translate }}</option>
+      <option value="Archived">{{ 'students.status.Archived' | translate }}</option>
+    </select>
+  </div>
+  <div class="mt-5 hidden driveos-table-shell overflow-x-auto lg:block">
+    <table
+      dosTable
+      class="min-w-[60rem]"
+    >
+      <thead>
+        <tr>
+          <th class="px-4 py-3">
+            <button (click)="sort('Name')">
+              {{ 'students.list.columns.student' | translate }}
+            </button>
+          </th>
+          <th class="px-4 py-3">
+            <button (click)="sort('Status')">
+              {{ 'students.list.columns.status' | translate }}
+            </button>
+          </th>
+          <th class="px-4 py-3">{{ 'students.list.columns.training' | translate }}</th>
+          <th class="px-4 py-3">{{ 'students.list.columns.enrollment' | translate }}</th>
+          <th class="px-4 py-3">{{ 'students.list.columns.contact' | translate }}</th>
+          <th class="px-4 py-3">
+            <button (click)="sort('CreatedAt')">
+              {{ 'students.list.columns.created' | translate }}
+            </button>
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-200">
+        @if (loading()) {
+          <tr>
+            <td
+              colspan="6"
+              class="py-16 text-center"
+            >
+              <drive-os-spinner
+                size="lg"
+                [label]="'common.loading' | translate"
+              />
+            </td>
+          </tr>
+        } @else {
+          @for (student of page().items; track student.studentId) {
+            <tr
+              class="cursor-pointer hover:bg-slate-50"
+              (click)="open(student.studentId)"
+            >
+              <td class="px-4 py-4 font-bold">{{ student.firstName }} {{ student.lastName }}</td>
+              <td class="px-4 py-4">
+                <drive-os-badge [variant]="badge(student.status)">
+                  {{ 'students.status.' + student.status | translate }}
+                </drive-os-badge>
+              </td>
+              <td class="px-4 py-4">{{ student.trainingCode || '—' }}</td>
+              <td class="px-4 py-4">{{ student.enrollmentStatus || '—' }}</td>
+              <td class="px-4 py-4 text-sm">
+                <div>{{ student.phone || '—' }}</div>
+                <div class="text-slate-500">{{ student.email || '—' }}</div>
+              </td>
+              <td class="px-4 py-4 text-slate-500">
+                {{ student.createdAtUtc | date: 'mediumDate' }}
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6">
+                <drive-os-empty-state
+                  icon="ph-duotone ph-student"
+                  [title]="'students.list.empty' | translate"
+                  [description]="'students.list.emptyDescription' | translate"
+                />
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+    <drive-os-paginator
+      [pageNumber]="page().pageNumber"
+      [pageSize]="page().pageSize"
+      [totalCount]="page().totalCount"
+      [totalPages]="page().totalPages"
+      [disabled]="loading()"
+      (pageChange)="pageChange($event)"
+    />
+  </div>
+  <div class="mt-5 grid gap-3 lg:hidden">
+    @if (loading()) {
+      <drive-os-spinner
+        size="lg"
+        [label]="'common.loading' | translate"
+      />
+    } @else {
+      @for (student of page().items; track student.studentId) {
+        <button
+          type="button"
+          class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 text-left"
+          (click)="open(student.studentId)"
+        >
+          <div class="flex justify-between gap-3">
+            <strong>{{ student.firstName }} {{ student.lastName }}</strong>
+            <drive-os-badge [variant]="badge(student.status)">
+              {{ 'students.status.' + student.status | translate }}
+            </drive-os-badge>
+          </div>
+          <p class="mt-2 text-sm">
+            {{ student.trainingCode || '—' }} · {{ student.enrollmentStatus || '—' }}
+          </p>
+          <p class="mt-2 truncate text-xs text-slate-500">
+            {{ student.email || student.phone || '—' }}
+          </p>
+        </button>
+      } @empty {
+        <drive-os-empty-state
+          icon="ph-duotone ph-student"
+          [title]="'students.list.empty' | translate"
+          [description]="'students.list.emptyDescription' | translate"
+        />
+      }
+    }
+  </div>
+</section>

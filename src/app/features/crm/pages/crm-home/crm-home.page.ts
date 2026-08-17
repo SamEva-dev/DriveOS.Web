@@ -1,5 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -13,8 +20,15 @@ import { NetworkMember, NetworkMemberCandidate } from '../../models/network-memb
 
 type DashboardScope = 'branch' | 'organization' | 'network';
 type PipelineView = 'funnel' | 'table';
-type DashboardDiagnosticState = 'nominal' | 'empty' | 'partialData' | 'restrictedFinancial'
-  | 'activeFilters' | 'integrationIncident' | 'loading' | 'widgetError';
+type DashboardDiagnosticState =
+  | 'nominal'
+  | 'empty'
+  | 'partialData'
+  | 'restrictedFinancial'
+  | 'activeFilters'
+  | 'integrationIncident'
+  | 'loading'
+  | 'widgetError';
 
 interface DashboardTab<T extends string> {
   readonly id: T;
@@ -37,20 +51,64 @@ export class CrmHomePage {
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly scopeTabs: readonly DashboardTab<DashboardScope>[] = [
-    { id: 'branch', labelKey: 'crm.dashboard.scopes.branch', permission: CRM_PERMISSIONS.dashboard.scopes.branch },
-    { id: 'organization', labelKey: 'crm.dashboard.scopes.organization', permission: CRM_PERMISSIONS.dashboard.scopes.organization },
-    { id: 'network', labelKey: 'crm.dashboard.scopes.network', permission: CRM_PERMISSIONS.dashboard.scopes.network },
+    {
+      id: 'branch',
+      labelKey: 'crm.dashboard.scopes.branch',
+      permission: CRM_PERMISSIONS.dashboard.scopes.branch,
+    },
+    {
+      id: 'organization',
+      labelKey: 'crm.dashboard.scopes.organization',
+      permission: CRM_PERMISSIONS.dashboard.scopes.organization,
+    },
+    {
+      id: 'network',
+      labelKey: 'crm.dashboard.scopes.network',
+      permission: CRM_PERMISSIONS.dashboard.scopes.network,
+    },
   ];
 
   private readonly diagnosticTabs: readonly DashboardTab<DashboardDiagnosticState>[] = [
-    { id: 'nominal', labelKey: 'crm.dashboard.tabs.nominal', permission: CRM_PERMISSIONS.dashboard.tabs.nominal },
-    { id: 'empty', labelKey: 'crm.dashboard.tabs.empty', permission: CRM_PERMISSIONS.dashboard.tabs.empty },
-    { id: 'partialData', labelKey: 'crm.dashboard.tabs.partialData', permission: CRM_PERMISSIONS.dashboard.tabs.partialData },
-    { id: 'restrictedFinancial', labelKey: 'crm.dashboard.tabs.restrictedFinancial', permission: CRM_PERMISSIONS.dashboard.tabs.restrictedFinancial },
-    { id: 'activeFilters', labelKey: 'crm.dashboard.tabs.activeFilters', permission: CRM_PERMISSIONS.dashboard.tabs.activeFilters },
-    { id: 'integrationIncident', labelKey: 'crm.dashboard.tabs.integrationIncident', permission: CRM_PERMISSIONS.dashboard.tabs.integrationIncident },
-    { id: 'loading', labelKey: 'crm.dashboard.tabs.loading', permission: CRM_PERMISSIONS.dashboard.tabs.loading },
-    { id: 'widgetError', labelKey: 'crm.dashboard.tabs.widgetError', permission: CRM_PERMISSIONS.dashboard.tabs.widgetError },
+    {
+      id: 'nominal',
+      labelKey: 'crm.dashboard.tabs.nominal',
+      permission: CRM_PERMISSIONS.dashboard.tabs.nominal,
+    },
+    {
+      id: 'empty',
+      labelKey: 'crm.dashboard.tabs.empty',
+      permission: CRM_PERMISSIONS.dashboard.tabs.empty,
+    },
+    {
+      id: 'partialData',
+      labelKey: 'crm.dashboard.tabs.partialData',
+      permission: CRM_PERMISSIONS.dashboard.tabs.partialData,
+    },
+    {
+      id: 'restrictedFinancial',
+      labelKey: 'crm.dashboard.tabs.restrictedFinancial',
+      permission: CRM_PERMISSIONS.dashboard.tabs.restrictedFinancial,
+    },
+    {
+      id: 'activeFilters',
+      labelKey: 'crm.dashboard.tabs.activeFilters',
+      permission: CRM_PERMISSIONS.dashboard.tabs.activeFilters,
+    },
+    {
+      id: 'integrationIncident',
+      labelKey: 'crm.dashboard.tabs.integrationIncident',
+      permission: CRM_PERMISSIONS.dashboard.tabs.integrationIncident,
+    },
+    {
+      id: 'loading',
+      labelKey: 'crm.dashboard.tabs.loading',
+      permission: CRM_PERMISSIONS.dashboard.tabs.loading,
+    },
+    {
+      id: 'widgetError',
+      labelKey: 'crm.dashboard.tabs.widgetError',
+      permission: CRM_PERMISSIONS.dashboard.tabs.widgetError,
+    },
   ];
 
   readonly visibleScopeTabs = computed(() => {
@@ -61,7 +119,9 @@ export class CrmHomePage {
     this.authorization.permissions();
     return this.diagnosticTabs.filter((tab) => this.authorization.hasPermission(tab.permission));
   });
-  readonly diagnosticTabsVisible = signal(sessionStorage.getItem('driveos.crm.dashboard.diagnostics.visible') !== 'false');
+  readonly diagnosticTabsVisible = signal(
+    sessionStorage.getItem('driveos.crm.dashboard.diagnostics.visible') !== 'false',
+  );
   readonly selectedDiagnosticState = signal<DashboardDiagnosticState>('nominal');
   readonly selectedScope = signal<DashboardScope>('organization');
   readonly dashboard = signal<CrmDashboard | null>(null);
@@ -82,10 +142,43 @@ export class CrmHomePage {
   readonly source = signal('');
   readonly status = signal('');
   readonly lastRefreshAt = signal<Date | null>(null);
-  readonly sources = ['Website', 'DriveOsForm', 'PhoneCall', 'WalkIn', 'Referral', 'SocialMedia', 'AdvertisingCampaign', 'PartnerDrivingSchool', 'FreelanceInstructor', 'ExternalImport', 'Other'] as const;
-  readonly statuses = ['New', 'Contacted', 'Qualified', 'AssessmentScheduled', 'OfferSent', 'Negotiation', 'Won', 'Lost', 'Dormant', 'NotEligible', 'OutOfScope', 'Duplicate', 'TransferredToPartner', 'NoResponse', 'CancelledByLead', 'ConvertedElsewhere'] as const;
-  readonly canCreateLead = computed(() => this.authorization.hasPermission(CRM_PERMISSIONS.leads.create));
-  readonly canCreateActivity = computed(() => this.authorization.hasPermission(CRM_PERMISSIONS.activities.create));
+  readonly sources = [
+    'Website',
+    'DriveOsForm',
+    'PhoneCall',
+    'WalkIn',
+    'Referral',
+    'SocialMedia',
+    'AdvertisingCampaign',
+    'PartnerDrivingSchool',
+    'FreelanceInstructor',
+    'ExternalImport',
+    'Other',
+  ] as const;
+  readonly statuses = [
+    'New',
+    'Contacted',
+    'Qualified',
+    'AssessmentScheduled',
+    'OfferSent',
+    'Negotiation',
+    'Won',
+    'Lost',
+    'Dormant',
+    'NotEligible',
+    'OutOfScope',
+    'Duplicate',
+    'TransferredToPartner',
+    'NoResponse',
+    'CancelledByLead',
+    'ConvertedElsewhere',
+  ] as const;
+  readonly canCreateLead = computed(() =>
+    this.authorization.hasPermission(CRM_PERMISSIONS.leads.create),
+  );
+  readonly canCreateActivity = computed(() =>
+    this.authorization.hasPermission(CRM_PERMISSIONS.activities.create),
+  );
   readonly canReadFinancial = computed(() =>
     this.authorization.hasPermission(CRM_PERMISSIONS.dashboard.financialRead),
   );
@@ -100,44 +193,73 @@ export class CrmHomePage {
   );
 
   readonly kpis = [
-    'newLeads', 'toContact', 'overdueFollowUps', 'upcomingAppointments',
-    'pendingOffers', 'conversionRate', 'firstContactDelay', 'pipelineValue',
-    'unassignedLeads', 'expiringOpportunities',
+    'newLeads',
+    'toContact',
+    'overdueFollowUps',
+    'upcomingAppointments',
+    'pendingOffers',
+    'conversionRate',
+    'firstContactDelay',
+    'pipelineValue',
+    'unassignedLeads',
+    'expiringOpportunities',
   ] as const;
 
   readonly kpiValues = computed(() => {
     const value = this.dashboard()?.kpis;
-    return value ? {
-      newLeads: `${value.newLeads}`,
-      toContact: `${value.toContact}`,
-      overdueFollowUps: `${value.overdueFollowUps}`,
-      upcomingAppointments: value.upcomingAppointments === null ? '—' : `${value.upcomingAppointments}`,
-      pendingOffers: `${value.pendingOffers}`,
-      conversionRate: `${value.conversionRate}%`,
-      firstContactDelay: value.firstContactDelayHours === null ? '—' : `${value.firstContactDelayHours} h`,
-      pipelineValue: value.pipelineValue === null || !value.pipelineCurrency
-        ? '—' : this.formatMoney(value.pipelineValue, value.pipelineCurrency),
-      unassignedLeads: `${value.unassignedLeads}`,
-      expiringOpportunities: value.expiringOpportunities === null ? '—' : `${value.expiringOpportunities}`,
-    } : null;
+    return value
+      ? {
+          newLeads: `${value.newLeads}`,
+          toContact: `${value.toContact}`,
+          overdueFollowUps: `${value.overdueFollowUps}`,
+          upcomingAppointments:
+            value.upcomingAppointments === null ? '—' : `${value.upcomingAppointments}`,
+          pendingOffers: `${value.pendingOffers}`,
+          conversionRate: `${value.conversionRate}%`,
+          firstContactDelay:
+            value.firstContactDelayHours === null ? '—' : `${value.firstContactDelayHours} h`,
+          pipelineValue:
+            value.pipelineValue === null || !value.pipelineCurrency
+              ? '—'
+              : this.formatMoney(value.pipelineValue, value.pipelineCurrency),
+          unassignedLeads: `${value.unassignedLeads}`,
+          expiringOpportunities:
+            value.expiringOpportunities === null ? '—' : `${value.expiringOpportunities}`,
+        }
+      : null;
   });
 
-  readonly viewLoading = computed(() => this.loading() || this.selectedDiagnosticState() === 'loading');
-  readonly isEmpty = computed(() => this.selectedDiagnosticState() === 'empty' || (!this.viewLoading() && !this.loadError()
-    && (this.dashboard()?.kpis.newLeads ?? 0) === 0
-    && (this.dashboard()?.pipeline.reduce((sum, item) => sum + item.count, 0) ?? 0) === 0));
-  readonly isPartial = computed(() => this.selectedDiagnosticState() === 'partialData'
-    || (this.dashboard()?.unavailableWidgets.length ?? 0) > 0);
-  readonly hasActiveFilters = computed(() => this.selectedDiagnosticState() === 'activeFilters'
-    || !!(this.fromDate() || this.toDate() || this.advisorId() || this.source() || this.status()));
-  readonly hasIntegrationIncident = computed(() => this.selectedDiagnosticState() === 'integrationIncident');
+  readonly viewLoading = computed(
+    () => this.loading() || this.selectedDiagnosticState() === 'loading',
+  );
+  readonly isEmpty = computed(
+    () =>
+      this.selectedDiagnosticState() === 'empty' ||
+      (!this.viewLoading() &&
+        !this.loadError() &&
+        (this.dashboard()?.kpis.newLeads ?? 0) === 0 &&
+        (this.dashboard()?.pipeline.reduce((sum, item) => sum + item.count, 0) ?? 0) === 0),
+  );
+  readonly isPartial = computed(
+    () =>
+      this.selectedDiagnosticState() === 'partialData' ||
+      (this.dashboard()?.unavailableWidgets.length ?? 0) > 0,
+  );
+  readonly hasActiveFilters = computed(
+    () =>
+      this.selectedDiagnosticState() === 'activeFilters' ||
+      !!(this.fromDate() || this.toDate() || this.advisorId() || this.source() || this.status()),
+  );
+  readonly hasIntegrationIncident = computed(
+    () => this.selectedDiagnosticState() === 'integrationIncident',
+  );
   readonly hasWidgetError = computed(() => this.selectedDiagnosticState() === 'widgetError');
-  readonly isFinancialRestricted = computed(() => !this.canReadFinancial()
-    || this.selectedDiagnosticState() === 'restrictedFinancial');
-  readonly maxSourceCount = computed(() => Math.max(
-    1,
-    ...(this.dashboard()?.sources ?? []).map((source) => source.count),
-  ));
+  readonly isFinancialRestricted = computed(
+    () => !this.canReadFinancial() || this.selectedDiagnosticState() === 'restrictedFinancial',
+  );
+  readonly maxSourceCount = computed(() =>
+    Math.max(1, ...(this.dashboard()?.sources ?? []).map((source) => source.count)),
+  );
 
   constructor() {
     this.loadDashboard();
@@ -153,13 +275,17 @@ export class CrmHomePage {
     }
     if (scope === 'branch') {
       const branches = this.dashboard()?.availableBranches ?? [];
-      const branchId = this.selectedBranchId()
-        ?? branches.find((branch) => branch.isPrimary)?.id
-        ?? branches[0]?.id
-        ?? null;
+      const branchId =
+        this.selectedBranchId() ??
+        branches.find((branch) => branch.isPrimary)?.id ??
+        branches[0]?.id ??
+        null;
       this.selectedBranchId.set(branchId);
       if (branchId) this.loadDashboard('branch', branchId);
-      else { this.loading.set(false); this.loadError.set(false); }
+      else {
+        this.loading.set(false);
+        this.loadError.set(false);
+      }
       return;
     }
     this.selectedBranchId.set(null);
@@ -216,19 +342,36 @@ export class CrmHomePage {
     });
   }
 
-  retry(): void { this.refresh(); }
-  refresh(): void { this.loadDashboard(this.selectedScope(), this.selectedBranchId() ?? undefined); }
-  applyFilters(): void { this.refresh(); }
+  retry(): void {
+    this.refresh();
+  }
+  refresh(): void {
+    this.loadDashboard(this.selectedScope(), this.selectedBranchId() ?? undefined);
+  }
+  applyFilters(): void {
+    this.refresh();
+  }
   clearFilters(): void {
-    this.fromDate.set(''); this.toDate.set(''); this.advisorId.set('');
-    this.source.set(''); this.status.set(''); this.refresh();
+    this.fromDate.set('');
+    this.toDate.set('');
+    this.advisorId.set('');
+    this.source.set('');
+    this.status.set('');
+    this.refresh();
   }
   updateFilter(target: 'from' | 'to' | 'advisor' | 'source' | 'status', value: string): void {
-    ({ from: this.fromDate, to: this.toDate, advisor: this.advisorId,
-      source: this.source, status: this.status }[target]).set(value);
+    ({
+      from: this.fromDate,
+      to: this.toDate,
+      advisor: this.advisorId,
+      source: this.source,
+      status: this.status,
+    })[target].set(value);
   }
 
-  selectPipelineView(view: PipelineView): void { this.pipelineView.set(view); }
+  selectPipelineView(view: PipelineView): void {
+    this.pipelineView.set(view);
+  }
 
   selectDiagnosticState(state: DashboardDiagnosticState): void {
     if (!this.visibleDiagnosticTabs().some((tab) => tab.id === state)) return;
@@ -242,17 +385,18 @@ export class CrmHomePage {
   }
 
   sourceWidth(count: number): number {
-    return Math.max(4, Math.round(count * 100 / this.maxSourceCount()));
+    return Math.max(4, Math.round((count * 100) / this.maxSourceCount()));
   }
 
   conversionRate(converted: number, total: number): number {
-    return total === 0 ? 0 : Math.round(converted * 1000 / total) / 10;
+    return total === 0 ? 0 : Math.round((converted * 1000) / total) / 10;
   }
 
   branchName(branchId: string | null): string | null {
     if (!branchId) return null;
-    return this.dashboard()?.availableBranches.find((branch) => branch.id === branchId)?.name
-      ?? branchId;
+    return (
+      this.dashboard()?.availableBranches.find((branch) => branch.id === branchId)?.name ?? branchId
+    );
   }
 
   isFinancialKpi(kpi: (typeof this.kpis)[number]): boolean {
@@ -260,12 +404,21 @@ export class CrmHomePage {
   }
 
   isFinancialHidden(kpi: (typeof this.kpis)[number]): boolean {
-    return this.isFinancialKpi(kpi)
-      && (!this.canReadFinancial() || this.selectedDiagnosticState() === 'restrictedFinancial');
+    return (
+      this.isFinancialKpi(kpi) &&
+      (!this.canReadFinancial() || this.selectedDiagnosticState() === 'restrictedFinancial')
+    );
   }
 
   priorityLabel(kind: string, fallback: string): string {
-    const known = ['LeadToContact', 'OverdueTask', 'OfferExpiring', 'AssessmentToValidate', 'ConversionFailed', 'DormantToWake'];
+    const known = [
+      'LeadToContact',
+      'OverdueTask',
+      'OfferExpiring',
+      'AssessmentToValidate',
+      'ConversionFailed',
+      'DormantToWake',
+    ];
     return known.includes(kind) ? `crm.dashboard.priorityKinds.${kind}` : fallback;
   }
 
@@ -276,16 +429,28 @@ export class CrmHomePage {
   private loadDashboard(scope: DashboardScope = 'organization', branchId?: string): void {
     this.loading.set(true);
     this.loadError.set(false);
-    this.dashboardApi.get(scope, branchId, {
-      fromUtc: this.fromDate() ? new Date(`${this.fromDate()}T00:00:00`).toISOString() : undefined,
-      toUtc: this.toDate() ? new Date(`${this.toDate()}T23:59:59.999`).toISOString() : undefined,
-      assignedAdvisorId: this.advisorId() || undefined,
-      source: this.source() || undefined,
-      status: this.status() || undefined,
-    }).subscribe({
-      next: (dashboard) => { this.dashboard.set(dashboard); this.loading.set(false); this.lastRefreshAt.set(new Date()); },
-      error: () => { this.dashboard.set(null); this.loading.set(false); this.loadError.set(true); },
-    });
+    this.dashboardApi
+      .get(scope, branchId, {
+        fromUtc: this.fromDate()
+          ? new Date(`${this.fromDate()}T00:00:00`).toISOString()
+          : undefined,
+        toUtc: this.toDate() ? new Date(`${this.toDate()}T23:59:59.999`).toISOString() : undefined,
+        assignedAdvisorId: this.advisorId() || undefined,
+        source: this.source() || undefined,
+        status: this.status() || undefined,
+      })
+      .subscribe({
+        next: (dashboard) => {
+          this.dashboard.set(dashboard);
+          this.loading.set(false);
+          this.lastRefreshAt.set(new Date());
+        },
+        error: () => {
+          this.dashboard.set(null);
+          this.loading.set(false);
+          this.loadError.set(true);
+        },
+      });
   }
 
   private loadNetworkMembers(): void {

@@ -1,4 +1,5 @@
-export type AssessmentResultStatus = 'None' | 'Draft' | 'CorrectionRequested' | 'Validated' | 'Shared';
+export type AssessmentResultStatus =
+  'None' | 'Draft' | 'CorrectionRequested' | 'Validated' | 'Shared';
 export type AssessmentResultConfidence = 'Low' | 'Medium' | 'High';
 
 export interface AssessmentResultContent {

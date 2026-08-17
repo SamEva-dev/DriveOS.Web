@@ -1,0 +1,55 @@
+<section class="driveos-page">
+  <a
+    routerLink="/students/list"
+    class="inline-flex items-center gap-2 text-sm font-bold text-blue-800"
+  >
+    <i class="ph ph-arrow-left"></i>
+    {{ 'students.backToList' | translate }}
+  </a>
+  @if (loading()) {
+    <div class="grid min-h-32 place-items-center">
+      <drive-os-spinner [label]="'common.loading' | translate" />
+    </div>
+  } @else if (overview(); as data) {
+    <header
+      class="mt-4 flex flex-wrap items-center gap-4 rounded-2xl bg-gradient-to-r from-blue-900 to-blue-700 p-5 text-white shadow-lg"
+    >
+      <span class="grid size-16 place-items-center rounded-2xl bg-white/15 text-2xl font-black">
+        {{ data.profile.firstName.slice(0, 1) }}{{ data.profile.lastName.slice(0, 1) }}
+      </span>
+      <div class="min-w-0 flex-1">
+        <p class="text-xs uppercase tracking-widest text-blue-200">
+          {{ 'students.file' | translate }}
+        </p>
+        <h1 class="truncate text-2xl font-black">
+          {{ data.profile.firstName }} {{ data.profile.lastName }}
+        </h1>
+        <p class="mt-1 text-sm text-blue-100">
+          {{ data.profile.email || data.profile.phone || '—' }}
+        </p>
+      </div>
+      <drive-os-badge [variant]="data.profile.status === 'Active' ? 'success' : 'warning'">
+        {{ 'students.status.' + data.profile.status | translate }}
+      </drive-os-badge>
+    </header>
+  }
+  <nav
+    class="mt-5 flex min-w-0 gap-1 overflow-x-auto rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-2"
+    [attr.aria-label]="'students.tabs.navigation' | translate"
+  >
+    @for (tab of visibleTabs(); track tab.route) {
+      <a
+        [routerLink]="tab.route"
+        routerLinkActive="bg-blue-800 text-white shadow"
+        class="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-bold text-slate-600 transition hover:bg-blue-50"
+      >
+        <i
+          class="ph"
+          [class]="'ph ' + tab.icon"
+        ></i>
+        {{ tab.labelKey | translate }}
+      </a>
+    }
+  </nav>
+  <div class="mt-5"><router-outlet /></div>
+</section>

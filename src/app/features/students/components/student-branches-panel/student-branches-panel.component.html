@@ -1,0 +1,242 @@
+<section class="space-y-5">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h3 class="text-lg font-extrabold">{{ 'students.assignments.branches.title' | translate }}</h3>
+      <p class="text-sm text-slate-500">{{ 'students.assignments.branches.description' | translate }}</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      @if (canAssign()) {
+        <drive-os-button icon="ph ph-plus" (pressed)="openAssign()">
+          {{ 'students.assignments.branches.actions.assign' | translate }}
+        </drive-os-button>
+      }
+      @if (canChangePrimary()) {
+        <drive-os-button variant="secondary" icon="ph ph-arrows-left-right" (pressed)="openChangePrimary()">
+          {{ 'students.assignments.branches.actions.changePrimary' | translate }}
+        </drive-os-button>
+      }
+    </div>
+  </div>
+
+  @if (branches().primaryBranchId) {
+    <drive-os-state-banner
+      tone="info"
+      icon="ph ph-buildings"
+      [title]="'students.assignments.branches.primaryCurrent' | translate"
+      [description]="branchLabel(branches().primaryBranchId!)"
+    />
+  }
+
+  @if (action()?.type === 'assign') {
+    <drive-os-card>
+      <form class="grid gap-4 md:grid-cols-2" [formGroup]="assignForm" (ngSubmit)="assign()">
+        <label class="grid gap-1 text-sm font-semibold">
+          {{ 'students.assignments.branches.fields.branch' | translate }}
+          <select driveOsInput formControlName="branchId">
+            <option value="">{{ 'students.assignments.branches.select' | translate }}</option>
+            @for (branch of branchOptions(); track branch.id) {
+              <option [value]="branch.id">{{ branch.name }}{{ branch.code ? ' · ' + branch.code : '' }}</option>
+            }
+          </select>
+        </label>
+        <label class="grid gap-1 text-sm font-semibold">
+          {{ 'students.assignments.branches.fields.type' | translate }}
+          <select driveOsInput formControlName="type">
+            <option [ngValue]="2">{{ 'students.assignments.branches.types.secondary' | translate }}</option>
+            <option [ngValue]="3">{{ 'students.assignments.branches.types.temporary' | translate }}</option>
+          </select>
+        </label>
+        <label class="grid gap-1 text-sm font-semibold">
+          {{ 'students.assignments.branches.fields.effectiveFrom' | translate }}
+          <input driveOsInput type="date" formControlName="effectiveFrom" />
+        </label>
+        <label class="grid gap-1 text-sm font-semibold">
+          {{ 'students.assignments.branches.fields.effectiveTo' | translate }}
+          <input driveOsInput type="date" formControlName="effectiveTo" />
+        </label>
+        <label class="grid gap-1 text-sm font-semibold md:col-span-2">
+          {{ 'students.assignments.branches.fields.services' | translate }}
+          <select driveOsInput formControlName="servicesAllowed">
+            <option [ngValue]="31">{{ 'students.assignments.branches.services.all' | translate }}</option>
+            <option [ngValue]="1">{{ 'students.assignments.branches.services.theory' | translate }}</option>
+            <option [ngValue]="2">{{ 'students.assignments.branches.services.practical' | translate }}</option>
+            <option [ngValue]="4">{{ 'students.assignments.branches.services.simulator' | translate }}</option>
+            <option [ngValue]="8">{{ 'students.assignments.branches.services.exam' | translate }}</option>
+            <option [ngValue]="16">{{ 'students.assignments.branches.services.administration' | translate }}</option>
+          </select>
+        </label>
+        <label class="grid gap-1 text-sm font-semibold md:col-span-2">
+          {{ 'students.assignments.branches.fields.reason' | translate }}
+          <textarea driveOsInput rows="3" formControlName="reason"></textarea>
+        </label>
+        <div class="flex justify-end gap-2 md:col-span-2">
+          <drive-os-button type="button" variant="ghost" (pressed)="cancel()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
+          <drive-os-button type="submit" [loading]="saving()">{{ 'common.actions.save' | translate }}</drive-os-button>
+        </div>
+      </form>
+    </drive-os-card>
+  }
+
+  @if (action()?.type === 'changePrimary') {
+    <drive-os-card>
+      <div class="grid gap-4">
+        <label class="grid gap-1 text-sm font-semibold">
+          {{ 'students.assignments.branches.fields.targetBranch' | translate }}
+          <select driveOsInput [formControl]="primaryForm.controls.targetBranchId">
+            <option value="">{{ 'students.assignments.branches.select' | translate }}</option>
+            @for (branch of branchOptions(); track branch.id) {
+              @if (branch.id !== branches().primaryBranchId) {
+                <option [value]="branch.id">{{ branch.name }}{{ branch.code ? ' · ' + branch.code : '' }}</option>
+              }
+            }
+          </select>
+        </label>
+        @if (!analysis()) {
+          <div class="flex justify-end gap-2">
+            <drive-os-button variant="ghost" (pressed)="cancel()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
+            <drive-os-button [loading]="saving()" (pressed)="analyzePrimaryChange()">
+              {{ 'students.assignments.branches.actions.analyze' | translate }}
+            </drive-os-button>
+          </div>
+        }
+        @if (analysis(); as result) {
+          <div class="grid gap-4 lg:grid-cols-2">
+            <div>
+              <h4 class="mb-2 font-bold">{{ 'students.assignments.branches.analysis.verifications' | translate }}</h4>
+              <div class="grid gap-2">
+                @for (item of result.verifications; track item.code) {
+                  <div class="flex items-center justify-between gap-3 rounded-lg border border-[var(--driveos-border)] p-3">
+                    <span class="text-sm">{{ item.messageKey | translate }}</span>
+                    <drive-os-badge [variant]="verificationVariant(item.status)">{{ item.status }}</drive-os-badge>
+                  </div>
+                }
+              </div>
+            </div>
+            <div>
+              <h4 class="mb-2 font-bold">{{ 'students.assignments.branches.analysis.impacts' | translate }}</h4>
+              <div class="grid gap-2">
+                @for (item of result.impacts; track item.type) {
+                  <div class="rounded-lg border border-[var(--driveos-border)] p-3">
+                    <div class="flex items-center justify-between gap-3">
+                      <span class="text-sm">{{ item.messageKey | translate }}</span>
+                      <strong>{{ item.affectedCount }}</strong>
+                    </div>
+                    @if (item.requiresAction) {
+                      <p class="mt-1 text-xs text-orange-600">{{ 'students.assignments.branches.analysis.actionRequired' | translate }}</p>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+          <label class="grid gap-1 text-sm font-semibold">
+            {{ 'students.assignments.branches.fields.reason' | translate }}
+            <textarea driveOsInput rows="3" [formControl]="primaryForm.controls.reason"></textarea>
+          </label>
+          <p class="text-xs text-slate-500">
+            {{ 'students.assignments.branches.analysis.expiresAt' | translate }} {{ result.expiresAtUtc | date: 'short' }}
+          </p>
+          <div class="flex justify-end gap-2">
+            <drive-os-button variant="ghost" (pressed)="cancel()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
+            <drive-os-button [loading]="saving()" (pressed)="confirmPrimaryChange()">
+              {{ 'students.assignments.branches.actions.confirmPrimary' | translate }}
+            </drive-os-button>
+          </div>
+        }
+      </div>
+    </drive-os-card>
+  }
+
+  @if (action(); as current) {
+    @if (current.type === 'end') {
+      <drive-os-card>
+        <form class="grid gap-4" [formGroup]="endForm" (ngSubmit)="endAssignment()">
+          <drive-os-state-banner
+            tone="warning"
+            icon="ph ph-warning"
+            [title]="'students.assignments.branches.end.title' | translate"
+            [description]="branchLabel(current.assignment.branchId)"
+          />
+          <label class="grid gap-1 text-sm font-semibold">
+            {{ 'students.assignments.branches.fields.reason' | translate }}
+            <textarea driveOsInput rows="3" formControlName="reason"></textarea>
+          </label>
+          <div class="flex justify-end gap-2">
+            <drive-os-button type="button" variant="ghost" (pressed)="cancel()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
+            <drive-os-button type="submit" variant="danger" [loading]="saving()">{{ 'students.assignments.branches.actions.end' | translate }}</drive-os-button>
+          </div>
+        </form>
+      </drive-os-card>
+    }
+  }
+
+  <div class="grid gap-4 lg:grid-cols-2">
+    @for (assignment of activeAssignments(); track assignment.id) {
+      <article class="relative overflow-hidden rounded-xl border bg-[var(--driveos-surface-card)] p-5" [class.border-orange-400]="isPrimary(assignment.branchId)">
+        @if (isPrimary(assignment.branchId)) {
+          <span class="absolute right-0 top-0 rounded-bl-xl bg-orange-500 px-3 py-1 text-xs font-bold text-white">
+            {{ 'students.assignments.primary' | translate }}
+          </span>
+        }
+        <div class="flex items-start gap-3">
+          <span class="grid size-12 place-items-center rounded-xl bg-blue-100 text-xl text-blue-800"><i class="ph-duotone ph-buildings"></i></span>
+          <div class="min-w-0 flex-1">
+            <h4 class="font-extrabold">{{ branchLabel(assignment.branchId) }}</h4>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <drive-os-badge [variant]="statusVariant(assignment.status)">{{ assignment.status }}</drive-os-badge>
+              <drive-os-badge variant="info">{{ assignment.type }}</drive-os-badge>
+            </div>
+          </div>
+        </div>
+        <dl class="mt-5 grid gap-3 sm:grid-cols-2">
+          <div><dt class="text-xs uppercase text-slate-500">{{ 'students.assignments.effectiveFrom' | translate }}</dt><dd>{{ assignment.effectiveFrom | date: 'mediumDate' }}</dd></div>
+          <div><dt class="text-xs uppercase text-slate-500">{{ 'students.assignments.effectiveTo' | translate }}</dt><dd>{{ (assignment.effectiveTo | date: 'mediumDate') || ('students.assignments.openEnded' | translate) }}</dd></div>
+        </dl>
+        <p class="mt-4 rounded-lg bg-slate-50 p-3 text-sm text-slate-600"><strong>{{ 'students.assignments.reason' | translate }} :</strong> {{ assignment.reason }}</p>
+        @if (canAssign() && !isPrimary(assignment.branchId)) {
+          <div class="mt-4 flex justify-end">
+            <drive-os-button size="sm" variant="ghost" icon="ph ph-x-circle" (pressed)="openEnd(assignment)">
+              {{ 'students.assignments.branches.actions.end' | translate }}
+            </drive-os-button>
+          </div>
+        }
+      </article>
+    } @empty {
+      <drive-os-empty-state
+        icon="ph-duotone ph-buildings"
+        [title]="'students.assignments.noBranch' | translate"
+        [description]="'students.assignments.noBranchDescription' | translate"
+      />
+    }
+  </div>
+
+  @if (pastAssignments().length) {
+    <drive-os-card>
+      <h4 class="mb-3 font-extrabold">{{ 'students.assignments.branches.history' | translate }}</h4>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[720px] text-left text-sm">
+          <thead class="text-xs uppercase text-slate-500">
+            <tr>
+              <th class="py-2 pr-4">{{ 'students.assignments.branches.fields.branch' | translate }}</th>
+              <th class="py-2 pr-4">{{ 'students.assignments.branches.fields.type' | translate }}</th>
+              <th class="py-2 pr-4">{{ 'students.assignments.branches.status' | translate }}</th>
+              <th class="py-2 pr-4">{{ 'students.assignments.effectiveFrom' | translate }}</th>
+              <th class="py-2">{{ 'students.assignments.effectiveTo' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (assignment of pastAssignments(); track assignment.id) {
+              <tr class="border-t border-[var(--driveos-border)]">
+                <td class="py-3 pr-4 font-semibold">{{ branchLabel(assignment.branchId) }}</td>
+                <td class="py-3 pr-4">{{ assignment.type }}</td>
+                <td class="py-3 pr-4"><drive-os-badge [variant]="statusVariant(assignment.status)">{{ assignment.status }}</drive-os-badge></td>
+                <td class="py-3 pr-4">{{ assignment.effectiveFrom | date: 'mediumDate' }}</td>
+                <td class="py-3">{{ assignment.effectiveTo | date: 'mediumDate' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </drive-os-card>
+  }
+</section>

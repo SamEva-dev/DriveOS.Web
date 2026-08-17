@@ -8,8 +8,7 @@ export const CRM_ROUTES: Routes = [
   },
   {
     path: 'dashboard',
-    loadComponent: () =>
-      import('./pages/crm-home/crm-home.page').then((m) => m.CrmHomePage),
+    loadComponent: () => import('./pages/crm-home/crm-home.page').then((m) => m.CrmHomePage),
     data: {
       titleKey: 'CRM & Admissions',
     },
@@ -33,8 +32,7 @@ export const CRM_ROUTES: Routes = [
   },
   {
     path: 'leads',
-    loadComponent: () =>
-      import('./pages/lead-list/lead-list.page').then((m) => m.LeadListPage),
+    loadComponent: () => import('./pages/lead-list/lead-list.page').then((m) => m.LeadListPage),
     data: { titleKey: 'crm.leads.title' },
   },
   {
@@ -73,8 +71,7 @@ export const CRM_ROUTES: Routes = [
   },
   {
     path: 'offers/:offerId/send',
-    loadComponent: () =>
-      import('./pages/offer-send/offer-send.page').then((m) => m.OfferSendPage),
+    loadComponent: () => import('./pages/offer-send/offer-send.page').then((m) => m.OfferSendPage),
     data: { titleKey: 'crm.offers.send.title' },
   },
   {

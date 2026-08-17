@@ -1,12 +1,22 @@
-<section class="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
-  <header class="flex flex-col gap-4 border-b border-slate-100 px-6 py-5 sm:flex-row sm:items-start sm:justify-between dark:border-slate-800">
+<section
+  class="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950"
+>
+  <header
+    class="flex flex-col gap-4 border-b border-slate-100 px-6 py-5 sm:flex-row sm:items-start sm:justify-between dark:border-slate-800"
+  >
     <div class="min-w-0">
       @if (eyebrow()) {
-        <p class="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-blue-700 dark:text-blue-300">{{ eyebrow() }}</p>
+        <p
+          class="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-blue-700 dark:text-blue-300"
+        >
+          {{ eyebrow() }}
+        </p>
       }
       <h2 class="text-lg font-bold tracking-tight text-slate-950 dark:text-white">{{ title() }}</h2>
       @if (description()) {
-        <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-400">{{ description() }}</p>
+        <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-400">
+          {{ description() }}
+        </p>
       }
     </div>
     <div class="shrink-0"><ng-content select="[panel-actions]" /></div>

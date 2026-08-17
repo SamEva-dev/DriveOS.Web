@@ -24,9 +24,16 @@ export interface ConvertLeadResponse {
 }
 
 export interface ConvertLeadRequest {
-  acceptedOfferId: string; branchId: string; responsibleUserId: string; trainingCode: string;
-  identityVerified: boolean; consentsVerified: boolean; duplicateCheckCompleted: boolean;
-  guardianSummary: string | null; payerSummary: string | null; requiredDocumentCodes: string[];
+  acceptedOfferId: string;
+  branchId: string;
+  responsibleUserId: string;
+  trainingCode: string;
+  identityVerified: boolean;
+  consentsVerified: boolean;
+  duplicateCheckCompleted: boolean;
+  guardianSummary: string | null;
+  payerSummary: string | null;
+  requiredDocumentCodes: string[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -76,10 +83,9 @@ export class LeadsApiService {
   }
 
   changeStatus(leadId: string, action: LeadLifecycleAction, reason?: string): Observable<void> {
-    return this.http.post<void>(
-      `${this.baseUrl}/${leadId}/lifecycle/${action}`,
-      { reason: reason?.trim() || null },
-    );
+    return this.http.post<void>(`${this.baseUrl}/${leadId}/lifecycle/${action}`, {
+      reason: reason?.trim() || null,
+    });
   }
 
   qualify(leadId: string, request: QualifyLeadRequest): Observable<void> {
@@ -90,15 +96,33 @@ export class LeadsApiService {
     return this.http.post<ConvertLeadResponse>(`${this.baseUrl}/${leadId}/convert`, request);
   }
 
-  close(leadId: string, request: { decision: LeadStatus; reason: LeadClosureReason; comment: string | null }): Observable<void> {
+  close(
+    leadId: string,
+    request: { decision: LeadStatus; reason: LeadClosureReason; comment: string | null },
+  ): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/${leadId}/status/close`, request);
   }
-  setDormant(leadId: string, request: { reason: LeadClosureReason; resumeAtUtc: string;
-    responsibleUserId: string; campaignCode: string | null; comment: string | null }): Observable<void> {
+  setDormant(
+    leadId: string,
+    request: {
+      reason: LeadClosureReason;
+      resumeAtUtc: string;
+      responsibleUserId: string;
+      campaignCode: string | null;
+      comment: string | null;
+    },
+  ): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/${leadId}/status/dormant`, request);
   }
-  referToPartner(leadId: string, request: { partnerName: string; sharedDataDescription: string;
-    consentCollectedAtUtc: string; comment: string | null }): Observable<void> {
+  referToPartner(
+    leadId: string,
+    request: {
+      partnerName: string;
+      sharedDataDescription: string;
+      consentCollectedAtUtc: string;
+      comment: string | null;
+    },
+  ): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/${leadId}/status/refer`, request);
   }
   reopen(leadId: string, comment: string | null): Observable<void> {

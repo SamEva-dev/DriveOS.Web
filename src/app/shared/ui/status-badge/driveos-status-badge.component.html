@@ -1,6 +1,9 @@
 <span [class]="classes()">
   @if (showDot()) {
-    <span [class]="dotClasses()" aria-hidden="true"></span>
+    <span
+      [class]="dotClasses()"
+      aria-hidden="true"
+    ></span>
   }
   <span>{{ label() }}</span>
 </span>

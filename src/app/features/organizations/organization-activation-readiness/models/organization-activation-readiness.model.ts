@@ -1,7 +1,4 @@
-export type OrganizationActivationRequirementSeverity =
-  | 'Information'
-  | 'Warning'
-  | 'Blocking';
+export type OrganizationActivationRequirementSeverity = 'Information' | 'Warning' | 'Blocking';
 
 export interface OrganizationActivationRequirement {
   code: string;

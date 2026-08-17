@@ -1,5 +1,12 @@
-import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { DriveOsIconComponent } from "../icon/driveos-icon.component";
+import {
+  booleanAttribute,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  output,
+} from '@angular/core';
+import { DriveOsIconComponent } from '../icon/driveos-icon.component';
 
 export type DriveOsButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
 
@@ -57,7 +64,12 @@ export class DriveOsButtonComponent {
     };
 
     const variants: Record<DriveOsButtonVariant, string[]> = {
-      primary: ['bg-[var(--driveos-accent-500)]', 'text-white', 'shadow-sm', 'hover:bg-[var(--driveos-accent-600)]'],
+      primary: [
+        'bg-[var(--driveos-accent-500)]',
+        'text-white',
+        'shadow-sm',
+        'hover:bg-[var(--driveos-accent-600)]',
+      ],
 
       secondary: [
         'bg-slate-200',

@@ -1,5 +1,8 @@
 @if (open()) {
-  <div class="fixed inset-0 z-50" role="presentation">
+  <div
+    class="fixed inset-0 z-50"
+    role="presentation"
+  >
     <button
       type="button"
       class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm"
@@ -20,13 +23,19 @@
       [class]="sideClass() + ' ' + sizeClass()"
     >
       @if (title() || description()) {
-        <header class="flex items-start justify-between gap-5 border-b border-slate-200 px-6 py-5 dark:border-slate-800">
+        <header
+          class="flex items-start justify-between gap-5 border-b border-slate-200 px-6 py-5 dark:border-slate-800"
+        >
           <div class="min-w-0">
             @if (title()) {
-              <h2 class="text-xl font-bold tracking-tight text-slate-950 dark:text-white">{{ title() }}</h2>
+              <h2 class="text-xl font-bold tracking-tight text-slate-950 dark:text-white">
+                {{ title() }}
+              </h2>
             }
             @if (description()) {
-              <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">{{ description() }}</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                {{ description() }}
+              </p>
             }
           </div>
           <button
@@ -36,7 +45,10 @@
             aria-label="Fermer"
             (click)="closeRequested.emit()"
           >
-            <drive-os-icon name="x" size="sm" />
+            <drive-os-icon
+              name="x"
+              size="sm"
+            />
           </button>
         </header>
       }
@@ -45,7 +57,9 @@
         <ng-content />
       </div>
 
-      <footer class="border-t border-slate-200 bg-slate-50/80 px-6 py-4 dark:border-slate-800 dark:bg-slate-950/30">
+      <footer
+        class="border-t border-slate-200 bg-slate-50/80 px-6 py-4 dark:border-slate-800 dark:bg-slate-950/30"
+      >
         <ng-content select="[driveOsDrawerFooter]" />
       </footer>
     </aside>

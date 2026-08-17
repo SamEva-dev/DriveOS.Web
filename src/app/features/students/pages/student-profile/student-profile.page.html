@@ -1,0 +1,287 @@
+<section>
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h2 class="text-xl font-extrabold">{{ 'students.profile.title' | translate }}</h2>
+      <p class="text-sm text-slate-500">{{ 'students.profile.description' | translate }}</p>
+    </div>
+    @if (canEditIdentity()) {
+      <a
+        routerLink="edit"
+        class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-blue-800 px-4 text-sm font-bold text-white"
+      >
+        <i class="ph ph-pencil-simple"></i>
+        {{ 'students.identityEdit.action' | translate }}
+      </a>
+    }
+  </div>
+  @if (visibleTabs().length) {
+    <nav
+      class="mt-4 flex gap-2 overflow-x-auto"
+      [attr.aria-label]="'students.profile.tabs.navigation' | translate"
+    >
+      @for (tab of visibleTabs(); track tab.id) {
+        <button
+          type="button"
+          class="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full border border-[var(--driveos-border)] px-4 text-sm font-bold"
+          [class.border-blue-800]="selected() === tab.id"
+          [class.bg-blue-50]="selected() === tab.id"
+          [class.text-blue-800]="selected() === tab.id"
+          (click)="select(tab.id)"
+        >
+          <i
+            class="ph"
+            [class]="'ph ' + tab.icon"
+          ></i>
+          {{ tab.labelKey | translate }}
+        </button>
+      }
+    </nav>
+  }
+  @if (loading()) {
+    <div class="grid min-h-64 place-items-center">
+      <drive-os-spinner
+        size="lg"
+        [label]="'common.loading' | translate"
+      />
+    </div>
+  } @else if (error()) {
+    <drive-os-state-banner
+      class="mt-5 block"
+      tone="danger"
+      icon="ph ph-warning-circle"
+      [title]="'students.errors.load' | translate"
+    />
+  } @else if (selected() === 'identity' && identity(); as value) {
+    <div class="mt-5 grid gap-5 xl:grid-cols-[1fr_.7fr]">
+      <section
+        class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
+        <div class="flex items-center justify-between">
+          <h3 class="font-extrabold">{{ 'students.profile.identity.legal' | translate }}</h3>
+          <drive-os-badge
+            [variant]="value.verificationStatus === 'DocumentVerified' || value.verificationStatus === 'ExternallyVerified' ? 'success' : 'warning'"
+          >
+            {{ 'students.profile.verification.' + value.verificationStatus | translate }}
+          </drive-os-badge>
+        </div>
+        <dl class="mt-5 grid gap-5 sm:grid-cols-2">
+          <div>
+            <dt class="text-xs uppercase text-slate-500">
+              {{ 'students.profile.fields.legalName' | translate }}
+            </dt>
+            <dd class="font-bold">{{ value.legalFirstName }} {{ value.legalLastName }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs uppercase text-slate-500">
+              {{ 'students.profile.fields.preferredName' | translate }}
+            </dt>
+            <dd>{{ value.preferredName || '—' }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs uppercase text-slate-500">
+              {{ 'students.profile.fields.birthDate' | translate }}
+            </dt>
+            <dd>{{ value.birthDate | date: 'mediumDate' }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs uppercase text-slate-500">
+              {{ 'students.profile.fields.birthPlace' | translate }}
+            </dt>
+            <dd>{{ value.birthPlace || '—' }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs uppercase text-slate-500">
+              {{ 'students.profile.fields.nationality' | translate }}
+            </dt>
+            <dd>{{ value.nationality || '—' }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs uppercase text-slate-500">
+              {{ 'students.profile.fields.language' | translate }}
+            </dt>
+            <dd>{{ value.preferredLanguage || '—' }}</dd>
+          </div>
+        </dl>
+      </section>
+      <div class="grid gap-5">
+        <section
+          class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h3 class="font-extrabold">{{ 'students.profile.verification.title' | translate }}</h3>
+              <p class="mt-1 text-sm text-slate-500">
+                {{ 'students.profile.verification.description' | translate }}
+              </p>
+            </div>
+            @if (canVerifyIdentity()) {
+              <button
+                type="button"
+                class="inline-flex min-h-10 items-center gap-2 rounded-lg border border-blue-800 px-3 text-sm font-bold text-blue-800"
+                (click)="openVerification()"
+              >
+                <i class="ph ph-seal-check"></i>
+                {{ 'students.profile.verification.action' | translate }}
+              </button>
+            }
+          </div>
+
+          <dl class="mt-4 grid gap-3 text-sm">
+            <div class="flex items-center justify-between gap-3">
+              <dt class="text-slate-500">{{ 'students.profile.verification.currentStatus' | translate }}</dt>
+              <dd>
+                <drive-os-badge
+                  [variant]="value.verificationStatus === 'DocumentVerified' || value.verificationStatus === 'ExternallyVerified' ? 'success' : 'warning'"
+                >
+                  {{ 'students.profile.verification.' + value.verificationStatus | translate }}
+                </drive-os-badge>
+              </dd>
+            </div>
+            <div class="flex items-center justify-between gap-3">
+              <dt class="text-slate-500">{{ 'students.profile.verification.verifiedAt' | translate }}</dt>
+              <dd class="font-semibold">
+                {{ value.verifiedAtUtc ? (value.verifiedAtUtc | date: 'medium') : '—' }}
+              </dd>
+            </div>
+          </dl>
+
+          @if (verificationSuccess()) {
+            <drive-os-state-banner
+              class="mt-4 block"
+              tone="success"
+              icon="ph ph-check-circle"
+              [title]="'students.profile.verification.feedback.success' | translate"
+            />
+          }
+          @if (verificationError()) {
+            <drive-os-state-banner
+              class="mt-4 block"
+              tone="danger"
+              icon="ph ph-warning-circle"
+              [title]="'students.profile.verification.feedback.error' | translate"
+            />
+          }
+
+          @if (verificationOpen()) {
+            <div class="mt-5 rounded-xl border border-[var(--driveos-border)] bg-slate-50/60 p-4 dark:bg-slate-900/30">
+              <h4 class="font-bold">{{ 'students.profile.verification.form.title' | translate }}</h4>
+              <p class="mt-1 text-xs text-slate-500">
+                {{ 'students.profile.verification.form.hint' | translate }}
+              </p>
+
+              <label class="mt-4 block text-sm font-semibold">
+                {{ 'students.profile.verification.form.method' | translate }}
+                <select
+                  class="mt-1 min-h-10 w-full rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3"
+                  [ngModel]="verificationStatus()"
+                  (ngModelChange)="verificationStatus.set($event)"
+                >
+                  <option value="DocumentVerified">{{ 'students.profile.verification.DocumentVerified' | translate }}</option>
+                  <option value="ExternallyVerified">{{ 'students.profile.verification.ExternallyVerified' | translate }}</option>
+                </select>
+              </label>
+
+              <label class="mt-4 block text-sm font-semibold">
+                {{ 'students.profile.verification.form.justification' | translate }}
+                <textarea
+                  rows="3"
+                  class="mt-1 w-full rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2"
+                  [ngModel]="verificationJustification()"
+                  (ngModelChange)="verificationJustification.set($event)"
+                  [placeholder]="'students.profile.verification.form.justificationPlaceholder' | translate"
+                ></textarea>
+              </label>
+              <p class="mt-1 text-xs text-slate-500">
+                {{ 'students.profile.verification.form.justificationHint' | translate }}
+              </p>
+
+              <div class="mt-4 flex flex-wrap justify-end gap-2">
+                <button
+                  type="button"
+                  class="min-h-10 rounded-lg border border-[var(--driveos-border)] px-4 text-sm font-bold"
+                  [disabled]="verificationSubmitting()"
+                  (click)="cancelVerification()"
+                >
+                  {{ 'common.cancel' | translate }}
+                </button>
+                <button
+                  type="button"
+                  class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-blue-800 px-4 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  [disabled]="verificationJustification().trim().length < 10 || verificationSubmitting()"
+                  (click)="submitVerification()"
+                >
+                  @if (verificationSubmitting()) { <i class="ph ph-circle-notch animate-spin"></i> }
+                  @else { <i class="ph ph-seal-check"></i> }
+                  {{ 'students.profile.verification.form.submit' | translate }}
+                </button>
+              </div>
+            </div>
+          }
+        </section>
+        <section
+          class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <h3 class="font-extrabold">{{ 'students.profile.identity.contact' | translate }}</h3>
+          <dl class="mt-4 grid gap-3 text-sm">
+            <div class="flex gap-3">
+              <i class="ph ph-envelope mt-1 text-blue-800"></i>
+              <span>{{ value.email || '—' }}</span>
+            </div>
+            <div class="flex gap-3">
+              <i class="ph ph-phone mt-1 text-blue-800"></i>
+              <span>{{ value.phone || '—' }}</span>
+            </div>
+            <div class="flex gap-3">
+              <i class="ph ph-map-pin mt-1 text-blue-800"></i>
+              <span>
+                {{ value.addressLine1 || '—' }}
+                <br />
+                {{ value.postalCode }} {{ value.city }} · {{ value.countryCode }}
+              </span>
+            </div>
+          </dl>
+        </section>
+        <section
+          class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <h3 class="font-extrabold">{{ 'students.profile.identity.preferences' | translate }}</h3>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <drive-os-badge [variant]="value.allowEmail ? 'success' : 'neutral'">
+              E-mail
+            </drive-os-badge>
+            <drive-os-badge [variant]="value.allowSms ? 'success' : 'neutral'">SMS</drive-os-badge>
+            <drive-os-badge [variant]="value.allowPhone ? 'success' : 'neutral'">
+              {{ 'students.profile.identity.phone' | translate }}
+            </drive-os-badge>
+          </div>
+        </section>
+      </div>
+    </div>
+  } @else if (selected() === 'administration' && administration(); as value) {
+    <driveos-student-administration-panel
+      class="mt-5 block"
+      [studentId]="studentId"
+      [administration]="value"
+      (refreshed)="load()"
+    />
+  } @else if (selected() === 'guardians' && guardians(); as value) {
+    <driveos-student-guardians-panel
+      [studentId]="studentId"
+      [guardians]="value"
+      (refreshed)="load()"
+    />
+  } @else if (selected() === 'relationships' && relationships(); as value) {
+    <driveos-student-relationships-panel
+      [studentId]="studentId"
+      [relationships]="value"
+      (refreshed)="load()"
+    />
+  } @else if (!visibleTabs().length) {
+    <drive-os-state-banner
+      class="mt-5 block"
+      tone="warning"
+      icon="ph ph-lock"
+      [title]="'students.profile.restricted' | translate"
+    />
+  }
+</section>

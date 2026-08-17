@@ -3,7 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { API_CONFIG, ApiConfig } from '../../../core/config/api-config';
-import { CommercialOffer, CreateCommercialOfferVariantRequest, GenerateCommercialOfferRequest, OfferInteractionType, SendCommercialOfferRequest, SendCommercialOfferResponse } from '../models/commercial-offer.model';
+import {
+  CommercialOffer,
+  CreateCommercialOfferVariantRequest,
+  GenerateCommercialOfferRequest,
+  OfferInteractionType,
+  SendCommercialOfferRequest,
+  SendCommercialOfferResponse,
+} from '../models/commercial-offer.model';
 
 @Injectable({ providedIn: 'root' })
 export class CommercialOffersApiService {
@@ -11,7 +18,10 @@ export class CommercialOffersApiService {
   private readonly apiConfig = inject<ApiConfig>(API_CONFIG);
   private readonly baseUrl = `${this.apiConfig.baseUrl}/crm`;
 
-  generate(leadId: string, request: GenerateCommercialOfferRequest): Observable<{ offerId: string }> {
+  generate(
+    leadId: string,
+    request: GenerateCommercialOfferRequest,
+  ): Observable<{ offerId: string }> {
     return this.http.post<{ offerId: string }>(`${this.baseUrl}/leads/${leadId}/offers`, request);
   }
 
@@ -23,8 +33,14 @@ export class CommercialOffersApiService {
     return this.http.get<CommercialOffer>(`${this.baseUrl}/offers/${offerId}`);
   }
 
-  createVariant(offerId: string, request: CreateCommercialOfferVariantRequest): Observable<{ offerId: string }> {
-    return this.http.post<{ offerId: string }>(`${this.baseUrl}/offers/${offerId}/variants`, request);
+  createVariant(
+    offerId: string,
+    request: CreateCommercialOfferVariantRequest,
+  ): Observable<{ offerId: string }> {
+    return this.http.post<{ offerId: string }>(
+      `${this.baseUrl}/offers/${offerId}/variants`,
+      request,
+    );
   }
 
   submitForReview(offerId: string): Observable<void> {
@@ -35,16 +51,38 @@ export class CommercialOffersApiService {
     return this.http.post<void>(`${this.baseUrl}/offers/${offerId}/approve`, {});
   }
 
-  send(offerId: string, request: SendCommercialOfferRequest): Observable<SendCommercialOfferResponse> {
-    return this.http.post<SendCommercialOfferResponse>(`${this.baseUrl}/offers/${offerId}/send`, request);
+  send(
+    offerId: string,
+    request: SendCommercialOfferRequest,
+  ): Observable<SendCommercialOfferResponse> {
+    return this.http.post<SendCommercialOfferResponse>(
+      `${this.baseUrl}/offers/${offerId}/send`,
+      request,
+    );
   }
 
-  recordExchange(offerId: string, type: OfferInteractionType, summary: string, metadataJson: string | null = null): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/offers/${offerId}/exchanges`, { type, summary, metadataJson });
+  recordExchange(
+    offerId: string,
+    type: OfferInteractionType,
+    summary: string,
+    metadataJson: string | null = null,
+  ): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/offers/${offerId}/exchanges`, {
+      type,
+      summary,
+      metadataJson,
+    });
   }
 
-  scheduleFollowUp(offerId: string, nextFollowUpAtUtc: string, note: string | null): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/offers/${offerId}/follow-up`, { nextFollowUpAtUtc, note });
+  scheduleFollowUp(
+    offerId: string,
+    nextFollowUpAtUtc: string,
+    note: string | null,
+  ): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/offers/${offerId}/follow-up`, {
+      nextFollowUpAtUtc,
+      note,
+    });
   }
 
   withdraw(offerId: string, reason: string): Observable<void> {

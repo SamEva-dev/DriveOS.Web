@@ -13,7 +13,7 @@ export type DriveOsEmptyStateTone = 'default' | 'search' | 'success';
 export class DriveOsEmptyStateComponent {
   readonly icon = input('building-2');
   readonly title = input.required<string>();
-  readonly description = input.required<string>();
+  readonly description = input<string>('');
   readonly tone = input<DriveOsEmptyStateTone>('default');
   readonly compact = input(false);
 }

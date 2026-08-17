@@ -11,13 +11,13 @@ export const ORGANIZATIONS_ROUTES: Routes = [
   },
 
   {
-  path: 'create',
+    path: 'create',
 
-  loadComponent: () =>
-    import('./pages/organization-create/organization-create.page').then(
-      (component) => component.OrganizationCreatePage,
-    ),
-},
+    loadComponent: () =>
+      import('./pages/organization-create/organization-create.page').then(
+        (component) => component.OrganizationCreatePage,
+      ),
+  },
 
   {
     path: ':organizationId/branches',
@@ -107,7 +107,6 @@ export const ORGANIZATIONS_ROUTES: Routes = [
       ),
   },
 
-
   {
     path: ':organizationId/settings',
 
@@ -116,8 +115,6 @@ export const ORGANIZATIONS_ROUTES: Routes = [
         (component) => component.OrganizationSettingsPage,
       ),
   },
-
-
 
   {
     path: ':organizationId/sequences',
@@ -155,10 +152,12 @@ export const ORGANIZATIONS_ROUTES: Routes = [
       ),
   },
   {
-  path: ':organizationId/closure',
-  loadComponent: () => import('./organization-closures/pages/organization-closure/organization-closure.page').then(m => m.OrganizationClosurePage),
-},
-
+    path: ':organizationId/closure',
+    loadComponent: () =>
+      import('./organization-closures/pages/organization-closure/organization-closure.page').then(
+        (m) => m.OrganizationClosurePage,
+      ),
+  },
 
   {
     path: ':organizationId',

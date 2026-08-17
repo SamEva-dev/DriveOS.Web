@@ -1,0 +1,60 @@
+<section>
+  <div>
+    <h2 class="text-xl font-extrabold">{{ 'students.mobility.title' | translate }}</h2>
+    <p class="text-sm text-slate-500">{{ 'students.mobility.description' | translate }}</p>
+  </div>
+  @if (visibleTabs().length) {
+    <nav
+      class="mt-4 flex gap-2 overflow-x-auto"
+      [attr.aria-label]="'students.mobility.tabs.navigation' | translate"
+    >
+      @for (tab of visibleTabs(); track tab.id) {
+        <a
+          [routerLink]="['/students', studentId, 'mobility', tab.route]"
+          routerLinkActive="border-blue-800 bg-blue-50 text-blue-800"
+          class="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full border border-[var(--driveos-border)] px-4 text-sm font-bold"
+        >
+          <i
+            class="ph"
+            [class]="'ph ' + tab.icon"
+          ></i>
+          {{ tab.labelKey | translate }}
+        </a>
+      }
+    </nav>
+  }
+  @if (loading()) {
+    <div class="grid min-h-64 place-items-center">
+      <drive-os-spinner
+        size="lg"
+        [label]="'common.loading' | translate"
+      />
+    </div>
+  } @else if (selected() === 'internal' && internal(); as transfers) {
+    <driveos-student-internal-transfer-panel
+      [studentId]="studentId"
+      [transfers]="transfers"
+      (refreshed)="load()"
+    />
+  } @else if (selected() === 'external' && external(); as transfers) {
+    <driveos-student-external-transfer-panel
+      [studentId]="studentId"
+      [transfers]="transfers"
+      (refreshed)="load()"
+    />
+  } @else if (!visibleTabs().length) {
+    <drive-os-state-banner
+      class="mt-5 block"
+      tone="warning"
+      icon="ph ph-lock"
+      [title]="'students.mobility.restricted' | translate"
+    />
+  } @else {
+    <drive-os-state-banner
+      class="mt-5 block"
+      tone="warning"
+      icon="ph ph-warning"
+      [title]="'students.mobility.unavailable' | translate"
+    />
+  }
+</section>

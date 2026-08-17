@@ -16,10 +16,22 @@ export type LeadStatus =
   | 'CancelledByLead'
   | 'ConvertedElsewhere';
 
-export type LeadClosureReason = 'PriceTooHigh' | 'FinancingRejected' | 'DelayTooLong'
-  | 'TrainingUnavailable' | 'AreaNotCovered' | 'CompetitorChosen' | 'Unavailable'
-  | 'ProjectPostponed' | 'NoResponse' | 'EligibilityConditionNotMet' | 'Duplicate'
-  | 'PartnerReferral' | 'CancelledByLead' | 'ConvertedElsewhere' | 'Other';
+export type LeadClosureReason =
+  | 'PriceTooHigh'
+  | 'FinancingRejected'
+  | 'DelayTooLong'
+  | 'TrainingUnavailable'
+  | 'AreaNotCovered'
+  | 'CompetitorChosen'
+  | 'Unavailable'
+  | 'ProjectPostponed'
+  | 'NoResponse'
+  | 'EligibilityConditionNotMet'
+  | 'Duplicate'
+  | 'PartnerReferral'
+  | 'CancelledByLead'
+  | 'ConvertedElsewhere'
+  | 'Other';
 
 export type LeadSourceType =
   | 'Website'
@@ -35,7 +47,8 @@ export type LeadSourceType =
   | 'Other';
 
 export type TransmissionPreference = 'Unspecified' | 'Manual' | 'Automatic';
-export type FinancingOption = 'Unknown' | 'SelfFunded' | 'CPF' | 'Employer' | 'PublicFunding' | 'Installments' | 'Other';
+export type FinancingOption =
+  'Unknown' | 'SelfFunded' | 'CPF' | 'Employer' | 'PublicFunding' | 'Installments' | 'Other';
 
 export interface LeadQualification {
   need: string;

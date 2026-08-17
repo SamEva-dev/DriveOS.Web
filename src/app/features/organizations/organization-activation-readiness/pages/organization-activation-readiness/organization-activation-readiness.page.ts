@@ -130,7 +130,6 @@ export class OrganizationActivationReadinessPage {
     }
   }
 
-
   canNavigateTo(navigation: RequirementNavigation): boolean {
     return this.authorization.hasPermission(navigation.requiredPermission);
   }

@@ -5,14 +5,27 @@ import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { ApiErrorService } from '../../../../core/errors/api-error.service';
-import { DriveOsButtonComponent, DriveOsCardComponent, DriveOsInputDirective, DriveOsToastService } from '../../../../shared/ui';
+import {
+  DriveOsButtonComponent,
+  DriveOsCardComponent,
+  DriveOsInputDirective,
+  DriveOsToastService,
+} from '../../../../shared/ui';
 import { LeadsApiService } from '../../data-access/leads-api.service';
 import { LeadSourceType, TransmissionPreference } from '../../models/lead.model';
 
 @Component({
-  selector: 'driveos-lead-create-page', standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe, DriveOsButtonComponent, DriveOsCardComponent, DriveOsInputDirective],
-  templateUrl: './lead-create.page.html', changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'driveos-lead-create-page',
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    DriveOsButtonComponent,
+    DriveOsCardComponent,
+    DriveOsInputDirective,
+  ],
+  templateUrl: './lead-create.page.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LeadCreatePage {
   private readonly formBuilder = inject(FormBuilder);
@@ -36,30 +49,42 @@ export class LeadCreatePage {
   });
 
   submit(): void {
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
     const value = this.form.getRawValue();
     const optional = (text: string): string | null => text.trim() || null;
     this.isSubmitting.set(true);
-    this.leadsApi.create({
-      branchId: null,
-      firstName: value.firstName.trim(), lastName: value.lastName.trim(),
-      email: optional(value.email), phone: optional(value.phone),
-      licenseCategory: value.licenseCategory.trim().toUpperCase(), transmission: value.transmission,
-      preferredLocation: optional(value.preferredLocation), sourceType: value.sourceType,
-      sourceDetail: optional(value.sourceDetail), assignedAdvisorId: null,
-    }).subscribe({
-      next: (response) => {
-        this.isSubmitting.set(false);
-        this.toast.success(this.translate.instant('crm.leads.create.success'));
-        void this.router.navigate(['/crm/leads'], { state: { createdLeadId: response.leadId } });
-      },
-      error: (error: HttpErrorResponse) => {
-        this.isSubmitting.set(false);
-        for (const message of this.apiErrorService.getMessages(error))
-          this.toast.error(this.translate.instant('errors.title'), message);
-      },
-    });
+    this.leadsApi
+      .create({
+        branchId: null,
+        firstName: value.firstName.trim(),
+        lastName: value.lastName.trim(),
+        email: optional(value.email),
+        phone: optional(value.phone),
+        licenseCategory: value.licenseCategory.trim().toUpperCase(),
+        transmission: value.transmission,
+        preferredLocation: optional(value.preferredLocation),
+        sourceType: value.sourceType,
+        sourceDetail: optional(value.sourceDetail),
+        assignedAdvisorId: null,
+      })
+      .subscribe({
+        next: (response) => {
+          this.isSubmitting.set(false);
+          this.toast.success(this.translate.instant('crm.leads.create.success'));
+          void this.router.navigate(['/crm/leads'], { state: { createdLeadId: response.leadId } });
+        },
+        error: (error: HttpErrorResponse) => {
+          this.isSubmitting.set(false);
+          for (const message of this.apiErrorService.getMessages(error))
+            this.toast.error(this.translate.instant('errors.title'), message);
+        },
+      });
   }
 
-  cancel(): void { void this.router.navigate(['/crm/leads']); }
+  cancel(): void {
+    void this.router.navigate(['/crm/leads']);
+  }
 }

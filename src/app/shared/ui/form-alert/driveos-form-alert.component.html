@@ -16,7 +16,9 @@
     [class.text-amber-900]="tone() === 'warning'"
     [class.text-red-900]="tone() === 'danger'"
     [class.text-emerald-900]="tone() === 'success'"
-  >{{ title() }}</p>
+  >
+    {{ title() }}
+  </p>
   @if (message()) {
     <p
       class="mt-1 text-sm leading-5"
@@ -24,6 +26,8 @@
       [class.text-amber-800]="tone() === 'warning'"
       [class.text-red-800]="tone() === 'danger'"
       [class.text-emerald-800]="tone() === 'success'"
-    >{{ message() }}</p>
+    >
+      {{ message() }}
+    </p>
   }
 </div>

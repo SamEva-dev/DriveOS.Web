@@ -1,37 +1,158 @@
 <section class="space-y-6">
-  <header><p class="text-sm font-semibold text-orange-500">CRM-001N-C5</p>
-    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">{{ 'crm.offers.compare.title' | translate }}</h1>
-    <p class="mt-1 text-sm text-slate-500">{{ 'crm.offers.compare.subtitle' | translate }}</p></header>
-  @if (!canRead()) { <drive-os-state-banner tone="warning" [title]="'crm.offers.compare.forbidden' | translate" /> }
-  @else if (loading()) { <div class="flex justify-center py-16"><drive-os-spinner /></div> }
-  @else if (failed()) { <drive-os-state-banner tone="danger" [title]="'crm.offers.compare.error' | translate" /> }
-  @else if (!offers().length) { <drive-os-state-banner tone="info" [title]="'crm.offers.compare.empty' | translate" /> }
-  @else {
-    <div class="md:hidden"><label class="text-sm font-medium">{{ 'crm.offers.compare.selected' | translate }}</label>
-      <select class="mt-2 w-full rounded-xl border border-slate-300 bg-white p-3 dark:bg-slate-900" [ngModel]="selectedId()" (ngModelChange)="select($event)">
-        @for (offer of offers(); track offer.id) { <option [value]="offer.id">{{ offer.trainingCode }} · v{{ offer.version }} · {{ offer.amount | currency:offer.currency }}</option> }
+  <header>
+    <p class="text-sm font-semibold text-orange-500">CRM-001N-C5</p>
+    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
+      {{ 'crm.offers.compare.title' | translate }}
+    </h1>
+    <p class="mt-1 text-sm text-slate-500">{{ 'crm.offers.compare.subtitle' | translate }}</p>
+  </header>
+  @if (!canRead()) {
+    <drive-os-state-banner
+      tone="warning"
+      [title]="'crm.offers.compare.forbidden' | translate"
+    />
+  } @else if (loading()) {
+    <div class="flex justify-center py-16"><drive-os-spinner /></div>
+  } @else if (failed()) {
+    <drive-os-state-banner
+      tone="danger"
+      [title]="'crm.offers.compare.error' | translate"
+    />
+  } @else if (!offers().length) {
+    <drive-os-state-banner
+      tone="info"
+      [title]="'crm.offers.compare.empty' | translate"
+    />
+  } @else {
+    <div class="md:hidden">
+      <label class="text-sm font-medium">{{ 'crm.offers.compare.selected' | translate }}</label>
+      <select
+        class="mt-2 w-full rounded-xl border border-slate-300 bg-white p-3 dark:bg-slate-900"
+        [ngModel]="selectedId()"
+        (ngModelChange)="select($event)"
+      >
+        @for (offer of offers(); track offer.id) {
+          <option [value]="offer.id">
+            {{ offer.trainingCode }} · v{{ offer.version }} ·
+            {{ offer.amount | currency: offer.currency }}
+          </option>
+        }
       </select>
-      @if (selected(); as offer) { <drive-os-card class="mt-4 block"><div class="space-y-3">
-        <p><b>{{ 'crm.offers.compare.driving' | translate }}:</b> {{ line(offer, 'PracticalLesson') }}</p>
-        <p><b>{{ 'crm.offers.compare.simulator' | translate }}:</b> {{ line(offer, 'SimulatorLesson') }}</p>
-        <div class="space-y-3 border-t border-slate-200 pt-3">@for (item of offer.lines; track item.id) {
-          <div class="rounded-xl bg-slate-50 p-3 dark:bg-slate-800"><p class="font-medium">{{ item.description }}</p>
-            <div class="mt-2 grid grid-cols-2 gap-2"><label class="text-xs">{{ 'crm.offers.compare.quantity' | translate }}<input class="mt-1 w-full rounded-lg border p-2" type="number" min="0.01" step="0.5" [ngModel]="item.quantity" (ngModelChange)="updateQuantity(item.id, $event)" /></label>
-              <label class="text-xs">{{ 'crm.offers.compare.discount' | translate }}<input class="mt-1 w-full rounded-lg border p-2" type="number" min="0" step="1" [ngModel]="item.discountAmount" (ngModelChange)="updateDiscount(item.id, $event)" /></label></div>
-            @if (!item.mandatory) { <button class="mt-2 text-sm text-red-600" (click)="removeOptional(item.id)">{{ 'crm.offers.compare.removeOption' | translate }}</button> }
-            @else { <p class="mt-2 text-xs text-slate-500">{{ 'crm.offers.compare.mandatory' | translate }}</p> }
-          </div> }</div>
-        <p class="text-xl font-bold text-blue-800">{{ calculatedTotal(offer) | currency:offer.currency }}</p>
-      </div></drive-os-card> }
+      @if (selected(); as offer) {
+        <drive-os-card class="mt-4 block">
+          <div class="space-y-3">
+            <p>
+              <b>{{ 'crm.offers.compare.driving' | translate }}:</b>
+              {{ line(offer, 'PracticalLesson') }}
+            </p>
+            <p>
+              <b>{{ 'crm.offers.compare.simulator' | translate }}:</b>
+              {{ line(offer, 'SimulatorLesson') }}
+            </p>
+            <div class="space-y-3 border-t border-slate-200 pt-3">
+              @for (item of offer.lines; track item.id) {
+                <div class="rounded-xl bg-slate-50 p-3 dark:bg-slate-800">
+                  <p class="font-medium">{{ item.description }}</p>
+                  <div class="mt-2 grid grid-cols-2 gap-2">
+                    <label class="text-xs">
+                      {{ 'crm.offers.compare.quantity' | translate }}
+                      <input
+                        class="mt-1 w-full rounded-lg border p-2"
+                        type="number"
+                        min="0.01"
+                        step="0.5"
+                        [ngModel]="item.quantity"
+                        (ngModelChange)="updateQuantity(item.id, $event)"
+                      />
+                    </label>
+                    <label class="text-xs">
+                      {{ 'crm.offers.compare.discount' | translate }}
+                      <input
+                        class="mt-1 w-full rounded-lg border p-2"
+                        type="number"
+                        min="0"
+                        step="1"
+                        [ngModel]="item.discountAmount"
+                        (ngModelChange)="updateDiscount(item.id, $event)"
+                      />
+                    </label>
+                  </div>
+                  @if (!item.mandatory) {
+                    <button
+                      class="mt-2 text-sm text-red-600"
+                      (click)="removeOptional(item.id)"
+                    >
+                      {{ 'crm.offers.compare.removeOption' | translate }}
+                    </button>
+                  } @else {
+                    <p class="mt-2 text-xs text-slate-500">
+                      {{ 'crm.offers.compare.mandatory' | translate }}
+                    </p>
+                  }
+                </div>
+              }
+            </div>
+            <p class="text-xl font-bold text-blue-800">
+              {{ calculatedTotal(offer) | currency: offer.currency }}
+            </p>
+          </div>
+        </drive-os-card>
+      }
     </div>
-    <div class="hidden overflow-x-auto rounded-2xl border border-slate-200 md:block dark:border-slate-700"><table class="min-w-full bg-white dark:bg-slate-900">
-      <thead><tr><th class="p-4 text-left">{{ 'crm.offers.compare.criterion' | translate }}</th>@for (offer of offers(); track offer.id) { <th class="p-4 text-left"><button class="text-blue-800" (click)="select(offer.id)">{{ offer.trainingCode }} · v{{ offer.version }}</button></th> }</tr></thead>
-      <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
-        <tr><th class="p-4 text-left">{{ 'crm.offers.compare.driving' | translate }}</th>@for (offer of offers(); track offer.id) { <td class="p-4">{{ line(offer, 'PracticalLesson') }}</td> }</tr>
-        <tr><th class="p-4 text-left">{{ 'crm.offers.compare.simulator' | translate }}</th>@for (offer of offers(); track offer.id) { <td class="p-4">{{ line(offer, 'SimulatorLesson') }}</td> }</tr>
-        <tr><th class="p-4 text-left">{{ 'crm.offers.compare.options' | translate }}</th>@for (offer of offers(); track offer.id) { <td class="p-4">{{ optionalLines(offer).length }}</td> }</tr>
-        <tr><th class="p-4 text-left">{{ 'crm.offers.compare.price' | translate }}</th>@for (offer of offers(); track offer.id) { <td class="p-4 font-bold">{{ calculatedTotal(offer) | currency:offer.currency }}</td> }</tr>
-      </tbody></table></div>
-    <div class="flex justify-end"><drive-os-button [disabled]="!selected() || !canCreate() || saving()" (pressed)="saveVariant()">{{ 'crm.offers.compare.saveVariant' | translate }}</drive-os-button></div>
+    <div
+      class="hidden overflow-x-auto rounded-2xl border border-slate-200 md:block dark:border-slate-700"
+    >
+      <table class="min-w-full bg-white dark:bg-slate-900">
+        <thead>
+          <tr>
+            <th class="p-4 text-left">{{ 'crm.offers.compare.criterion' | translate }}</th>
+            @for (offer of offers(); track offer.id) {
+              <th class="p-4 text-left">
+                <button
+                  class="text-blue-800"
+                  (click)="select(offer.id)"
+                >
+                  {{ offer.trainingCode }} · v{{ offer.version }}
+                </button>
+              </th>
+            }
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+          <tr>
+            <th class="p-4 text-left">{{ 'crm.offers.compare.driving' | translate }}</th>
+            @for (offer of offers(); track offer.id) {
+              <td class="p-4">{{ line(offer, 'PracticalLesson') }}</td>
+            }
+          </tr>
+          <tr>
+            <th class="p-4 text-left">{{ 'crm.offers.compare.simulator' | translate }}</th>
+            @for (offer of offers(); track offer.id) {
+              <td class="p-4">{{ line(offer, 'SimulatorLesson') }}</td>
+            }
+          </tr>
+          <tr>
+            <th class="p-4 text-left">{{ 'crm.offers.compare.options' | translate }}</th>
+            @for (offer of offers(); track offer.id) {
+              <td class="p-4">{{ optionalLines(offer).length }}</td>
+            }
+          </tr>
+          <tr>
+            <th class="p-4 text-left">{{ 'crm.offers.compare.price' | translate }}</th>
+            @for (offer of offers(); track offer.id) {
+              <td class="p-4 font-bold">{{ calculatedTotal(offer) | currency: offer.currency }}</td>
+            }
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="flex justify-end">
+      <drive-os-button
+        [disabled]="!selected() || !canCreate() || saving()"
+        (pressed)="saveVariant()"
+      >
+        {{ 'crm.offers.compare.saveVariant' | translate }}
+      </drive-os-button>
+    </div>
   }
 </section>

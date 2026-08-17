@@ -9,17 +9,29 @@
   <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
     <div class="flex min-w-0 items-start gap-4">
       @if (step()) {
-        <span class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[var(--driveos-primary-800)] text-base font-black text-white shadow-sm">{{ step() }}</span>
+        <span
+          class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[var(--driveos-primary-800)] text-base font-black text-white shadow-sm"
+        >
+          {{ step() }}
+        </span>
       }
       <div class="min-w-0">
-        <h2 class="text-lg font-extrabold text-[var(--driveos-text-primary)] sm:text-xl">{{ title() }}</h2>
+        <h2 class="text-lg font-extrabold text-[var(--driveos-text-primary)] sm:text-xl">
+          {{ title() }}
+        </h2>
         @if (description()) {
-          <p class="mt-1 text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ description() }}</p>
+          <p class="mt-1 text-sm leading-6 text-[var(--driveos-text-secondary)]">
+            {{ description() }}
+          </p>
         }
       </div>
     </div>
     @if (badge()) {
-      <span class="self-start rounded-full bg-[var(--driveos-primary-50)] px-3 py-1 text-xs font-extrabold text-[var(--driveos-primary-800)] dark:bg-slate-800 dark:text-blue-300">{{ badge() }}</span>
+      <span
+        class="self-start rounded-full bg-[var(--driveos-primary-50)] px-3 py-1 text-xs font-extrabold text-[var(--driveos-primary-800)] dark:bg-slate-800 dark:text-blue-300"
+      >
+        {{ badge() }}
+      </span>
     }
   </div>
 

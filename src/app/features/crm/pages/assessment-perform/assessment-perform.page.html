@@ -1,14 +1,33 @@
 <div class="mx-auto max-w-7xl space-y-6 p-4 sm:p-6 lg:p-8">
   <div class="flex flex-wrap items-center justify-between gap-4">
     <div>
-      <button type="button" class="mb-2 text-sm font-medium text-blue-800 hover:text-blue-900" (click)="back()">← {{ 'crm.assessments.perform.back' | translate }}</button>
-      <h1 class="text-2xl font-bold text-slate-950 dark:text-white">{{ 'crm.assessments.perform.title' | translate }}</h1>
+      <button
+        type="button"
+        class="mb-2 text-sm font-medium text-blue-800 hover:text-blue-900"
+        (click)="back()"
+      >
+        ← {{ 'crm.assessments.perform.back' | translate }}
+      </button>
+      <h1 class="text-2xl font-bold text-slate-950 dark:text-white">
+        {{ 'crm.assessments.perform.title' | translate }}
+      </h1>
       <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">{{ questionnaire().title }}</p>
     </div>
     @if (session() && !isSubmitted()) {
       <div class="text-right text-xs text-slate-500">
-        <p>{{ saving() ? ('crm.assessments.perform.saving' | translate) : ('crm.assessments.perform.autosave' | translate) }}</p>
-        @if (savedAt()) { <p>{{ 'crm.assessments.perform.lastSaved' | translate }} {{ savedAt() | date:'shortTime' }}</p> }
+        <p>
+          {{
+            saving()
+              ? ('crm.assessments.perform.saving' | translate)
+              : ('crm.assessments.perform.autosave' | translate)
+          }}
+        </p>
+        @if (savedAt()) {
+          <p>
+            {{ 'crm.assessments.perform.lastSaved' | translate }}
+            {{ savedAt() | date: 'shortTime' }}
+          </p>
+        }
       </div>
     }
   </div>
@@ -16,48 +35,108 @@
   @if (loading()) {
     <div class="flex min-h-72 items-center justify-center"><drive-os-spinner /></div>
   } @else if (loadFailed()) {
-    <drive-os-state-banner tone="danger" [title]="'errors.title' | translate" />
+    <drive-os-state-banner
+      tone="danger"
+      [title]="'errors.title' | translate"
+    />
   } @else if (!session()) {
     <drive-os-card>
       <div class="mx-auto max-w-2xl py-10 text-center">
-        <div class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-100 text-2xl">✓</div>
-        <h2 class="text-xl font-semibold text-slate-950 dark:text-white">{{ 'crm.assessments.perform.readyTitle' | translate }}</h2>
-        <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">{{ 'crm.assessments.perform.readyText' | translate }}</p>
+        <div
+          class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-100 text-2xl"
+        >
+          ✓
+        </div>
+        <h2 class="text-xl font-semibold text-slate-950 dark:text-white">
+          {{ 'crm.assessments.perform.readyTitle' | translate }}
+        </h2>
+        <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">
+          {{ 'crm.assessments.perform.readyText' | translate }}
+        </p>
         @if (appointment()?.status !== 'Scheduled') {
-          <p class="mt-4 rounded-xl bg-amber-50 p-3 text-sm text-amber-800">{{ 'crm.assessments.perform.notStartable' | translate }}</p>
+          <p class="mt-4 rounded-xl bg-amber-50 p-3 text-sm text-amber-800">
+            {{ 'crm.assessments.perform.notStartable' | translate }}
+          </p>
         }
-        <div class="mt-6"><drive-os-button (pressed)="start()" [disabled]="!canStart() || appointment()?.status !== 'Scheduled'" [loading]="starting()">{{ 'crm.assessments.perform.start' | translate }}</drive-os-button></div>
+        <div class="mt-6">
+          <drive-os-button
+            (pressed)="start()"
+            [disabled]="!canStart() || appointment()?.status !== 'Scheduled'"
+            [loading]="starting()"
+          >
+            {{ 'crm.assessments.perform.start' | translate }}
+          </drive-os-button>
+        </div>
       </div>
     </drive-os-card>
   } @else {
     <div class="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
       <aside class="space-y-3">
         <drive-os-card>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ 'crm.assessments.perform.progress' | translate }}</p>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            {{ 'crm.assessments.perform.progress' | translate }}
+          </p>
           <p class="mt-2 text-3xl font-bold text-blue-800">{{ completion() }}%</p>
-          <div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full rounded-full bg-orange-500 transition-all" [style.width.%]="completion()"></div></div>
+          <div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-200">
+            <div
+              class="h-full rounded-full bg-orange-500 transition-all"
+              [style.width.%]="completion()"
+            ></div>
+          </div>
         </drive-os-card>
-        <nav class="rounded-2xl border border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-slate-900">
+        <nav
+          class="rounded-2xl border border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-slate-900"
+        >
           @for (label of ['criteria', 'analysis', 'summary']; track label; let index = $index) {
-            <button type="button" class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium" [class.bg-blue-50]="step() === index" [class.text-blue-800]="step() === index" (click)="step.set(index)">
-              <span class="flex h-7 w-7 items-center justify-center rounded-full border">{{ index + 1 }}</span>{{ ('crm.assessments.perform.steps.' + label) | translate }}
+            <button
+              type="button"
+              class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium"
+              [class.bg-blue-50]="step() === index"
+              [class.text-blue-800]="step() === index"
+              (click)="step.set(index)"
+            >
+              <span class="flex h-7 w-7 items-center justify-center rounded-full border">
+                {{ index + 1 }}
+              </span>
+              {{ 'crm.assessments.perform.steps.' + label | translate }}
             </button>
           }
         </nav>
       </aside>
 
       <main>
-        @if (isSubmitted()) { <drive-os-state-banner tone="success" [title]="'crm.assessments.perform.submitted' | translate" /> }
+        @if (isSubmitted()) {
+          <drive-os-state-banner
+            tone="success"
+            [title]="'crm.assessments.perform.submitted' | translate"
+          />
+        }
         @if (step() === 0) {
           <drive-os-card>
             <div class="space-y-6">
               @for (question of questions(); track question.id) {
-                <fieldset [disabled]="isSubmitted() || !canComplete()" class="border-b border-slate-100 pb-6 last:border-0">
-                  <legend class="font-semibold text-slate-900 dark:text-white">{{ question.label }}</legend>
-                  <p class="mb-3 mt-1 text-xs uppercase tracking-wide text-slate-500">{{ question.section }}</p>
+                <fieldset
+                  [disabled]="isSubmitted() || !canComplete()"
+                  class="border-b border-slate-100 pb-6 last:border-0"
+                >
+                  <legend class="font-semibold text-slate-900 dark:text-white">
+                    {{ question.label }}
+                  </legend>
+                  <p class="mb-3 mt-1 text-xs uppercase tracking-wide text-slate-500">
+                    {{ question.section }}
+                  </p>
                   <div class="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
                     @for (option of question.options; track option.value) {
-                      <button type="button" class="rounded-xl border px-3 py-3 text-sm transition" [class.border-blue-700]="answerValue(question.id) === option.value" [class.bg-blue-50]="answerValue(question.id) === option.value" [class.text-blue-800]="answerValue(question.id) === option.value" (click)="answer(question.id, option.value)">{{ option.label }}</button>
+                      <button
+                        type="button"
+                        class="rounded-xl border px-3 py-3 text-sm transition"
+                        [class.border-blue-700]="answerValue(question.id) === option.value"
+                        [class.bg-blue-50]="answerValue(question.id) === option.value"
+                        [class.text-blue-800]="answerValue(question.id) === option.value"
+                        (click)="answer(question.id, option.value)"
+                      >
+                        {{ option.label }}
+                      </button>
                     }
                   </div>
                 </fieldset>
@@ -65,31 +144,99 @@
             </div>
           </drive-os-card>
         } @else if (step() === 1) {
-          <form [formGroup]="notesForm" class="space-y-5">
-            @for (field of ['factualObservations', 'pedagogicalInterpretation', 'recommendation', 'internalNotes', 'prospectComment']; track field) {
+          <form
+            [formGroup]="notesForm"
+            class="space-y-5"
+          >
+            @for (
+              field of [
+                'factualObservations',
+                'pedagogicalInterpretation',
+                'recommendation',
+                'internalNotes',
+                'prospectComment',
+              ];
+              track field
+            ) {
               <drive-os-card>
-                <label class="mb-2 block font-semibold text-slate-900 dark:text-white" [for]="field">{{ ('crm.assessments.perform.fields.' + field) | translate }}</label>
-                <textarea [id]="field" [formControlName]="field" rows="4" maxlength="8000" class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-100 dark:border-slate-600 dark:bg-slate-950"></textarea>
+                <label
+                  class="mb-2 block font-semibold text-slate-900 dark:text-white"
+                  [for]="field"
+                >
+                  {{ 'crm.assessments.perform.fields.' + field | translate }}
+                </label>
+                <textarea
+                  [id]="field"
+                  [formControlName]="field"
+                  rows="4"
+                  maxlength="8000"
+                  class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-100 dark:border-slate-600 dark:bg-slate-950"
+                ></textarea>
               </drive-os-card>
             }
           </form>
         } @else {
           <drive-os-card>
-            <h2 class="text-lg font-semibold text-slate-950 dark:text-white">{{ 'crm.assessments.perform.summaryTitle' | translate }}</h2>
+            <h2 class="text-lg font-semibold text-slate-950 dark:text-white">
+              {{ 'crm.assessments.perform.summaryTitle' | translate }}
+            </h2>
             <dl class="mt-6 grid gap-4 sm:grid-cols-2">
-              <div class="rounded-xl bg-slate-50 p-4"><dt class="text-xs uppercase text-slate-500">{{ 'crm.assessments.perform.answered' | translate }}</dt><dd class="mt-1 text-xl font-bold">{{ answeredCount() }} / {{ questions().length }}</dd></div>
-              <div class="rounded-xl bg-slate-50 p-4"><dt class="text-xs uppercase text-slate-500">{{ 'crm.assessments.perform.status' | translate }}</dt><dd class="mt-1 text-xl font-bold">{{ session()?.status }}</dd></div>
+              <div class="rounded-xl bg-slate-50 p-4">
+                <dt class="text-xs uppercase text-slate-500">
+                  {{ 'crm.assessments.perform.answered' | translate }}
+                </dt>
+                <dd class="mt-1 text-xl font-bold">
+                  {{ answeredCount() }} / {{ questions().length }}
+                </dd>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-4">
+                <dt class="text-xs uppercase text-slate-500">
+                  {{ 'crm.assessments.perform.status' | translate }}
+                </dt>
+                <dd class="mt-1 text-xl font-bold">{{ session()?.status }}</dd>
+              </div>
             </dl>
-            @if (completion() < 100) { <p class="mt-5 rounded-xl bg-amber-50 p-4 text-sm text-amber-800">{{ 'crm.assessments.perform.incomplete' | translate }}</p> }
+            @if (completion() < 100) {
+              <p class="mt-5 rounded-xl bg-amber-50 p-4 text-sm text-amber-800">
+                {{ 'crm.assessments.perform.incomplete' | translate }}
+              </p>
+            }
           </drive-os-card>
         }
 
         <div class="mt-6 flex flex-wrap justify-between gap-3">
-          <drive-os-button variant="secondary" (pressed)="previous()" [disabled]="step() === 0">{{ 'crm.assessments.perform.previous' | translate }}</drive-os-button>
+          <drive-os-button
+            variant="secondary"
+            (pressed)="previous()"
+            [disabled]="step() === 0"
+          >
+            {{ 'crm.assessments.perform.previous' | translate }}
+          </drive-os-button>
           <div class="flex gap-3">
-            @if (!isSubmitted()) { <drive-os-button variant="secondary" (pressed)="saveManually()" [loading]="saving()" [disabled]="!canComplete()">{{ 'common.actions.save' | translate }}</drive-os-button> }
-            @if (step() < 2) { <drive-os-button (pressed)="next()">{{ 'crm.assessments.perform.next' | translate }}</drive-os-button> }
-            @if (step() === 2 && !isSubmitted()) { <drive-os-button (pressed)="submit()" [loading]="submitting()" [disabled]="completion() < 100 || !canSubmit()">{{ 'crm.assessments.perform.submit' | translate }}</drive-os-button> }
+            @if (!isSubmitted()) {
+              <drive-os-button
+                variant="secondary"
+                (pressed)="saveManually()"
+                [loading]="saving()"
+                [disabled]="!canComplete()"
+              >
+                {{ 'common.actions.save' | translate }}
+              </drive-os-button>
+            }
+            @if (step() < 2) {
+              <drive-os-button (pressed)="next()">
+                {{ 'crm.assessments.perform.next' | translate }}
+              </drive-os-button>
+            }
+            @if (step() === 2 && !isSubmitted()) {
+              <drive-os-button
+                (pressed)="submit()"
+                [loading]="submitting()"
+                [disabled]="completion() < 100 || !canSubmit()"
+              >
+                {{ 'crm.assessments.perform.submit' | translate }}
+              </drive-os-button>
+            }
           </div>
         </div>
       </main>

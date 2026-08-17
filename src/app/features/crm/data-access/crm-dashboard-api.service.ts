@@ -9,8 +9,11 @@ export class CrmDashboardApiService {
   private readonly http = inject(HttpClient);
   private readonly config = inject<ApiConfig>(API_CONFIG);
 
-  get(scope: 'branch' | 'organization' | 'network', branchId?: string,
-      filters: CrmDashboardFilters = {}): Observable<CrmDashboard> {
+  get(
+    scope: 'branch' | 'organization' | 'network',
+    branchId?: string,
+    filters: CrmDashboardFilters = {},
+  ): Observable<CrmDashboard> {
     let params = new HttpParams().set('scope', scope);
     if (branchId) params = params.set('branchId', branchId);
     for (const [key, value] of Object.entries(filters)) {

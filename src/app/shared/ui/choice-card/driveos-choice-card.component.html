@@ -17,12 +17,16 @@
     [class.border-[var(--driveos-border-strong)]]="!checked()"
     [class.text-transparent]="!checked()"
     aria-hidden="true"
-  >✓</span>
+  >
+    ✓
+  </span>
 
   <span class="min-w-0">
     <span class="block font-extrabold text-[var(--driveos-text-primary)]">{{ title() }}</span>
     @if (description()) {
-      <span class="mt-1 block text-sm leading-5 text-[var(--driveos-text-secondary)]">{{ description() }}</span>
+      <span class="mt-1 block text-sm leading-5 text-[var(--driveos-text-secondary)]">
+        {{ description() }}
+      </span>
     }
   </span>
 </button>

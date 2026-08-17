@@ -1,12 +1,20 @@
 <section class="representatives-page mx-auto max-w-7xl space-y-6">
   <header class="hero-panel">
     <div class="min-w-0">
-      <a [routerLink]="['/organizations', organizationId]" class="back-link">
+      <a
+        [routerLink]="['/organizations', organizationId]"
+        class="back-link"
+      >
         <span aria-hidden="true">←</span>
         {{ 'organizations.detail.title' | translate }}
       </a>
       <div class="mt-4 flex flex-wrap items-center gap-3">
-        <div class="hero-icon" aria-hidden="true">♜</div>
+        <div
+          class="hero-icon"
+          aria-hidden="true"
+        >
+          ♜
+        </div>
         <div>
           <p class="eyebrow">{{ 'organizations.representatives.eyebrow' | translate }}</p>
           <h1 class="page-title">{{ 'organizations.representatives.title' | translate }}</h1>
@@ -16,7 +24,11 @@
     </div>
 
     @if (canCreate()) {
-      <drive-os-button icon="ph ph-plus" size="lg" (pressed)="openCreate()">
+      <drive-os-button
+        icon="ph ph-plus"
+        size="lg"
+        (pressed)="openCreate()"
+      >
         {{ 'organizations.representatives.actions.create' | translate }}
       </drive-os-button>
     }
@@ -25,20 +37,38 @@
   @if (!loading()) {
     <div class="stats-grid">
       <article class="stat-card">
-        <span class="stat-label">{{ 'organizations.representatives.stats.total' | translate }}</span>
+        <span class="stat-label">
+          {{ 'organizations.representatives.stats.total' | translate }}
+        </span>
         <strong>{{ totalCount() }}</strong>
       </article>
       <article class="stat-card">
-        <span class="stat-label">{{ 'organizations.representatives.stats.active' | translate }}</span>
+        <span class="stat-label">
+          {{ 'organizations.representatives.stats.active' | translate }}
+        </span>
         <strong>{{ activeCount() }}</strong>
       </article>
       <article class="stat-card">
-        <span class="stat-label">{{ 'organizations.representatives.stats.owners' | translate }}</span>
+        <span class="stat-label">
+          {{ 'organizations.representatives.stats.owners' | translate }}
+        </span>
         <strong>{{ ownerCount() }}</strong>
       </article>
-      <article class="stat-card" [class.stat-card-ok]="hasPrimaryOwner()">
-        <span class="stat-label">{{ 'organizations.representatives.stats.primaryOwner' | translate }}</span>
-        <strong>{{ (hasPrimaryOwner() ? 'organizations.representatives.stats.yes' : 'organizations.representatives.stats.no') | translate }}</strong>
+      <article
+        class="stat-card"
+        [class.stat-card-ok]="hasPrimaryOwner()"
+      >
+        <span class="stat-label">
+          {{ 'organizations.representatives.stats.primaryOwner' | translate }}
+        </span>
+        <strong>
+          {{
+            (hasPrimaryOwner()
+              ? 'organizations.representatives.stats.yes'
+              : 'organizations.representatives.stats.no'
+            ) | translate
+          }}
+        </strong>
       </article>
     </div>
   }
@@ -61,7 +91,9 @@
             <button
               type="button"
               class="representative-item"
-              [class.representative-item-selected]="selected()?.id === item.id && mode() !== 'create'"
+              [class.representative-item-selected]="
+                selected()?.id === item.id && mode() !== 'create'
+              "
               (click)="select(item)"
             >
               <span class="avatar">{{ representativeInitials(item) }}</span>
@@ -74,12 +106,20 @@
                     {{ statusLabel(item.status) | translate }}
                   </drive-os-badge>
                 </span>
-                <span class="mt-1 block truncate text-sm font-medium text-slate-700 dark:text-slate-300">{{ representativeDisplayName(item) }}</span>
+                <span
+                  class="mt-1 block truncate text-sm font-medium text-slate-700 dark:text-slate-300"
+                >
+                  {{ representativeDisplayName(item) }}
+                </span>
                 @if (representativeEmail(item)) {
-                  <span class="mt-0.5 block truncate text-xs text-slate-500">{{ representativeEmail(item) }}</span>
+                  <span class="mt-0.5 block truncate text-xs text-slate-500">
+                    {{ representativeEmail(item) }}
+                  </span>
                 }
                 @if (item.isPrimaryOwner) {
-                  <span class="primary-owner-chip">★ {{ 'organizations.representatives.primaryOwner' | translate }}</span>
+                  <span class="primary-owner-chip">
+                    ★ {{ 'organizations.representatives.primaryOwner' | translate }}
+                  </span>
                 }
               </span>
             </button>
@@ -100,10 +140,16 @@
               <h2>{{ 'organizations.representatives.actions.create' | translate }}</h2>
               <p>{{ 'organizations.representatives.createDescription' | translate }}</p>
             </div>
-            <span class="step-badge">{{ 'organizations.representatives.governance' | translate }}</span>
+            <span class="step-badge">
+              {{ 'organizations.representatives.governance' | translate }}
+            </span>
           </div>
 
-          <form class="mt-7 space-y-7" [formGroup]="createForm" (ngSubmit)="submitCreate()">
+          <form
+            class="mt-7 space-y-7"
+            [formGroup]="createForm"
+            (ngSubmit)="submitCreate()"
+          >
             <section class="form-section">
               <div class="section-title">
                 <span class="section-number">1</span>
@@ -120,7 +166,9 @@
                 (userSelected)="onCreateUserSelected($event)"
               />
               @if (!createUser() && createForm.touched) {
-                <p class="form-error">{{ 'organizations.representatives.validation.userRequired' | translate }}</p>
+                <p class="form-error">
+                  {{ 'organizations.representatives.validation.userRequired' | translate }}
+                </p>
               }
               <div class="identity-note">
                 <span aria-hidden="true">✓</span>
@@ -139,8 +187,14 @@
 
               <div class="grid gap-5 md:grid-cols-2">
                 <label class="field-label">
-                  <span>{{ 'organizations.representatives.fields.type' | translate }} <b>*</b></span>
-                  <select driveOsInput formControlName="representativeType">
+                  <span>
+                    {{ 'organizations.representatives.fields.type' | translate }}
+                    <b>*</b>
+                  </span>
+                  <select
+                    driveOsInput
+                    formControlName="representativeType"
+                  >
                     @for (t of types; track t) {
                       <option [ngValue]="t">{{ typeLabel(t) | translate }}</option>
                     }
@@ -148,11 +202,23 @@
                 </label>
 
                 <label class="field-label md:col-span-2">
-                  <span>{{ 'organizations.representatives.fields.authority' | translate }} <b>*</b></span>
-                  <textarea driveOsInput rows="4" formControlName="authorityScope" [placeholder]="'organizations.representatives.placeholders.authority' | translate"></textarea>
+                  <span>
+                    {{ 'organizations.representatives.fields.authority' | translate }}
+                    <b>*</b>
+                  </span>
+                  <textarea
+                    driveOsInput
+                    rows="4"
+                    formControlName="authorityScope"
+                    [placeholder]="
+                      'organizations.representatives.placeholders.authority' | translate
+                    "
+                  ></textarea>
                   <small>{{ 'organizations.representatives.hints.authority' | translate }}</small>
                   @if (isInvalid(createForm.controls.authorityScope)) {
-                    <em>{{ 'organizations.representatives.validation.authorityRequired' | translate }}</em>
+                    <em>
+                      {{ 'organizations.representatives.validation.authorityRequired' | translate }}
+                    </em>
                   }
                 </label>
               </div>
@@ -169,41 +235,75 @@
 
               <div class="grid gap-5 md:grid-cols-2">
                 <label class="field-label">
-                  <span>{{ 'organizations.representatives.fields.effectiveFrom' | translate }} <b>*</b></span>
-                  <input driveOsInput type="date" formControlName="effectiveFrom" />
+                  <span>
+                    {{ 'organizations.representatives.fields.effectiveFrom' | translate }}
+                    <b>*</b>
+                  </span>
+                  <input
+                    driveOsInput
+                    type="date"
+                    formControlName="effectiveFrom"
+                  />
                   @if (isInvalid(createForm.controls.effectiveFrom)) {
-                    <em>{{ 'organizations.representatives.validation.effectiveFrom' | translate }}</em>
+                    <em>
+                      {{ 'organizations.representatives.validation.effectiveFrom' | translate }}
+                    </em>
                   }
                 </label>
                 <label class="field-label">
                   <span>{{ 'organizations.representatives.fields.effectiveTo' | translate }}</span>
-                  <input driveOsInput type="date" formControlName="effectiveTo" />
+                  <input
+                    driveOsInput
+                    type="date"
+                    formControlName="effectiveTo"
+                  />
                 </label>
-                @if (createForm.hasError('invalidDateRange') && (createForm.touched || createForm.dirty)) {
-                  <p class="form-error md:col-span-2">{{ 'organizations.representatives.validation.dateRange' | translate }}</p>
+                @if (
+                  createForm.hasError('invalidDateRange') &&
+                  (createForm.touched || createForm.dirty)
+                ) {
+                  <p class="form-error md:col-span-2">
+                    {{ 'organizations.representatives.validation.dateRange' | translate }}
+                  </p>
                 }
               </div>
             </section>
 
             <section class="option-grid">
               <label class="option-card">
-                <input type="checkbox" formControlName="isPrimaryOwner" />
+                <input
+                  type="checkbox"
+                  formControlName="isPrimaryOwner"
+                />
                 <span>
                   <strong>{{ 'organizations.representatives.primaryOwner' | translate }}</strong>
-                  <small>{{ 'organizations.representatives.hints.primaryOwner' | translate }}</small>
+                  <small>
+                    {{ 'organizations.representatives.hints.primaryOwner' | translate }}
+                  </small>
                 </span>
               </label>
               <label class="option-card">
-                <input type="checkbox" formControlName="activateImmediately" />
+                <input
+                  type="checkbox"
+                  formControlName="activateImmediately"
+                />
                 <span>
-                  <strong>{{ 'organizations.representatives.fields.activateImmediately' | translate }}</strong>
-                  <small>{{ 'organizations.representatives.hints.activateImmediately' | translate }}</small>
+                  <strong>
+                    {{ 'organizations.representatives.fields.activateImmediately' | translate }}
+                  </strong>
+                  <small>
+                    {{ 'organizations.representatives.hints.activateImmediately' | translate }}
+                  </small>
                 </span>
               </label>
             </section>
 
             <div class="form-actions">
-              <drive-os-button type="button" variant="ghost" (pressed)="cancel()">
+              <drive-os-button
+                type="button"
+                variant="ghost"
+                (pressed)="cancel()"
+              >
                 {{ 'common.actions.cancel' | translate }}
               </drive-os-button>
               <drive-os-button
@@ -222,44 +322,121 @@
             <div class="min-w-0 flex-1">
               <div class="flex flex-wrap items-center gap-2">
                 <h2>{{ typeLabel(x.representativeType) | translate }}</h2>
-                @if (x.isPrimaryOwner) { <span class="primary-owner-chip">★ {{ 'organizations.representatives.primaryOwner' | translate }}</span> }
+                @if (x.isPrimaryOwner) {
+                  <span class="primary-owner-chip">
+                    ★ {{ 'organizations.representatives.primaryOwner' | translate }}
+                  </span>
+                }
               </div>
               <p>{{ representativeDisplayName(x) }}</p>
-              @if (representativeEmail(x)) { <p class="text-sm text-slate-500">{{ representativeEmail(x) }}</p> }
+              @if (representativeEmail(x)) {
+                <p class="text-sm text-slate-500">{{ representativeEmail(x) }}</p>
+              }
             </div>
-            <drive-os-badge [variant]="statusVariant(x.status)">{{ statusLabel(x.status) | translate }}</drive-os-badge>
+            <drive-os-badge [variant]="statusVariant(x.status)">
+              {{ statusLabel(x.status) | translate }}
+            </drive-os-badge>
           </div>
 
           @if (mode() === 'edit') {
-            <form class="mt-7 space-y-5" [formGroup]="editForm" (ngSubmit)="submitEdit()">
+            <form
+              class="mt-7 space-y-5"
+              [formGroup]="editForm"
+              (ngSubmit)="submitEdit()"
+            >
               <label class="field-label">
                 <span>{{ 'organizations.representatives.fields.userId' | translate }}</span>
-                <input driveOsInput formControlName="userId" />
+                <input
+                  driveOsInput
+                  formControlName="userId"
+                />
               </label>
               <label class="field-label">
                 <span>{{ 'organizations.representatives.fields.authority' | translate }}</span>
-                <textarea driveOsInput rows="4" formControlName="authorityScope"></textarea>
+                <textarea
+                  driveOsInput
+                  rows="4"
+                  formControlName="authorityScope"
+                ></textarea>
               </label>
               <div class="grid gap-5 sm:grid-cols-2">
-                <label class="field-label"><span>{{ 'organizations.representatives.fields.effectiveFrom' | translate }}</span><input driveOsInput type="date" formControlName="effectiveFrom" /></label>
-                <label class="field-label"><span>{{ 'organizations.representatives.fields.effectiveTo' | translate }}</span><input driveOsInput type="date" formControlName="effectiveTo" /></label>
+                <label class="field-label">
+                  <span>
+                    {{ 'organizations.representatives.fields.effectiveFrom' | translate }}
+                  </span>
+                  <input
+                    driveOsInput
+                    type="date"
+                    formControlName="effectiveFrom"
+                  />
+                </label>
+                <label class="field-label">
+                  <span>{{ 'organizations.representatives.fields.effectiveTo' | translate }}</span>
+                  <input
+                    driveOsInput
+                    type="date"
+                    formControlName="effectiveTo"
+                  />
+                </label>
               </div>
               <div class="form-actions">
-                <drive-os-button type="button" variant="ghost" (pressed)="cancel()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
-                <drive-os-button type="button" [loading]="saving()" (pressed)="submitEdit()">{{ 'common.actions.save' | translate }}</drive-os-button>
+                <drive-os-button
+                  type="button"
+                  variant="ghost"
+                  (pressed)="cancel()"
+                >
+                  {{ 'common.actions.cancel' | translate }}
+                </drive-os-button>
+                <drive-os-button
+                  type="button"
+                  [loading]="saving()"
+                  (pressed)="submitEdit()"
+                >
+                  {{ 'common.actions.save' | translate }}
+                </drive-os-button>
               </div>
             </form>
           } @else if (mode() === 'action') {
-            <form class="mt-7 space-y-5" [formGroup]="actionForm" (ngSubmit)="confirm()">
+            <form
+              class="mt-7 space-y-5"
+              [formGroup]="actionForm"
+              (ngSubmit)="confirm()"
+            >
               @if (action() === 'suspend' || action() === 'reactivate' || action() === 'end') {
-                <label class="field-label"><span>{{ 'organizations.representatives.fields.reason' | translate }}</span><textarea driveOsInput rows="3" formControlName="reason"></textarea></label>
+                <label class="field-label">
+                  <span>{{ 'organizations.representatives.fields.reason' | translate }}</span>
+                  <textarea
+                    driveOsInput
+                    rows="3"
+                    formControlName="reason"
+                  ></textarea>
+                </label>
               }
               @if (action() === 'end') {
-                <label class="field-label"><span>{{ 'organizations.representatives.fields.effectiveTo' | translate }}</span><input driveOsInput type="date" formControlName="effectiveTo" /></label>
+                <label class="field-label">
+                  <span>{{ 'organizations.representatives.fields.effectiveTo' | translate }}</span>
+                  <input
+                    driveOsInput
+                    type="date"
+                    formControlName="effectiveTo"
+                  />
+                </label>
               }
               <div class="form-actions">
-                <drive-os-button type="button" variant="ghost" (pressed)="cancel()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
-                <drive-os-button type="button" [loading]="saving()" (pressed)="confirm()">{{ 'common.actions.confirm' | translate }}</drive-os-button>
+                <drive-os-button
+                  type="button"
+                  variant="ghost"
+                  (pressed)="cancel()"
+                >
+                  {{ 'common.actions.cancel' | translate }}
+                </drive-os-button>
+                <drive-os-button
+                  type="button"
+                  [loading]="saving()"
+                  (pressed)="confirm()"
+                >
+                  {{ 'common.actions.confirm' | translate }}
+                </drive-os-button>
               </div>
             </form>
           } @else {
@@ -268,23 +445,81 @@
                 <span>{{ 'organizations.representatives.fields.authority' | translate }}</span>
                 <strong>{{ x.authorityScope }}</strong>
               </article>
-              <article class="detail-card"><span>{{ 'organizations.representatives.fields.account' | translate }}</span><strong>{{ representativeDisplayName(x) }}</strong><small>{{ representativeEmail(x) || ('organizations.representatives.personWithoutAccount' | translate) }}</small></article>
-              <article class="detail-card"><span>{{ 'organizations.representatives.fields.period' | translate }}</span><strong>{{ x.effectiveFrom }} → {{ x.effectiveTo || '∞' }}</strong></article>
-              <article class="detail-card"><span>{{ 'organizations.representatives.fields.revision' | translate }}</span><strong>#{{ x.revision }}</strong></article>
+              <article class="detail-card">
+                <span>{{ 'organizations.representatives.fields.account' | translate }}</span>
+                <strong>{{ representativeDisplayName(x) }}</strong>
+                <small>
+                  {{
+                    representativeEmail(x) ||
+                      ('organizations.representatives.personWithoutAccount' | translate)
+                  }}
+                </small>
+              </article>
+              <article class="detail-card">
+                <span>{{ 'organizations.representatives.fields.period' | translate }}</span>
+                <strong>{{ x.effectiveFrom }} → {{ x.effectiveTo || '∞' }}</strong>
+              </article>
+              <article class="detail-card">
+                <span>{{ 'organizations.representatives.fields.revision' | translate }}</span>
+                <strong>#{{ x.revision }}</strong>
+              </article>
             </div>
-            <div class="mt-7 flex flex-wrap gap-2 border-t border-slate-200 pt-5 dark:border-slate-700">
-              @if (canUpdate() && x.status !== 4) { <drive-os-button variant="secondary" (pressed)="openEdit()">{{ 'common.actions.edit' | translate }}</drive-os-button> }
-              @if (canActivate() && x.status === 1) { <drive-os-button (pressed)="request('activate')">{{ 'organizations.representatives.actions.activate' | translate }}</drive-os-button> }
-              @if (canSuspend() && x.status === 2) { <drive-os-button variant="secondary" (pressed)="request('suspend')">{{ 'organizations.representatives.actions.suspend' | translate }}</drive-os-button> }
-              @if (canReactivate() && x.status === 3) { <drive-os-button (pressed)="request('reactivate')">{{ 'organizations.representatives.actions.reactivate' | translate }}</drive-os-button> }
-              @if (canPrimary() && x.representativeType === 1 && x.status === 2 && !x.isPrimaryOwner) { <drive-os-button variant="secondary" (pressed)="request('primary')">{{ 'organizations.representatives.actions.setPrimaryOwner' | translate }}</drive-os-button> }
-              @if (canEnd() && x.status !== 4) { <drive-os-button variant="danger" (pressed)="request('end')">{{ 'organizations.representatives.actions.end' | translate }}</drive-os-button> }
+            <div
+              class="mt-7 flex flex-wrap gap-2 border-t border-slate-200 pt-5 dark:border-slate-700"
+            >
+              @if (canUpdate() && x.status !== 4) {
+                <drive-os-button
+                  variant="secondary"
+                  (pressed)="openEdit()"
+                >
+                  {{ 'common.actions.edit' | translate }}
+                </drive-os-button>
+              }
+              @if (canActivate() && x.status === 1) {
+                <drive-os-button (pressed)="request('activate')">
+                  {{ 'organizations.representatives.actions.activate' | translate }}
+                </drive-os-button>
+              }
+              @if (canSuspend() && x.status === 2) {
+                <drive-os-button
+                  variant="secondary"
+                  (pressed)="request('suspend')"
+                >
+                  {{ 'organizations.representatives.actions.suspend' | translate }}
+                </drive-os-button>
+              }
+              @if (canReactivate() && x.status === 3) {
+                <drive-os-button (pressed)="request('reactivate')">
+                  {{ 'organizations.representatives.actions.reactivate' | translate }}
+                </drive-os-button>
+              }
+              @if (
+                canPrimary() && x.representativeType === 1 && x.status === 2 && !x.isPrimaryOwner
+              ) {
+                <drive-os-button
+                  variant="secondary"
+                  (pressed)="request('primary')"
+                >
+                  {{ 'organizations.representatives.actions.setPrimaryOwner' | translate }}
+                </drive-os-button>
+              }
+              @if (canEnd() && x.status !== 4) {
+                <drive-os-button
+                  variant="danger"
+                  (pressed)="request('end')"
+                >
+                  {{ 'organizations.representatives.actions.end' | translate }}
+                </drive-os-button>
+              }
             </div>
           }
         } @else {
           <div class="empty-detail">
             <div class="empty-detail-icon">♜</div>
-            <drive-os-empty-state [title]="'organizations.representatives.selectPrompt' | translate" [description]="'organizations.representatives.selectPromptDescription' | translate" />
+            <drive-os-empty-state
+              [title]="'organizations.representatives.selectPrompt' | translate"
+              [description]="'organizations.representatives.selectPromptDescription' | translate"
+            />
           </div>
         }
       </main>

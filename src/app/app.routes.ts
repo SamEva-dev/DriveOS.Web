@@ -71,8 +71,7 @@ export const routes: Routes = [
       },
       {
         path: 'crm',
-        loadChildren: () =>
-          import('./features/crm/crm.routes').then((module) => module.CRM_ROUTES),
+        loadChildren: () => import('./features/crm/crm.routes').then((module) => module.CRM_ROUTES),
       },
       {
         path: 'dashboard',
@@ -86,13 +85,8 @@ export const routes: Routes = [
       },
       {
         path: 'students',
-        loadComponent: () =>
-          import('./shared/pages/coming-soon/coming-soon.page').then(
-            (component) => component.ComingSoonPage,
-          ),
-        data: {
-          titleKey: 'navigation.students',
-        },
+        loadChildren: () =>
+          import('./features/students/students.routes').then((module) => module.STUDENTS_ROUTES),
       },
       {
         path: 'planning',

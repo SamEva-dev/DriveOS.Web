@@ -15,8 +15,10 @@ export interface CreateOrganizationLegalProfileRequest {
   readonly activateImmediately: boolean;
 }
 
-export interface UpdateOrganizationLegalProfileRequest
-  extends Omit<CreateOrganizationLegalProfileRequest, 'activateImmediately'> {
+export interface UpdateOrganizationLegalProfileRequest extends Omit<
+  CreateOrganizationLegalProfileRequest,
+  'activateImmediately'
+> {
   readonly expectedRevision: number;
 }
 

@@ -1,141 +1,909 @@
-<drive-os-page-shell width="full" spacing="compact">
+<drive-os-page-shell
+  width="full"
+  spacing="compact"
+>
   <main class="grid gap-4 text-[var(--driveos-text-primary)]">
-    <header class="flex min-h-28 items-center justify-between gap-6 border-b border-l-4 border-[var(--driveos-border)] border-l-[var(--driveos-primary-800)] py-2 pl-4 max-md:flex-col max-md:items-start">
+    <header
+      class="flex min-h-28 items-center justify-between gap-6 border-b border-l-4 border-[var(--driveos-border)] border-l-[var(--driveos-primary-800)] py-2 pl-4 max-md:flex-col max-md:items-start"
+    >
       <div>
         <div class="flex flex-wrap items-center gap-2">
-          <h1 class="text-2xl font-extrabold leading-tight">{{ 'crm.dashboard.title' | translate }}</h1>
-          <span class="rounded-md border border-[var(--driveos-border)] bg-[var(--driveos-surface-subtle)] px-2 py-1 text-xs text-[var(--driveos-text-secondary)]"><i class="ph ph-buildings"></i> {{ 'layout.schoolName' | translate }} · <i class="ph ph-map-pin"></i> {{ 'layout.branchName' | translate }}</span>
+          <h1 class="text-2xl font-extrabold leading-tight">
+            {{ 'crm.dashboard.title' | translate }}
+          </h1>
+          <span
+            class="rounded-md border border-[var(--driveos-border)] bg-[var(--driveos-surface-subtle)] px-2 py-1 text-xs text-[var(--driveos-text-secondary)]"
+          >
+            <i class="ph ph-buildings"></i>
+            {{ 'layout.schoolName' | translate }} ·
+            <i class="ph ph-map-pin"></i>
+            {{ 'layout.branchName' | translate }}
+          </span>
         </div>
-        <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.description' | translate }}</p>
-        <p class="mt-2 flex flex-wrap items-center gap-2 text-xs text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.scopeLabel' | translate }} : <strong>{{ ('crm.dashboard.scopes.' + selectedScope()) | translate }}</strong>@if (lastRefreshAt()) { <span>·</span><span>{{ 'crm.dashboard.lastRefresh' | translate }} {{ lastRefreshAt() | date:'shortTime' }}</span> }</p>
+        <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+          {{ 'crm.dashboard.description' | translate }}
+        </p>
+        <p
+          class="mt-2 flex flex-wrap items-center gap-2 text-xs text-[var(--driveos-text-secondary)]"
+        >
+          {{ 'crm.dashboard.scopeLabel' | translate }} :
+          <strong>{{ 'crm.dashboard.scopes.' + selectedScope() | translate }}</strong>
+          @if (lastRefreshAt()) {
+            <span>·</span>
+            <span>
+              {{ 'crm.dashboard.lastRefresh' | translate }}
+              {{ lastRefreshAt() | date: 'shortTime' }}
+            </span>
+          }
+        </p>
       </div>
       <div class="flex flex-wrap justify-end gap-2 max-md:w-full max-md:justify-start">
-        @if (canCreateLead()) { <a routerLink="/crm/leads/new" class="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-blue-800 bg-blue-800 px-4 text-xs font-bold text-white shadow-sm"><i class="ph ph-user-plus"></i>{{ 'crm.dashboard.actions.newLead' | translate }}</a> }
-        @if (canCreateActivity()) { <a routerLink="/crm/activities" class="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-4 text-xs font-bold shadow-sm"><i class="ph ph-phone-call"></i>{{ 'crm.dashboard.actions.recordCall' | translate }}</a> }
-        <button type="button" class="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-4 text-xs font-bold" [disabled]="viewLoading()" (click)="refresh()"><i class="ph ph-arrows-clockwise" [class.animate-spin]="viewLoading()"></i>{{ 'common.actions.refresh' | translate }}</button>
-        <button type="button" class="inline-flex size-10 items-center justify-center rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]" [attr.aria-label]="'common.actions.actions' | translate"><i class="ph ph-dots-three"></i></button>
+        @if (canCreateLead()) {
+          <a
+            routerLink="/crm/leads/new"
+            class="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-blue-800 bg-blue-800 px-4 text-xs font-bold text-white shadow-sm"
+          >
+            <i class="ph ph-user-plus"></i>
+            {{ 'crm.dashboard.actions.newLead' | translate }}
+          </a>
+        }
+        @if (canCreateActivity()) {
+          <a
+            routerLink="/crm/activities"
+            class="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-4 text-xs font-bold shadow-sm"
+          >
+            <i class="ph ph-phone-call"></i>
+            {{ 'crm.dashboard.actions.recordCall' | translate }}
+          </a>
+        }
+        <button
+          type="button"
+          class="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-4 text-xs font-bold"
+          [disabled]="viewLoading()"
+          (click)="refresh()"
+        >
+          <i
+            class="ph ph-arrows-clockwise"
+            [class.animate-spin]="viewLoading()"
+          ></i>
+          {{ 'common.actions.refresh' | translate }}
+        </button>
+        <button
+          type="button"
+          class="inline-flex size-10 items-center justify-center rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]"
+          [attr.aria-label]="'common.actions.actions' | translate"
+        >
+          <i class="ph ph-dots-three"></i>
+        </button>
       </div>
     </header>
 
     @if (visibleDiagnosticTabs().length || visibleScopeTabs().length) {
-    <nav class="flex flex-nowrap items-center gap-4 overflow-x-auto whitespace-nowrap rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-subtle)] px-3 py-2" [attr.aria-label]="'crm.dashboard.navigationLabel' | translate">
-      @if (visibleDiagnosticTabs().length) {
-        @if (diagnosticTabsVisible()) {
-          <div id="crm-dashboard-diagnostic-tabs" class="flex min-w-max flex-none items-center gap-2"><strong class="text-[11px] uppercase tracking-wide text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.demoLabel' | translate }}</strong>
-            @for (tab of visibleDiagnosticTabs(); track tab.id) { <button type="button" class="rounded-full border border-[var(--driveos-border)] px-3 py-1 text-xs" [class.border-blue-800]="selectedDiagnosticState() === tab.id" [class.bg-blue-50]="selectedDiagnosticState() === tab.id" [class.font-bold]="selectedDiagnosticState() === tab.id" [class.text-blue-800]="selectedDiagnosticState() === tab.id" (click)="selectDiagnosticState(tab.id)">{{ tab.labelKey | translate }}</button> }
+      <nav
+        class="flex flex-nowrap items-center gap-4 overflow-x-auto whitespace-nowrap rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-subtle)] px-3 py-2"
+        [attr.aria-label]="'crm.dashboard.navigationLabel' | translate"
+      >
+        @if (visibleDiagnosticTabs().length) {
+          @if (diagnosticTabsVisible()) {
+            <div
+              id="crm-dashboard-diagnostic-tabs"
+              class="flex min-w-max flex-none items-center gap-2"
+            >
+              <strong
+                class="text-[11px] uppercase tracking-wide text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'crm.dashboard.demoLabel' | translate }}
+              </strong>
+              @for (tab of visibleDiagnosticTabs(); track tab.id) {
+                <button
+                  type="button"
+                  class="rounded-full border border-[var(--driveos-border)] px-3 py-1 text-xs"
+                  [class.border-blue-800]="selectedDiagnosticState() === tab.id"
+                  [class.bg-blue-50]="selectedDiagnosticState() === tab.id"
+                  [class.font-bold]="selectedDiagnosticState() === tab.id"
+                  [class.text-blue-800]="selectedDiagnosticState() === tab.id"
+                  (click)="selectDiagnosticState(tab.id)"
+                >
+                  {{ tab.labelKey | translate }}
+                </button>
+              }
+            </div>
+          }
+        }
+        @if (visibleScopeTabs().length) {
+          <div
+            class="ml-auto flex min-w-max items-center gap-2 border-l border-[var(--driveos-border)] pl-4"
+          >
+            <strong
+              class="text-[11px] uppercase tracking-wide text-[var(--driveos-text-secondary)]"
+            >
+              {{ 'crm.dashboard.scopeTabLabel' | translate }}
+            </strong>
+            @for (tab of visibleScopeTabs(); track tab.id) {
+              <button
+                type="button"
+                class="rounded-full border border-[var(--driveos-border)] px-3 py-1 text-xs"
+                [class.border-blue-800]="selectedScope() === tab.id"
+                [class.bg-blue-50]="selectedScope() === tab.id"
+                [class.font-bold]="selectedScope() === tab.id"
+                [class.text-blue-800]="selectedScope() === tab.id"
+                (click)="selectScope(tab.id)"
+              >
+                {{ tab.labelKey | translate }}
+              </button>
+            }
           </div>
         }
-      }
-      @if (visibleScopeTabs().length) {
-        <div class="ml-auto flex min-w-max items-center gap-2 border-l border-[var(--driveos-border)] pl-4"><strong class="text-[11px] uppercase tracking-wide text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.scopeTabLabel' | translate }}</strong>
-          @for (tab of visibleScopeTabs(); track tab.id) { <button type="button" class="rounded-full border border-[var(--driveos-border)] px-3 py-1 text-xs" [class.border-blue-800]="selectedScope() === tab.id" [class.bg-blue-50]="selectedScope() === tab.id" [class.font-bold]="selectedScope() === tab.id" [class.text-blue-800]="selectedScope() === tab.id" (click)="selectScope(tab.id)">{{ tab.labelKey | translate }}</button> }
-        </div>
-      }
-      @if (visibleDiagnosticTabs().length) {
-        <button type="button" class="ml-1 inline-flex size-8 min-w-8 flex-none items-center justify-center rounded-md border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] text-[var(--driveos-text-secondary)]" [attr.aria-expanded]="diagnosticTabsVisible()" [attr.aria-label]="(diagnosticTabsVisible() ? 'crm.dashboard.diagnostics.hide' : 'crm.dashboard.diagnostics.show') | translate" [attr.title]="(diagnosticTabsVisible() ? 'crm.dashboard.diagnostics.hide' : 'crm.dashboard.diagnostics.show') | translate" aria-controls="crm-dashboard-diagnostic-tabs" (click)="toggleDiagnosticTabs()"><i class="ph" [class.ph-eye]="!diagnosticTabsVisible()" [class.ph-eye-slash]="diagnosticTabsVisible()"></i></button>
-      }
-    </nav>
+        @if (visibleDiagnosticTabs().length) {
+          <button
+            type="button"
+            class="ml-1 inline-flex size-8 min-w-8 flex-none items-center justify-center rounded-md border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] text-[var(--driveos-text-secondary)]"
+            [attr.aria-expanded]="diagnosticTabsVisible()"
+            [attr.aria-label]="
+              (diagnosticTabsVisible()
+                ? 'crm.dashboard.diagnostics.hide'
+                : 'crm.dashboard.diagnostics.show'
+              ) | translate
+            "
+            [attr.title]="
+              (diagnosticTabsVisible()
+                ? 'crm.dashboard.diagnostics.hide'
+                : 'crm.dashboard.diagnostics.show'
+              ) | translate
+            "
+            aria-controls="crm-dashboard-diagnostic-tabs"
+            (click)="toggleDiagnosticTabs()"
+          >
+            <i
+              class="ph"
+              [class.ph-eye]="!diagnosticTabsVisible()"
+              [class.ph-eye-slash]="diagnosticTabsVisible()"
+            ></i>
+          </button>
+        }
+      </nav>
     }
 
-    <section class="grid grid-cols-5 gap-3 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 shadow-sm max-xl:grid-cols-3 max-md:grid-cols-1">
-      <label class="grid gap-1 text-xs font-bold">{{ 'crm.dashboard.filters.from' | translate }}<input type="date" class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal" [value]="fromDate()" (change)="updateFilter('from', $any($event.target).value)" /></label>
-      <label class="grid gap-1 text-xs font-bold">{{ 'crm.dashboard.filters.to' | translate }}<input type="date" class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal" [value]="toDate()" (change)="updateFilter('to', $any($event.target).value)" /></label>
-      <label class="grid gap-1 text-xs font-bold">{{ 'crm.dashboard.filters.source' | translate }}<select class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal" [value]="source()" (change)="updateFilter('source', $any($event.target).value)"><option value="">{{ 'crm.dashboard.filters.all' | translate }}</option>@for (item of sources; track item) { <option [value]="item">{{ ('crm.leads.sources.' + item) | translate }}</option> }</select></label>
-      <label class="grid gap-1 text-xs font-bold">{{ 'crm.dashboard.filters.status' | translate }}<select class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal" [value]="status()" (change)="updateFilter('status', $any($event.target).value)"><option value="">{{ 'crm.dashboard.filters.all' | translate }}</option>@for (item of statuses; track item) { <option [value]="item">{{ ('crm.leads.statuses.' + item) | translate }}</option> }</select></label>
-      <label class="grid gap-1 text-xs font-bold">{{ 'crm.dashboard.filters.advisor' | translate }}<input type="text" class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal" [value]="advisorId()" (change)="updateFilter('advisor', $any($event.target).value)" [placeholder]="'crm.dashboard.filters.advisorPlaceholder' | translate" /></label>
-      <div class="col-span-full flex justify-end gap-2"><button type="button" class="min-h-10 rounded-lg border border-[var(--driveos-border)] px-4 text-xs font-bold" [disabled]="!hasActiveFilters()" (click)="clearFilters()">{{ 'crm.dashboard.filters.clear' | translate }}</button><button type="button" class="min-h-10 rounded-lg bg-blue-800 px-4 text-xs font-bold text-white" (click)="applyFilters()">{{ 'crm.dashboard.filters.apply' | translate }}</button></div>
+    <section
+      class="grid grid-cols-5 gap-3 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 shadow-sm max-xl:grid-cols-3 max-md:grid-cols-1"
+    >
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'crm.dashboard.filters.from' | translate }}
+        <input
+          type="date"
+          class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          [value]="fromDate()"
+          (change)="updateFilter('from', $any($event.target).value)"
+        />
+      </label>
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'crm.dashboard.filters.to' | translate }}
+        <input
+          type="date"
+          class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          [value]="toDate()"
+          (change)="updateFilter('to', $any($event.target).value)"
+        />
+      </label>
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'crm.dashboard.filters.source' | translate }}
+        <select
+          class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          [value]="source()"
+          (change)="updateFilter('source', $any($event.target).value)"
+        >
+          <option value="">{{ 'crm.dashboard.filters.all' | translate }}</option>
+          @for (item of sources; track item) {
+            <option [value]="item">{{ 'crm.leads.sources.' + item | translate }}</option>
+          }
+        </select>
+      </label>
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'crm.dashboard.filters.status' | translate }}
+        <select
+          class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          [value]="status()"
+          (change)="updateFilter('status', $any($event.target).value)"
+        >
+          <option value="">{{ 'crm.dashboard.filters.all' | translate }}</option>
+          @for (item of statuses; track item) {
+            <option [value]="item">{{ 'crm.leads.statuses.' + item | translate }}</option>
+          }
+        </select>
+      </label>
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'crm.dashboard.filters.advisor' | translate }}
+        <input
+          type="text"
+          class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          [value]="advisorId()"
+          (change)="updateFilter('advisor', $any($event.target).value)"
+          [placeholder]="'crm.dashboard.filters.advisorPlaceholder' | translate"
+        />
+      </label>
+      <div class="col-span-full flex justify-end gap-2">
+        <button
+          type="button"
+          class="min-h-10 rounded-lg border border-[var(--driveos-border)] px-4 text-xs font-bold"
+          [disabled]="!hasActiveFilters()"
+          (click)="clearFilters()"
+        >
+          {{ 'crm.dashboard.filters.clear' | translate }}
+        </button>
+        <button
+          type="button"
+          class="min-h-10 rounded-lg bg-blue-800 px-4 text-xs font-bold text-white"
+          (click)="applyFilters()"
+        >
+          {{ 'crm.dashboard.filters.apply' | translate }}
+        </button>
+      </div>
     </section>
 
-    @if (selectedScope() === 'branch') { <section class="flex flex-wrap items-center gap-3 rounded-lg border border-l-4 border-[var(--driveos-border)] border-l-blue-800 bg-[var(--driveos-surface-card)] p-3 text-xs"><label for="crm-dashboard-branch" class="font-bold">{{ 'crm.dashboard.scopeData.branchSelector' | translate }}</label>@if ((dashboard()?.availableBranches ?? []).length) { <select id="crm-dashboard-branch" class="min-h-9 min-w-64 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3" [value]="selectedBranchId() ?? ''" (change)="selectBranch($any($event.target).value)">@for (branch of dashboard()?.availableBranches ?? []; track branch.id) { <option [value]="branch.id">{{ branch.name }} · {{ branch.code }}</option> }</select> } @else { <span class="text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.scopeData.noBranch' | translate }}</span> }</section> }
+    @if (selectedScope() === 'branch') {
+      <section
+        class="flex flex-wrap items-center gap-3 rounded-lg border border-l-4 border-[var(--driveos-border)] border-l-blue-800 bg-[var(--driveos-surface-card)] p-3 text-xs"
+      >
+        <label
+          for="crm-dashboard-branch"
+          class="font-bold"
+        >
+          {{ 'crm.dashboard.scopeData.branchSelector' | translate }}
+        </label>
+        @if ((dashboard()?.availableBranches ?? []).length) {
+          <select
+            id="crm-dashboard-branch"
+            class="min-h-9 min-w-64 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3"
+            [value]="selectedBranchId() ?? ''"
+            (change)="selectBranch($any($event.target).value)"
+          >
+            @for (branch of dashboard()?.availableBranches ?? []; track branch.id) {
+              <option [value]="branch.id">{{ branch.name }} · {{ branch.code }}</option>
+            }
+          </select>
+        } @else {
+          <span class="text-[var(--driveos-text-secondary)]">
+            {{ 'crm.dashboard.scopeData.noBranch' | translate }}
+          </span>
+        }
+      </section>
+    }
     @if (selectedScope() === 'network' && dashboard()) {
-      <section class="grid gap-4 rounded-xl border border-l-4 border-[var(--driveos-border)] border-l-blue-800 bg-[var(--driveos-surface-card)] p-4 shadow-sm">
+      <section
+        class="grid gap-4 rounded-xl border border-l-4 border-[var(--driveos-border)] border-l-blue-800 bg-[var(--driveos-surface-card)] p-4 shadow-sm"
+      >
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 class="flex items-center gap-2 text-sm font-extrabold"><i class="ph ph-buildings"></i>{{ 'crm.dashboard.networkMembers.title' | translate }}</h2>
-            <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.networkMembers.description' | translate }}</p>
+            <h2 class="flex items-center gap-2 text-sm font-extrabold">
+              <i class="ph ph-buildings"></i>
+              {{ 'crm.dashboard.networkMembers.title' | translate }}
+            </h2>
+            <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'crm.dashboard.networkMembers.description' | translate }}
+            </p>
           </div>
-          <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-800">{{ 'crm.dashboard.scopeData.networkIncluded' | translate:{ count: dashboard()?.includedOrganizations?.length ?? 0 } }}</span>
+          <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-800">
+            {{
+              'crm.dashboard.scopeData.networkIncluded'
+                | translate: { count: dashboard()?.includedOrganizations?.length ?? 0 }
+            }}
+          </span>
         </div>
 
         @if (!canReadNetworkMembers()) {
-          <div class="rounded-lg border border-slate-300 bg-slate-50 p-3 text-xs text-slate-700"><i class="ph ph-lock-key mr-2"></i>{{ 'crm.dashboard.networkMembers.readRestricted' | translate }}</div>
+          <div class="rounded-lg border border-slate-300 bg-slate-50 p-3 text-xs text-slate-700">
+            <i class="ph ph-lock-key mr-2"></i>
+            {{ 'crm.dashboard.networkMembers.readRestricted' | translate }}
+          </div>
         } @else if (networkMembersLoading()) {
-          <div class="grid gap-2">@for (_ of [1,2,3]; track $index) { <div class="h-12 animate-pulse rounded-lg bg-slate-100"></div> }</div>
+          <div class="grid gap-2">
+            @for (_ of [1, 2, 3]; track $index) {
+              <div class="h-12 animate-pulse rounded-lg bg-slate-100"></div>
+            }
+          </div>
         } @else if (networkMembersError()) {
-          <div class="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-900"><span>{{ 'crm.dashboard.networkMembers.loadError' | translate }}</span><button type="button" class="ml-auto font-bold" (click)="selectScope('network')">{{ 'common.actions.retry' | translate }}</button></div>
+          <div
+            class="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-900"
+          >
+            <span>{{ 'crm.dashboard.networkMembers.loadError' | translate }}</span>
+            <button
+              type="button"
+              class="ml-auto font-bold"
+              (click)="selectScope('network')"
+            >
+              {{ 'common.actions.retry' | translate }}
+            </button>
+          </div>
         } @else {
           @if (canManageNetworkMembers()) {
-            <div class="flex flex-wrap items-end gap-3 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-subtle)] p-3">
-              <label for="network-member-candidate" class="grid min-w-64 flex-1 gap-1 text-xs font-bold">
+            <div
+              class="flex flex-wrap items-end gap-3 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-subtle)] p-3"
+            >
+              <label
+                for="network-member-candidate"
+                class="grid min-w-64 flex-1 gap-1 text-xs font-bold"
+              >
                 {{ 'crm.dashboard.networkMembers.candidateLabel' | translate }}
-                <select id="network-member-candidate" class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 font-normal" [value]="selectedCandidateId()" (change)="selectNetworkCandidate($any($event.target).value)">
-                  <option value="">{{ 'crm.dashboard.networkMembers.candidatePlaceholder' | translate }}</option>
-                  @for (candidate of availableNetworkCandidates(); track candidate.organizationId) { <option [value]="candidate.organizationId">{{ candidate.legalName }} · {{ candidate.countryCode }}</option> }
+                <select
+                  id="network-member-candidate"
+                  class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 font-normal"
+                  [value]="selectedCandidateId()"
+                  (change)="selectNetworkCandidate($any($event.target).value)"
+                >
+                  <option value="">
+                    {{ 'crm.dashboard.networkMembers.candidatePlaceholder' | translate }}
+                  </option>
+                  @for (candidate of availableNetworkCandidates(); track candidate.organizationId) {
+                    <option [value]="candidate.organizationId">
+                      {{ candidate.legalName }} · {{ candidate.countryCode }}
+                    </option>
+                  }
                 </select>
               </label>
-              <button type="button" class="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-blue-800 px-4 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-50" [disabled]="!selectedCandidateId() || networkMutationInProgress() !== null" (click)="addNetworkMember()"><i class="ph ph-plus"></i>{{ networkMutationInProgress() === selectedCandidateId() ? ('common.loading' | translate) : ('crm.dashboard.networkMembers.add' | translate) }}</button>
+              <button
+                type="button"
+                class="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-blue-800 px-4 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                [disabled]="!selectedCandidateId() || networkMutationInProgress() !== null"
+                (click)="addNetworkMember()"
+              >
+                <i class="ph ph-plus"></i>
+                {{
+                  networkMutationInProgress() === selectedCandidateId()
+                    ? ('common.loading' | translate)
+                    : ('crm.dashboard.networkMembers.add' | translate)
+                }}
+              </button>
             </div>
           }
 
-          @if (networkMutationError()) { <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-900">{{ 'crm.dashboard.networkMembers.mutationError' | translate }}</div> }
+          @if (networkMutationError()) {
+            <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-900">
+              {{ 'crm.dashboard.networkMembers.mutationError' | translate }}
+            </div>
+          }
 
           <div class="grid grid-cols-2 gap-3 max-lg:grid-cols-1">
             @for (member of networkMembers(); track member.membershipId) {
-              <article class="flex items-center gap-3 rounded-lg border border-[var(--driveos-border)] p-3 text-xs">
-                <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 font-extrabold text-blue-800">{{ member.countryCode }}</span>
-                <div class="min-w-0 flex-1"><strong class="block truncate text-sm">{{ member.legalName }}</strong><span class="text-[var(--driveos-text-secondary)]">{{ member.status }} · {{ 'crm.dashboard.networkMembers.joinedAt' | translate }} {{ member.joinedAtUtc | date:'shortDate' }}</span></div>
-                @if (canManageNetworkMembers()) { <button type="button" class="inline-flex min-h-9 items-center gap-2 rounded-lg border border-red-200 px-3 font-bold text-red-700 disabled:opacity-50" [disabled]="networkMutationInProgress() !== null" (click)="removeNetworkMember(member)"><i class="ph ph-x"></i>{{ networkMutationInProgress() === member.organizationId ? ('common.loading' | translate) : ('crm.dashboard.networkMembers.remove' | translate) }}</button> }
+              <article
+                class="flex items-center gap-3 rounded-lg border border-[var(--driveos-border)] p-3 text-xs"
+              >
+                <span
+                  class="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 font-extrabold text-blue-800"
+                >
+                  {{ member.countryCode }}
+                </span>
+                <div class="min-w-0 flex-1">
+                  <strong class="block truncate text-sm">{{ member.legalName }}</strong>
+                  <span class="text-[var(--driveos-text-secondary)]">
+                    {{ member.status }} · {{ 'crm.dashboard.networkMembers.joinedAt' | translate }}
+                    {{ member.joinedAtUtc | date: 'shortDate' }}
+                  </span>
+                </div>
+                @if (canManageNetworkMembers()) {
+                  <button
+                    type="button"
+                    class="inline-flex min-h-9 items-center gap-2 rounded-lg border border-red-200 px-3 font-bold text-red-700 disabled:opacity-50"
+                    [disabled]="networkMutationInProgress() !== null"
+                    (click)="removeNetworkMember(member)"
+                  >
+                    <i class="ph ph-x"></i>
+                    {{
+                      networkMutationInProgress() === member.organizationId
+                        ? ('common.loading' | translate)
+                        : ('crm.dashboard.networkMembers.remove' | translate)
+                    }}
+                  </button>
+                }
               </article>
             } @empty {
-              <div class="col-span-2 rounded-lg border border-dashed border-[var(--driveos-border)] p-6 text-center text-xs text-[var(--driveos-text-secondary)] max-lg:col-span-1"><i class="ph ph-buildings mb-2 block text-3xl"></i>{{ 'crm.dashboard.networkMembers.empty' | translate }}</div>
+              <div
+                class="col-span-2 rounded-lg border border-dashed border-[var(--driveos-border)] p-6 text-center text-xs text-[var(--driveos-text-secondary)] max-lg:col-span-1"
+              >
+                <i class="ph ph-buildings mb-2 block text-3xl"></i>
+                {{ 'crm.dashboard.networkMembers.empty' | translate }}
+              </div>
             }
           </div>
         }
       </section>
     }
-    @if (loadError()) { <section class="flex items-center gap-3 rounded-lg border border-l-4 border-red-600 bg-red-50 p-3 text-xs text-red-900"><span>{{ 'crm.dashboard.loadError' | translate }}</span><button type="button" class="ml-auto font-bold" (click)="retry()">{{ 'common.actions.retry' | translate }}</button></section> }
-    @if (hasActiveFilters()) { <section class="flex flex-wrap items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs text-blue-900"><i class="ph ph-funnel"></i><strong>{{ 'crm.dashboard.states.filtersTitle' | translate }}</strong><span class="rounded-full bg-white px-3 py-1">{{ 'crm.dashboard.states.filterPeriod' | translate }}</span><span class="rounded-full bg-white px-3 py-1">{{ 'crm.dashboard.states.filterOwner' | translate }}</span></section> }
-    @if (isPartial()) { <section class="flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900"><i class="ph ph-warning-circle"></i><span>{{ 'crm.dashboard.states.partialData' | translate }}</span></section> }
-    @if (isFinancialRestricted()) { <section class="flex items-center gap-2 rounded-lg border border-slate-300 bg-slate-50 p-3 text-xs text-slate-700"><i class="ph ph-lock-key"></i><span>{{ 'crm.dashboard.states.financialRestricted' | translate }}</span></section> }
-    @if (hasIntegrationIncident()) { <section class="flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900"><i class="ph ph-plugs-connected"></i><span>{{ 'crm.dashboard.states.integrationIncident' | translate }}</span></section> }
+    @if (loadError()) {
+      <section
+        class="flex items-center gap-3 rounded-lg border border-l-4 border-red-600 bg-red-50 p-3 text-xs text-red-900"
+      >
+        <span>{{ 'crm.dashboard.loadError' | translate }}</span>
+        <button
+          type="button"
+          class="ml-auto font-bold"
+          (click)="retry()"
+        >
+          {{ 'common.actions.retry' | translate }}
+        </button>
+      </section>
+    }
+    @if (hasActiveFilters()) {
+      <section
+        class="flex flex-wrap items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs text-blue-900"
+      >
+        <i class="ph ph-funnel"></i>
+        <strong>{{ 'crm.dashboard.states.filtersTitle' | translate }}</strong>
+        <span class="rounded-full bg-white px-3 py-1">
+          {{ 'crm.dashboard.states.filterPeriod' | translate }}
+        </span>
+        <span class="rounded-full bg-white px-3 py-1">
+          {{ 'crm.dashboard.states.filterOwner' | translate }}
+        </span>
+      </section>
+    }
+    @if (isPartial()) {
+      <section
+        class="flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900"
+      >
+        <i class="ph ph-warning-circle"></i>
+        <span>{{ 'crm.dashboard.states.partialData' | translate }}</span>
+      </section>
+    }
+    @if (isFinancialRestricted()) {
+      <section
+        class="flex items-center gap-2 rounded-lg border border-slate-300 bg-slate-50 p-3 text-xs text-slate-700"
+      >
+        <i class="ph ph-lock-key"></i>
+        <span>{{ 'crm.dashboard.states.financialRestricted' | translate }}</span>
+      </section>
+    }
+    @if (hasIntegrationIncident()) {
+      <section
+        class="flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900"
+      >
+        <i class="ph ph-plugs-connected"></i>
+        <span>{{ 'crm.dashboard.states.integrationIncident' | translate }}</span>
+      </section>
+    }
 
-    <section class="overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm">
-      <div class="flex min-h-12 items-center justify-between border-b border-[var(--driveos-border)] px-4"><h2 class="flex items-center gap-2 text-sm font-extrabold"><i class="ph ph-star"></i>{{ 'crm.dashboard.widgets.priorities' | translate }}</h2><a routerLink="/crm/leads" class="text-xs text-blue-800">{{ 'crm.dashboard.actions.viewAllLeads' | translate }}</a></div>
+    <section
+      class="overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"
+    >
+      <div
+        class="flex min-h-12 items-center justify-between border-b border-[var(--driveos-border)] px-4"
+      >
+        <h2 class="flex items-center gap-2 text-sm font-extrabold">
+          <i class="ph ph-star"></i>
+          {{ 'crm.dashboard.widgets.priorities' | translate }}
+        </h2>
+        <a
+          routerLink="/crm/leads"
+          class="text-xs text-blue-800"
+        >
+          {{ 'crm.dashboard.actions.viewAllLeads' | translate }}
+        </a>
+      </div>
       <div class="grid grid-cols-3 gap-3 p-3 max-md:grid-cols-1">
-        @if (viewLoading()) { @for (_ of [1,2,3]; track $index) { <div class="animate-pulse rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-subtle)] p-4"><span class="block h-3 w-2/5 rounded bg-slate-200"></span><span class="mt-3 block h-2 w-3/5 rounded bg-slate-200"></span></div> } }
-        @else if (isEmpty()) { <div class="col-span-3 py-8 text-center text-xs text-[var(--driveos-text-secondary)]"><i class="ph ph-users-three mb-2 block text-3xl"></i>{{ 'crm.dashboard.states.emptyPriorities' | translate }}</div> }
-        @else { @for (item of dashboard()?.priorities ?? []; track item.leadId + item.kind) { <a class="grid gap-1 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-subtle)] p-3 text-xs" [routerLink]="['/crm/leads', item.leadId]"><strong>{{ item.firstName }} {{ item.lastName }}</strong><span class="text-[var(--driveos-text-secondary)]">{{ priorityLabel(item.kind, item.label) | translate }}</span>@if (item.dueAtUtc) { <time>{{ item.dueAtUtc | date:'short' }}</time> }</a> } @empty { <p class="col-span-3 p-4 text-center text-xs text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.noPriorities' | translate }}</p> } }
+        @if (viewLoading()) {
+          @for (_ of [1, 2, 3]; track $index) {
+            <div
+              class="animate-pulse rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-subtle)] p-4"
+            >
+              <span class="block h-3 w-2/5 rounded bg-slate-200"></span>
+              <span class="mt-3 block h-2 w-3/5 rounded bg-slate-200"></span>
+            </div>
+          }
+        } @else if (isEmpty()) {
+          <div class="col-span-3 py-8 text-center text-xs text-[var(--driveos-text-secondary)]">
+            <i class="ph ph-users-three mb-2 block text-3xl"></i>
+            {{ 'crm.dashboard.states.emptyPriorities' | translate }}
+          </div>
+        } @else {
+          @for (item of dashboard()?.priorities ?? []; track item.leadId + item.kind) {
+            <a
+              class="grid gap-1 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-subtle)] p-3 text-xs"
+              [routerLink]="['/crm/leads', item.leadId]"
+            >
+              <strong>{{ item.firstName }} {{ item.lastName }}</strong>
+              <span class="text-[var(--driveos-text-secondary)]">
+                {{ priorityLabel(item.kind, item.label) | translate }}
+              </span>
+              @if (item.dueAtUtc) {
+                <time>{{ item.dueAtUtc | date: 'short' }}</time>
+              }
+            </a>
+          } @empty {
+            <p class="col-span-3 p-4 text-center text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'crm.dashboard.noPriorities' | translate }}
+            </p>
+          }
+        }
       </div>
     </section>
 
     <section class="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
-      @for (kpi of kpis; track kpi) { <article class="min-h-28 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 shadow-sm"><h2 class="text-[11px] font-extrabold uppercase tracking-wide text-[var(--driveos-text-secondary)]">{{ ('crm.dashboard.kpis.' + kpi) | translate }}</h2>
-        @if (viewLoading()) { <div class="mt-4 h-7 w-2/5 animate-pulse rounded bg-slate-200"></div><div class="mt-3 h-2 w-3/5 animate-pulse rounded bg-slate-200"></div> }
-        @else if (isFinancialHidden(kpi)) { <strong class="mt-3 block text-2xl"><i class="ph ph-lock-key"></i></strong><p class="mt-3 text-[11px] text-[var(--driveos-text-tertiary)]">{{ 'crm.dashboard.states.hiddenFinancial' | translate }}</p> }
-        @else { <strong class="mt-3 block text-2xl">{{ kpiValues()?.[kpi] ?? '—' }}</strong><p class="mt-3 text-[11px] text-[var(--driveos-text-tertiary)]">{{ isEmpty() ? ('crm.dashboard.states.noData' | translate) : ('crm.dashboard.liveData' | translate) }}</p> }
-      </article> }
+      @for (kpi of kpis; track kpi) {
+        <article
+          class="min-h-28 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 shadow-sm"
+        >
+          <h2
+            class="text-[11px] font-extrabold uppercase tracking-wide text-[var(--driveos-text-secondary)]"
+          >
+            {{ 'crm.dashboard.kpis.' + kpi | translate }}
+          </h2>
+          @if (viewLoading()) {
+            <div class="mt-4 h-7 w-2/5 animate-pulse rounded bg-slate-200"></div>
+            <div class="mt-3 h-2 w-3/5 animate-pulse rounded bg-slate-200"></div>
+          } @else if (isFinancialHidden(kpi)) {
+            <strong class="mt-3 block text-2xl"><i class="ph ph-lock-key"></i></strong>
+            <p class="mt-3 text-[11px] text-[var(--driveos-text-tertiary)]">
+              {{ 'crm.dashboard.states.hiddenFinancial' | translate }}
+            </p>
+          } @else {
+            <strong class="mt-3 block text-2xl">{{ kpiValues()?.[kpi] ?? '—' }}</strong>
+            <p class="mt-3 text-[11px] text-[var(--driveos-text-tertiary)]">
+              {{
+                isEmpty()
+                  ? ('crm.dashboard.states.noData' | translate)
+                  : ('crm.dashboard.liveData' | translate)
+              }}
+            </p>
+          }
+        </article>
+      }
     </section>
 
     <section class="grid grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)] gap-3 max-lg:grid-cols-1">
-      <article class="overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"><div class="flex min-h-12 items-center justify-between border-b border-[var(--driveos-border)] px-4"><div><h2 class="text-sm font-extrabold"><i class="ph ph-trend-up mr-2"></i>{{ 'crm.dashboard.widgets.pipeline' | translate }}</h2><p class="text-[11px] text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.widgets.pipelineSubtitle' | translate }}</p></div><div class="flex rounded-lg border border-[var(--driveos-border)] p-1 text-[11px]"><button type="button" class="rounded-md px-2 py-1" [class.bg-blue-800]="pipelineView() === 'funnel'" [class.text-white]="pipelineView() === 'funnel'" (click)="selectPipelineView('funnel')">{{ 'crm.dashboard.views.funnel' | translate }}</button><button type="button" class="rounded-md px-2 py-1" [class.bg-blue-800]="pipelineView() === 'table'" [class.text-white]="pipelineView() === 'table'" (click)="selectPipelineView('table')">{{ 'crm.dashboard.views.table' | translate }}</button></div></div>
-        <div class="grid gap-2 p-4">@if (viewLoading()) { @for (_ of [1,2,3,4,5]; track $index) { <div class="h-8 animate-pulse rounded bg-slate-200"></div> } } @else if (hasWidgetError()) { <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-xs text-red-900"><strong class="block">{{ 'crm.dashboard.states.widgetErrorTitle' | translate }}</strong><span>{{ 'crm.dashboard.states.widgetErrorDescription' | translate }}</span></div> } @else if (pipelineView() === 'table') { <div class="overflow-x-auto"><table class="w-full min-w-[32rem] text-left text-xs"><thead class="border-b border-[var(--driveos-border)] text-[var(--driveos-text-secondary)]"><tr><th class="px-3 py-2">{{ 'crm.dashboard.pipelineColumns.stage' | translate }}</th><th class="px-3 py-2 text-right">{{ 'crm.dashboard.pipelineColumns.volume' | translate }}</th></tr></thead><tbody>@for (stage of (isEmpty() ? [] : dashboard()?.pipeline ?? []); track stage.status) { <tr class="border-b border-[var(--driveos-border)] last:border-0"><td class="px-3 py-2 font-semibold">{{ ('crm.leads.statuses.' + stage.status) | translate }}</td><td class="px-3 py-2 text-right font-bold">{{ stage.count }}</td></tr> } @empty { <tr><td colspan="2" class="p-8 text-center text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.states.noData' | translate }}</td></tr> }</tbody></table></div> } @else { @for (stage of (isEmpty() ? [] : dashboard()?.pipeline ?? []); track stage.status) { <div class="relative grid grid-cols-[1fr_auto] gap-2 overflow-hidden rounded-md bg-[var(--driveos-surface-subtle)] px-3 py-2 text-xs"><span>{{ ('crm.leads.statuses.' + stage.status) | translate }}</span><strong>{{ stage.count }}</strong><i class="absolute bottom-0 left-0 h-1 max-w-full bg-blue-800" [style.width.%]="stage.count ? (stage.count / ((dashboard()?.kpis?.toContact ?? 0) || 1)) * 100 : 0"></i></div> } @empty { <p class="p-8 text-center text-xs text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.states.noData' | translate }}</p> } }</div>
+      <article
+        class="overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"
+      >
+        <div
+          class="flex min-h-12 items-center justify-between border-b border-[var(--driveos-border)] px-4"
+        >
+          <div>
+            <h2 class="text-sm font-extrabold">
+              <i class="ph ph-trend-up mr-2"></i>
+              {{ 'crm.dashboard.widgets.pipeline' | translate }}
+            </h2>
+            <p class="text-[11px] text-[var(--driveos-text-secondary)]">
+              {{ 'crm.dashboard.widgets.pipelineSubtitle' | translate }}
+            </p>
+          </div>
+          <div class="flex rounded-lg border border-[var(--driveos-border)] p-1 text-[11px]">
+            <button
+              type="button"
+              class="rounded-md px-2 py-1"
+              [class.bg-blue-800]="pipelineView() === 'funnel'"
+              [class.text-white]="pipelineView() === 'funnel'"
+              (click)="selectPipelineView('funnel')"
+            >
+              {{ 'crm.dashboard.views.funnel' | translate }}
+            </button>
+            <button
+              type="button"
+              class="rounded-md px-2 py-1"
+              [class.bg-blue-800]="pipelineView() === 'table'"
+              [class.text-white]="pipelineView() === 'table'"
+              (click)="selectPipelineView('table')"
+            >
+              {{ 'crm.dashboard.views.table' | translate }}
+            </button>
+          </div>
+        </div>
+        <div class="grid gap-2 p-4">
+          @if (viewLoading()) {
+            @for (_ of [1, 2, 3, 4, 5]; track $index) {
+              <div class="h-8 animate-pulse rounded bg-slate-200"></div>
+            }
+          } @else if (hasWidgetError()) {
+            <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-xs text-red-900">
+              <strong class="block">
+                {{ 'crm.dashboard.states.widgetErrorTitle' | translate }}
+              </strong>
+              <span>{{ 'crm.dashboard.states.widgetErrorDescription' | translate }}</span>
+            </div>
+          } @else if (pipelineView() === 'table') {
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[32rem] text-left text-xs">
+                <thead
+                  class="border-b border-[var(--driveos-border)] text-[var(--driveos-text-secondary)]"
+                >
+                  <tr>
+                    <th class="px-3 py-2">
+                      {{ 'crm.dashboard.pipelineColumns.stage' | translate }}
+                    </th>
+                    <th class="px-3 py-2 text-right">
+                      {{ 'crm.dashboard.pipelineColumns.volume' | translate }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (
+                    stage of isEmpty() ? [] : (dashboard()?.pipeline ?? []);
+                    track stage.status
+                  ) {
+                    <tr class="border-b border-[var(--driveos-border)] last:border-0">
+                      <td class="px-3 py-2 font-semibold">
+                        {{ 'crm.leads.statuses.' + stage.status | translate }}
+                      </td>
+                      <td class="px-3 py-2 text-right font-bold">{{ stage.count }}</td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td
+                        colspan="2"
+                        class="p-8 text-center text-[var(--driveos-text-secondary)]"
+                      >
+                        {{ 'crm.dashboard.states.noData' | translate }}
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          } @else {
+            @for (stage of isEmpty() ? [] : (dashboard()?.pipeline ?? []); track stage.status) {
+              <div
+                class="relative grid grid-cols-[1fr_auto] gap-2 overflow-hidden rounded-md bg-[var(--driveos-surface-subtle)] px-3 py-2 text-xs"
+              >
+                <span>{{ 'crm.leads.statuses.' + stage.status | translate }}</span>
+                <strong>{{ stage.count }}</strong>
+                <i
+                  class="absolute bottom-0 left-0 h-1 max-w-full bg-blue-800"
+                  [style.width.%]="
+                    stage.count
+                      ? (stage.count / ((dashboard()?.kpis?.toContact ?? 0) || 1)) * 100
+                      : 0
+                  "
+                ></i>
+              </div>
+            } @empty {
+              <p class="p-8 text-center text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'crm.dashboard.states.noData' | translate }}
+              </p>
+            }
+          }
+        </div>
       </article>
-      <article class="overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"><div class="flex min-h-12 items-center border-b border-[var(--driveos-border)] px-4"><h2 class="text-sm font-extrabold">{{ 'crm.dashboard.widgets.recentActivity' | translate }}</h2></div>
-        @if (viewLoading()) { <div class="grid gap-3 p-4">@for (_ of [1,2,3,4]; track $index) { <div class="h-12 animate-pulse rounded bg-slate-200"></div> }</div> }
-        @else { <div class="grid max-h-80 overflow-auto">@for (activity of (isEmpty() ? [] : dashboard()?.recentActivities ?? []); track activity.id) { <a class="grid grid-cols-[1fr_auto] gap-1 border-b border-[var(--driveos-border)] px-4 py-3 text-xs" [routerLink]="['/crm/leads', activity.leadId]"><strong>{{ activity.firstName }} {{ activity.lastName }}</strong><span class="text-[var(--driveos-text-secondary)]">{{ activity.subject }}</span><time class="row-span-2 row-start-1 self-center text-[var(--driveos-text-tertiary)]">{{ activity.occurredAtUtc | date:'short' }}</time></a> } @empty { <p class="p-8 text-center text-xs text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.noActivities' | translate }}</p> }</div> }
+      <article
+        class="overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"
+      >
+        <div class="flex min-h-12 items-center border-b border-[var(--driveos-border)] px-4">
+          <h2 class="text-sm font-extrabold">
+            {{ 'crm.dashboard.widgets.recentActivity' | translate }}
+          </h2>
+        </div>
+        @if (viewLoading()) {
+          <div class="grid gap-3 p-4">
+            @for (_ of [1, 2, 3, 4]; track $index) {
+              <div class="h-12 animate-pulse rounded bg-slate-200"></div>
+            }
+          </div>
+        } @else {
+          <div class="grid max-h-80 overflow-auto">
+            @for (
+              activity of isEmpty() ? [] : (dashboard()?.recentActivities ?? []);
+              track activity.id
+            ) {
+              <a
+                class="grid grid-cols-[1fr_auto] gap-1 border-b border-[var(--driveos-border)] px-4 py-3 text-xs"
+                [routerLink]="['/crm/leads', activity.leadId]"
+              >
+                <strong>{{ activity.firstName }} {{ activity.lastName }}</strong>
+                <span class="text-[var(--driveos-text-secondary)]">{{ activity.subject }}</span>
+                <time
+                  class="row-span-2 row-start-1 self-center text-[var(--driveos-text-tertiary)]"
+                >
+                  {{ activity.occurredAtUtc | date: 'short' }}
+                </time>
+              </a>
+            } @empty {
+              <p class="p-8 text-center text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'crm.dashboard.noActivities' | translate }}
+              </p>
+            }
+          </div>
+        }
       </article>
     </section>
 
     <section class="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
-      <article class="min-h-52 overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"><div class="flex min-h-12 items-center justify-between border-b border-[var(--driveos-border)] px-4"><h2 class="text-sm font-extrabold">{{ 'crm.dashboard.widgets.followUps' | translate }}</h2><a routerLink="/crm/tasks" class="text-[11px] font-bold text-blue-800">{{ 'crm.dashboard.actions.viewAll' | translate }}</a></div><div class="grid max-h-72 overflow-auto">@if (viewLoading()) { <div class="grid gap-3 p-4">@for (_ of [1,2,3]; track $index) { <div class="h-8 animate-pulse rounded bg-slate-200"></div> }</div> } @else { @for (task of (isEmpty() ? [] : dashboard()?.upcomingTasks ?? []); track task.id) { <a [routerLink]="['/crm/leads', task.leadId]" class="grid grid-cols-[1fr_auto] gap-1 border-b border-[var(--driveos-border)] px-4 py-3 text-xs last:border-0"><strong>{{ task.firstName }} {{ task.lastName }}</strong><time class="row-span-2 row-start-1 self-center" [class.font-bold]="task.isOverdue" [class.text-red-600]="task.isOverdue">{{ task.dueAtUtc | date:'short' }}</time><span class="truncate text-[var(--driveos-text-secondary)]">{{ task.title }}</span></a> } @empty { <p class="p-8 text-center text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.noTasks' | translate }}</p> } }</div></article>
+      <article
+        class="min-h-52 overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"
+      >
+        <div
+          class="flex min-h-12 items-center justify-between border-b border-[var(--driveos-border)] px-4"
+        >
+          <h2 class="text-sm font-extrabold">
+            {{ 'crm.dashboard.widgets.followUps' | translate }}
+          </h2>
+          <a
+            routerLink="/crm/tasks"
+            class="text-[11px] font-bold text-blue-800"
+          >
+            {{ 'crm.dashboard.actions.viewAll' | translate }}
+          </a>
+        </div>
+        <div class="grid max-h-72 overflow-auto">
+          @if (viewLoading()) {
+            <div class="grid gap-3 p-4">
+              @for (_ of [1, 2, 3]; track $index) {
+                <div class="h-8 animate-pulse rounded bg-slate-200"></div>
+              }
+            </div>
+          } @else {
+            @for (task of isEmpty() ? [] : (dashboard()?.upcomingTasks ?? []); track task.id) {
+              <a
+                [routerLink]="['/crm/leads', task.leadId]"
+                class="grid grid-cols-[1fr_auto] gap-1 border-b border-[var(--driveos-border)] px-4 py-3 text-xs last:border-0"
+              >
+                <strong>{{ task.firstName }} {{ task.lastName }}</strong>
+                <time
+                  class="row-span-2 row-start-1 self-center"
+                  [class.font-bold]="task.isOverdue"
+                  [class.text-red-600]="task.isOverdue"
+                >
+                  {{ task.dueAtUtc | date: 'short' }}
+                </time>
+                <span class="truncate text-[var(--driveos-text-secondary)]">{{ task.title }}</span>
+              </a>
+            } @empty {
+              <p class="p-8 text-center text-[var(--driveos-text-secondary)]">
+                {{ 'crm.dashboard.noTasks' | translate }}
+              </p>
+            }
+          }
+        </div>
+      </article>
 
-      <article class="min-h-52 overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"><div class="flex min-h-12 items-center border-b border-[var(--driveos-border)] px-4"><h2 class="text-sm font-extrabold">{{ 'crm.dashboard.widgets.appointments' | translate }}</h2></div><div class="grid max-h-72 overflow-auto">@if (viewLoading()) { <div class="grid gap-3 p-4">@for (_ of [1,2,3]; track $index) { <div class="h-10 animate-pulse rounded bg-slate-200"></div> }</div> } @else { @for (appointment of dashboard()?.upcomingAppointments ?? []; track appointment.id) { <a [routerLink]="['/crm/leads', appointment.leadId]" class="grid grid-cols-[1fr_auto] gap-1 border-b border-[var(--driveos-border)] px-4 py-3 text-xs last:border-0"><strong>{{ appointment.firstName }} {{ appointment.lastName }}</strong><time class="row-span-2 row-start-1 self-center font-bold text-blue-800">{{ appointment.startsAtUtc | date:'short' }}</time><span class="truncate text-[var(--driveos-text-secondary)]">{{ ('crm.assessments.types.' + appointment.type) | translate }} · {{ appointment.locationDetails || appointment.deliveryMode }}</span></a> } @empty { <p class="p-8 text-center text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.noAppointments' | translate }}</p> } }</div></article>
+      <article
+        class="min-h-52 overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"
+      >
+        <div class="flex min-h-12 items-center border-b border-[var(--driveos-border)] px-4">
+          <h2 class="text-sm font-extrabold">
+            {{ 'crm.dashboard.widgets.appointments' | translate }}
+          </h2>
+        </div>
+        <div class="grid max-h-72 overflow-auto">
+          @if (viewLoading()) {
+            <div class="grid gap-3 p-4">
+              @for (_ of [1, 2, 3]; track $index) {
+                <div class="h-10 animate-pulse rounded bg-slate-200"></div>
+              }
+            </div>
+          } @else {
+            @for (appointment of dashboard()?.upcomingAppointments ?? []; track appointment.id) {
+              <a
+                [routerLink]="['/crm/leads', appointment.leadId]"
+                class="grid grid-cols-[1fr_auto] gap-1 border-b border-[var(--driveos-border)] px-4 py-3 text-xs last:border-0"
+              >
+                <strong>{{ appointment.firstName }} {{ appointment.lastName }}</strong>
+                <time class="row-span-2 row-start-1 self-center font-bold text-blue-800">
+                  {{ appointment.startsAtUtc | date: 'short' }}
+                </time>
+                <span class="truncate text-[var(--driveos-text-secondary)]">
+                  {{ 'crm.assessments.types.' + appointment.type | translate }} ·
+                  {{ appointment.locationDetails || appointment.deliveryMode }}
+                </span>
+              </a>
+            } @empty {
+              <p class="p-8 text-center text-[var(--driveos-text-secondary)]">
+                {{ 'crm.dashboard.noAppointments' | translate }}
+              </p>
+            }
+          }
+        </div>
+      </article>
 
-      <article class="min-h-52 overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"><div class="flex min-h-12 items-center border-b border-[var(--driveos-border)] px-4"><h2 class="text-sm font-extrabold">{{ 'crm.dashboard.widgets.sources' | translate }}</h2></div><div class="grid gap-3 p-4">@if (viewLoading()) { @for (_ of [1,2,3]; track $index) { <div class="h-8 animate-pulse rounded bg-slate-200"></div> } } @else { @for (source of (isEmpty() ? [] : dashboard()?.sources ?? []); track source.source) { <div class="grid gap-1 text-xs"><div class="flex justify-between gap-2"><span>{{ ('crm.leads.sources.' + source.source) | translate }}</span><strong>{{ source.count }}</strong></div><div class="h-1.5 overflow-hidden rounded-full bg-[var(--driveos-surface-subtle)]"><span class="block h-full rounded-full bg-orange-500" [style.width.%]="sourceWidth(source.count)"></span></div></div> } @empty { <p class="py-8 text-center text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.states.noData' | translate }}</p> } }</div></article>
+      <article
+        class="min-h-52 overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"
+      >
+        <div class="flex min-h-12 items-center border-b border-[var(--driveos-border)] px-4">
+          <h2 class="text-sm font-extrabold">{{ 'crm.dashboard.widgets.sources' | translate }}</h2>
+        </div>
+        <div class="grid gap-3 p-4">
+          @if (viewLoading()) {
+            @for (_ of [1, 2, 3]; track $index) {
+              <div class="h-8 animate-pulse rounded bg-slate-200"></div>
+            }
+          } @else {
+            @for (source of isEmpty() ? [] : (dashboard()?.sources ?? []); track source.source) {
+              <div class="grid gap-1 text-xs">
+                <div class="flex justify-between gap-2">
+                  <span>{{ 'crm.leads.sources.' + source.source | translate }}</span>
+                  <strong>{{ source.count }}</strong>
+                </div>
+                <div class="h-1.5 overflow-hidden rounded-full bg-[var(--driveos-surface-subtle)]">
+                  <span
+                    class="block h-full rounded-full bg-orange-500"
+                    [style.width.%]="sourceWidth(source.count)"
+                  ></span>
+                </div>
+              </div>
+            } @empty {
+              <p class="py-8 text-center text-[var(--driveos-text-secondary)]">
+                {{ 'crm.dashboard.states.noData' | translate }}
+              </p>
+            }
+          }
+        </div>
+      </article>
 
-      <article class="min-h-52 overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"><div class="flex min-h-12 items-center border-b border-[var(--driveos-border)] px-4"><h2 class="text-sm font-extrabold">{{ 'crm.dashboard.widgets.conversions' | translate }}</h2></div><div class="grid max-h-72 overflow-auto">@if (viewLoading()) { <div class="grid gap-3 p-4">@for (_ of [1,2,3]; track $index) { <div class="h-8 animate-pulse rounded bg-slate-200"></div> }</div> } @else { @for (conversion of (isEmpty() ? [] : dashboard()?.conversionsByBranch ?? []); track conversion.branchId) { <div class="grid grid-cols-[1fr_auto] gap-1 border-b border-[var(--driveos-border)] px-4 py-3 text-xs last:border-0"><strong>{{ conversion.branchId ? branchName(conversion.branchId) : ('crm.dashboard.organizationLevel' | translate) }}</strong><span class="font-extrabold text-blue-800">{{ conversionRate(conversion.converted, conversion.total) }}%</span><span class="text-[var(--driveos-text-secondary)]">{{ conversion.converted }} / {{ conversion.total }}</span><span class="text-[10px] text-[var(--driveos-text-tertiary)]">{{ 'crm.dashboard.convertedRatio' | translate }}</span></div> } @empty { <p class="p-8 text-center text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.states.noData' | translate }}</p> } }</div></article>
+      <article
+        class="min-h-52 overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"
+      >
+        <div class="flex min-h-12 items-center border-b border-[var(--driveos-border)] px-4">
+          <h2 class="text-sm font-extrabold">
+            {{ 'crm.dashboard.widgets.conversions' | translate }}
+          </h2>
+        </div>
+        <div class="grid max-h-72 overflow-auto">
+          @if (viewLoading()) {
+            <div class="grid gap-3 p-4">
+              @for (_ of [1, 2, 3]; track $index) {
+                <div class="h-8 animate-pulse rounded bg-slate-200"></div>
+              }
+            </div>
+          } @else {
+            @for (
+              conversion of isEmpty() ? [] : (dashboard()?.conversionsByBranch ?? []);
+              track conversion.branchId
+            ) {
+              <div
+                class="grid grid-cols-[1fr_auto] gap-1 border-b border-[var(--driveos-border)] px-4 py-3 text-xs last:border-0"
+              >
+                <strong>
+                  {{
+                    conversion.branchId
+                      ? branchName(conversion.branchId)
+                      : ('crm.dashboard.organizationLevel' | translate)
+                  }}
+                </strong>
+                <span class="font-extrabold text-blue-800">
+                  {{ conversionRate(conversion.converted, conversion.total) }}%
+                </span>
+                <span class="text-[var(--driveos-text-secondary)]">
+                  {{ conversion.converted }} / {{ conversion.total }}
+                </span>
+                <span class="text-[10px] text-[var(--driveos-text-tertiary)]">
+                  {{ 'crm.dashboard.convertedRatio' | translate }}
+                </span>
+              </div>
+            } @empty {
+              <p class="p-8 text-center text-[var(--driveos-text-secondary)]">
+                {{ 'crm.dashboard.states.noData' | translate }}
+              </p>
+            }
+          }
+        </div>
+      </article>
     </section>
 
-    <section class="overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"><div class="flex min-h-12 items-center border-b border-[var(--driveos-border)] px-4"><h2 class="text-sm font-extrabold">{{ 'crm.dashboard.widgets.inactiveLeads' | translate }}</h2></div><div class="grid grid-cols-3 gap-3 p-3 max-md:grid-cols-1">@if (viewLoading()) { @for (_ of [1,2,3]; track $index) { <div class="h-14 animate-pulse rounded bg-slate-200"></div> } } @else { @for (lead of (isEmpty() ? [] : dashboard()?.inactiveLeads ?? []); track lead.leadId) { <a class="grid rounded-lg border border-[var(--driveos-border)] p-3 text-xs" [routerLink]="['/crm/leads', lead.leadId]"><strong>{{ lead.firstName }} {{ lead.lastName }}</strong><span>{{ lead.status }} · {{ lead.inactiveDays }} {{ 'crm.dashboard.days' | translate }}</span></a> } @empty { <p class="col-span-3 p-6 text-center text-xs text-[var(--driveos-text-secondary)]">{{ 'crm.dashboard.noInactiveLeads' | translate }}</p> } }</div></section>
+    <section
+      class="overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"
+    >
+      <div class="flex min-h-12 items-center border-b border-[var(--driveos-border)] px-4">
+        <h2 class="text-sm font-extrabold">
+          {{ 'crm.dashboard.widgets.inactiveLeads' | translate }}
+        </h2>
+      </div>
+      <div class="grid grid-cols-3 gap-3 p-3 max-md:grid-cols-1">
+        @if (viewLoading()) {
+          @for (_ of [1, 2, 3]; track $index) {
+            <div class="h-14 animate-pulse rounded bg-slate-200"></div>
+          }
+        } @else {
+          @for (lead of isEmpty() ? [] : (dashboard()?.inactiveLeads ?? []); track lead.leadId) {
+            <a
+              class="grid rounded-lg border border-[var(--driveos-border)] p-3 text-xs"
+              [routerLink]="['/crm/leads', lead.leadId]"
+            >
+              <strong>{{ lead.firstName }} {{ lead.lastName }}</strong>
+              <span>
+                {{ lead.status }} · {{ lead.inactiveDays }} {{ 'crm.dashboard.days' | translate }}
+              </span>
+            </a>
+          } @empty {
+            <p class="col-span-3 p-6 text-center text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'crm.dashboard.noInactiveLeads' | translate }}
+            </p>
+          }
+        }
+      </div>
+    </section>
   </main>
 </drive-os-page-shell>

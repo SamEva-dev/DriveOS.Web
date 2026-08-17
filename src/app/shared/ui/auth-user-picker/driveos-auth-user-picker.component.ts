@@ -61,11 +61,7 @@ export class DriveOsAuthUserPickerComponent implements OnChanges {
 
   constructor() {
     this.searchControl.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef),
-      )
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.load(1));
   }
 

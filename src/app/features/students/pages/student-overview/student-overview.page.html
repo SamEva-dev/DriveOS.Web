@@ -1,0 +1,111 @@
+@if (loading()) {
+  <div class="grid min-h-64 place-items-center">
+    <drive-os-spinner
+      size="lg"
+      [label]="'common.loading' | translate"
+    />
+  </div>
+} @else if (error()) {
+  <drive-os-state-banner
+    tone="danger"
+    icon="ph ph-warning-circle"
+    [title]="'students.errors.load' | translate"
+  />
+} @else if (data(); as overview) {
+  @if (overview.alerts.length) {
+    <div class="mb-5 grid gap-2">
+      @for (alert of overview.alerts; track alert.code) {
+        <drive-os-state-banner
+          [tone]="alert.severity === 'Error' ? 'danger' : 'warning'"
+          icon="ph ph-warning"
+          [title]="alert.messageKey | translate"
+        />
+      }
+    </div>
+  }
+  <div class="grid gap-5 xl:grid-cols-[1.25fr_.75fr]">
+    <div class="grid gap-5">
+      <section
+        class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
+        <h2 class="text-lg font-extrabold">{{ 'students.overview.enrollment' | translate }}</h2>
+        @if (overview.activeEnrollment; as enrollment) {
+          <dl class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div>
+              <dt class="text-xs uppercase text-slate-500">
+                {{ 'students.overview.training' | translate }}
+              </dt>
+              <dd class="font-bold">{{ enrollment.trainingCode }}</dd>
+            </div>
+            <div>
+              <dt class="text-xs uppercase text-slate-500">
+                {{ 'students.overview.status' | translate }}
+              </dt>
+              <dd class="font-bold">{{ enrollment.status }}</dd>
+            </div>
+            <div>
+              <dt class="text-xs uppercase text-slate-500">
+                {{ 'students.overview.source' | translate }}
+              </dt>
+              <dd>{{ enrollment.source }}</dd>
+            </div>
+            <div>
+              <dt class="text-xs uppercase text-slate-500">
+                {{ 'students.overview.started' | translate }}
+              </dt>
+              <dd>{{ enrollment.startedAtUtc | date: 'mediumDate' }}</dd>
+            </div>
+          </dl>
+        } @else {
+          <drive-os-empty-state
+            icon="ph-duotone ph-file-dashed"
+            [title]="'students.overview.noEnrollment' | translate"
+            [description]="'students.overview.noEnrollmentDescription' | translate"
+          />
+        }
+      </section>
+      <section
+        class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
+        <h2 class="text-lg font-extrabold">{{ 'students.overview.activity' | translate }}</h2>
+        <div class="mt-4 grid gap-3">
+          @for (activity of overview.recentActivity; track activity.occurredAtUtc) {
+            <div class="flex gap-3">
+              <span class="mt-1 size-2 rounded-full bg-orange-500"></span>
+              <div>
+                <p class="text-sm font-semibold">{{ activity.labelKey | translate }}</p>
+                <time class="text-xs text-slate-500">
+                  {{ activity.occurredAtUtc | date: 'short' }}
+                </time>
+              </div>
+            </div>
+          } @empty {
+            <p class="text-sm text-slate-500">{{ 'students.overview.noActivity' | translate }}</p>
+          }
+        </div>
+      </section>
+    </div>
+    <aside
+      class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+    >
+      <h2 class="text-lg font-extrabold">{{ 'students.overview.sections' | translate }}</h2>
+      <div class="mt-4 grid gap-2">
+        @for (section of overview.sections; track section.code) {
+          @if (section.isAuthorized) {
+            <a
+              [routerLink]="['..', section.route]"
+              class="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm font-bold hover:border-blue-400"
+            >
+              <span>{{ 'students.sections.' + section.code | translate }}</span>
+              <i
+                class="ph"
+                [class.ph-arrow-right]="section.isAvailable"
+                [class.ph-lock]="!section.isAvailable"
+              ></i>
+            </a>
+          }
+        }
+      </div>
+    </aside>
+  </div>
+}

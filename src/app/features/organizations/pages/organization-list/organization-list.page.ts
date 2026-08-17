@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  signal,
+} from '@angular/core';
 
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
@@ -66,13 +73,13 @@ export class OrganizationListPage {
   });
   private readonly authorization = inject(AuthorizationService);
 
-readonly canCreateOrganization = computed(() =>
-  this.authorization.hasPermission('Organizations.Create'),
-);
+  readonly canCreateOrganization = computed(() =>
+    this.authorization.hasPermission('Organizations.Create'),
+  );
 
-createOrganization(): void {
-  void this.router.navigate(['/organizations/create']);
-}
+  createOrganization(): void {
+    void this.router.navigate(['/organizations/create']);
+  }
 
   constructor() {
     this.searchControl.valueChanges

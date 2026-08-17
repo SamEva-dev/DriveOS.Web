@@ -1,0 +1,165 @@
+<section class="grid gap-5">
+  <drive-os-card>
+    <div class="flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-wider text-blue-700">
+          {{ 'students.enrollment.checklist.progress' | translate }}
+        </p>
+        <div class="mt-2 flex items-end gap-3">
+          <strong class="text-3xl font-black text-blue-800">{{ progress() }} %</strong>
+          <span class="pb-1 text-sm text-slate-500">
+            {{ checklist().completedBlocking }} / {{ checklist().totalBlocking }}
+            {{ 'students.enrollment.checklist.blockingDone' | translate }}
+          </span>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <drive-os-badge [variant]="checklist().canActivate ? 'success' : 'warning'">
+          {{ (checklist().canActivate ? 'students.enrollment.checklist.canActivate' : 'students.enrollment.checklist.notReady') | translate }}
+        </drive-os-badge>
+        @if (canUpdate()) {
+          <drive-os-button variant="outline" size="sm" icon="ph ph-arrows-clockwise" [loading]="synchronizing()" (pressed)="synchronize()">
+            {{ 'students.enrollment.checklist.actions.synchronize' | translate }}
+          </drive-os-button>
+        }
+        @if (canActivate()) {
+          <drive-os-button size="sm" icon="ph ph-check-circle" [disabled]="!checklist().canActivate" (pressed)="openActivate()">
+            {{ 'students.enrollment.checklist.actions.activate' | translate }}
+          </drive-os-button>
+        }
+      </div>
+    </div>
+
+    <div class="mt-4 h-2 overflow-hidden rounded-full bg-slate-200">
+      <div class="h-full rounded-full bg-orange-500" [style.width.%]="progress()"></div>
+    </div>
+
+    @if (!checklist().canActivate) {
+      <drive-os-state-banner class="mt-4 block" tone="warning" icon="ph ph-warning-circle"
+        [title]="'students.enrollment.checklist.activationBlockedTitle' | translate"
+        [description]="'students.enrollment.checklist.activationBlockedDescription' | translate" />
+    }
+  </drive-os-card>
+
+  <drive-os-card>
+    <div class="mb-3 flex items-center justify-between gap-3">
+      <div>
+        <h3 class="font-extrabold">{{ 'students.enrollment.checklist.itemsTitle' | translate }}</h3>
+        <p class="text-sm text-slate-500">{{ 'students.enrollment.checklist.itemsDescription' | translate }}</p>
+      </div>
+      <span class="text-sm font-bold text-slate-500">{{ checklist().items.length }}</span>
+    </div>
+
+    <div class="divide-y divide-slate-200">
+      @for (item of checklist().items; track item.id) {
+        <article class="grid gap-3 py-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
+          <div class="flex min-w-0 gap-3">
+            <span class="grid size-10 shrink-0 place-items-center rounded-xl"
+              [class.bg-red-100]="item.isBlocking" [class.text-red-700]="item.isBlocking"
+              [class.bg-slate-100]="!item.isBlocking" [class.text-slate-600]="!item.isBlocking">
+              <i class="ph" [class.ph-lock]="item.isBlocking" [class.ph-check-square]="!item.isBlocking"></i>
+            </span>
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                <strong>{{ item.labelKey | translate }}</strong>
+                <drive-os-badge [variant]="statusVariant(item.status)">{{ item.status }}</drive-os-badge>
+                @if (item.isBlocking) {
+                  <drive-os-badge variant="danger">{{ 'students.enrollment.checklist.blocking' | translate }}</drive-os-badge>
+                }
+              </div>
+              <p class="mt-1 text-xs text-slate-500">
+                {{ 'students.enrollment.categories.' + item.category | translate }}
+                @if (item.dueAtUtc) { · {{ 'students.enrollment.checklist.due' | translate }} {{ item.dueAtUtc | date: 'shortDate' }} }
+                @if (item.responsibleUserId) { · {{ 'students.enrollment.checklist.responsible' | translate }} {{ item.responsibleUserId }} }
+              </p>
+              @if (item.decisionReason) { <p class="mt-2 text-sm text-slate-600">{{ item.decisionReason }}</p> }
+              @if (item.reminderCount > 0) {
+                <p class="mt-1 text-xs text-orange-700">
+                  {{ 'students.enrollment.checklist.reminders' | translate:{ count: item.reminderCount } }}
+                  @if (item.lastReminderAtUtc) { · {{ item.lastReminderAtUtc | date: 'short' }} }
+                </p>
+              }
+            </div>
+          </div>
+
+          @if (canUpdate()) {
+            <div class="flex flex-wrap gap-2 xl:justify-end">
+              <drive-os-button variant="outline" size="sm" icon="ph ph-pencil-simple" (pressed)="openStatus(item)">
+                {{ 'students.enrollment.checklist.actions.status' | translate }}
+              </drive-os-button>
+              <drive-os-button variant="outline" size="sm" icon="ph ph-user-plus" (pressed)="openAssign(item)">
+                {{ 'students.enrollment.checklist.actions.assign' | translate }}
+              </drive-os-button>
+              <drive-os-button variant="outline" size="sm" icon="ph ph-bell" [loading]="remindingId() === item.id" (pressed)="remind(item)">
+                {{ 'students.enrollment.checklist.actions.remind' | translate }}
+              </drive-os-button>
+            </div>
+          }
+        </article>
+      } @empty {
+        <drive-os-empty-state icon="ph-duotone ph-checks" [title]="'students.enrollment.checklist.empty' | translate"
+          [description]="'students.enrollment.checklist.emptyDescription' | translate" />
+      }
+    </div>
+  </drive-os-card>
+
+  @if (action(); as current) {
+    <drive-os-card>
+      @if (current.type === 'status') {
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h3 class="font-extrabold">{{ 'students.enrollment.checklist.forms.statusTitle' | translate }}</h3>
+            <p class="text-sm text-slate-500">{{ current.item.labelKey | translate }}</p>
+          </div>
+          <drive-os-button variant="ghost" size="sm" icon="ph ph-x" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
+        </div>
+        <form class="mt-5 grid gap-4 md:grid-cols-2" [formGroup]="statusForm" (ngSubmit)="saveStatus()">
+          <label class="grid gap-2 text-sm font-semibold">
+            {{ 'students.enrollment.checklist.fields.status' | translate }}
+            <select dosInput formControlName="status">
+              @for (status of statuses; track status) { <option [value]="status">{{ status }}</option> }
+            </select>
+          </label>
+          <label class="grid gap-2 text-sm font-semibold md:col-span-2">
+            {{ 'students.enrollment.checklist.fields.reason' | translate }}
+            <textarea dosInput rows="4" formControlName="reason"></textarea>
+          </label>
+          <div class="flex justify-end gap-2 md:col-span-2">
+            <drive-os-button variant="outline" type="button" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
+            <drive-os-button type="submit" [loading]="saving()">{{ 'common.save' | translate }}</drive-os-button>
+          </div>
+        </form>
+      } @else if (current.type === 'assign') {
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h3 class="font-extrabold">{{ 'students.enrollment.checklist.forms.assignTitle' | translate }}</h3>
+            <p class="text-sm text-slate-500">{{ current.item.labelKey | translate }}</p>
+          </div>
+          <drive-os-button variant="ghost" size="sm" icon="ph ph-x" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
+        </div>
+        <form class="mt-5 grid gap-4" [formGroup]="assignmentForm" (ngSubmit)="saveAssignment()">
+          <label class="grid gap-2 text-sm font-semibold">
+            {{ 'students.enrollment.checklist.fields.responsibleUserId' | translate }}
+            <input dosInput formControlName="responsibleUserId" autocomplete="off" />
+          </label>
+          <p class="text-xs text-slate-500">{{ 'students.enrollment.checklist.fields.responsibleUserHint' | translate }}</p>
+          <div class="flex justify-end gap-2">
+            <drive-os-button variant="outline" type="button" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
+            <drive-os-button type="submit" [loading]="saving()">{{ 'common.save' | translate }}</drive-os-button>
+          </div>
+        </form>
+      } @else if (current.type === 'activate') {
+        <drive-os-state-banner tone="warning" icon="ph ph-warning"
+          [title]="'students.enrollment.checklist.forms.activateTitle' | translate"
+          [description]="'students.enrollment.checklist.forms.activateDescription' | translate" />
+        <div class="mt-5 flex justify-end gap-2">
+          <drive-os-button variant="outline" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
+          <drive-os-button icon="ph ph-check-circle" [loading]="saving()" (pressed)="activate()">
+            {{ 'students.enrollment.checklist.actions.confirmActivation' | translate }}
+          </drive-os-button>
+        </div>
+      }
+    </drive-os-card>
+  }
+</section>

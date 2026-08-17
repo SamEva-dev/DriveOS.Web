@@ -1,33 +1,151 @@
 <section class="mx-auto max-w-3xl space-y-6 p-4 sm:p-6">
-  <header><p class="text-sm font-semibold text-orange-500">CRM</p>
-    <h1 class="text-2xl font-bold text-blue-800 dark:text-blue-300">Modifier le statut du prospect</h1>
-    <p class="mt-1 text-slate-600 dark:text-slate-300">Clôturez, mettez en sommeil ou orientez sans supprimer l’historique.</p></header>
-  <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-5 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-700">
-    <fieldset class="grid gap-3 sm:grid-cols-2"><legend class="mb-2 font-semibold">Décision</legend>
-      @for (mode of ['lost','dormant','partner','reopen']; track mode) {
-        <label class="flex gap-2 rounded-xl border p-3"><input type="radio" formControlName="mode" [value]="mode">
-          <span>{{ mode === 'lost' ? 'Clôturer' : mode === 'dormant' ? 'Mettre en sommeil' : mode === 'partner' ? 'Orienter vers un partenaire' : 'Réouvrir' }}</span></label>
-      }</fieldset>
+  <header>
+    <p class="text-sm font-semibold text-orange-500">CRM</p>
+    <h1 class="text-2xl font-bold text-blue-800 dark:text-blue-300">
+      Modifier le statut du prospect
+    </h1>
+    <p class="mt-1 text-slate-600 dark:text-slate-300">
+      Clôturez, mettez en sommeil ou orientez sans supprimer l’historique.
+    </p>
+  </header>
+  <form
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    class="space-y-5 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-700"
+  >
+    <fieldset class="grid gap-3 sm:grid-cols-2">
+      <legend class="mb-2 font-semibold">Décision</legend>
+      @for (mode of ['lost', 'dormant', 'partner', 'reopen']; track mode) {
+        <label class="flex gap-2 rounded-xl border p-3">
+          <input
+            type="radio"
+            formControlName="mode"
+            [value]="mode"
+          />
+          <span>
+            {{
+              mode === 'lost'
+                ? 'Clôturer'
+                : mode === 'dormant'
+                  ? 'Mettre en sommeil'
+                  : mode === 'partner'
+                    ? 'Orienter vers un partenaire'
+                    : 'Réouvrir'
+            }}
+          </span>
+        </label>
+      }
+    </fieldset>
     @if (form.controls.mode.value === 'lost') {
-      <label class="block">Statut<select formControlName="decision" class="mt-1 w-full rounded-lg border p-2">@for (item of decisions; track item) { <option [value]="item">{{ item }}</option> }</select></label>
+      <label class="block">
+        Statut
+        <select
+          formControlName="decision"
+          class="mt-1 w-full rounded-lg border p-2"
+        >
+          @for (item of decisions; track item) {
+            <option [value]="item">{{ item }}</option>
+          }
+        </select>
+      </label>
     }
     @if (form.controls.mode.value !== 'partner' && form.controls.mode.value !== 'reopen') {
-      <label class="block">Motif<select formControlName="reason" class="mt-1 w-full rounded-lg border p-2">@for (item of reasons; track item) { <option [value]="item">{{ item }}</option> }</select></label>
+      <label class="block">
+        Motif
+        <select
+          formControlName="reason"
+          class="mt-1 w-full rounded-lg border p-2"
+        >
+          @for (item of reasons; track item) {
+            <option [value]="item">{{ item }}</option>
+          }
+        </select>
+      </label>
     }
     @if (form.controls.mode.value === 'dormant') {
-      <div class="grid gap-4 sm:grid-cols-2"><label>Date de reprise<input type="datetime-local" formControlName="resumeAtUtc" class="mt-1 w-full rounded-lg border p-2"></label>
-      <label>Identifiant du responsable<input formControlName="responsibleUserId" class="mt-1 w-full rounded-lg border p-2"></label></div>
-      <label class="block">Campagne éventuelle<input formControlName="campaignCode" class="mt-1 w-full rounded-lg border p-2"></label>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label>
+          Date de reprise
+          <input
+            type="datetime-local"
+            formControlName="resumeAtUtc"
+            class="mt-1 w-full rounded-lg border p-2"
+          />
+        </label>
+        <label>
+          Identifiant du responsable
+          <input
+            formControlName="responsibleUserId"
+            class="mt-1 w-full rounded-lg border p-2"
+          />
+        </label>
+      </div>
+      <label class="block">
+        Campagne éventuelle
+        <input
+          formControlName="campaignCode"
+          class="mt-1 w-full rounded-lg border p-2"
+        />
+      </label>
     }
     @if (form.controls.mode.value === 'partner') {
-      <label class="block">Partenaire<input formControlName="partnerName" class="mt-1 w-full rounded-lg border p-2"></label>
-      <label class="block">Données partagées<textarea formControlName="sharedDataDescription" rows="3" class="mt-1 w-full rounded-lg border p-2"></textarea></label>
-      <label class="block">Consentement recueilli le<input type="datetime-local" formControlName="consentCollectedAtUtc" class="mt-1 w-full rounded-lg border p-2"></label>
-      <label class="flex gap-2"><input type="checkbox" formControlName="consent"> Le prospect consent explicitement au partage décrit ci-dessus.</label>
+      <label class="block">
+        Partenaire
+        <input
+          formControlName="partnerName"
+          class="mt-1 w-full rounded-lg border p-2"
+        />
+      </label>
+      <label class="block">
+        Données partagées
+        <textarea
+          formControlName="sharedDataDescription"
+          rows="3"
+          class="mt-1 w-full rounded-lg border p-2"
+        ></textarea>
+      </label>
+      <label class="block">
+        Consentement recueilli le
+        <input
+          type="datetime-local"
+          formControlName="consentCollectedAtUtc"
+          class="mt-1 w-full rounded-lg border p-2"
+        />
+      </label>
+      <label class="flex gap-2">
+        <input
+          type="checkbox"
+          formControlName="consent"
+        />
+        Le prospect consent explicitement au partage décrit ci-dessus.
+      </label>
     }
-    <label class="block">Commentaire interne<textarea formControlName="comment" rows="3" class="mt-1 w-full rounded-lg border p-2"></textarea></label>
-    @if (error()) { <p class="rounded-lg bg-red-50 p-3 text-red-700">{{ error() }}</p> }
-    <div class="flex justify-end gap-3"><button type="button" (click)="router.navigate(['/app/crm/leads', leadId])" class="rounded-lg border px-4 py-2">Annuler</button>
-      <button type="submit" [disabled]="saving()" class="rounded-lg bg-blue-800 px-4 py-2 font-semibold text-white disabled:opacity-50">{{ saving() ? 'Enregistrement…' : 'Confirmer' }}</button></div>
+    <label class="block">
+      Commentaire interne
+      <textarea
+        formControlName="comment"
+        rows="3"
+        class="mt-1 w-full rounded-lg border p-2"
+      ></textarea>
+    </label>
+    @if (error()) {
+      <p class="rounded-lg bg-red-50 p-3 text-red-700">{{ error() }}</p>
+    }
+    <div class="flex justify-end gap-3">
+      <button
+        type="button"
+        (click)="router.navigate(['/app/crm/leads', leadId])"
+        class="rounded-lg border px-4 py-2"
+      >
+        Annuler
+      </button>
+      <button
+        type="submit"
+        [disabled]="saving()"
+        class="rounded-lg bg-blue-800 px-4 py-2 font-semibold text-white disabled:opacity-50"
+      >
+        {{ saving() ? 'Enregistrement…' : 'Confirmer' }}
+      </button>
+    </div>
   </form>
 </section>

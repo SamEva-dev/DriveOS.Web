@@ -1,4 +1,6 @@
-<section class="mt-4 overflow-hidden rounded-3xl border border-slate-200/80 bg-slate-50/70 dark:border-slate-800 dark:bg-slate-950/40">
+<section
+  class="mt-4 overflow-hidden rounded-3xl border border-slate-200/80 bg-slate-50/70 dark:border-slate-800 dark:bg-slate-950/40"
+>
   <div class="flex items-center justify-between gap-3 px-4 py-3 sm:px-5">
     <button
       type="button"
@@ -6,8 +8,13 @@
       [disabled]="!collapsible()"
       (click)="toggle()"
     >
-      <span class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-800 dark:bg-blue-950/50 dark:text-blue-300">
-        <i class="ph ph-funnel" aria-hidden="true"></i>
+      <span
+        class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-800 dark:bg-blue-950/50 dark:text-blue-300"
+      >
+        <i
+          class="ph ph-funnel"
+          aria-hidden="true"
+        ></i>
       </span>
       <span class="min-w-0">
         <span class="block text-sm font-bold text-slate-900 dark:text-white">{{ title() }}</span>

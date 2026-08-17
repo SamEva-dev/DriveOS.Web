@@ -25,10 +25,18 @@ export class DriveOsConfirmDialogComponent {
   readonly confirmed = output<void>();
   readonly cancelRequested = output<void>();
 
-  readonly iconName = computed(() => this.tone() === 'danger' ? 'triangle-alert' : this.tone() === 'warning' ? 'circle-alert' : 'circle-check');
-  readonly iconClass = computed(() => this.tone() === 'danger'
-    ? 'bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400'
-    : this.tone() === 'warning'
-      ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400'
-      : 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300');
+  readonly iconName = computed(() =>
+    this.tone() === 'danger'
+      ? 'triangle-alert'
+      : this.tone() === 'warning'
+        ? 'circle-alert'
+        : 'circle-check',
+  );
+  readonly iconClass = computed(() =>
+    this.tone() === 'danger'
+      ? 'bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400'
+      : this.tone() === 'warning'
+        ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400'
+        : 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300',
+  );
 }

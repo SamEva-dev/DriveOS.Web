@@ -37,14 +37,17 @@ export class DriveOsDrawerComponent {
 
   readonly closeRequested = output<void>();
 
-  readonly sizeClass = computed(() => ({
-    sm: 'max-w-sm',
-    md: 'max-w-xl',
-    lg: 'max-w-2xl',
-    xl: 'max-w-4xl',
-  })[this.size()]);
+  readonly sizeClass = computed(
+    () =>
+      ({
+        sm: 'max-w-sm',
+        md: 'max-w-xl',
+        lg: 'max-w-2xl',
+        xl: 'max-w-4xl',
+      })[this.size()],
+  );
 
-  readonly sideClass = computed(() => this.side() === 'left' ? 'left-0' : 'right-0');
+  readonly sideClass = computed(() => (this.side() === 'left' ? 'left-0' : 'right-0'));
 
   constructor() {
     const destroyRef = inject(DestroyRef);

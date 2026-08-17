@@ -1,5 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -87,7 +94,10 @@ export class OrganizationLegalProfilePage {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(250)],
     }),
-    addressLine2: new FormControl('', { nonNullable: true, validators: [Validators.maxLength(250)] }),
+    addressLine2: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.maxLength(250)],
+    }),
     postalCode: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(30)],
@@ -121,7 +131,7 @@ export class OrganizationLegalProfilePage {
       .get(this.organizationId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: profile => {
+        next: (profile) => {
           this.profile.set(profile);
           this.patchForm(profile);
           this.isLoading.set(false);
@@ -200,18 +210,23 @@ export class OrganizationLegalProfilePage {
 
   activate(): void {
     const current = this.profile();
-    if (!current || current.status !== 'Draft' || !this.canActivate() || this.changingStatus()) return;
+    if (!current || current.status !== 'Draft' || !this.canActivate() || this.changingStatus())
+      return;
     this.changeStatus('activate', current.revision);
   }
 
   archive(): void {
     const current = this.profile();
-    if (!current || current.status === 'Archived' || !this.canArchive() || this.changingStatus()) return;
-    if (!window.confirm(this.translate.instant('organizations.legalProfile.confirmArchive'))) return;
+    if (!current || current.status === 'Archived' || !this.canArchive() || this.changingStatus())
+      return;
+    if (!window.confirm(this.translate.instant('organizations.legalProfile.confirmArchive')))
+      return;
     this.changeStatus('archive', current.revision);
   }
 
-  statusBadgeVariant(status: OrganizationLegalProfile['status']): 'neutral' | 'success' | 'warning' {
+  statusBadgeVariant(
+    status: OrganizationLegalProfile['status'],
+  ): 'neutral' | 'success' | 'warning' {
     if (status === 'Active') return 'success';
     if (status === 'Archived') return 'neutral';
     return 'warning';
@@ -219,9 +234,10 @@ export class OrganizationLegalProfilePage {
 
   private changeStatus(action: 'activate' | 'archive', revision: number): void {
     this.changingStatus.set(true);
-    const request$ = action === 'activate'
-      ? this.api.activate(this.organizationId, { expectedRevision: revision })
-      : this.api.archive(this.organizationId, { expectedRevision: revision });
+    const request$ =
+      action === 'activate'
+        ? this.api.activate(this.organizationId, { expectedRevision: revision })
+        : this.api.archive(this.organizationId, { expectedRevision: revision });
 
     request$
       .pipe(

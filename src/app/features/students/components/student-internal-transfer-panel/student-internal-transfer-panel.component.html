@@ -1,0 +1,190 @@
+<section class="mt-5 grid gap-5">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h3 class="font-extrabold">{{ 'students.mobility.internal.title' | translate }}</h3>
+      <p class="text-sm text-slate-500">{{ 'students.mobility.internal.description' | translate }}</p>
+    </div>
+    @if (canAnalyze()) {
+      <drive-os-button icon="ph ph-arrows-left-right" (pressed)="open()">
+        {{ 'students.mobility.internal.actions.prepare' | translate }}
+      </drive-os-button>
+    }
+  </div>
+
+  @if (editorOpen()) {
+    <article class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <h4 class="font-extrabold">{{ 'students.mobility.internal.form.title' | translate }}</h4>
+          <p class="text-sm text-slate-500">{{ 'students.mobility.internal.form.description' | translate }}</p>
+        </div>
+        <button type="button" class="text-slate-500 hover:text-slate-900" (click)="cancel()" [attr.aria-label]="'common.cancel' | translate">
+          <i class="ph ph-x text-xl"></i>
+        </button>
+      </div>
+
+      <form class="mt-5 grid gap-5" [formGroup]="form" (ngSubmit)="analyze()">
+        <div class="grid gap-4 md:grid-cols-2">
+          <label class="grid gap-1.5 text-sm font-semibold">
+            {{ 'students.mobility.internal.form.targetBranch' | translate }}
+            <select dosInput formControlName="targetBranchId">
+              <option value="">{{ 'students.mobility.internal.form.selectBranch' | translate }}</option>
+              @for (branch of branchOptions(); track branch.id) {
+                <option [value]="branch.id">{{ branch.name }} @if (branch.code) { ({{ branch.code }}) }</option>
+              }
+            </select>
+          </label>
+
+          <label class="grid gap-1.5 text-sm font-semibold">
+            {{ 'students.mobility.internal.form.mode' | translate }}
+            <select dosInput formControlName="mode">
+              <option [ngValue]="1">{{ 'students.mobility.internal.modes.immediate' | translate }}</option>
+              <option [ngValue]="2">{{ 'students.mobility.internal.modes.effectiveOnDate' | translate }}</option>
+              <option [ngValue]="3">{{ 'students.mobility.internal.modes.afterCurrentPackage' | translate }}</option>
+              <option [ngValue]="4">{{ 'students.mobility.internal.modes.temporary' | translate }}</option>
+            </select>
+          </label>
+
+          @if (form.controls.mode.value !== 1) {
+            <label class="grid gap-1.5 text-sm font-semibold">
+              {{ 'students.mobility.internal.form.effectiveOn' | translate }}
+              <input dosInput type="date" formControlName="effectiveOn" />
+            </label>
+          }
+          @if (form.controls.mode.value === 4) {
+            <label class="grid gap-1.5 text-sm font-semibold">
+              {{ 'students.mobility.internal.form.temporaryUntil' | translate }}
+              <input dosInput type="date" formControlName="temporaryUntil" />
+            </label>
+          }
+        </div>
+
+        <fieldset class="grid gap-3">
+          <legend class="text-sm font-extrabold">{{ 'students.mobility.internal.form.elements' | translate }}</legend>
+          <div class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+            @for (element of elementOptions; track element.value) {
+              <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-[var(--driveos-border)] p-3 text-sm">
+                <input type="checkbox" [checked]="elementSelected(element.value)" (change)="toggleElement(element.value)" />
+                <span>{{ element.labelKey | translate }}</span>
+              </label>
+            }
+          </div>
+        </fieldset>
+
+        <label class="grid gap-1.5 text-sm font-semibold">
+          {{ 'students.mobility.reason' | translate }}
+          <textarea dosInput rows="3" formControlName="reason" [placeholder]="'students.mobility.internal.form.reasonPlaceholder' | translate"></textarea>
+        </label>
+
+        <div class="flex flex-wrap justify-end gap-2">
+          <drive-os-button variant="outline" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
+          <drive-os-button type="submit" icon="ph ph-magnifying-glass" [loading]="saving()" [disabled]="selectedElements() === 0">
+            {{ 'students.mobility.internal.actions.analyze' | translate }}
+          </drive-os-button>
+        </div>
+      </form>
+
+      @if (analyzedTransfer(); as transfer) {
+        <div class="mt-5 border-t border-[var(--driveos-border)] pt-5">
+          <drive-os-state-banner
+            tone="warning"
+            icon="ph ph-shield-check"
+            [title]="'students.mobility.internal.analysisReady' | translate"
+            [description]="'students.mobility.internal.analysisReadyDescription' | translate"
+          />
+          <div class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            @for (impact of transfer.impacts; track impact.type) {
+              <div class="rounded-lg border border-[var(--driveos-border)] p-3">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-sm font-bold">{{ impact.type }}</span>
+                  <drive-os-badge [variant]="statusVariant(impact.status)">{{ impact.status }}</drive-os-badge>
+                </div>
+                <p class="mt-2 text-xs text-slate-500">{{ impact.messageKey | translate }}</p>
+                @if (impact.affectedCount) {
+                  <p class="mt-1 text-xs font-semibold">{{ 'students.mobility.internal.affected' | translate }}: {{ impact.affectedCount }}</p>
+                }
+              </div>
+            }
+          </div>
+          @if (canValidateTransfer(transfer)) {
+            <div class="mt-4 flex justify-end">
+              <drive-os-button icon="ph ph-check-circle" [loading]="saving()" (pressed)="validate(transfer)">
+                {{ 'students.mobility.internal.actions.validate' | translate }}
+              </drive-os-button>
+            </div>
+          } @else if (!canValidate()) {
+            <p class="mt-4 text-xs text-slate-500">{{ 'students.mobility.internal.validationPermissionHint' | translate }}</p>
+          }
+        </div>
+      }
+    </article>
+  }
+
+  <div class="grid gap-5">
+    @for (transfer of transfers(); track transfer.transferId) {
+      <article class="overflow-hidden rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]">
+        <header class="flex flex-wrap items-center gap-3 border-b border-[var(--driveos-border)] p-4">
+          <span class="grid size-11 place-items-center rounded-xl bg-blue-100 text-xl text-blue-800">
+            <i class="ph-duotone ph-buildings"></i>
+          </span>
+          <div class="min-w-0 flex-1">
+            <h4 class="font-extrabold">{{ transfer.mode }} · {{ transfer.effectiveOn | date: 'mediumDate' }}</h4>
+            <p class="text-xs text-slate-500">
+              {{ branchLabel(transfer.sourceBranchId) }} <i class="ph ph-arrow-right mx-1"></i> {{ branchLabel(transfer.targetBranchId) }}
+            </p>
+          </div>
+          <drive-os-badge [variant]="statusVariant(transfer.status)">{{ transfer.status }}</drive-os-badge>
+        </header>
+
+        <div class="grid gap-4 p-4 lg:grid-cols-3">
+          <div>
+            <p class="text-xs uppercase text-slate-500">{{ 'students.mobility.reason' | translate }}</p>
+            <p class="mt-1 text-sm">{{ transfer.reason }}</p>
+          </div>
+          <div>
+            <p class="text-xs uppercase text-slate-500">{{ 'students.mobility.elements' | translate }}</p>
+            <p class="mt-1 text-sm font-bold">{{ transfer.elements }}</p>
+          </div>
+          <div>
+            <p class="text-xs uppercase text-slate-500">{{ 'students.mobility.analysisExpiry' | translate }}</p>
+            <p class="mt-1 text-sm">{{ transfer.analysisExpiresAtUtc | date: 'short' }}</p>
+          </div>
+        </div>
+
+        @if (transfer.impacts.length) {
+          <div class="border-t border-[var(--driveos-border)] bg-slate-50 p-4 dark:bg-slate-900/40">
+            <h5 class="text-sm font-extrabold">{{ 'students.mobility.impacts' | translate }}</h5>
+            <div class="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+              @for (impact of transfer.impacts; track impact.type) {
+                <div class="flex items-start gap-2 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-3 text-xs">
+                  <i class="ph mt-0.5 text-base" [class]="'ph ' + impactIcon(impact.status)"></i>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center justify-between gap-2">
+                      <strong>{{ impact.type }}</strong>
+                      <drive-os-badge [variant]="statusVariant(impact.status)">{{ impact.status }}</drive-os-badge>
+                    </div>
+                    <p class="mt-1 text-slate-500">{{ impact.messageKey | translate }}</p>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        @if (canValidateTransfer(transfer)) {
+          <div class="flex justify-end border-t border-[var(--driveos-border)] p-4">
+            <drive-os-button icon="ph ph-check-circle" [loading]="saving()" (pressed)="validate(transfer)">
+              {{ 'students.mobility.internal.actions.validate' | translate }}
+            </drive-os-button>
+          </div>
+        }
+      </article>
+    } @empty {
+      <drive-os-empty-state
+        icon="ph-duotone ph-arrows-left-right"
+        [title]="'students.mobility.noInternal' | translate"
+        [description]="'students.mobility.noInternalDescription' | translate"
+      />
+    }
+  </div>
+</section>

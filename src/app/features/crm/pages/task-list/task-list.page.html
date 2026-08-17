@@ -1,15 +1,46 @@
 <section class="driveos-page">
-  <div class="driveos-page-header"><div><p class="driveos-kicker">{{ 'crm.kicker' | translate }}</p>
-    <h1 class="driveos-page-title">{{ 'crm.tasks.title' | translate }}</h1><p class="driveos-page-subtitle">{{ 'crm.tasks.pageDescription' | translate }}</p></div></div>
-  @if (loading()) { <div class="flex min-h-72 items-center justify-center"><drive-os-spinner size="lg" /></div> }
-  @else { <drive-os-card><div class="space-y-3">
-    @for (task of tasks(); track task.id) {
-      <button type="button" class="w-full rounded-xl border p-4 text-left hover:border-blue-400 dark:border-slate-700" [class.border-red-300]="isOverdue(task)" (click)="open(task)">
-        <div class="flex justify-between gap-4"><div><p class="font-semibold text-slate-900 dark:text-white">{{ task.title }}</p>
-          <p class="mt-1 text-sm text-slate-500">{{ ('crm.tasks.types.' + task.type) | translate }} · {{ task.dueAtUtc | date:'medium' }}</p></div>
-          @if (isOverdue(task)) { <span class="text-xs font-bold text-red-700">{{ 'crm.tasks.overdue' | translate }}</span> }
-        </div>
-      </button>
-    } @empty { <p class="rounded-xl border border-dashed p-6 text-center text-sm text-slate-500 dark:border-slate-700">{{ 'crm.tasks.noPending' | translate }}</p> }
-  </div></drive-os-card> }
+  <div class="driveos-page-header">
+    <div>
+      <p class="driveos-kicker">{{ 'crm.kicker' | translate }}</p>
+      <h1 class="driveos-page-title">{{ 'crm.tasks.title' | translate }}</h1>
+      <p class="driveos-page-subtitle">{{ 'crm.tasks.pageDescription' | translate }}</p>
+    </div>
+  </div>
+  @if (loading()) {
+    <div class="flex min-h-72 items-center justify-center"><drive-os-spinner size="lg" /></div>
+  } @else {
+    <drive-os-card>
+      <div class="space-y-3">
+        @for (task of tasks(); track task.id) {
+          <button
+            type="button"
+            class="w-full rounded-xl border p-4 text-left hover:border-blue-400 dark:border-slate-700"
+            [class.border-red-300]="isOverdue(task)"
+            (click)="open(task)"
+          >
+            <div class="flex justify-between gap-4">
+              <div>
+                <p class="font-semibold text-slate-900 dark:text-white">{{ task.title }}</p>
+                <p class="mt-1 text-sm text-slate-500">
+                  {{ 'crm.tasks.types.' + task.type | translate }} ·
+                  {{ task.dueAtUtc | date: 'medium' }}
+                </p>
+              </div>
+              @if (isOverdue(task)) {
+                <span class="text-xs font-bold text-red-700">
+                  {{ 'crm.tasks.overdue' | translate }}
+                </span>
+              }
+            </div>
+          </button>
+        } @empty {
+          <p
+            class="rounded-xl border border-dashed p-6 text-center text-sm text-slate-500 dark:border-slate-700"
+          >
+            {{ 'crm.tasks.noPending' | translate }}
+          </p>
+        }
+      </div>
+    </drive-os-card>
+  }
 </section>

@@ -5,7 +5,10 @@
         [routerLink]="['/organizations', organizationId]"
         class="mb-3 inline-flex items-center gap-2 text-sm font-medium text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-100"
       >
-        <i class="ph ph-arrow-left" aria-hidden="true"></i>
+        <i
+          class="ph ph-arrow-left"
+          aria-hidden="true"
+        ></i>
         {{ 'organizations.activationReadiness.actions.back' | translate }}
       </a>
       <h1 class="text-2xl font-bold text-slate-950 dark:text-slate-50">
@@ -16,14 +19,21 @@
       </p>
     </div>
 
-    <drive-os-button icon="ph ph-arrows-clockwise" variant="secondary" (pressed)="reload()">
+    <drive-os-button
+      icon="ph ph-arrows-clockwise"
+      variant="secondary"
+      (pressed)="reload()"
+    >
       {{ 'organizations.activationReadiness.actions.refresh' | translate }}
     </drive-os-button>
   </header>
 
   @if (isLoading()) {
     <div class="flex min-h-64 items-center justify-center">
-      <drive-os-spinner size="lg" [label]="'common.actions.loading' | translate" />
+      <drive-os-spinner
+        size="lg"
+        [label]="'common.actions.loading' | translate"
+      />
     </div>
   } @else if (readiness(); as report) {
     <drive-os-card>
@@ -45,7 +55,9 @@
           </div>
 
           <div>
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            <p
+              class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400"
+            >
               {{ satisfiedCount() }} / {{ totalCount() }}
               {{ 'organizations.activationReadiness.summary.completed' | translate }}
             </p>
@@ -53,14 +65,16 @@
               {{
                 (report.isReady
                   ? 'organizations.activationReadiness.summary.readyTitle'
-                  : 'organizations.activationReadiness.summary.notReadyTitle') | translate
+                  : 'organizations.activationReadiness.summary.notReadyTitle'
+                ) | translate
               }}
             </h2>
             <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
               {{
                 (report.isReady
                   ? 'organizations.activationReadiness.summary.readyDescription'
-                  : 'organizations.activationReadiness.summary.notReadyDescription') | translate
+                  : 'organizations.activationReadiness.summary.notReadyDescription'
+                ) | translate
               }}
             </p>
           </div>
@@ -78,15 +92,25 @@
                 [class.bg-emerald-100]="requirement.isSatisfied"
                 [class.text-emerald-700]="requirement.isSatisfied"
                 [class.bg-red-100]="!requirement.isSatisfied && requirement.severity === 'Blocking'"
-                [class.text-red-700]="!requirement.isSatisfied && requirement.severity === 'Blocking'"
-                [class.bg-amber-100]="!requirement.isSatisfied && requirement.severity !== 'Blocking'"
-                [class.text-amber-700]="!requirement.isSatisfied && requirement.severity !== 'Blocking'"
+                [class.text-red-700]="
+                  !requirement.isSatisfied && requirement.severity === 'Blocking'
+                "
+                [class.bg-amber-100]="
+                  !requirement.isSatisfied && requirement.severity !== 'Blocking'
+                "
+                [class.text-amber-700]="
+                  !requirement.isSatisfied && requirement.severity !== 'Blocking'
+                "
               >
                 <i
                   class="ph-duotone text-2xl"
                   [class.ph-check-circle]="requirement.isSatisfied"
-                  [class.ph-x-circle]="!requirement.isSatisfied && requirement.severity === 'Blocking'"
-                  [class.ph-warning-circle]="!requirement.isSatisfied && requirement.severity !== 'Blocking'"
+                  [class.ph-x-circle]="
+                    !requirement.isSatisfied && requirement.severity === 'Blocking'
+                  "
+                  [class.ph-warning-circle]="
+                    !requirement.isSatisfied && requirement.severity !== 'Blocking'
+                  "
                   aria-hidden="true"
                 ></i>
               </div>
@@ -100,17 +124,26 @@
                     class="rounded-full px-2.5 py-1 text-xs font-semibold"
                     [class.bg-emerald-100]="requirement.isSatisfied"
                     [class.text-emerald-800]="requirement.isSatisfied"
-                    [class.bg-red-100]="!requirement.isSatisfied && requirement.severity === 'Blocking'"
-                    [class.text-red-800]="!requirement.isSatisfied && requirement.severity === 'Blocking'"
-                    [class.bg-amber-100]="!requirement.isSatisfied && requirement.severity !== 'Blocking'"
-                    [class.text-amber-800]="!requirement.isSatisfied && requirement.severity !== 'Blocking'"
+                    [class.bg-red-100]="
+                      !requirement.isSatisfied && requirement.severity === 'Blocking'
+                    "
+                    [class.text-red-800]="
+                      !requirement.isSatisfied && requirement.severity === 'Blocking'
+                    "
+                    [class.bg-amber-100]="
+                      !requirement.isSatisfied && requirement.severity !== 'Blocking'
+                    "
+                    [class.text-amber-800]="
+                      !requirement.isSatisfied && requirement.severity !== 'Blocking'
+                    "
                   >
                     {{
                       (requirement.isSatisfied
                         ? 'organizations.activationReadiness.status.satisfied'
                         : requirement.severity === 'Blocking'
                           ? 'organizations.activationReadiness.status.blocking'
-                          : 'organizations.activationReadiness.status.warning') | translate
+                          : 'organizations.activationReadiness.status.warning'
+                      ) | translate
                     }}
                   </span>
                 </div>
@@ -122,13 +155,16 @@
 
             @if (navigationFor(requirement); as navigation) {
               @if (canNavigateTo(navigation)) {
-              <a
-                [routerLink]="navigation.routerLink"
-                class="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg border border-slate-300 px-4 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-800"
-              >
-                {{ navigation.labelKey | translate }}
-                <i class="ph ph-arrow-right" aria-hidden="true"></i>
-              </a>
+                <a
+                  [routerLink]="navigation.routerLink"
+                  class="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg border border-slate-300 px-4 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-800"
+                >
+                  {{ navigation.labelKey | translate }}
+                  <i
+                    class="ph ph-arrow-right"
+                    aria-hidden="true"
+                  ></i>
+                </a>
               } @else {
                 <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
                   {{ 'organizations.activationReadiness.actions.permissionRequired' | translate }}

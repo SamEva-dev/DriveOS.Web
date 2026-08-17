@@ -1,12 +1,7 @@
 import { LeadSourceType, LeadStatus } from './lead.model';
 
 export type LeadSortField =
-  | 'createdAtUtc'
-  | 'lastName'
-  | 'firstName'
-  | 'status'
-  | 'sourceType'
-  | 'licenseCategory';
+  'createdAtUtc' | 'lastName' | 'firstName' | 'status' | 'sourceType' | 'licenseCategory';
 
 export type SortDirection = 'asc' | 'desc';
 

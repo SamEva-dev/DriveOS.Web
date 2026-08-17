@@ -36,12 +36,15 @@ export class DriveOsModalComponent {
 
   readonly closeRequested = output<void>();
 
-  readonly panelClass = computed(() => ({
-    sm: 'max-w-lg',
-    md: 'max-w-2xl',
-    lg: 'max-w-4xl',
-    xl: 'max-w-6xl',
-  })[this.size()]);
+  readonly panelClass = computed(
+    () =>
+      ({
+        sm: 'max-w-lg',
+        md: 'max-w-2xl',
+        lg: 'max-w-4xl',
+        xl: 'max-w-6xl',
+      })[this.size()],
+  );
 
   constructor() {
     const destroyRef = inject(DestroyRef);

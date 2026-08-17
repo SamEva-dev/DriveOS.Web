@@ -1,9 +1,23 @@
 <section class="space-y-6">
-  <header><h1 class="text-2xl font-semibold">Clôture et archivage</h1><p class="text-sm text-slate-600">Préparez, approuvez et suivez la fermeture de l’organisation sans supprimer son historique.</p></header>
-  <button type="button" class="rounded-lg bg-blue-800 px-4 py-2 text-white" (click)="load()">Actualiser</button>
+  <header>
+    <h1 class="text-2xl font-semibold">Clôture et archivage</h1>
+    <p class="text-sm text-slate-600">
+      Préparez, approuvez et suivez la fermeture de l’organisation sans supprimer son historique.
+    </p>
+  </header>
+  <button
+    type="button"
+    class="rounded-lg bg-blue-800 px-4 py-2 text-white"
+    (click)="load()"
+  >
+    Actualiser
+  </button>
   @for (closure of closures(); track closure.id) {
     <article class="rounded-xl border border-slate-200 p-4">
-      <div class="flex items-center justify-between"><strong>{{ closure.reasonCode }}</strong><span>{{ closure.status }}</span></div>
+      <div class="flex items-center justify-between">
+        <strong>{{ closure.reasonCode }}</strong>
+        <span>{{ closure.status }}</span>
+      </div>
       <p class="mt-2 text-sm">Date d’effet : {{ closure.requestedEffectiveAtUtc }}</p>
       <p class="text-sm">Traitement des données : {{ closure.dataDisposition }}</p>
     </article>

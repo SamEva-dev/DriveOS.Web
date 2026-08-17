@@ -1,0 +1,238 @@
+<section>
+  <div class="mb-5">
+    <h2 class="text-xl font-extrabold">{{ 'students.identityEdit.title' | translate }}</h2>
+    <p class="text-sm text-slate-500">{{ 'students.identityEdit.description' | translate }}</p>
+  </div>
+  @if (loading()) {
+    <div class="grid min-h-64 place-items-center">
+      <drive-os-spinner
+        size="lg"
+        [label]="'common.loading' | translate"
+      />
+    </div>
+  } @else if (loadError()) {
+    <drive-os-state-banner
+      tone="danger"
+      icon="ph ph-warning-circle"
+      [title]="'students.errors.load' | translate"
+    >
+      <drive-os-button
+        variant="outline"
+        size="sm"
+        (pressed)="load()"
+      >
+        {{ 'common.actions.retry' | translate }}
+      </drive-os-button>
+    </drive-os-state-banner>
+  } @else {
+    @if (potentialDuplicate()) {
+      <drive-os-state-banner
+        class="mb-5 block"
+        tone="warning"
+        icon="ph ph-copy"
+        [title]="'students.identityEdit.duplicate.title' | translate"
+        [description]="'students.identityEdit.duplicate.description' | translate"
+      />
+    }
+    <form
+      class="grid gap-5"
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+    >
+      <drive-os-card>
+        <h3 class="font-extrabold">{{ 'students.identityEdit.sections.identity' | translate }}</h3>
+        <div class="mt-5 grid gap-5 md:grid-cols-2">
+          <label class="space-y-2">
+            <span>
+              {{ 'students.profile.fields.legalName' | translate }} —
+              {{ 'students.identityEdit.fields.firstName' | translate }} *
+            </span>
+            <input
+              dosInput
+              class="w-full"
+              formControlName="legalFirstName"
+            />
+          </label>
+          <label class="space-y-2">
+            <span>
+              {{ 'students.profile.fields.legalName' | translate }} —
+              {{ 'students.identityEdit.fields.lastName' | translate }} *
+            </span>
+            <input
+              dosInput
+              class="w-full"
+              formControlName="legalLastName"
+            />
+          </label>
+          <label class="space-y-2">
+            <span>{{ 'students.profile.fields.preferredName' | translate }}</span>
+            <input
+              dosInput
+              class="w-full"
+              formControlName="preferredName"
+            />
+          </label>
+          <label class="space-y-2">
+            <span>{{ 'students.profile.fields.birthDate' | translate }}</span>
+            <input
+              dosInput
+              class="w-full"
+              type="date"
+              formControlName="birthDate"
+            />
+          </label>
+          <label class="space-y-2">
+            <span>{{ 'students.profile.fields.birthPlace' | translate }}</span>
+            <input
+              dosInput
+              class="w-full"
+              formControlName="birthPlace"
+            />
+          </label>
+          <label class="space-y-2">
+            <span>{{ 'students.profile.fields.nationality' | translate }}</span>
+            <input
+              dosInput
+              class="w-full"
+              formControlName="nationality"
+            />
+          </label>
+        </div>
+      </drive-os-card>
+      <drive-os-card>
+        <h3 class="font-extrabold">{{ 'students.identityEdit.sections.contact' | translate }}</h3>
+        <div class="mt-5 grid gap-5 md:grid-cols-2">
+          <label class="space-y-2">
+            <span>{{ 'students.directEnrollment.fields.email' | translate }}</span>
+            <input
+              dosInput
+              class="w-full"
+              type="email"
+              formControlName="email"
+            />
+          </label>
+          <label class="space-y-2">
+            <span>{{ 'students.directEnrollment.fields.phone' | translate }}</span>
+            <input
+              dosInput
+              class="w-full"
+              type="tel"
+              formControlName="phone"
+            />
+          </label>
+          <label class="space-y-2 md:col-span-2">
+            <span>{{ 'students.identityEdit.fields.address1' | translate }}</span>
+            <input
+              dosInput
+              class="w-full"
+              formControlName="addressLine1"
+            />
+          </label>
+          <label class="space-y-2 md:col-span-2">
+            <span>{{ 'students.identityEdit.fields.address2' | translate }}</span>
+            <input
+              dosInput
+              class="w-full"
+              formControlName="addressLine2"
+            />
+          </label>
+          <label class="space-y-2">
+            <span>{{ 'students.identityEdit.fields.postalCode' | translate }}</span>
+            <input
+              dosInput
+              class="w-full"
+              formControlName="postalCode"
+            />
+          </label>
+          <label class="space-y-2">
+            <span>{{ 'students.identityEdit.fields.city' | translate }}</span>
+            <input
+              dosInput
+              class="w-full"
+              formControlName="city"
+            />
+          </label>
+          <label class="space-y-2">
+            <span>{{ 'students.directEnrollment.fields.country' | translate }}</span>
+            <input
+              dosInput
+              class="w-full uppercase"
+              formControlName="countryCode"
+            />
+          </label>
+          <label class="space-y-2">
+            <span>{{ 'students.profile.fields.language' | translate }}</span>
+            <input
+              dosInput
+              class="w-full"
+              formControlName="preferredLanguage"
+            />
+          </label>
+          <label class="space-y-2">
+            <span>{{ 'students.identityEdit.fields.timeZone' | translate }}</span>
+            <input
+              dosInput
+              class="w-full"
+              formControlName="timeZone"
+            />
+          </label>
+        </div>
+      </drive-os-card>
+      <drive-os-card>
+        <h3 class="font-extrabold">
+          {{ 'students.identityEdit.sections.preferences' | translate }}
+        </h3>
+        <div class="mt-4 flex flex-wrap gap-4">
+          <label class="inline-flex items-center gap-2">
+            <input
+              type="checkbox"
+              formControlName="allowEmail"
+            />
+            E-mail
+          </label>
+          <label class="inline-flex items-center gap-2">
+            <input
+              type="checkbox"
+              formControlName="allowSms"
+            />
+            SMS
+          </label>
+          <label class="inline-flex items-center gap-2">
+            <input
+              type="checkbox"
+              formControlName="allowPhone"
+            />
+            {{ 'students.profile.identity.phone' | translate }}
+          </label>
+        </div>
+        <label class="mt-5 grid gap-2">
+          <span>{{ 'students.identityEdit.fields.justification' | translate }}</span>
+          <textarea
+            dosInput
+            class="min-h-24 w-full"
+            formControlName="justification"
+          ></textarea>
+          <small class="text-slate-500">
+            {{ 'students.identityEdit.justificationHint' | translate }}
+          </small>
+        </label>
+      </drive-os-card>
+      <div class="flex flex-wrap justify-end gap-3">
+        <drive-os-button
+          variant="outline"
+          (pressed)="cancel()"
+        >
+          {{ 'common.actions.cancel' | translate }}
+        </drive-os-button>
+        <drive-os-button
+          type="submit"
+          icon="ph ph-floppy-disk"
+          [loading]="saving()"
+          [disabled]="form.invalid"
+        >
+          {{ 'common.actions.save' | translate }}
+        </drive-os-button>
+      </div>
+    </form>
+  }
+</section>

@@ -6,12 +6,19 @@
     >
       {{ label() }}
       @if (required()) {
-        <span class="text-[var(--driveos-accent-500)]" aria-hidden="true">*</span>
+        <span
+          class="text-[var(--driveos-accent-500)]"
+          aria-hidden="true"
+        >
+          *
+        </span>
       }
     </label>
 
     @if (!required() && optionalLabel()) {
-      <span class="rounded-full bg-[var(--driveos-surface-hover)] px-2 py-0.5 text-[11px] font-bold text-[var(--driveos-text-muted)]">
+      <span
+        class="rounded-full bg-[var(--driveos-surface-hover)] px-2 py-0.5 text-[11px] font-bold text-[var(--driveos-text-muted)]"
+      >
         {{ optionalLabel() }}
       </span>
     }
@@ -20,8 +27,16 @@
   <ng-content />
 
   @if (error()) {
-    <p class="mt-2 flex items-start gap-2 text-sm font-semibold text-[var(--driveos-danger)]" role="alert">
-      <span class="mt-0.5" aria-hidden="true">●</span>
+    <p
+      class="mt-2 flex items-start gap-2 text-sm font-semibold text-[var(--driveos-danger)]"
+      role="alert"
+    >
+      <span
+        class="mt-0.5"
+        aria-hidden="true"
+      >
+        ●
+      </span>
       <span>{{ error() }}</span>
     </p>
   } @else if (hint()) {

@@ -144,15 +144,12 @@ export class OrganizationDetailPage {
       : ['/organizations'],
   );
 
-
   readonly canReadSequences = computed(() =>
     this.authorization.hasPermission(ORGANIZATION_SEQUENCE_PERMISSIONS.read),
   );
 
   readonly sequencesLink = computed(() =>
-    this.organizationId
-      ? ['/organizations', this.organizationId, 'sequences']
-      : ['/organizations'],
+    this.organizationId ? ['/organizations', this.organizationId, 'sequences'] : ['/organizations'],
   );
 
   readonly canReadRepresentatives = computed(() =>

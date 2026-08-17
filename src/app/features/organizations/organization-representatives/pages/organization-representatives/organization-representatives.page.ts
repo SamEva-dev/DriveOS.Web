@@ -8,7 +8,13 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../../../core/auth/authorization.service';
@@ -79,14 +85,17 @@ export class OrganizationRepresentativesPage {
   readonly canReactivate = computed(() => this.auth.hasPermission(p.reactivate));
   readonly canEnd = computed(() => this.auth.hasPermission(p.end));
   readonly canPrimary = computed(() => this.auth.hasPermission(p.setPrimaryOwner));
-  readonly createForm = this.fb.nonNullable.group({
-    representativeType: [OrganizationRepresentativeType.Owner, Validators.required],
-    authorityScope: ['', [Validators.required, Validators.maxLength(2000)]],
-    isPrimaryOwner: [false],
-    effectiveFrom: [new Date().toISOString().slice(0, 10), Validators.required],
-    effectiveTo: [''],
-    activateImmediately: [true],
-  }, { validators: [OrganizationRepresentativesPage.dateRangeValidator] });
+  readonly createForm = this.fb.nonNullable.group(
+    {
+      representativeType: [OrganizationRepresentativeType.Owner, Validators.required],
+      authorityScope: ['', [Validators.required, Validators.maxLength(2000)]],
+      isPrimaryOwner: [false],
+      effectiveFrom: [new Date().toISOString().slice(0, 10), Validators.required],
+      effectiveTo: [''],
+      activateImmediately: [true],
+    },
+    { validators: [OrganizationRepresentativesPage.dateRangeValidator] },
+  );
   readonly editForm = this.fb.nonNullable.group({
     userId: [''],
     authorityScope: ['', [Validators.required, Validators.maxLength(2000)]],
@@ -95,9 +104,19 @@ export class OrganizationRepresentativesPage {
   });
   readonly actionForm = this.fb.nonNullable.group({ reason: [''], effectiveTo: [''] });
   readonly totalCount = computed(() => this.items().length);
-  readonly activeCount = computed(() => this.items().filter((x) => x.status === OrganizationRepresentativeStatus.Active).length);
-  readonly ownerCount = computed(() => this.items().filter((x) => x.representativeType === OrganizationRepresentativeType.Owner).length);
-  readonly hasPrimaryOwner = computed(() => this.items().some((x) => x.isPrimaryOwner && x.status === OrganizationRepresentativeStatus.Active));
+  readonly activeCount = computed(
+    () => this.items().filter((x) => x.status === OrganizationRepresentativeStatus.Active).length,
+  );
+  readonly ownerCount = computed(
+    () =>
+      this.items().filter((x) => x.representativeType === OrganizationRepresentativeType.Owner)
+        .length,
+  );
+  readonly hasPrimaryOwner = computed(() =>
+    this.items().some(
+      (x) => x.isPrimaryOwner && x.status === OrganizationRepresentativeStatus.Active,
+    ),
+  );
 
   readonly types = Object.values(OrganizationRepresentativeType).filter(
     (v) => typeof v === 'number',
@@ -255,7 +274,9 @@ export class OrganizationRepresentativesPage {
   representativeDisplayName(item: OrganizationRepresentativeListItem): string {
     if (!item.userId) return this.tr.instant('organizations.representatives.personWithoutAccount');
     const user = this.representativeUsers()[item.userId];
-    return user ? authUserDisplayName(user) : this.tr.instant('organizations.representatives.loadingIdentity');
+    return user
+      ? authUserDisplayName(user)
+      : this.tr.instant('organizations.representatives.loadingIdentity');
   }
 
   representativeEmail(item: OrganizationRepresentativeListItem): string {
@@ -274,7 +295,9 @@ export class OrganizationRepresentativesPage {
   }
 
   representativeInitials(item: OrganizationRepresentativeListItem): string {
-    return this.typeLabel(item.representativeType).split('.').at(-1)?.slice(0, 2).toUpperCase() ?? 'RP';
+    return (
+      this.typeLabel(item.representativeType).split('.').at(-1)?.slice(0, 2).toUpperCase() ?? 'RP'
+    );
   }
 
   statusVariant(v: OrganizationRepresentativeStatus): 'success' | 'warning' | 'neutral' {
@@ -311,14 +334,17 @@ export class OrganizationRepresentativesPage {
       });
   }
   private hydrateRepresentativeUsers(items: readonly OrganizationRepresentativeListItem[]): void {
-    const ids = [...new Set(items.map((item) => item.userId).filter((id): id is string => Boolean(id)))];
+    const ids = [
+      ...new Set(items.map((item) => item.userId).filter((id): id is string => Boolean(id))),
+    ];
     for (const userId of ids) {
       if (this.representativeUsers()[userId]) continue;
       this.authUsers
         .getById(userId)
         .pipe(takeUntilDestroyed(this.destroy))
         .subscribe({
-          next: (user) => this.representativeUsers.update((current) => ({ ...current, [user.id]: user })),
+          next: (user) =>
+            this.representativeUsers.update((current) => ({ ...current, [user.id]: user })),
           error: () => undefined,
         });
     }

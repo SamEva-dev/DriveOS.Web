@@ -1,11 +1,24 @@
 export type OfferLineType =
-  | 'RegistrationFee' | 'TheoryTraining' | 'PracticalLesson' | 'SimulatorLesson'
-  | 'InitialAssessment' | 'PedagogicalReview' | 'ExamSupport' | 'VehicleExamRental'
-  | 'DigitalAccess' | 'AdministrativeService' | 'PartnerTraining' | 'Other';
+  | 'RegistrationFee'
+  | 'TheoryTraining'
+  | 'PracticalLesson'
+  | 'SimulatorLesson'
+  | 'InitialAssessment'
+  | 'PedagogicalReview'
+  | 'ExamSupport'
+  | 'VehicleExamRental'
+  | 'DigitalAccess'
+  | 'AdministrativeService'
+  | 'PartnerTraining'
+  | 'Other';
 
 export type OfferPriceSource =
-  | 'StandardCatalog' | 'BranchCatalog' | 'NegotiatedPrice'
-  | 'Campaign' | 'PartnerAgreement' | 'ManualOverride';
+  | 'StandardCatalog'
+  | 'BranchCatalog'
+  | 'NegotiatedPrice'
+  | 'Campaign'
+  | 'PartnerAgreement'
+  | 'ManualOverride';
 
 export interface CommercialOfferLineDraft {
   type: OfferLineType;
@@ -86,9 +99,19 @@ export interface CommercialOffer {
   interactions: OfferInteraction[];
 }
 
-export type OfferInteractionType = 'Created' | 'Sent' | 'Viewed' | 'QuestionReceived'
-  | 'ModificationRequested' | 'FollowUpScheduled' | 'FollowUpCompleted'
-  | 'Accepted' | 'Rejected' | 'Withdrawn' | 'Expired' | 'VersionCreated';
+export type OfferInteractionType =
+  | 'Created'
+  | 'Sent'
+  | 'Viewed'
+  | 'QuestionReceived'
+  | 'ModificationRequested'
+  | 'FollowUpScheduled'
+  | 'FollowUpCompleted'
+  | 'Accepted'
+  | 'Rejected'
+  | 'Withdrawn'
+  | 'Expired'
+  | 'VersionCreated';
 
 export interface OfferInteraction {
   id: string;
@@ -99,8 +122,10 @@ export interface OfferInteraction {
   metadataJson: string | null;
 }
 
-export type OfferDeliveryChannel = 'Email' | 'SmsLink' | 'StudentPortal' | 'GuardianPortal' | 'Printed' | 'SecureLink';
-export type OfferRecipientType = 'Prospect' | 'LegalRepresentative' | 'Payer' | 'Company' | 'Funder';
+export type OfferDeliveryChannel =
+  'Email' | 'SmsLink' | 'StudentPortal' | 'GuardianPortal' | 'Printed' | 'SecureLink';
+export type OfferRecipientType =
+  'Prospect' | 'LegalRepresentative' | 'Payer' | 'Company' | 'Funder';
 
 export interface SendCommercialOfferRequest {
   channel: OfferDeliveryChannel;

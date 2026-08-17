@@ -1,0 +1,151 @@
+<section class="driveos-page">
+  <div class="driveos-page-header">
+    <div>
+      <p class="driveos-kicker">{{ 'students.kicker' | translate }}</p>
+      <h1 class="driveos-page-title">{{ 'students.dashboard.title' | translate }}</h1>
+      <p class="driveos-page-subtitle">{{ 'students.dashboard.description' | translate }}</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <drive-os-button
+        variant="outline"
+        icon="ph ph-arrows-clockwise"
+        [loading]="loading()"
+        (pressed)="load()"
+      >
+        {{ 'common.actions.refresh' | translate }}
+      </drive-os-button>
+      <a
+        routerLink="/students/list"
+        class="inline-flex min-h-10 items-center rounded-lg border border-blue-800 px-4 text-sm font-bold text-blue-800"
+      >
+        {{ 'students.dashboard.openDirectory' | translate }}
+      </a>
+      @if (canCreateEnrollment()) {
+        <a
+          routerLink="/students/enrollments/new"
+          class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-blue-800 px-4 text-sm font-bold text-white"
+        >
+          <i class="ph ph-plus"></i>
+          {{ 'students.directEnrollment.action' | translate }}
+        </a>
+      }
+    </div>
+  </div>
+  @if (error()) {
+    <drive-os-state-banner
+      class="mt-5 block"
+      tone="danger"
+      icon="ph ph-warning-circle"
+      [title]="'students.errors.load' | translate"
+    >
+      <drive-os-button
+        variant="outline"
+        size="sm"
+        (pressed)="load()"
+      >
+        {{ 'common.actions.retry' | translate }}
+      </drive-os-button>
+    </drive-os-state-banner>
+  }
+  @if (loading()) {
+    <div class="grid min-h-80 place-items-center">
+      <drive-os-spinner
+        size="lg"
+        [label]="'common.loading' | translate"
+      />
+    </div>
+  } @else if (dashboard(); as data) {
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <article class="rounded-xl border border-blue-200 bg-blue-50 p-5">
+        <i class="ph-duotone ph-student text-2xl text-blue-800"></i>
+        <p class="mt-3 text-sm text-slate-600">
+          {{ 'students.dashboard.kpis.active' | translate }}
+        </p>
+        <strong class="text-3xl text-blue-900">{{ data.activeStudents }}</strong>
+      </article>
+      <article class="rounded-xl border border-orange-200 bg-orange-50 p-5">
+        <i class="ph-duotone ph-pencil-line text-2xl text-orange-600"></i>
+        <p class="mt-3 text-sm text-slate-600">
+          {{ 'students.dashboard.kpis.drafts' | translate }}
+        </p>
+        <strong class="text-3xl text-orange-800">{{ data.draftEnrollments }}</strong>
+      </article>
+      <article class="rounded-xl border border-slate-200 bg-white p-5">
+        <i class="ph-duotone ph-files text-2xl text-blue-800"></i>
+        <p class="mt-3 text-sm text-slate-600">
+          {{ 'students.dashboard.kpis.documents' | translate }}
+        </p>
+        <strong class="text-3xl">{{ data.pendingDocuments }}</strong>
+      </article>
+      <article class="rounded-xl border border-emerald-200 bg-emerald-50 p-5">
+        <i class="ph-duotone ph-check-circle text-2xl text-emerald-700"></i>
+        <p class="mt-3 text-sm text-slate-600">{{ 'students.dashboard.kpis.ready' | translate }}</p>
+        <strong class="text-3xl text-emerald-800">{{ data.readyForValidation }}</strong>
+      </article>
+    </div>
+    <div class="mt-6 grid gap-5 xl:grid-cols-2">
+      <section
+        class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
+        <h2 class="text-lg font-extrabold">{{ 'students.dashboard.priority' | translate }}</h2>
+        <div class="mt-4 grid gap-3">
+          @for (item of data.priorityActions; track item.enrollmentId) {
+            <a
+              [routerLink]="['/students', item.studentId, 'enrollment']"
+              class="flex items-center gap-3 rounded-lg border border-slate-200 p-3 hover:border-orange-400"
+            >
+              <span
+                class="grid size-10 place-items-center rounded-lg bg-orange-100 text-orange-700"
+              >
+                <i class="ph ph-warning"></i>
+              </span>
+              <span class="min-w-0 flex-1">
+                <strong class="block truncate">{{ item.studentName }}</strong>
+                <small class="text-slate-500">{{ item.trainingCode }} · {{ item.status }}</small>
+              </span>
+              <i class="ph ph-caret-right"></i>
+            </a>
+          } @empty {
+            <drive-os-empty-state
+              icon="ph-duotone ph-checks"
+              [title]="'students.dashboard.noPriority' | translate"
+              [description]="'students.dashboard.noPriorityDescription' | translate"
+            />
+          }
+        </div>
+      </section>
+      <section
+        class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
+        <h2 class="text-lg font-extrabold">{{ 'students.dashboard.recent' | translate }}</h2>
+        <div class="mt-4 divide-y divide-slate-200">
+          @for (student of data.recentStudents; track student.studentId) {
+            <a
+              [routerLink]="['/students', student.studentId]"
+              class="flex items-center gap-3 py-3"
+            >
+              <span
+                class="grid size-10 place-items-center rounded-full bg-blue-100 font-bold text-blue-800"
+              >
+                {{ student.studentName.slice(0, 1) }}
+              </span>
+              <span class="min-w-0 flex-1">
+                <strong class="block truncate">{{ student.studentName }}</strong>
+                <small class="text-slate-500">{{ student.email || student.phone || '—' }}</small>
+              </span>
+              <time class="text-xs text-slate-500">
+                {{ student.createdAtUtc | date: 'shortDate' }}
+              </time>
+            </a>
+          } @empty {
+            <drive-os-empty-state
+              icon="ph-duotone ph-student"
+              [title]="'students.dashboard.noRecent' | translate"
+              [description]="'students.dashboard.noRecentDescription' | translate"
+            />
+          }
+        </div>
+      </section>
+    </div>
+  }
+</section>
