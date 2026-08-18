@@ -7,6 +7,7 @@ import { StudentOverview } from '../../models/student.models';
 import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/driveos-empty-state.component';
 import { DriveOsSpinnerComponent } from '../../../../shared/ui/spinner/driveos-spinner.component';
 import { DriveOsStateBannerComponent } from '../../../../shared/ui/state-banner/driveos-state-banner.component';
+import { StudentContractSummaryComponent } from '../../../contracts/components/student-contract-summary/student-contract-summary.component';
 
 @Component({
   selector: 'driveos-student-overview-page',
@@ -18,6 +19,7 @@ import { DriveOsStateBannerComponent } from '../../../../shared/ui/state-banner/
     DriveOsEmptyStateComponent,
     DriveOsSpinnerComponent,
     DriveOsStateBannerComponent,
+    StudentContractSummaryComponent,
   ],
   templateUrl: './student-overview.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,6 +27,7 @@ import { DriveOsStateBannerComponent } from '../../../../shared/ui/state-banner/
 export class StudentOverviewPage {
   private readonly api = inject(StudentsApiService);
   private readonly route = inject(ActivatedRoute);
+  readonly studentId = this.route.parent?.snapshot.paramMap.get('studentId') ?? '';
   readonly data = signal<StudentOverview | null>(null);
   readonly loading = signal(true);
   readonly error = signal(false);
@@ -32,9 +35,8 @@ export class StudentOverviewPage {
     this.load();
   }
   load(): void {
-    const id = this.route.parent?.snapshot.paramMap.get('studentId') ?? '';
     this.loading.set(true);
-    this.api.getOverview(id).subscribe({
+    this.api.getOverview(this.studentId).subscribe({
       next: (v) => {
         this.data.set(v);
         this.loading.set(false);

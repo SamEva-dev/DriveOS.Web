@@ -59,6 +59,7 @@ export const STUDENT_PERMISSIONS = {
   complianceRead: 'Compliance.Read',
   close: 'Students.Close',
   financeCloseStudentAccount: 'Finance.CloseStudentAccount',
+  contractsRead: 'Contracts.Read',
   contractsTerminate: 'Contracts.Terminate',
   archive: 'Students.Archive',
   reopen: 'Students.Reopen',

@@ -135,7 +135,7 @@ export class OrganizationSettingsPage {
       nonNullable: true,
       validators: [Validators.min(0), Validators.max(6)],
     }),
-    measurementSystem: new FormControl<MeasurementSystem>(0, { nonNullable: true }),
+    measurementSystem: new FormControl<MeasurementSystem>(1, { nonNullable: true }),
   });
 
   readonly operationalForm = new FormGroup({
@@ -225,7 +225,7 @@ export class OrganizationSettingsPage {
         dateFormat: 'dd/MM/yyyy',
         timeFormat: 'HH:mm',
         firstDayOfWeek: 1,
-        measurementSystem: 0,
+        measurementSystem: 1,
         defaultSessionDurationMinutes: 60,
         defaultBookingLeadTimeMinutes: 60,
         defaultCancellationDelayHours: 24,

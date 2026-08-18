@@ -26,7 +26,30 @@ export class ApiErrorService {
     const apiError = response.error as ApiError | undefined;
 
     if (apiError?.messageKey) {
-      return [this.translateError(apiError)];
+      const messages = [this.translateError(apiError)];
+      const requirements = apiError.parameters?.['requirements'];
+
+      if (Array.isArray(requirements)) {
+        for (const requirement of requirements) {
+          if (
+            requirement &&
+            typeof requirement === 'object' &&
+            'messageKey' in requirement &&
+            typeof requirement.messageKey === 'string'
+          ) {
+            messages.push(
+              this.translate.instant(
+                requirement.messageKey,
+                'parameters' in requirement && requirement.parameters
+                  ? requirement.parameters
+                  : {},
+              ),
+            );
+          }
+        }
+      }
+
+      return [...new Set(messages)];
     }
 
     return [this.translate.instant('errors.generic')];

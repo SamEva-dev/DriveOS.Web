@@ -1,4 +1,4 @@
-export type MeasurementSystem = 0 | 1;
+export type MeasurementSystem = 1 | 2;
 
 export interface OrganizationSettings {
   readonly id: string;

@@ -74,6 +74,13 @@ export const STUDENTS_ROUTES: Routes = [
           ),
         data: { section: 'documents' },
       },
+      {
+        path: 'contracts',
+        loadComponent: () =>
+          import('../contracts/pages/student-contracts/student-contracts.page').then(
+            (m) => m.StudentContractsPage,
+          ),
+      },
       { path: 'assignments', pathMatch: 'full', redirectTo: 'assignments/branches' },
       {
         path: 'assignments/branches',

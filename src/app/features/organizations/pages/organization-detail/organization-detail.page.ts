@@ -17,6 +17,9 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { forkJoin } from 'rxjs';
 
+import { OrganizationActivationReadinessApiService } from '../../organization-activation-readiness/data-access/organization-activation-readiness-api.service';
+import { OrganizationActivationReadiness, OrganizationActivationRequirement } from '../../organization-activation-readiness/models/organization-activation-readiness.model';
+
 import { ApiErrorService } from '../../../../core/errors/api-error.service';
 
 import {
@@ -44,6 +47,7 @@ import { Organization } from '../../models/organization.model';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
 import { ORGANIZATION_SUBSCRIPTION_PERMISSIONS } from '../../organization-subscriptions/domain/organization-subscription-permissions';
 import { ORGANIZATION_CONFIGURATION_PERMISSIONS } from '../../organization-configurations/domain/organization-configuration-permissions';
+import { ORGANIZATION_SETTINGS_PERMISSIONS } from '../../organization-settings/domain/organization-settings-permissions';
 import { ORGANIZATION_SEQUENCE_PERMISSIONS } from '../../organization-sequences/domain/organization-sequence-permissions';
 import { ORGANIZATION_REPRESENTATIVE_PERMISSIONS } from '../../organization-representatives/domain/organization-representative-permissions';
 import { ORGANIZATION_LEGAL_PROFILE_PERMISSIONS } from '../../organization-legal-profile/domain/organization-legal-profile-permissions';
@@ -77,6 +81,8 @@ export class OrganizationDetailPage {
 
   private readonly organizationsApi = inject(OrganizationsApiService);
 
+  private readonly activationReadinessApi = inject(OrganizationActivationReadinessApiService);
+
   private readonly apiErrorService = inject(ApiErrorService);
 
   private readonly translate = inject(TranslateService);
@@ -88,6 +94,8 @@ export class OrganizationDetailPage {
   readonly organization = signal<Organization | null>(null);
 
   readonly statusHistory = signal<readonly OrganizationStatusHistoryItem[]>([]);
+
+  readonly activationReadiness = signal<OrganizationActivationReadiness | null>(null);
 
   readonly isLoading = signal(true);
 
@@ -112,6 +120,28 @@ export class OrganizationDetailPage {
 
     this.loadPage();
   }
+  readonly nextActivationRequirement = computed<OrganizationActivationRequirement | null>(() => {
+    const organization = this.organization();
+    const readiness = this.activationReadiness();
+
+    if (!organization || organization.status !== 'PendingActivation' || !readiness || readiness.isReady) {
+      return null;
+    }
+
+    return readiness.requirements.find((requirement) => !requirement.isSatisfied) ?? null;
+  });
+
+  readonly activationProgress = computed(() => {
+    const readiness = this.activationReadiness();
+
+    if (!readiness || readiness.requirements.length === 0) {
+      return 0;
+    }
+
+    const completed = readiness.requirements.filter((requirement) => requirement.isSatisfied).length;
+    return Math.round((completed / readiness.requirements.length) * 100);
+  });
+
   readonly availableActions = computed<readonly OrganizationLifecycleActionDefinition[]>(() => {
     const organization = this.organization();
 
@@ -119,9 +149,17 @@ export class OrganizationDetailPage {
       return [];
     }
 
-    return getOrganizationLifecycleActions(organization.status).filter((action) =>
-      this.authorization.hasPermission(action.permission),
-    );
+    return getOrganizationLifecycleActions(organization.status).filter((action) => {
+      if (!this.authorization.hasPermission(action.permission)) {
+        return false;
+      }
+
+      if (action.code === 'activate') {
+        return this.activationReadiness()?.isReady === true;
+      }
+
+      return true;
+    });
   });
 
   readonly canReadSubscription = computed(() =>
@@ -141,6 +179,16 @@ export class OrganizationDetailPage {
   readonly configurationsLink = computed(() =>
     this.organizationId
       ? ['/organizations', this.organizationId, 'configurations']
+      : ['/organizations'],
+  );
+
+  readonly canReadSettings = computed(() =>
+    this.authorization.hasPermission(ORGANIZATION_SETTINGS_PERMISSIONS.read),
+  );
+
+  readonly settingsLink = computed(() =>
+    this.organizationId
+      ? ['/organizations', this.organizationId, 'settings']
       : ['/organizations'],
   );
 
@@ -177,6 +225,51 @@ export class OrganizationDetailPage {
       ? ['/organizations', this.organizationId, 'legal-profile']
       : ['/organizations'],
   );
+
+
+  activationRequirementLink(requirement: OrganizationActivationRequirement): readonly string[] {
+    if (!this.organizationId) {
+      return ['/organizations'];
+    }
+
+    const base = ['/organizations', this.organizationId];
+
+    switch (requirement.code) {
+      case 'organization.legal-profile':
+        return [...base, 'legal-profile'];
+      case 'organization.primary-owner':
+      case 'organization.active-owner':
+        return [...base, 'representatives'];
+      case 'organization.active-subscription':
+        return [...base, 'subscription'];
+      case 'organization.operational-settings':
+        return [...base, 'settings'];
+      case 'organization.primary-branch':
+      case 'organization.primary-branch-manager':
+        return [...base, 'branches'];
+      default:
+        return [...base, 'activation-readiness'];
+    }
+  }
+
+  activationRequirementActionKey(requirement: OrganizationActivationRequirement): string {
+    switch (requirement.code) {
+      case 'organization.legal-profile':
+        return 'organizations.activationReadiness.actions.openLegalProfile';
+      case 'organization.primary-owner':
+      case 'organization.active-owner':
+        return 'organizations.activationReadiness.actions.openRepresentatives';
+      case 'organization.active-subscription':
+        return 'organizations.activationReadiness.actions.openSubscription';
+      case 'organization.operational-settings':
+        return 'organizations.activationReadiness.actions.openSettings';
+      case 'organization.primary-branch':
+      case 'organization.primary-branch-manager':
+        return 'organizations.activationReadiness.actions.openBranches';
+      default:
+        return 'organizations.activationReadiness.actions.open';
+    }
+  }
 
   openStatusDialog(action: OrganizationLifecycleActionDefinition): void {
     const organization = this.organization();
@@ -253,8 +346,8 @@ export class OrganizationDetailPage {
 
     forkJoin({
       organization: this.organizationsApi.getById(this.organizationId),
-
       history: this.organizationsApi.getStatusHistory(this.organizationId),
+      readiness: this.activationReadinessApi.get(this.organizationId),
     })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -262,6 +355,7 @@ export class OrganizationDetailPage {
           this.organization.set(result.organization);
 
           this.statusHistory.set(result.history);
+          this.activationReadiness.set(result.readiness);
 
           this.isLoading.set(false);
         },
@@ -285,8 +379,8 @@ export class OrganizationDetailPage {
 
     forkJoin({
       organization: this.organizationsApi.getById(this.organizationId),
-
       history: this.organizationsApi.getStatusHistory(this.organizationId),
+      readiness: this.activationReadinessApi.get(this.organizationId),
     })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -294,6 +388,7 @@ export class OrganizationDetailPage {
           this.organization.set(result.organization);
 
           this.statusHistory.set(result.history);
+          this.activationReadiness.set(result.readiness);
 
           this.isHistoryLoading.set(false);
         },

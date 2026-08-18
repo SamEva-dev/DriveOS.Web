@@ -13,7 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { finalize } from 'rxjs';
+import { finalize, forkJoin, of } from 'rxjs';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -36,6 +36,9 @@ import { BranchStatusHistoryComponent } from '../../components/branch-status-his
 import { BranchSummaryComponent } from '../../components/branch-summary/branch-summary.component';
 
 import { BranchesApiService } from '../../data-access/branches-api.service';
+import { OrganizationsApiService } from '../../../data-access/organizations-api.service';
+import { BranchUserAssignmentsApiService } from '../../../branch-assignments/data-access/branch-user-assignments-api.service';
+import { Organization } from '../../../models/organization.model';
 
 import {
   BranchLifecycleActionDefinition,
@@ -78,6 +81,10 @@ export class BranchDetailPage {
 
   private readonly branchesApi = inject(BranchesApiService);
 
+  private readonly organizationsApi = inject(OrganizationsApiService);
+
+  private readonly branchAssignmentsApi = inject(BranchUserAssignmentsApiService);
+
   private readonly authorization = inject(AuthorizationService);
 
   private readonly apiErrorService = inject(ApiErrorService);
@@ -93,6 +100,10 @@ export class BranchDetailPage {
   readonly branchId = this.route.snapshot.paramMap.get('branchId') ?? '';
 
   readonly branch = signal<Branch | null>(null);
+
+  readonly organization = signal<Organization | null>(null);
+
+  readonly hasPrimaryAdministrativeManager = signal(false);
 
   readonly statusHistory = signal<readonly BranchStatusHistoryItem[]>([]);
 
@@ -125,6 +136,36 @@ export class BranchDetailPage {
     );
   });
 
+  readonly branchActivationReady = computed(() => {
+    const branch = this.branch();
+    const organization = this.organization();
+
+    return Boolean(
+      branch?.status === 'Draft' &&
+      organization?.status === 'Active' &&
+      this.hasPrimaryAdministrativeManager(),
+    );
+  });
+
+  readonly branchActivationNextStep = computed<'organization' | 'manager' | null>(() => {
+    const branch = this.branch();
+    const organization = this.organization();
+
+    if (!branch || branch.status !== 'Draft' || !organization) {
+      return null;
+    }
+
+    if (organization.status !== 'Active') {
+      return 'organization';
+    }
+
+    if (!this.hasPrimaryAdministrativeManager()) {
+      return 'manager';
+    }
+
+    return null;
+  });
+
   readonly availableActions = computed<readonly BranchLifecycleActionDefinition[]>(() => {
     const branch = this.branch();
 
@@ -132,9 +173,17 @@ export class BranchDetailPage {
       return [];
     }
 
-    return getBranchLifecycleActions(branch.status).filter((action) =>
-      this.authorization.hasPermission(action.permission),
-    );
+    return getBranchLifecycleActions(branch.status).filter((action) => {
+      if (!this.authorization.hasPermission(action.permission)) {
+        return false;
+      }
+
+      if (action.code === 'activate') {
+        return this.branchActivationReady();
+      }
+
+      return true;
+    });
   });
 
   readonly teamLink = computed(() => [
@@ -176,15 +225,33 @@ export class BranchDetailPage {
     this.isLoading.set(true);
     this.loadError.set(false);
 
-    this.branchesApi
-      .getById(this.organizationId, this.branchId)
+    forkJoin({
+      branch: this.branchesApi.getById(this.organizationId, this.branchId),
+      organization: this.organizationsApi.getById(this.organizationId),
+      primaryManagers: this.authorization.hasPermission(BRANCH_ASSIGNMENT_PERMISSIONS.read)
+        ? this.branchAssignmentsApi.getByBranch(this.organizationId, this.branchId, {
+            pageNumber: 1,
+            pageSize: 10,
+            search: '',
+            status: 'Active',
+            role: 'AdministrativeManager',
+            assignmentType: 'Primary',
+            sortBy: 'startsAtUtc',
+            sortDirection: 'desc',
+          })
+        : of(null),
+    })
       .pipe(
         finalize(() => this.isLoading.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: (branch) => {
+        next: ({ branch, organization, primaryManagers }) => {
           this.branch.set(branch);
+          this.organization.set(organization);
+          this.hasPrimaryAdministrativeManager.set(
+            primaryManagers === null ? false : primaryManagers.items.length > 0,
+          );
 
           if (this.canReadHistory()) {
             this.loadStatusHistory();
@@ -324,11 +391,31 @@ export class BranchDetailPage {
   }
 
   private reloadBranchOnly(): void {
-    this.branchesApi
-      .getById(this.organizationId, this.branchId)
+    forkJoin({
+      branch: this.branchesApi.getById(this.organizationId, this.branchId),
+      organization: this.organizationsApi.getById(this.organizationId),
+      primaryManagers: this.authorization.hasPermission(BRANCH_ASSIGNMENT_PERMISSIONS.read)
+        ? this.branchAssignmentsApi.getByBranch(this.organizationId, this.branchId, {
+            pageNumber: 1,
+            pageSize: 10,
+            search: '',
+            status: 'Active',
+            role: 'AdministrativeManager',
+            assignmentType: 'Primary',
+            sortBy: 'startsAtUtc',
+            sortDirection: 'desc',
+          })
+        : of(null),
+    })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (branch) => this.branch.set(branch),
+        next: ({ branch, organization, primaryManagers }) => {
+          this.branch.set(branch);
+          this.organization.set(organization);
+          this.hasPrimaryAdministrativeManager.set(
+            primaryManagers === null ? false : primaryManagers.items.length > 0,
+          );
+        },
 
         error: (error: HttpErrorResponse) => {
           this.showErrors(error);
