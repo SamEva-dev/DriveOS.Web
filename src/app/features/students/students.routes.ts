@@ -81,6 +81,13 @@ export const STUDENTS_ROUTES: Routes = [
             (m) => m.StudentContractsPage,
           ),
       },
+      {
+        path: 'finance',
+        loadComponent: () =>
+          import('../funding-billing/pages/student-finance/student-finance.page').then(
+            (m) => m.StudentFinancePage,
+          ),
+      },
       { path: 'assignments', pathMatch: 'full', redirectTo: 'assignments/branches' },
       {
         path: 'assignments/branches',

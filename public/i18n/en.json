@@ -346,6 +346,391 @@
       "branchNotFound": "The requested branch was not found.",
       "notFound": "The requested assignment was not found.",
       "branchClosed": "An assignment cannot be created for a closed branch."
+    },
+    "fundingBilling": {
+      "billingAccount": {
+        "id": {
+          "invalid": "The billing account identifier is invalid."
+        },
+        "owner": {
+          "invalid": "The billing account owner is invalid."
+        },
+        "currency": {
+          "invalid": "Currency must be a 3-letter ISO code.",
+          "mismatch": "The operation currency does not match the billing account currency."
+        },
+        "reason": {
+          "invalid": "The supplied reason is invalid."
+        },
+        "notFound": "The billing account was not found.",
+        "alreadyExists": "A billing account already exists for this student.",
+        "student": {
+          "notFound": "The student was not found in this organization."
+        },
+        "restriction": {
+          "notAllowed": "This billing account cannot be restricted in its current state."
+        },
+        "suspension": {
+          "notAllowed": "This billing account cannot be suspended in its current state."
+        },
+        "reactivation": {
+          "notAllowed": "This billing account cannot be reactivated in its current state."
+        },
+        "closure": {
+          "notAllowed": "This billing account cannot be closed in its current state."
+        },
+        "closed": {
+          "operationNotAllowed": "No new financial operation can be recorded on a closed billing account."
+        },
+        "financialOperation": {
+          "invalid": "The financial operation is invalid."
+        }
+      },
+      "invoice": {
+        "id": {
+          "invalid": "The invoice identifier is invalid."
+        },
+        "owner": {
+          "invalid": "The invoice owner is invalid."
+        },
+        "currency": {
+          "invalid": "The invoice currency is invalid."
+        },
+        "line": {
+          "invalid": "The invoice line is invalid.",
+          "notFound": "The invoice line was not found."
+        },
+        "modification": {
+          "notAllowed": "An issued invoice can no longer be modified."
+        },
+        "empty": "The invoice must contain at least one line before it can be issued.",
+        "number": {
+          "invalid": "The invoice number is invalid."
+        },
+        "issuePeriod": {
+          "invalid": "The invoice issue period or due date is invalid."
+        },
+        "issue": {
+          "notAllowed": "This invoice cannot be issued in its current state."
+        },
+        "actor": {
+          "invalid": "The user performing the operation is invalid."
+        },
+        "notFound": "The invoice was not found.",
+        "billingAccount": {
+          "notFound": "The billing account associated with the invoice was not found.",
+          "closed": "The billing account is closed; no new invoice can be created or issued."
+        },
+        "numberSequence": {
+          "notConfigured": "The INVOICE numbering sequence must be configured and active before issuing an invoice."
+        },
+        "overdue": {
+          "notAllowed": "This invoice cannot be marked overdue in its current state.",
+          "notDue": "This invoice is not overdue yet."
+        },
+        "creditNote": {
+          "notAllowed": "This invoice cannot receive a credit note.",
+          "amountExceeded": "The credit note amount exceeds the invoice creditable amount."
+        }
+      },
+      "installment": {
+        "id": {
+          "invalid": "The payment installment identifier is invalid."
+        },
+        "owner": {
+          "invalid": "The payment installment ownership is invalid."
+        },
+        "amount": {
+          "invalid": "The expected installment amount must be greater than zero."
+        },
+        "currency": {
+          "invalid": "The installment currency is invalid.",
+          "mismatch": "The installment currency does not match the billing account currency."
+        },
+        "dueDate": {
+          "invalid": "The installment due date is invalid."
+        },
+        "financingParty": {
+          "invalid": "An installment can reference only one direct financing party."
+        },
+        "notFound": "The payment installment was not found.",
+        "billingAccount": {
+          "notFound": "The related billing account was not found.",
+          "closed": "The billing account is closed; the payment schedule can no longer be changed."
+        },
+        "modification": {
+          "notAllowed": "This installment can no longer be changed in its current state."
+        },
+        "reason": {
+          "invalid": "The installment change reason is invalid."
+        },
+        "actor": {
+          "invalid": "The user performing the operation is invalid."
+        },
+        "schedule": {
+          "empty": "The payment schedule must contain at least one installment."
+        },
+        "overdue": {
+          "notAllowed": "This installment cannot be marked overdue in its current state.",
+          "notDue": "This installment is not overdue yet."
+        }
+      },
+      "reminder": {
+        "id": {
+          "invalid": "The reminder identifier is invalid."
+        },
+        "owner": {
+          "invalid": "The reminder billing account is invalid."
+        },
+        "target": {
+          "invalid": "The reminder target is invalid or is not overdue."
+        },
+        "amount": {
+          "invalid": "The reminder amount is invalid."
+        },
+        "currency": {
+          "invalid": "The reminder currency is invalid."
+        },
+        "dueDate": {
+          "invalid": "The reminder due date is invalid."
+        },
+        "pending": {
+          "exists": "A reminder is already pending for this item."
+        },
+        "status": {
+          "invalid": "This reminder can no longer be changed in its current state."
+        },
+        "emailMessage": {
+          "invalid": "The email message reference is invalid."
+        }
+      },
+      "fundingPlan": {
+        "id": {
+          "invalid": "The funding plan identifier is invalid."
+        },
+        "owner": {
+          "invalid": "The funding plan owner is invalid."
+        },
+        "contract": {
+          "invalid": "The contract reference is invalid.",
+          "alreadyExists": "A funding plan already exists for this contract."
+        },
+        "amount": {
+          "invalid": "The funding plan amount is invalid."
+        },
+        "currency": {
+          "invalid": "The funding plan currency is invalid.",
+          "mismatch": "The funding plan currency does not match the billing account currency."
+        },
+        "financingParty": {
+          "invalid": "The funder must be either a person or an organization, not both."
+        },
+        "reference": {
+          "invalid": "The external funding reference is invalid."
+        },
+        "allocation": {
+          "exceeded": "Planned funding exceeds the total cost.",
+          "notFound": "The funding allocation was not found."
+        },
+        "coverage": {
+          "incomplete": "The plan does not yet cover the full cost."
+        },
+        "modification": {
+          "notAllowed": "The funding plan can no longer be modified in its current state."
+        },
+        "approval": {
+          "notAllowed": "This funding decision is not allowed in the current state."
+        },
+        "actor": {
+          "invalid": "The user performing the action is invalid."
+        },
+        "reason": {
+          "invalid": "The funding decision reason is invalid."
+        },
+        "billingAccount": {
+          "notFound": "The billing account was not found.",
+          "closed": "The billing account is closed."
+        },
+        "notFound": "The funding plan was not found.",
+        "funder": {
+          "notAuthorized": "This funder is not authorized for the billing account."
+        }
+      },
+      "billingParty": {
+        "id": {
+          "invalid": "Invalid financial party identifier."
+        },
+        "owner": {
+          "invalid": "The billing account or organization is invalid."
+        },
+        "party": {
+          "invalid": "Select exactly one person or organization."
+        },
+        "role": {
+          "invalid": "The selected financial role is invalid."
+        },
+        "period": {
+          "invalid": "The financial role period is invalid."
+        },
+        "amount": {
+          "invalid": "The financial cap must be greater than zero."
+        },
+        "priority": {
+          "invalid": "Priority must be between 1 and 100."
+        },
+        "actor": {
+          "invalid": "Invalid acting user."
+        },
+        "reason": {
+          "invalid": "The reason must contain between 3 and 1000 characters."
+        },
+        "alreadyEnded": "This financial relationship has already ended.",
+        "duplicate": "This active financial party already exists for the account.",
+        "notFound": "Financial party not found.",
+        "billingAccount": {
+          "notFound": "Billing account not found."
+        }
+      },
+      "payment": {
+        "payer": {
+          "notAuthorized": "This payer is not authorized for the billing account."
+        },
+        "refund": {
+          "notAllowed": "Refund is not allowed for this payment.",
+          "amountExceeded": "The amount exceeds the refundable balance."
+        }
+      },
+      "trainingCredits": {
+        "id": {
+          "invalid": "The training credit account identifier is invalid."
+        },
+        "owner": {
+          "invalid": "The training credit account owner is invalid."
+        },
+        "creditType": {
+          "invalid": "The training credit type is invalid."
+        },
+        "expirationDate": {
+          "invalid": "The training credit expiration date is invalid."
+        },
+        "duplicate": "An identical training credit account already exists for this billing account.",
+        "notFound": "The training credit account was not found.",
+        "billingAccount": {
+          "notFound": "The related billing account was not found."
+        },
+        "movement": {
+          "invalid": "The training credit movement is invalid.",
+          "referenceDuplicate": "This movement reference has already been used for this training credit account."
+        },
+        "operation": {
+          "notAllowed": "This operation is not allowed on this training credit account."
+        },
+        "available": {
+          "insufficient": "The available training credit balance is insufficient."
+        },
+        "reserved": {
+          "insufficient": "The reserved training credit quantity is insufficient."
+        },
+        "adjustment": {
+          "overdraw": "This adjustment would make the available balance negative."
+        }
+      },
+      "refund": {
+        "id": {
+          "invalid": "Invalid refund identifier."
+        },
+        "owner": {
+          "invalid": "Invalid refund owner."
+        },
+        "amount": {
+          "invalid": "The refund amount is invalid.",
+          "exceeded": "The amount exceeds the refundable payment balance."
+        },
+        "currency": {
+          "invalid": "Invalid refund currency.",
+          "mismatch": "The refund currency does not match the payment."
+        },
+        "reason": {
+          "invalid": "The refund reason is invalid."
+        },
+        "actor": {
+          "invalid": "Invalid refund actor."
+        },
+        "providerReference": {
+          "invalid": "The refund provider reference is invalid."
+        },
+        "notFound": "Refund not found.",
+        "payment": {
+          "notFound": "Original payment not found.",
+          "notRefundable": "This payment cannot be refunded."
+        },
+        "billingAccount": {
+          "notFound": "Billing account not found."
+        },
+        "approval": {
+          "notAllowed": "This refund cannot be approved in its current state."
+        },
+        "processing": {
+          "notAllowed": "This refund cannot be moved to processing."
+        },
+        "completion": {
+          "notAllowed": "This refund cannot be completed."
+        },
+        "rejection": {
+          "notAllowed": "This refund cannot be rejected."
+        },
+        "failure": {
+          "notAllowed": "This refund cannot be marked as failed."
+        },
+        "cancellation": {
+          "notAllowed": "This refund cannot be cancelled."
+        }
+      },
+      "creditNote": {
+        "id": {
+          "invalid": "The credit note identifier is invalid."
+        },
+        "owner": {
+          "invalid": "The credit note ownership is invalid."
+        },
+        "currency": {
+          "invalid": "The credit note currency is invalid."
+        },
+        "reason": {
+          "invalid": "The credit note reason is invalid."
+        },
+        "line": {
+          "invalid": "A credit note line is invalid.",
+          "notFound": "The credit note line was not found."
+        },
+        "modification": {
+          "notAllowed": "An issued credit note cannot be modified."
+        },
+        "empty": "The credit note must contain at least one line.",
+        "number": {
+          "invalid": "The credit note number is invalid."
+        },
+        "issue": {
+          "notAllowed": "This credit note cannot be issued."
+        },
+        "amount": {
+          "exceeded": "The credit note amount exceeds the remaining creditable amount."
+        },
+        "actor": {
+          "invalid": "The operation actor is invalid."
+        },
+        "notFound": "The credit note was not found.",
+        "invoice": {
+          "notFound": "The source invoice was not found.",
+          "notCreditable": "The source invoice cannot receive another credit note."
+        },
+        "billingAccount": {
+          "notFound": "The billing account was not found."
+        },
+        "numberSequence": {
+          "notConfigured": "The CREDIT_NOTE sequence must be configured before issuing a credit note."
+        }
+      }
     }
   },
   "organizations": {
@@ -2514,7 +2899,8 @@
       "assignments": "Assignments",
       "statuses": "Statuses & blocks",
       "mobility": "Mobility",
-      "lifecycle": "Lifecycle"
+      "lifecycle": "Lifecycle",
+      "finance": "Finance"
     },
     "overview": {
       "enrollment": "Active enrollment",
@@ -2526,10 +2912,7 @@
       "activity": "Recent activity",
       "noActivity": "No recent activity",
       "sections": "Quick access",
-      "noEnrollmentDescription": "This student currently has no active enrollment.",
-      "activities": {
-        "enrollmentCreated": "Enrollment created"
-      }
+      "noEnrollmentDescription": "This student currently has no active enrollment."
     },
     "profile": {
       "title": "Student profile",
@@ -3738,10 +4121,7 @@
       "communications": "Communications",
       "incidents": "Incidents",
       "partners": "Partners",
-      "history": "History",
-      "overview": "Overview",
-      "theory": "Theory",
-      "contracts": "Contracts"
+      "history": "History"
     },
     "section": {
       "readyTitle": "Ready for the next story",
@@ -3770,22 +4150,108 @@
       "loadMore": "Show more"
     }
   },
-  "contracts": {
-    "training": {
-      "summary": {
-        "eyebrow": "Training contract",
-        "title": "Contract status",
-        "open": "Open contracts",
-        "loadError": "The contract status cannot be loaded right now.",
-        "amount": "Amount",
-        "version": "Current version",
-        "period": "Contract period",
-        "signatures": "Required signatures",
-        "requiredSigned": "signed",
-        "contractCount": "Contract count",
-        "noContract": "No training contract",
-        "noContractDescription": "This student record does not have a training contract yet. Contracting must be completed before the training path can be fully activated."
+  "finance": {
+    "student": {
+      "errors": {
+        "load": "Unable to load this student's financial position."
+      },
+      "sections": {
+        "overview": "Overview",
+        "invoices": "Invoices",
+        "payments": "Payments",
+        "funding": "Funding",
+        "credits": "Credits",
+        "adjustments": "Credit notes & refunds"
+      },
+      "totals": {
+        "invoiced": "Total invoiced",
+        "paid": "Total received",
+        "outstanding": "Outstanding",
+        "overdue": "Overdue"
+      },
+      "alerts": {
+        "financialBlock": "The financial position contains a blocking issue that requires attention.",
+        "attention": "{{count}} financial item(s) require attention.",
+        "title": "Attention points",
+        "overdueInvoices": "Overdue invoices",
+        "overdueInstallments": "Overdue installments",
+        "failedPayments": "Failed payments",
+        "pendingFunding": "Pending funding decisions"
+      },
+      "nextInstallment": {
+        "title": "Next installment",
+        "none": "No upcoming installment"
+      },
+      "invoices": {
+        "title": "Recent invoices",
+        "draft": "Draft invoice",
+        "due": "Due:",
+        "remaining": "Remaining:",
+        "empty": "No invoices"
+      },
+      "payments": {
+        "title": "Recent payments",
+        "unallocated": "Unallocated:",
+        "empty": "No payments"
+      },
+      "funding": {
+        "title": "Funding plans",
+        "approved": "Approved:",
+        "student": "Student share:",
+        "empty": "No funding plan"
+      },
+      "parties": {
+        "title": "Payers & funders",
+        "primary": "Primary party",
+        "priority": "Priority {{priority}}",
+        "empty": "No external payer or funder"
+      },
+      "credits": {
+        "title": "Training credits",
+        "purchased": "Purchased:",
+        "reserved": "Reserved:",
+        "consumed": "Consumed:",
+        "empty": "No training credits"
+      },
+      "refunds": {
+        "title": "Recent refunds",
+        "empty": "No refunds"
+      },
+      "creditNotes": {
+        "title": "Recent credit notes",
+        "empty": "No credit notes"
       }
+    },
+    "roles": {
+      "Payer": "Payer",
+      "Funder": "Funder",
+      "PayerAndFunder": "Payer and funder"
+    },
+    "status": {
+      "Draft": "Draft",
+      "Scheduled": "Scheduled",
+      "Pending": "Pending",
+      "PendingApproval": "Pending Approval",
+      "Processing": "Processing",
+      "Issued": "Issued",
+      "PartiallyPaid": "Partially Paid",
+      "Paid": "Paid",
+      "Overdue": "Overdue",
+      "Cancelled": "Cancelled",
+      "Rescheduled": "Rescheduled",
+      "Waived": "Waived",
+      "Failed": "Failed",
+      "PartiallyApproved": "Partially Approved",
+      "Approved": "Approved",
+      "Rejected": "Rejected",
+      "Closed": "Closed",
+      "Active": "Active",
+      "Suspended": "Suspended",
+      "Requested": "Requested",
+      "Completed": "Completed",
+      "Refunded": "Refunded",
+      "PartiallyRefunded": "Partially Refunded",
+      "Credited": "Credited"
     }
   }
 }

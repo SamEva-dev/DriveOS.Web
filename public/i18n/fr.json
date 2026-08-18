@@ -346,6 +346,391 @@
       "branchNotFound": "L’agence demandée est introuvable.",
       "notFound": "L’affectation demandée est introuvable.",
       "branchClosed": "Une affectation ne peut pas être créée dans une agence fermée."
+    },
+    "fundingBilling": {
+      "billingAccount": {
+        "id": {
+          "invalid": "Identifiant de compte financier invalide."
+        },
+        "owner": {
+          "invalid": "Le propriétaire du compte financier est invalide."
+        },
+        "currency": {
+          "invalid": "La devise doit être un code ISO à 3 lettres.",
+          "mismatch": "La devise de l’opération ne correspond pas à celle du compte financier."
+        },
+        "reason": {
+          "invalid": "Le motif renseigné est invalide."
+        },
+        "notFound": "Le compte financier est introuvable.",
+        "alreadyExists": "Un compte financier existe déjà pour cet élève.",
+        "student": {
+          "notFound": "L’élève est introuvable dans cette organisation."
+        },
+        "restriction": {
+          "notAllowed": "Ce compte financier ne peut pas être restreint dans son état actuel."
+        },
+        "suspension": {
+          "notAllowed": "Ce compte financier ne peut pas être suspendu dans son état actuel."
+        },
+        "reactivation": {
+          "notAllowed": "Ce compte financier ne peut pas être réactivé dans son état actuel."
+        },
+        "closure": {
+          "notAllowed": "Ce compte financier ne peut pas être clôturé dans son état actuel."
+        },
+        "closed": {
+          "operationNotAllowed": "Aucune nouvelle opération financière ne peut être enregistrée sur un compte clôturé."
+        },
+        "financialOperation": {
+          "invalid": "L’opération financière est invalide."
+        }
+      },
+      "invoice": {
+        "id": {
+          "invalid": "Identifiant de facture invalide."
+        },
+        "owner": {
+          "invalid": "Le propriétaire de la facture est invalide."
+        },
+        "currency": {
+          "invalid": "La devise de la facture est invalide."
+        },
+        "line": {
+          "invalid": "La ligne de facture est invalide.",
+          "notFound": "La ligne de facture est introuvable."
+        },
+        "modification": {
+          "notAllowed": "Une facture émise ne peut plus être modifiée."
+        },
+        "empty": "La facture doit contenir au moins une ligne avant son émission.",
+        "number": {
+          "invalid": "Le numéro de facture est invalide."
+        },
+        "issuePeriod": {
+          "invalid": "La période d’émission ou la date d’échéance est invalide."
+        },
+        "issue": {
+          "notAllowed": "Cette facture ne peut pas être émise dans son état actuel."
+        },
+        "actor": {
+          "invalid": "L’utilisateur à l’origine de l’opération est invalide."
+        },
+        "notFound": "La facture est introuvable.",
+        "billingAccount": {
+          "notFound": "Le compte financier associé à la facture est introuvable.",
+          "closed": "Le compte financier est clôturé ; aucune nouvelle facture ne peut être créée ou émise."
+        },
+        "numberSequence": {
+          "notConfigured": "La séquence de numérotation INVOICE doit être configurée et active avant d’émettre une facture."
+        },
+        "overdue": {
+          "notAllowed": "Cette facture ne peut pas être déclarée en retard dans son état actuel.",
+          "notDue": "Cette facture n'est pas encore échue."
+        },
+        "creditNote": {
+          "notAllowed": "Cette facture ne peut pas recevoir d’avoir.",
+          "amountExceeded": "Le montant de l’avoir dépasse le montant créditable de la facture."
+        }
+      },
+      "installment": {
+        "id": {
+          "invalid": "Identifiant d’échéance invalide."
+        },
+        "owner": {
+          "invalid": "Le rattachement de l’échéance est invalide."
+        },
+        "amount": {
+          "invalid": "Le montant attendu de l’échéance doit être strictement positif."
+        },
+        "currency": {
+          "invalid": "La devise de l’échéance est invalide.",
+          "mismatch": "La devise de l’échéance ne correspond pas à celle du compte financier."
+        },
+        "dueDate": {
+          "invalid": "La date d’échéance est invalide."
+        },
+        "financingParty": {
+          "invalid": "Une échéance ne peut référencer qu’un seul financeur direct."
+        },
+        "notFound": "L’échéance de paiement est introuvable.",
+        "billingAccount": {
+          "notFound": "Le compte financier associé est introuvable.",
+          "closed": "Le compte financier est clôturé ; l’échéancier ne peut plus être modifié."
+        },
+        "modification": {
+          "notAllowed": "Cette échéance ne peut plus être modifiée dans son état actuel."
+        },
+        "reason": {
+          "invalid": "Le motif de modification de l’échéance est invalide."
+        },
+        "actor": {
+          "invalid": "L’utilisateur à l’origine de l’opération est invalide."
+        },
+        "schedule": {
+          "empty": "L’échéancier doit contenir au moins une échéance."
+        },
+        "overdue": {
+          "notAllowed": "Cette échéance ne peut pas être déclarée en retard dans son état actuel.",
+          "notDue": "Cette échéance n'est pas encore échue."
+        }
+      },
+      "reminder": {
+        "id": {
+          "invalid": "L'identifiant de relance est invalide."
+        },
+        "owner": {
+          "invalid": "Le compte financier de la relance est invalide."
+        },
+        "target": {
+          "invalid": "La cible de relance est invalide ou n'est pas en retard."
+        },
+        "amount": {
+          "invalid": "Le montant de la relance est invalide."
+        },
+        "currency": {
+          "invalid": "La devise de la relance est invalide."
+        },
+        "dueDate": {
+          "invalid": "La date d'échéance de la relance est invalide."
+        },
+        "pending": {
+          "exists": "Une relance est déjà en attente pour cet élément."
+        },
+        "status": {
+          "invalid": "Cette relance ne peut plus être modifiée dans son état actuel."
+        },
+        "emailMessage": {
+          "invalid": "La référence du message e-mail est invalide."
+        }
+      },
+      "fundingPlan": {
+        "id": {
+          "invalid": "Identifiant du plan de financement invalide."
+        },
+        "owner": {
+          "invalid": "Le propriétaire du plan de financement est invalide."
+        },
+        "contract": {
+          "invalid": "La référence du contrat est invalide.",
+          "alreadyExists": "Un plan de financement existe déjà pour ce contrat."
+        },
+        "amount": {
+          "invalid": "Le montant du plan de financement est invalide."
+        },
+        "currency": {
+          "invalid": "La devise du plan de financement est invalide.",
+          "mismatch": "La devise du plan de financement ne correspond pas à celle du compte financier."
+        },
+        "financingParty": {
+          "invalid": "Le financeur doit être une personne ou une organisation, mais pas les deux."
+        },
+        "reference": {
+          "invalid": "La référence externe du financement est invalide."
+        },
+        "allocation": {
+          "exceeded": "Les financements prévus dépassent le coût total.",
+          "notFound": "L’allocation de financement est introuvable."
+        },
+        "coverage": {
+          "incomplete": "Le plan ne couvre pas encore la totalité du coût."
+        },
+        "modification": {
+          "notAllowed": "Le plan de financement ne peut plus être modifié dans son état actuel."
+        },
+        "approval": {
+          "notAllowed": "Cette décision de financement n’est pas autorisée dans l’état actuel."
+        },
+        "actor": {
+          "invalid": "L’utilisateur à l’origine de l’action est invalide."
+        },
+        "reason": {
+          "invalid": "Le motif de décision est invalide."
+        },
+        "billingAccount": {
+          "notFound": "Le compte financier est introuvable.",
+          "closed": "Le compte financier est clôturé."
+        },
+        "notFound": "Le plan de financement est introuvable.",
+        "funder": {
+          "notAuthorized": "Ce financeur n’est pas autorisé sur le compte financier."
+        }
+      },
+      "billingParty": {
+        "id": {
+          "invalid": "Identifiant de partie financière invalide."
+        },
+        "owner": {
+          "invalid": "Le compte financier ou l’organisation est invalide."
+        },
+        "party": {
+          "invalid": "Sélectionnez exactement une personne ou une organisation."
+        },
+        "role": {
+          "invalid": "Le rôle financier sélectionné est invalide."
+        },
+        "period": {
+          "invalid": "La période du rôle financier est invalide."
+        },
+        "amount": {
+          "invalid": "Le plafond financier doit être supérieur à zéro."
+        },
+        "priority": {
+          "invalid": "La priorité doit être comprise entre 1 et 100."
+        },
+        "actor": {
+          "invalid": "Utilisateur auteur invalide."
+        },
+        "reason": {
+          "invalid": "Le motif doit contenir entre 3 et 1000 caractères."
+        },
+        "alreadyEnded": "Cette relation financière est déjà terminée.",
+        "duplicate": "Cette partie financière active existe déjà pour ce compte.",
+        "notFound": "Partie financière introuvable.",
+        "billingAccount": {
+          "notFound": "Compte financier introuvable."
+        }
+      },
+      "payment": {
+        "payer": {
+          "notAuthorized": "Ce payeur n’est pas autorisé sur le compte financier."
+        },
+        "refund": {
+          "notAllowed": "Le remboursement n’est pas autorisé pour ce paiement.",
+          "amountExceeded": "Le montant dépasse le solde remboursable."
+        }
+      },
+      "trainingCredits": {
+        "id": {
+          "invalid": "L’identifiant du compte de crédits de formation est invalide."
+        },
+        "owner": {
+          "invalid": "Le propriétaire du compte de crédits de formation est invalide."
+        },
+        "creditType": {
+          "invalid": "Le type de crédit de formation est invalide."
+        },
+        "expirationDate": {
+          "invalid": "La date d’expiration du crédit de formation est invalide."
+        },
+        "duplicate": "Un compte de crédits identique existe déjà pour ce compte financier.",
+        "notFound": "Le compte de crédits de formation est introuvable.",
+        "billingAccount": {
+          "notFound": "Le compte financier associé est introuvable."
+        },
+        "movement": {
+          "invalid": "Le mouvement de crédits de formation est invalide.",
+          "referenceDuplicate": "Cette référence de mouvement a déjà été utilisée pour ce compte de crédits."
+        },
+        "operation": {
+          "notAllowed": "Cette opération n’est pas autorisée sur ce compte de crédits de formation."
+        },
+        "available": {
+          "insufficient": "Le solde de crédits disponible est insuffisant."
+        },
+        "reserved": {
+          "insufficient": "La quantité de crédits réservée est insuffisante."
+        },
+        "adjustment": {
+          "overdraw": "Cet ajustement rendrait le solde disponible négatif."
+        }
+      },
+      "refund": {
+        "id": {
+          "invalid": "Identifiant de remboursement invalide."
+        },
+        "owner": {
+          "invalid": "Propriétaire du remboursement invalide."
+        },
+        "amount": {
+          "invalid": "Le montant du remboursement est invalide.",
+          "exceeded": "Le montant dépasse le solde remboursable du paiement."
+        },
+        "currency": {
+          "invalid": "Devise de remboursement invalide.",
+          "mismatch": "La devise du remboursement ne correspond pas au paiement."
+        },
+        "reason": {
+          "invalid": "Le motif du remboursement est invalide."
+        },
+        "actor": {
+          "invalid": "Utilisateur du remboursement invalide."
+        },
+        "providerReference": {
+          "invalid": "La référence fournisseur du remboursement est invalide."
+        },
+        "notFound": "Remboursement introuvable.",
+        "payment": {
+          "notFound": "Paiement d’origine introuvable.",
+          "notRefundable": "Ce paiement ne peut pas être remboursé."
+        },
+        "billingAccount": {
+          "notFound": "Compte financier introuvable."
+        },
+        "approval": {
+          "notAllowed": "Ce remboursement ne peut pas être approuvé dans son état actuel."
+        },
+        "processing": {
+          "notAllowed": "Ce remboursement ne peut pas être mis en traitement."
+        },
+        "completion": {
+          "notAllowed": "Ce remboursement ne peut pas être finalisé."
+        },
+        "rejection": {
+          "notAllowed": "Ce remboursement ne peut pas être rejeté."
+        },
+        "failure": {
+          "notAllowed": "Ce remboursement ne peut pas être marqué en échec."
+        },
+        "cancellation": {
+          "notAllowed": "Ce remboursement ne peut pas être annulé."
+        }
+      },
+      "creditNote": {
+        "id": {
+          "invalid": "L’identifiant de l’avoir est invalide."
+        },
+        "owner": {
+          "invalid": "Le rattachement de l’avoir est invalide."
+        },
+        "currency": {
+          "invalid": "La devise de l’avoir est invalide."
+        },
+        "reason": {
+          "invalid": "Le motif de l’avoir est invalide."
+        },
+        "line": {
+          "invalid": "Une ligne d’avoir est invalide.",
+          "notFound": "La ligne d’avoir est introuvable."
+        },
+        "modification": {
+          "notAllowed": "Un avoir émis ne peut plus être modifié."
+        },
+        "empty": "L’avoir doit contenir au moins une ligne.",
+        "number": {
+          "invalid": "Le numéro d’avoir est invalide."
+        },
+        "issue": {
+          "notAllowed": "Cet avoir ne peut pas être émis."
+        },
+        "amount": {
+          "exceeded": "Le montant de l’avoir dépasse le montant encore créditable."
+        },
+        "actor": {
+          "invalid": "L’auteur de l’opération est invalide."
+        },
+        "notFound": "L’avoir est introuvable.",
+        "invoice": {
+          "notFound": "La facture d’origine est introuvable.",
+          "notCreditable": "La facture d’origine ne peut plus recevoir d’avoir."
+        },
+        "billingAccount": {
+          "notFound": "Le compte financier est introuvable."
+        },
+        "numberSequence": {
+          "notConfigured": "La séquence CREDIT_NOTE doit être configurée avant l’émission d’un avoir."
+        }
+      }
     }
   },
   "organizations": {
@@ -2508,7 +2893,8 @@
       "assignments": "Affectations",
       "statuses": "Statuts & blocages",
       "mobility": "Mobilité",
-      "lifecycle": "Cycle de vie"
+      "lifecycle": "Cycle de vie",
+      "finance": "Finance"
     },
     "overview": {
       "enrollment": "Inscription active",
@@ -2520,10 +2906,7 @@
       "activity": "Activité récente",
       "noActivity": "Aucune activité récente",
       "sections": "Accès rapides",
-      "noEnrollmentDescription": "Cet élève ne possède actuellement aucune inscription active.",
-      "activities": {
-        "enrollmentCreated": "Inscription créée"
-      }
+      "noEnrollmentDescription": "Cet élève ne possède actuellement aucune inscription active."
     },
     "profile": {
       "title": "Profil de l’élève",
@@ -3732,10 +4115,7 @@
       "communications": "Communications",
       "incidents": "Incidents",
       "partners": "Partenaires",
-      "history": "Historique",
-      "overview": "Vue d’ensemble",
-      "theory": "Théorie",
-      "contracts": "Contrats"
+      "history": "Historique"
     },
     "section": {
       "readyTitle": "Espace prêt pour la prochaine story",
@@ -3764,22 +4144,108 @@
       "loadMore": "Afficher plus"
     }
   },
-  "contracts": {
-    "training": {
-      "summary": {
-        "eyebrow": "Contrat de formation",
-        "title": "Situation contractuelle",
-        "open": "Ouvrir les contrats",
-        "loadError": "La situation contractuelle ne peut pas être chargée pour le moment.",
-        "amount": "Montant",
-        "version": "Version courante",
-        "period": "Période contractuelle",
-        "signatures": "Signatures obligatoires",
-        "requiredSigned": "signées",
-        "contractCount": "Nombre de contrats",
-        "noContract": "Aucun contrat de formation",
-        "noContractDescription": "Le dossier élève ne possède pas encore de contrat. La contractualisation devra être réalisée avant l’activation complète du parcours."
+  "finance": {
+    "student": {
+      "errors": {
+        "load": "Impossible de charger la situation financière de cet élève."
+      },
+      "sections": {
+        "overview": "Synthèse",
+        "invoices": "Factures",
+        "payments": "Paiements",
+        "funding": "Financement",
+        "credits": "Crédits",
+        "adjustments": "Avoirs & remboursements"
+      },
+      "totals": {
+        "invoiced": "Total facturé",
+        "paid": "Total encaissé",
+        "outstanding": "Reste à payer",
+        "overdue": "En retard"
+      },
+      "alerts": {
+        "financialBlock": "La situation financière comporte un blocage qui nécessite une intervention.",
+        "attention": "{{count}} point(s) financier(s) nécessitent votre attention.",
+        "title": "Points de vigilance",
+        "overdueInvoices": "Factures en retard",
+        "overdueInstallments": "Échéances en retard",
+        "failedPayments": "Paiements échoués",
+        "pendingFunding": "Décisions de financement en attente"
+      },
+      "nextInstallment": {
+        "title": "Prochaine échéance",
+        "none": "Aucune échéance à venir"
+      },
+      "invoices": {
+        "title": "Factures récentes",
+        "draft": "Facture en brouillon",
+        "due": "Échéance :",
+        "remaining": "Reste :",
+        "empty": "Aucune facture"
+      },
+      "payments": {
+        "title": "Paiements récents",
+        "unallocated": "Non alloué :",
+        "empty": "Aucun paiement"
+      },
+      "funding": {
+        "title": "Plans de financement",
+        "approved": "Approuvé :",
+        "student": "Part élève :",
+        "empty": "Aucun plan de financement"
+      },
+      "parties": {
+        "title": "Payeurs & financeurs",
+        "primary": "Acteur principal",
+        "priority": "Priorité {{priority}}",
+        "empty": "Aucun payeur ou financeur externe"
+      },
+      "credits": {
+        "title": "Crédits de formation",
+        "purchased": "Acheté :",
+        "reserved": "Réservé :",
+        "consumed": "Consommé :",
+        "empty": "Aucun crédit de formation"
+      },
+      "refunds": {
+        "title": "Remboursements récents",
+        "empty": "Aucun remboursement"
+      },
+      "creditNotes": {
+        "title": "Avoirs récents",
+        "empty": "Aucun avoir"
       }
+    },
+    "roles": {
+      "Payer": "Payeur",
+      "Funder": "Financeur",
+      "PayerAndFunder": "Payeur et financeur"
+    },
+    "status": {
+      "Draft": "Brouillon",
+      "Scheduled": "Planifié",
+      "Pending": "En attente",
+      "PendingApproval": "En attente d’approbation",
+      "Processing": "En traitement",
+      "Issued": "Émise",
+      "PartiallyPaid": "Partiellement payé",
+      "Paid": "Payé",
+      "Overdue": "En retard",
+      "Cancelled": "Annulé",
+      "Rescheduled": "Replanifié",
+      "Waived": "Dispensé",
+      "Failed": "Échoué",
+      "PartiallyApproved": "Partiellement approuvé",
+      "Approved": "Approuvé",
+      "Rejected": "Rejeté",
+      "Closed": "Clôturé",
+      "Active": "Actif",
+      "Suspended": "Suspendu",
+      "Requested": "Demandé",
+      "Completed": "Terminé",
+      "Refunded": "Remboursé",
+      "PartiallyRefunded": "Partiellement remboursé",
+      "Credited": "Crédité"
     }
   }
 }

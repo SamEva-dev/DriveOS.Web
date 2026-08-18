@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
 import { StudentsApiService } from '../../data-access/students-api.service';
 import { STUDENT_PERMISSIONS } from '../../domain/student-permissions';
+import { FUNDING_BILLING_PERMISSIONS } from '../../../funding-billing/domain/funding-billing-permissions';
 import { StudentOverview } from '../../models/student.models';
 import { DriveOsBadgeComponent } from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsSpinnerComponent } from '../../../../shared/ui/spinner/driveos-spinner.component';
@@ -48,6 +49,18 @@ export class StudentShellPage {
       labelKey: 'students.tabs.enrollment',
       icon: 'ph-file-text',
       permissions: [STUDENT_PERMISSIONS.enrollment],
+    },
+    {
+      route: 'contracts',
+      labelKey: 'students.tabs.contracts',
+      icon: 'ph-file-lock',
+      permissions: [STUDENT_PERMISSIONS.contractsRead],
+    },
+    {
+      route: 'finance',
+      labelKey: 'students.tabs.finance',
+      icon: 'ph-wallet',
+      permissions: [FUNDING_BILLING_PERMISSIONS.summaryRead],
     },
     {
       route: 'assignments/branches',

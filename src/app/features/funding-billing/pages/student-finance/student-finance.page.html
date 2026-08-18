@@ -1,0 +1,75 @@
+@if (loading()) {
+  <div class="grid min-h-64 place-items-center"><drive-os-spinner size="lg" [label]="'common.loading' | translate" /></div>
+} @else if (error()) {
+  <drive-os-state-banner tone="danger" icon="ph ph-warning-circle" [title]="'finance.student.errors.load' | translate" />
+} @else if (data(); as finance) {
+  <div class="grid gap-5">
+    @if (finance.alerts.hasFinancialBlock) {
+      <drive-os-state-banner tone="danger" icon="ph ph-lock-key" [title]="'finance.student.alerts.financialBlock' | translate" />
+    } @else if (alertCount() > 0) {
+      <drive-os-state-banner tone="warning" icon="ph ph-warning" [title]="'finance.student.alerts.attention' | translate: { count: alertCount() }" />
+    }
+
+    <div class="flex min-w-0 gap-1 overflow-x-auto rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-2">
+      @for (item of sections; track item) {
+        <button type="button" (click)="section.set(item)" class="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-lg px-3 text-sm font-bold transition" [class.bg-blue-800]="section() === item" [class.text-white]="section() === item" [class.text-slate-600]="section() !== item">
+          {{ 'finance.student.sections.' + item | translate }}
+        </button>
+      }
+    </div>
+
+    @if (section() === 'overview') {
+      <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <article class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"><p class="text-xs font-bold uppercase text-slate-500">{{ 'finance.student.totals.invoiced' | translate }}</p><p class="mt-2 text-2xl font-black">{{ money(finance.totals.totalInvoiced) }}</p></article>
+        <article class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"><p class="text-xs font-bold uppercase text-slate-500">{{ 'finance.student.totals.paid' | translate }}</p><p class="mt-2 text-2xl font-black text-emerald-700">{{ money(finance.totals.totalPaid) }}</p></article>
+        <article class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"><p class="text-xs font-bold uppercase text-slate-500">{{ 'finance.student.totals.outstanding' | translate }}</p><p class="mt-2 text-2xl font-black">{{ money(finance.totals.outstandingBalance) }}</p></article>
+        <article class="rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/30"><p class="text-xs font-bold uppercase text-red-600">{{ 'finance.student.totals.overdue' | translate }}</p><p class="mt-2 text-2xl font-black text-red-700 dark:text-red-300">{{ money(finance.totals.overdueAmount) }}</p></article>
+      </div>
+      <div class="grid gap-5 lg:grid-cols-2">
+        <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+          <h2 class="text-lg font-extrabold">{{ 'finance.student.nextInstallment.title' | translate }}</h2>
+          @if (finance.nextInstallment; as item) {
+            <div class="mt-4 flex items-center justify-between gap-4"><div><p class="text-sm text-slate-500">{{ item.dueDate | date: 'mediumDate' }}</p><p class="text-xl font-black">{{ money(item.remainingAmount) }}</p></div><drive-os-status-badge [label]="('finance.status.' + item.status | translate)" [tone]="statusTone(item.status)" /></div>
+          } @else { <drive-os-empty-state icon="ph-duotone ph-calendar-check" [title]="'finance.student.nextInstallment.none' | translate" /> }
+        </section>
+        <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+          <h2 class="text-lg font-extrabold">{{ 'finance.student.alerts.title' | translate }}</h2>
+          <dl class="mt-4 grid grid-cols-2 gap-3 text-sm">
+            <div><dt class="text-slate-500">{{ 'finance.student.alerts.overdueInvoices' | translate }}</dt><dd class="text-lg font-black">{{ finance.alerts.overdueInvoiceCount }}</dd></div>
+            <div><dt class="text-slate-500">{{ 'finance.student.alerts.overdueInstallments' | translate }}</dt><dd class="text-lg font-black">{{ finance.alerts.overdueInstallmentCount }}</dd></div>
+            <div><dt class="text-slate-500">{{ 'finance.student.alerts.failedPayments' | translate }}</dt><dd class="text-lg font-black">{{ finance.alerts.failedPaymentCount }}</dd></div>
+            <div><dt class="text-slate-500">{{ 'finance.student.alerts.pendingFunding' | translate }}</dt><dd class="text-lg font-black">{{ finance.alerts.pendingFundingDecisionCount }}</dd></div>
+          </dl>
+        </section>
+      </div>
+    }
+
+    @if (section() === 'invoices') {
+      <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="text-lg font-extrabold">{{ 'finance.student.invoices.title' | translate }}</h2><div class="mt-4 grid gap-3">
+        @for (item of finance.recentInvoices; track item.id) { <article class="grid gap-2 rounded-lg border border-[var(--driveos-border)] p-4 md:grid-cols-[1fr_auto_auto] md:items-center"><div><p class="font-bold">{{ item.number || ('finance.student.invoices.draft' | translate) }}</p><p class="text-xs text-slate-500">{{ item.issueDate ? (item.issueDate | date: 'mediumDate') : '—' }} · {{ 'finance.student.invoices.due' | translate }} {{ item.dueDate ? (item.dueDate | date: 'mediumDate') : '—' }}</p></div><div class="text-right"><p class="font-black">{{ money(item.totalAmount) }}</p><p class="text-xs text-slate-500">{{ 'finance.student.invoices.remaining' | translate }} {{ money(item.remainingAmount) }}</p></div><drive-os-status-badge [label]="('finance.status.' + item.status | translate)" [tone]="statusTone(item.status)" /></article> }
+        @empty { <drive-os-empty-state icon="ph-duotone ph-receipt" [title]="'finance.student.invoices.empty' | translate" /> }
+      </div></section>
+    }
+
+    @if (section() === 'payments') {
+      <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="text-lg font-extrabold">{{ 'finance.student.payments.title' | translate }}</h2><div class="mt-4 grid gap-3">
+        @for (item of finance.recentPayments; track item.id) { <article class="grid gap-2 rounded-lg border border-[var(--driveos-border)] p-4 md:grid-cols-[1fr_auto_auto] md:items-center"><div><p class="font-bold">{{ item.paymentMethod }}</p><p class="text-xs text-slate-500">{{ item.paidAtUtc ? (item.paidAtUtc | date: 'short') : '—' }}</p></div><div class="text-right"><p class="font-black">{{ money(item.amount) }}</p><p class="text-xs text-slate-500">{{ 'finance.student.payments.unallocated' | translate }} {{ money(item.unallocatedAmount) }}</p></div><drive-os-status-badge [label]="('finance.status.' + item.status | translate)" [tone]="statusTone(item.status)" /></article> }
+        @empty { <drive-os-empty-state icon="ph-duotone ph-credit-card" [title]="'finance.student.payments.empty' | translate" /> }
+      </div></section>
+    }
+
+    @if (section() === 'funding') {
+      <div class="grid gap-5 xl:grid-cols-2"><section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="text-lg font-extrabold">{{ 'finance.student.funding.title' | translate }}</h2><div class="mt-4 grid gap-3">@for (item of finance.fundingPlans; track item.id) { <article class="rounded-lg border border-[var(--driveos-border)] p-4"><div class="flex justify-between gap-3"><p class="font-bold">{{ money(item.totalCost) }}</p><drive-os-status-badge [label]="('finance.status.' + item.status | translate)" [tone]="statusTone(item.status)" /></div><p class="mt-2 text-sm text-slate-500">{{ 'finance.student.funding.approved' | translate }} {{ money(item.approvedFundingAmount) }} · {{ 'finance.student.funding.student' | translate }} {{ money(item.studentContribution) }}</p></article> } @empty { <drive-os-empty-state icon="ph-duotone ph-bank" [title]="'finance.student.funding.empty' | translate" /> }</div></section>
+      <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="text-lg font-extrabold">{{ 'finance.student.parties.title' | translate }}</h2><div class="mt-4 grid gap-3">@for (item of finance.billingParties; track item.id) { <article class="flex items-center justify-between gap-3 rounded-lg border border-[var(--driveos-border)] p-4"><div><p class="font-bold">{{ 'finance.roles.' + item.role | translate }}</p><p class="text-xs text-slate-500">{{ item.isPrimary ? ('finance.student.parties.primary' | translate) : ('finance.student.parties.priority' | translate: { priority: item.priority }) }}</p></div><drive-os-status-badge [label]="('finance.status.' + item.status | translate)" [tone]="statusTone(item.status)" /></article> } @empty { <drive-os-empty-state icon="ph-duotone ph-users" [title]="'finance.student.parties.empty' | translate" /> }</div></section></div>
+    }
+
+    @if (section() === 'credits') {
+      <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="text-lg font-extrabold">{{ 'finance.student.credits.title' | translate }}</h2><div class="mt-4 grid gap-3 md:grid-cols-2">@for (item of finance.trainingCredits; track item.id) { <article class="rounded-lg border border-[var(--driveos-border)] p-4"><div class="flex items-start justify-between gap-3"><div><p class="font-bold">{{ item.creditType }}</p><p class="mt-1 text-2xl font-black text-blue-800">{{ item.available }}</p></div><drive-os-status-badge [label]="('finance.status.' + item.status | translate)" [tone]="statusTone(item.status)" /></div><div class="mt-3 grid grid-cols-3 gap-2 text-xs text-slate-500"><span>{{ 'finance.student.credits.purchased' | translate }} {{ item.purchased }}</span><span>{{ 'finance.student.credits.reserved' | translate }} {{ item.reserved }}</span><span>{{ 'finance.student.credits.consumed' | translate }} {{ item.consumed }}</span></div></article> } @empty { <drive-os-empty-state icon="ph-duotone ph-gauge" [title]="'finance.student.credits.empty' | translate" /> }</div></section>
+    }
+
+    @if (section() === 'adjustments') {
+      <div class="grid gap-5 xl:grid-cols-2"><section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="text-lg font-extrabold">{{ 'finance.student.refunds.title' | translate }}</h2><div class="mt-4 grid gap-3">@for (item of finance.recentRefunds; track item.id) { <article class="flex items-center justify-between gap-3 rounded-lg border border-[var(--driveos-border)] p-4"><div><p class="font-black">{{ money(item.amount) }}</p><p class="text-xs text-slate-500">{{ item.requestedAtUtc | date: 'short' }}</p></div><drive-os-status-badge [label]="('finance.status.' + item.status | translate)" [tone]="statusTone(item.status)" /></article> } @empty { <drive-os-empty-state icon="ph-duotone ph-arrow-u-up-left" [title]="'finance.student.refunds.empty' | translate" /> }</div></section>
+      <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="text-lg font-extrabold">{{ 'finance.student.creditNotes.title' | translate }}</h2><div class="mt-4 grid gap-3">@for (item of finance.recentCreditNotes; track item.id) { <article class="flex items-center justify-between gap-3 rounded-lg border border-[var(--driveos-border)] p-4"><div><p class="font-bold">{{ item.number || '—' }}</p><p class="text-xs text-slate-500">{{ item.issueDate ? (item.issueDate | date: 'mediumDate') : '—' }}</p></div><p class="font-black">{{ money(item.amount) }}</p></article> } @empty { <drive-os-empty-state icon="ph-duotone ph-note" [title]="'finance.student.creditNotes.empty' | translate" /> }</div></section></div>
+    }
+  </div>
+}
