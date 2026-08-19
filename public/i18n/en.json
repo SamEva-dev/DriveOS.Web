@@ -69,7 +69,8 @@
       "dashboard": "Dashboard",
       "list": "Student list",
       "newEnrollment": "New enrollment"
-    }
+    },
+    "pedagogy": "Pedagogy"
   },
   "theme": {
     "label": "Theme",
@@ -729,6 +730,19 @@
         },
         "numberSequence": {
           "notConfigured": "The CREDIT_NOTE sequence must be configured before issuing a credit note."
+        }
+      }
+    },
+    "curriculumPedagogy": {
+      "curriculum": {
+        "version": {
+          "publish": {
+            "notAllowed": "This curriculum version cannot be published."
+          },
+          "empty": "The version must contain at least one module and every module must contain at least one competency.",
+          "effectivePeriod": {
+            "overlaps": "The effective period overlaps an already published version."
+          }
         }
       }
     }
@@ -2900,7 +2914,8 @@
       "statuses": "Statuses & blocks",
       "mobility": "Mobility",
       "lifecycle": "Lifecycle",
-      "finance": "Finance"
+      "finance": "Finance",
+      "pedagogy": "Pedagogy"
     },
     "overview": {
       "enrollment": "Active enrollment",
@@ -4252,6 +4267,185 @@
       "Refunded": "Refunded",
       "PartiallyRefunded": "Partially Refunded",
       "Credited": "Credited"
+    }
+  },
+  "pedagogy": {
+    "label": "Pedagogy",
+    "curricula": {
+      "title": "Curricula",
+      "subtitle": "Build, version and publish curricula by country and licence category.",
+      "list": "Curricula",
+      "empty": "No curriculum created.",
+      "scope": "Scope",
+      "create": "Create curriculum",
+      "competencies": {
+        "empty": "No competency.",
+        "add": "Add competency",
+        "required": "Required competency",
+        "label": "competencies"
+      },
+      "noDraftVersion": "Create a draft version to edit the structure.",
+      "tabs": {
+        "label": "Curriculum navigation",
+        "overview": "Overview",
+        "modules": "Modules",
+        "competencies": "Competencies",
+        "versions": "Versions",
+        "publication": "Publication"
+      },
+      "category": {
+        "create": "New licence category",
+        "createActivate": "Create and activate"
+      },
+      "modules": {
+        "label": "modules",
+        "empty": "No module in this version.",
+        "add": "Add module"
+      },
+      "versions": {
+        "create": "Create version"
+      },
+      "publication": {
+        "title": "Publish version",
+        "warning": "After publication, modules and competencies in this version become immutable. Changes require a new version.",
+        "action": "Publish version",
+        "noDraft": "No draft version to publish."
+      },
+      "errors": {
+        "load": "Unable to load curricula.",
+        "save": "Unable to save the change.",
+        "publish": "The version could not be published."
+      }
+    },
+    "student": {
+      "errors": {
+        "load": "Unable to load the pedagogical overview."
+      },
+      "empty": {
+        "noTrainingPath": "No training path is associated with this student yet."
+      },
+      "path": {
+        "label": "Training path",
+        "switch": "Switch training path"
+      },
+      "sections": {
+        "label": "Pedagogy navigation",
+        "overview": "Overview",
+        "competencies": "Competencies",
+        "history": "History",
+        "reviews": "Reviews",
+        "remediation": "Remediation",
+        "readiness": "Exam readiness"
+      },
+      "kpis": {
+        "coverage": "Assessment coverage",
+        "requiredCoverage": "Required competencies",
+        "requiredPending": "{{count}} required competency(ies) still to assess",
+        "assessments": "Assessments",
+        "levelChanges": "{{count}} level change(s)",
+        "followup": "Open remediation plans",
+        "completedReviews": "{{count}} completed review(s)"
+      },
+      "modules": {
+        "title": "Progress by module",
+        "assessed": "competencies assessed",
+        "empty": "No module available."
+      },
+      "milestones": {
+        "title": "Training path milestones",
+        "noTargetDate": "No target date",
+        "empty": "No milestone defined."
+      },
+      "competencies": {
+        "title": "Competency record",
+        "required": "Required",
+        "assessments": "assessment(s)",
+        "empty": "No competency available."
+      },
+      "history": {
+        "title": "Recent assessment history",
+        "empty": "No assessment recorded."
+      },
+      "reviews": {
+        "title": "Pedagogical reviews",
+        "findings": "Findings",
+        "recommendations": "Recommendations",
+        "remainingHours": "About {{count}} practical hour(s) remaining",
+        "empty": "No pedagogical review."
+      },
+      "remediation": {
+        "title": "Remediation plans",
+        "reviewDate": "Review date:",
+        "hours": "{{count}} recommended hour(s)",
+        "sessions": "{{count}} session(s)",
+        "empty": "No remediation plan."
+      },
+      "readiness": {
+        "recommendation": "DriveOS pre-check",
+        "EligibleForHumanDecision": "Eligible for human decision",
+        "Blocked": "Blocked",
+        "Ready": "Ready",
+        "ReadyWithConditions": "Ready with conditions",
+        "NotReady": "Not ready",
+        "requiredCoverage": "Required coverage",
+        "requiredEvaluated": "Required assessed",
+        "openRemediations": "Open remediation plans",
+        "completedReview": "Completed pedagogical review",
+        "humanDecision": "Human pedagogical decision",
+        "conditions": "Conditions",
+        "noDecision": "No human decision recorded.",
+        "blockers": "Blocking points",
+        "unavailable": "Pedagogical readiness unavailable.",
+        "blockerCodes": {
+          "TrainingPathNotActive": "The training path must be active or suspended to be assessed.",
+          "RequiredCompetenciesNotAssessed": "Not all required competencies have been assessed yet.",
+          "OpenRemediationPlan": "A remediation plan is still open.",
+          "NoCompletedPedagogicalReview": "A completed pedagogical review is required."
+        }
+      },
+      "status": {
+        "Draft": "Draft",
+        "ReadyForActivation": "Ready for activation",
+        "Active": "Active",
+        "Suspended": "Suspended",
+        "Completed": "Completed",
+        "Cancelled": "Cancelled",
+        "Planned": "Planned",
+        "InProgress": "In progress",
+        "Requested": "Requested",
+        "Published": "Published"
+      },
+      "trainingMode": {
+        "Standard": "Standard",
+        "Accelerated": "Accelerated",
+        "Intensive": "Intensive",
+        "Apprenticeship": "Apprenticeship",
+        "Supervised": "Supervised driving",
+        "Accompanied": "Accompanied driving"
+      },
+      "levels": {
+        "notAssessed": "Not assessed",
+        "NOT_STARTED": "Not started",
+        "INTRODUCED": "Introduced",
+        "IN_PROGRESS": "In progress",
+        "MOSTLY_ACQUIRED": "Mostly acquired",
+        "ACQUIRED": "Acquired",
+        "NEEDS_REASSESSMENT": "Needs reassessment"
+      },
+      "alerts": {
+        "NoTrainingPath": "No active pedagogical training path.",
+        "TrainingPathSuspended": "The pedagogical training path is suspended.",
+        "NoAssessmentRecorded": "No pedagogical assessment has been recorded yet.",
+        "RequiredCompetenciesPending": "Required competencies still need to be assessed.",
+        "OpenRemediationPlan": "A remediation plan is open.",
+        "NoCompletedReview": "No completed pedagogical review.",
+        "ReadinessBlocked": "Exam readiness has blocking points.",
+        "ReadinessDecisionRequired": "The pre-check is favourable: a human decision is required."
+      },
+      "common": {
+        "yes": "Yes",
+        "no": "No"
+      }
     }
   }
 }

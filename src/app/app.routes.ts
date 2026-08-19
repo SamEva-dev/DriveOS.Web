@@ -89,6 +89,11 @@ export const routes: Routes = [
           import('./features/students/students.routes').then((module) => module.STUDENTS_ROUTES),
       },
       {
+        path: 'pedagogy',
+        loadChildren: () =>
+          import('./features/pedagogy/pedagogy.routes').then((module) => module.PEDAGOGY_ROUTES),
+      },
+      {
         path: 'planning',
         loadComponent: () =>
           import('./shared/pages/coming-soon/coming-soon.page').then(

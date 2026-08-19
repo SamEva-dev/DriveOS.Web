@@ -88,6 +88,13 @@ export const STUDENTS_ROUTES: Routes = [
             (m) => m.StudentFinancePage,
           ),
       },
+      {
+        path: 'pedagogy',
+        loadComponent: () =>
+          import('../pedagogy/pages/student-pedagogy/student-pedagogy.page').then(
+            (m) => m.StudentPedagogyPage,
+          ),
+      },
       { path: 'assignments', pathMatch: 'full', redirectTo: 'assignments/branches' },
       {
         path: 'assignments/branches',

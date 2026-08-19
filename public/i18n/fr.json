@@ -69,7 +69,8 @@
       "dashboard": "Tableau de bord",
       "list": "Liste des élèves",
       "newEnrollment": "Nouvelle inscription"
-    }
+    },
+    "pedagogy": "Pédagogie"
   },
   "theme": {
     "label": "Thème",
@@ -729,6 +730,19 @@
         },
         "numberSequence": {
           "notConfigured": "La séquence CREDIT_NOTE doit être configurée avant l’émission d’un avoir."
+        }
+      }
+    },
+    "curriculumPedagogy": {
+      "curriculum": {
+        "version": {
+          "publish": {
+            "notAllowed": "Cette version ne peut pas être publiée."
+          },
+          "empty": "La version doit contenir au moins un module et chaque module au moins une compétence.",
+          "effectivePeriod": {
+            "overlaps": "La période d'effet chevauche une version déjà publiée."
+          }
         }
       }
     }
@@ -2894,7 +2908,8 @@
       "statuses": "Statuts & blocages",
       "mobility": "Mobilité",
       "lifecycle": "Cycle de vie",
-      "finance": "Finance"
+      "finance": "Finance",
+      "pedagogy": "Pédagogie"
     },
     "overview": {
       "enrollment": "Inscription active",
@@ -4246,6 +4261,185 @@
       "Refunded": "Remboursé",
       "PartiallyRefunded": "Partiellement remboursé",
       "Credited": "Crédité"
+    }
+  },
+  "pedagogy": {
+    "label": "Pédagogie",
+    "curricula": {
+      "title": "Référentiels pédagogiques",
+      "subtitle": "Construire, versionner et publier les référentiels par pays et catégorie de permis.",
+      "list": "Référentiels",
+      "empty": "Aucun référentiel créé.",
+      "scope": "Périmètre",
+      "create": "Créer un référentiel",
+      "competencies": {
+        "empty": "Aucune compétence.",
+        "add": "Ajouter une compétence",
+        "required": "Compétence obligatoire",
+        "label": "compétences"
+      },
+      "noDraftVersion": "Créez une version brouillon pour modifier la structure.",
+      "tabs": {
+        "label": "Navigation du référentiel",
+        "overview": "Vue d’ensemble",
+        "modules": "Modules",
+        "competencies": "Compétences",
+        "versions": "Versions",
+        "publication": "Publication"
+      },
+      "category": {
+        "create": "Nouvelle catégorie de permis",
+        "createActivate": "Créer et activer"
+      },
+      "modules": {
+        "label": "modules",
+        "empty": "Aucun module dans cette version.",
+        "add": "Ajouter un module"
+      },
+      "versions": {
+        "create": "Créer une version"
+      },
+      "publication": {
+        "title": "Publier la version",
+        "warning": "Après publication, modules et compétences de cette version deviennent immuables. Une évolution passe par une nouvelle version.",
+        "action": "Publier la version",
+        "noDraft": "Aucune version brouillon à publier."
+      },
+      "errors": {
+        "load": "Impossible de charger les référentiels.",
+        "save": "Impossible d’enregistrer la modification.",
+        "publish": "La version n’a pas pu être publiée."
+      }
+    },
+    "student": {
+      "errors": {
+        "load": "Impossible de charger la synthèse pédagogique."
+      },
+      "empty": {
+        "noTrainingPath": "Aucun parcours pédagogique n’est encore associé à cet élève."
+      },
+      "path": {
+        "label": "Parcours pédagogique",
+        "switch": "Changer de parcours"
+      },
+      "sections": {
+        "label": "Navigation pédagogique",
+        "overview": "Synthèse",
+        "competencies": "Compétences",
+        "history": "Historique",
+        "reviews": "Bilans",
+        "remediation": "Remédiation",
+        "readiness": "Préparation examen"
+      },
+      "kpis": {
+        "coverage": "Couverture des évaluations",
+        "requiredCoverage": "Compétences obligatoires",
+        "requiredPending": "{{count}} obligatoire(s) encore à évaluer",
+        "assessments": "Évaluations",
+        "levelChanges": "{{count}} changement(s) de niveau",
+        "followup": "Remédiations ouvertes",
+        "completedReviews": "{{count}} bilan(s) terminé(s)"
+      },
+      "modules": {
+        "title": "Progression par module",
+        "assessed": "compétences évaluées",
+        "empty": "Aucun module disponible."
+      },
+      "milestones": {
+        "title": "Jalons du parcours",
+        "noTargetDate": "Sans date cible",
+        "empty": "Aucun jalon défini."
+      },
+      "competencies": {
+        "title": "Livret de compétences",
+        "required": "Obligatoire",
+        "assessments": "évaluation(s)",
+        "empty": "Aucune compétence disponible."
+      },
+      "history": {
+        "title": "Historique récent des évaluations",
+        "empty": "Aucune évaluation enregistrée."
+      },
+      "reviews": {
+        "title": "Bilans pédagogiques",
+        "findings": "Constats",
+        "recommendations": "Recommandations",
+        "remainingHours": "Environ {{count}} h pratiques restantes",
+        "empty": "Aucun bilan pédagogique."
+      },
+      "remediation": {
+        "title": "Plans de remédiation",
+        "reviewDate": "Réévaluation :",
+        "hours": "{{count}} h recommandée(s)",
+        "sessions": "{{count}} séance(s)",
+        "empty": "Aucun plan de remédiation."
+      },
+      "readiness": {
+        "recommendation": "Pré-check DriveOS",
+        "EligibleForHumanDecision": "Éligible à une décision humaine",
+        "Blocked": "Bloqué",
+        "Ready": "Prêt",
+        "ReadyWithConditions": "Prêt sous conditions",
+        "NotReady": "Non prêt",
+        "requiredCoverage": "Couverture obligatoire",
+        "requiredEvaluated": "Obligatoires évaluées",
+        "openRemediations": "Remédiations ouvertes",
+        "completedReview": "Bilan pédagogique terminé",
+        "humanDecision": "Décision pédagogique humaine",
+        "conditions": "Conditions",
+        "noDecision": "Aucune décision humaine enregistrée.",
+        "blockers": "Points bloquants",
+        "unavailable": "Readiness pédagogique indisponible.",
+        "blockerCodes": {
+          "TrainingPathNotActive": "Le parcours doit être actif ou suspendu pour être évalué.",
+          "RequiredCompetenciesNotAssessed": "Toutes les compétences obligatoires n’ont pas encore été évaluées.",
+          "OpenRemediationPlan": "Un plan de remédiation est encore ouvert.",
+          "NoCompletedPedagogicalReview": "Un bilan pédagogique terminé est requis."
+        }
+      },
+      "status": {
+        "Draft": "Brouillon",
+        "ReadyForActivation": "Prêt à activer",
+        "Active": "Actif",
+        "Suspended": "Suspendu",
+        "Completed": "Terminé",
+        "Cancelled": "Annulé",
+        "Planned": "Planifié",
+        "InProgress": "En cours",
+        "Requested": "Demandé",
+        "Published": "Publié"
+      },
+      "trainingMode": {
+        "Standard": "Standard",
+        "Accelerated": "Accéléré",
+        "Intensive": "Intensif",
+        "Apprenticeship": "Apprentissage",
+        "Supervised": "Conduite supervisée",
+        "Accompanied": "Conduite accompagnée"
+      },
+      "levels": {
+        "notAssessed": "Non évaluée",
+        "NOT_STARTED": "Non commencée",
+        "INTRODUCED": "Introduite",
+        "IN_PROGRESS": "En cours",
+        "MOSTLY_ACQUIRED": "Presque acquise",
+        "ACQUIRED": "Acquise",
+        "NEEDS_REASSESSMENT": "À réévaluer"
+      },
+      "alerts": {
+        "NoTrainingPath": "Aucun parcours pédagogique actif.",
+        "TrainingPathSuspended": "Le parcours pédagogique est suspendu.",
+        "NoAssessmentRecorded": "Aucune évaluation pédagogique n’a encore été enregistrée.",
+        "RequiredCompetenciesPending": "Des compétences obligatoires restent à évaluer.",
+        "OpenRemediationPlan": "Un plan de remédiation est ouvert.",
+        "NoCompletedReview": "Aucun bilan pédagogique terminé.",
+        "ReadinessBlocked": "La préparation à l’examen comporte des blocages.",
+        "ReadinessDecisionRequired": "Le pré-check est favorable : une décision humaine est requise."
+      },
+      "common": {
+        "yes": "Oui",
+        "no": "Non"
+      }
     }
   }
 }

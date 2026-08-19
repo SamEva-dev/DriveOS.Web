@@ -5,6 +5,7 @@ import { AuthorizationService } from '../../../../core/auth/authorization.servic
 import { StudentsApiService } from '../../data-access/students-api.service';
 import { STUDENT_PERMISSIONS } from '../../domain/student-permissions';
 import { FUNDING_BILLING_PERMISSIONS } from '../../../funding-billing/domain/funding-billing-permissions';
+import { PEDAGOGY_PERMISSIONS } from '../../../pedagogy/domain/pedagogy-permissions';
 import { StudentOverview } from '../../models/student.models';
 import { DriveOsBadgeComponent } from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsSpinnerComponent } from '../../../../shared/ui/spinner/driveos-spinner.component';
@@ -61,6 +62,12 @@ export class StudentShellPage {
       labelKey: 'students.tabs.finance',
       icon: 'ph-wallet',
       permissions: [FUNDING_BILLING_PERMISSIONS.summaryRead],
+    },
+    {
+      route: 'pedagogy',
+      labelKey: 'students.tabs.pedagogy',
+      icon: 'ph-graduation-cap',
+      permissions: [PEDAGOGY_PERMISSIONS.summaryRead],
     },
     {
       route: 'assignments/branches',

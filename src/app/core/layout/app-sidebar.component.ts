@@ -14,6 +14,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthorizationService } from '../auth/authorization.service';
 import { CRM_PERMISSIONS } from '../../features/crm/domain/crm-permissions';
 import { STUDENT_PERMISSIONS } from '../../features/students/domain/student-permissions';
+import { PEDAGOGY_PERMISSIONS } from '../../features/pedagogy/domain/pedagogy-permissions';
 import { NavigationItem } from './navigation-item';
 
 interface NavigationGroup {
@@ -161,6 +162,7 @@ export class AppSidebarComponent {
       exact: true,
     },
     { labelKey: 'navigation.organizations', icon: 'ph ph-buildings', routerLink: '/organizations' },
+    { labelKey: 'navigation.pedagogy', icon: 'ph ph-books', routerLink: '/pedagogy' },
     { labelKey: 'navigation.planning', icon: 'ph ph-calendar-dots', routerLink: '/planning' },
     {
       labelKey: 'navigation.instructors',
@@ -308,7 +310,10 @@ export class AppSidebarComponent {
         collapsible: true,
       });
     }
-    groups.push({ labelKey: 'navigation.groups.platform', items: this.mainItems });
+    const visibleMainItems = this.mainItems.filter((item) =>
+      item.routerLink !== '/pedagogy' || this.authorization.hasPermission(PEDAGOGY_PERMISSIONS.curricula.read),
+    );
+    groups.push({ labelKey: 'navigation.groups.platform', items: visibleMainItems });
     return groups;
   });
 

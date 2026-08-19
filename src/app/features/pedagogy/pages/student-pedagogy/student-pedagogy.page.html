@@ -1,0 +1,132 @@
+@if (loading()) {
+  <div class="grid min-h-64 place-items-center"><drive-os-spinner size="lg" [label]="'common.loading' | translate" /></div>
+} @else if (error()) {
+  <drive-os-state-banner tone="danger" icon="ph ph-warning-circle" [title]="'pedagogy.student.errors.load' | translate" />
+} @else if (data(); as pedagogy) {
+  <div class="grid gap-5">
+    @if (pedagogy.trainingPaths.length === 0) {
+      <drive-os-empty-state icon="ph-duotone ph-graduation-cap" [title]="'pedagogy.student.empty.noTrainingPath' | translate" />
+    } @else {
+      <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4">
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div class="min-w-0">
+            <p class="text-xs font-bold uppercase tracking-wide text-slate-500">{{ 'pedagogy.student.path.label' | translate }}</p>
+            @if (pedagogy.trainingPath; as path) {
+              <div class="mt-1 flex flex-wrap items-center gap-2">
+                <h2 class="truncate text-lg font-black">{{ path.curriculumName }}</h2>
+                <span class="rounded-md bg-blue-50 px-2 py-1 text-xs font-bold text-blue-800 dark:bg-blue-950/40 dark:text-blue-300">v{{ path.curriculumVersionNumber }}</span>
+                <drive-os-status-badge [label]="('pedagogy.student.status.' + path.status | translate)" [tone]="statusTone(path.status)" />
+              </div>
+              <p class="mt-1 text-sm text-slate-500">{{ path.countryCode }} · {{ path.licenseCategoryCode }} · {{ ('pedagogy.student.trainingMode.' + path.trainingMode | translate) }}</p>
+            }
+          </div>
+          @if (pedagogy.trainingPaths.length > 1) {
+            <label class="grid gap-1 text-xs font-bold text-slate-500">
+              {{ 'pedagogy.student.path.switch' | translate }}
+              <select class="min-w-64 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2 text-sm text-[var(--driveos-text)]" [value]="pedagogy.selectedTrainingPathId ?? ''" (change)="changeTrainingPath($any($event.target).value)">
+                @for (path of pedagogy.trainingPaths; track path.id) {
+                  <option [value]="path.id">{{ path.curriculumName }} · v{{ path.curriculumVersionNumber }} · {{ ('pedagogy.student.status.' + path.status | translate) }}</option>
+                }
+              </select>
+            </label>
+          }
+        </div>
+      </section>
+
+      @for (alert of pedagogy.alerts; track alert.code + (alert.relatedEntityId ?? '')) {
+        <drive-os-state-banner [tone]="alertTone(alert.severity)" icon="ph ph-info" [title]="(alertTranslationKey(alert.code) | translate)" />
+      }
+
+      <nav class="flex min-w-0 gap-1 overflow-x-auto rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-2" [attr.aria-label]="'pedagogy.student.sections.label' | translate">
+        @for (item of sections; track item) {
+          <button type="button" (click)="section.set(item)" class="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-lg px-3 text-sm font-bold transition" [class.bg-blue-800]="section() === item" [class.text-white]="section() === item" [class.text-slate-600]="section() !== item">
+            {{ 'pedagogy.student.sections.' + item | translate }}
+          </button>
+        }
+      </nav>
+
+      @if (section() === 'overview') {
+        @if (pedagogy.kpis; as kpis) {
+          <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <article class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"><p class="text-xs font-bold uppercase text-slate-500">{{ 'pedagogy.student.kpis.coverage' | translate }}</p><p class="mt-2 text-2xl font-black text-blue-800">{{ kpis.assessmentCoveragePercent | number:'1.0-1' }} %</p><p class="mt-1 text-xs text-slate-500">{{ kpis.assessedCompetencies }}/{{ kpis.totalCompetencies }}</p></article>
+            <article class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"><p class="text-xs font-bold uppercase text-slate-500">{{ 'pedagogy.student.kpis.requiredCoverage' | translate }}</p><p class="mt-2 text-2xl font-black">{{ kpis.requiredAssessmentCoveragePercent | number:'1.0-1' }} %</p><p class="mt-1 text-xs text-slate-500">{{ 'pedagogy.student.kpis.requiredPending' | translate: { count: requiredPending() } }}</p></article>
+            <article class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"><p class="text-xs font-bold uppercase text-slate-500">{{ 'pedagogy.student.kpis.assessments' | translate }}</p><p class="mt-2 text-2xl font-black">{{ kpis.assessmentCount }}</p><p class="mt-1 text-xs text-slate-500">{{ 'pedagogy.student.kpis.levelChanges' | translate: { count: kpis.levelChangeCount } }}</p></article>
+            <article class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"><p class="text-xs font-bold uppercase text-slate-500">{{ 'pedagogy.student.kpis.followup' | translate }}</p><p class="mt-2 text-2xl font-black">{{ kpis.openRemediationPlans }}</p><p class="mt-1 text-xs text-slate-500">{{ 'pedagogy.student.kpis.completedReviews' | translate: { count: kpis.completedReviews } }}</p></article>
+          </div>
+        }
+
+        <div class="grid gap-5 xl:grid-cols-2">
+          <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+            <h2 class="text-lg font-extrabold">{{ 'pedagogy.student.modules.title' | translate }}</h2>
+            <div class="mt-4 grid gap-4">
+              @for (module of pedagogy.progression?.modules ?? []; track module.moduleId) {
+                <article>
+                  <div class="flex items-center justify-between gap-3"><div><p class="font-bold">{{ module.moduleCode }} · {{ module.moduleName }}</p><p class="text-xs text-slate-500">{{ module.assessedCompetencies }}/{{ module.totalCompetencies }} {{ 'pedagogy.student.modules.assessed' | translate }}</p></div><span class="text-sm font-black">{{ module.assessmentCoveragePercent | number:'1.0-1' }} %</span></div>
+                  <div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div class="h-full rounded-full bg-blue-800" [style.width.%]="module.assessmentCoveragePercent"></div></div>
+                </article>
+              } @empty { <drive-os-empty-state icon="ph-duotone ph-books" [title]="'pedagogy.student.modules.empty' | translate" /> }
+            </div>
+          </section>
+
+          <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+            <h2 class="text-lg font-extrabold">{{ 'pedagogy.student.milestones.title' | translate }}</h2>
+            <div class="mt-4 grid gap-3">
+              @for (item of pedagogy.trainingPath?.milestones ?? []; track item.id) {
+                <article class="flex items-start justify-between gap-3 rounded-lg border border-[var(--driveos-border)] p-3"><div><p class="font-bold">{{ item.name }}</p><p class="text-xs text-slate-500">{{ item.targetDate ? (item.targetDate | date:'mediumDate') : ('pedagogy.student.milestones.noTargetDate' | translate) }}</p></div><drive-os-status-badge [label]="('pedagogy.student.status.' + item.status | translate)" [tone]="statusTone(item.status)" /></article>
+              } @empty { <drive-os-empty-state icon="ph-duotone ph-flag" [title]="'pedagogy.student.milestones.empty' | translate" /> }
+            </div>
+          </section>
+        </div>
+      }
+
+      @if (section() === 'competencies') {
+        <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+          <div class="flex items-center justify-between gap-3"><h2 class="text-lg font-extrabold">{{ 'pedagogy.student.competencies.title' | translate }}</h2><span class="text-sm text-slate-500">{{ pedagogy.progression?.assessedCompetencies ?? 0 }}/{{ pedagogy.progression?.totalCompetencies ?? 0 }}</span></div>
+          <div class="mt-4 grid gap-3">
+            @for (item of pedagogy.progression?.competencies ?? []; track item.competencyId) {
+              <article class="grid gap-3 rounded-lg border border-[var(--driveos-border)] p-4 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:items-center">
+                <div class="min-w-0"><div class="flex flex-wrap items-center gap-2"><p class="font-bold">{{ item.competencyCode }} · {{ item.competencyName }}</p>@if (item.isRequired) { <span class="rounded-full bg-orange-50 px-2 py-0.5 text-[11px] font-bold text-orange-700 dark:bg-orange-950/40 dark:text-orange-300">{{ 'pedagogy.student.competencies.required' | translate }}</span> }</div><p class="mt-1 text-xs text-slate-500">{{ item.moduleCode }} · {{ item.assessmentCount }} {{ 'pedagogy.student.competencies.assessments' | translate }}</p></div>
+                <div class="text-sm font-bold">{{ competencyLevelKey(item) | translate }}</div>
+                <div class="text-xs text-slate-500">{{ item.lastAssessedAtUtc ? (item.lastAssessedAtUtc | date:'short') : '—' }}</div>
+              </article>
+            } @empty { <drive-os-empty-state icon="ph-duotone ph-list-checks" [title]="'pedagogy.student.competencies.empty' | translate" /> }
+          </div>
+        </section>
+      }
+
+      @if (section() === 'history') {
+        <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="text-lg font-extrabold">{{ 'pedagogy.student.history.title' | translate }}</h2><div class="mt-4 grid gap-3">
+          @for (item of pedagogy.progression?.recentTimeline ?? []; track item.assessmentId) {
+            <article class="rounded-lg border border-[var(--driveos-border)] p-4"><div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between"><div><p class="font-bold">{{ item.competencyCode }} · {{ item.competencyName }}</p><p class="text-xs text-slate-500">{{ item.moduleName }} · {{ item.assessedAtUtc | date:'short' }}</p></div><div class="flex items-center gap-2">@if (item.previousLevelCode) { <span class="text-xs text-slate-500">{{ 'pedagogy.student.levels.' + item.previousLevelCode | translate }} →</span> }<span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-800 dark:bg-blue-950/40 dark:text-blue-300">{{ 'pedagogy.student.levels.' + item.levelCode | translate }}</span></div></div>@if (item.comment) { <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">{{ item.comment }}</p> }</article>
+          } @empty { <drive-os-empty-state icon="ph-duotone ph-clock-counter-clockwise" [title]="'pedagogy.student.history.empty' | translate" /> }
+        </div></section>
+      }
+
+      @if (section() === 'reviews') {
+        <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="text-lg font-extrabold">{{ 'pedagogy.student.reviews.title' | translate }}</h2><div class="mt-4 grid gap-3">
+          @for (item of pedagogy.reviews; track item.id) {
+            <article class="rounded-lg border border-[var(--driveos-border)] p-4"><div class="flex items-start justify-between gap-3"><div><p class="font-bold">{{ item.reason }}</p><p class="text-xs text-slate-500">{{ item.requestedAtUtc | date:'short' }}</p></div><drive-os-status-badge [label]="('pedagogy.student.status.' + item.status | translate)" [tone]="statusTone(item.status)" /></div>@if (item.findings) { <p class="mt-3 text-sm"><span class="font-bold">{{ 'pedagogy.student.reviews.findings' | translate }} :</span> {{ item.findings }}</p> }@if (item.recommendations) { <p class="mt-2 text-sm"><span class="font-bold">{{ 'pedagogy.student.reviews.recommendations' | translate }} :</span> {{ item.recommendations }}</p> }@if (item.estimatedRemainingPracticalHours !== null && item.estimatedRemainingPracticalHours !== undefined) { <p class="mt-2 text-xs font-bold text-slate-500">{{ 'pedagogy.student.reviews.remainingHours' | translate: { count: item.estimatedRemainingPracticalHours } }}</p> }</article>
+          } @empty { <drive-os-empty-state icon="ph-duotone ph-clipboard-text" [title]="'pedagogy.student.reviews.empty' | translate" /> }
+        </div></section>
+      }
+
+      @if (section() === 'remediation') {
+        <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="text-lg font-extrabold">{{ 'pedagogy.student.remediation.title' | translate }}</h2><div class="mt-4 grid gap-3">
+          @for (item of pedagogy.remediationPlans; track item.id) {
+            <article class="rounded-lg border border-[var(--driveos-border)] p-4"><div class="flex items-start justify-between gap-3"><div><p class="font-bold">{{ item.recommendation }}</p><p class="text-xs text-slate-500">{{ 'pedagogy.student.remediation.reviewDate' | translate }} {{ item.reviewDate | date:'mediumDate' }}</p></div><drive-os-status-badge [label]="('pedagogy.student.status.' + item.status | translate)" [tone]="statusTone(item.status)" /></div><div class="mt-3 flex flex-wrap gap-2 text-xs text-slate-500">@if (item.recommendedPracticalHours !== null && item.recommendedPracticalHours !== undefined) { <span>{{ 'pedagogy.student.remediation.hours' | translate: { count: item.recommendedPracticalHours } }}</span> }@if (item.recommendedSessions !== null && item.recommendedSessions !== undefined) { <span>· {{ 'pedagogy.student.remediation.sessions' | translate: { count: item.recommendedSessions } }}</span> }</div><div class="mt-3 flex flex-wrap gap-2">@for (target of item.targets; track target.id) { <span class="rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-medium dark:bg-slate-800">{{ target.objective }}</span> }</div></article>
+          } @empty { <drive-os-empty-state icon="ph-duotone ph-path" [title]="'pedagogy.student.remediation.empty' | translate" /> }
+        </div></section>
+      }
+
+      @if (section() === 'readiness') {
+        @if (pedagogy.readiness; as ready) {
+          <div class="grid gap-5 lg:grid-cols-2">
+            <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><div class="flex items-start justify-between gap-3"><div><p class="text-xs font-bold uppercase text-slate-500">{{ 'pedagogy.student.readiness.recommendation' | translate }}</p><h2 class="mt-1 text-xl font-black">{{ 'pedagogy.student.readiness.' + ready.recommendation | translate }}</h2></div><drive-os-status-badge [label]="('pedagogy.student.readiness.' + ready.recommendation | translate)" [tone]="statusTone(ready.recommendation)" /></div><div class="mt-5"><div class="flex justify-between text-sm"><span>{{ 'pedagogy.student.readiness.requiredCoverage' | translate }}</span><b>{{ ready.requiredCoveragePercent | number:'1.0-1' }} %</b></div><div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div class="h-full rounded-full bg-blue-800" [style.width.%]="ready.requiredCoveragePercent"></div></div></div><dl class="mt-5 grid grid-cols-2 gap-3 text-sm"><div><dt class="text-slate-500">{{ 'pedagogy.student.readiness.requiredEvaluated' | translate }}</dt><dd class="font-black">{{ ready.evaluatedRequiredCompetencies }}/{{ ready.requiredCompetencies }}</dd></div><div><dt class="text-slate-500">{{ 'pedagogy.student.readiness.openRemediations' | translate }}</dt><dd class="font-black">{{ ready.openRemediationPlans }}</dd></div><div><dt class="text-slate-500">{{ 'pedagogy.student.readiness.completedReview' | translate }}</dt><dd class="font-black">{{ (ready.hasCompletedPedagogicalReview ? 'pedagogy.student.common.yes' : 'pedagogy.student.common.no') | translate }}</dd></div></dl></section>
+            <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="text-lg font-extrabold">{{ 'pedagogy.student.readiness.humanDecision' | translate }}</h2>@if (ready.latestDecision; as decision) { <div class="mt-4"><drive-os-status-badge [label]="('pedagogy.student.readiness.' + decision.decision | translate)" [tone]="statusTone(decision.decision)" /><p class="mt-3 text-sm">{{ decision.rationale }}</p>@if (decision.conditions) { <div class="mt-3 rounded-lg bg-orange-50 p-3 text-sm text-orange-900 dark:bg-orange-950/30 dark:text-orange-200"><b>{{ 'pedagogy.student.readiness.conditions' | translate }} :</b> {{ decision.conditions }}</div> }<p class="mt-3 text-xs text-slate-500">{{ decision.decidedAtUtc | date:'short' }}</p></div> } @else { <drive-os-empty-state icon="ph-duotone ph-user-check" [title]="'pedagogy.student.readiness.noDecision' | translate" /> }</section>
+          </div>
+          @if (ready.blockers.length > 0) { <section class="rounded-xl border border-orange-200 bg-orange-50 p-5 dark:border-orange-900 dark:bg-orange-950/30"><h3 class="font-extrabold text-orange-900 dark:text-orange-200">{{ 'pedagogy.student.readiness.blockers' | translate }}</h3><ul class="mt-3 grid gap-2 text-sm text-orange-900 dark:text-orange-200">@for (blocker of ready.blockers; track blocker) { <li class="flex gap-2"><i class="ph ph-warning mt-0.5"></i><span>{{ 'pedagogy.student.readiness.blockerCodes.' + blocker | translate }}</span></li> }</ul></section> }
+        } @else { <drive-os-empty-state icon="ph-duotone ph-seal-question" [title]="'pedagogy.student.readiness.unavailable' | translate" /> }
+      }
+    }
+  </div>
+}
