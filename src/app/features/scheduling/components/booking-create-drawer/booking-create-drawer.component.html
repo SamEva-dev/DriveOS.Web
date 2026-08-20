@@ -1,0 +1,668 @@
+<drive-os-drawer
+  [open]="open()"
+  size="xl"
+  [closeDisabled]="submitting()"
+  [title]="'scheduling.bookingCreate.title' | translate"
+  [description]="'scheduling.bookingCreate.subtitle' | translate"
+  [ariaLabel]="'scheduling.bookingCreate.title' | translate"
+  (closeRequested)="close()"
+>
+  <div class="flex min-h-full flex-col">
+    <div class="border-b border-[var(--driveos-border)] px-5 py-4 sm:px-6">
+      <div class="flex items-center justify-between gap-3">
+        <span class="text-xs font-bold uppercase tracking-[.14em] text-blue-800 dark:text-blue-300">
+          {{
+            'scheduling.bookingCreate.progress'
+              | translate: { current: step(), total: steps.length }
+          }}
+        </span>
+        <span class="text-xs font-bold text-[var(--driveos-text-secondary)]">
+          {{ progress() }}%
+        </span>
+      </div>
+      <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+        <div
+          class="h-full rounded-full bg-orange-500 transition-all duration-300"
+          [style.width.%]="progress()"
+        ></div>
+      </div>
+      <div class="mt-4 flex gap-2 overflow-x-auto pb-1">
+        @for (item of steps; track item.id) {
+          <button
+            type="button"
+            [class]="
+              step() === item.id
+                ? 'flex shrink-0 items-center gap-2 rounded-xl border border-blue-300 bg-blue-50 px-3 py-2 text-xs font-bold text-blue-800 transition'
+                : 'flex shrink-0 items-center gap-2 rounded-xl border border-[var(--driveos-border)] px-3 py-2 text-xs font-bold text-[var(--driveos-text-secondary)] transition'
+            "
+            [disabled]="item.id > step()"
+            (click)="goToStep(item.id)"
+          >
+            <i [class]="item.icon"></i>
+            <span>{{ 'scheduling.bookingCreate.steps.' + item.key | translate }}</span>
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="flex-1 space-y-5 overflow-y-auto p-5 sm:p-6">
+      @for (error of errors(); track error) {
+        <drive-os-state-banner
+          tone="danger"
+          [title]="error.startsWith('scheduling.') ? (error | translate) : error"
+        />
+      }
+      @if (successKey()) {
+        <drive-os-state-banner
+          tone="success"
+          [title]="successKey()! | translate"
+        />
+      }
+
+      @if (step() === 1) {
+        <section class="space-y-5">
+          <div>
+            <h3 class="text-lg font-black text-[var(--driveos-text-primary)]">
+              {{ 'scheduling.bookingCreate.studentType.title' | translate }}
+            </h3>
+            <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.bookingCreate.studentType.description' | translate }}
+            </p>
+          </div>
+          <div class="grid gap-4 md:grid-cols-2">
+            <label class="block">
+              <span class="text-sm font-bold">
+                {{ 'scheduling.bookingCreate.fields.student' | translate }}
+              </span>
+              <select
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-3"
+                [ngModel]="studentResourceId()"
+                (ngModelChange)="studentResourceId.set($event)"
+              >
+                <option value="">
+                  {{ 'scheduling.bookingCreate.placeholders.student' | translate }}
+                </option>
+                @for (student of students(); track student.id) {
+                  <option [value]="student.id">{{ student.displayName }}</option>
+                }
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-sm font-bold">
+                {{ 'scheduling.bookingCreate.fields.type' | translate }}
+              </span>
+              <select
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-3"
+                [ngModel]="bookingType()"
+                (ngModelChange)="bookingType.set(+$event)"
+              >
+                @for (type of [1, 2, 3, 4, 5, 6, 7, 99]; track type) {
+                  <option [value]="type">
+                    {{ 'scheduling.bookings.type.' + type | translate }}
+                  </option>
+                }
+              </select>
+            </label>
+          </div>
+          <div class="grid gap-4 md:grid-cols-2">
+            <label class="block">
+              <span class="text-sm font-bold">
+                {{ 'scheduling.bookingCreate.fields.trainingCategory' | translate }}
+              </span>
+              <input
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-3"
+                [ngModel]="trainingCategory()"
+                (ngModelChange)="trainingCategory.set($event)"
+                [placeholder]="'scheduling.bookingCreate.placeholders.trainingCategory' | translate"
+                maxlength="80"
+              />
+              <small class="mt-1 block text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.bookingCreate.trainingCategoryHelp' | translate }}
+              </small>
+            </label>
+            <label class="block">
+              <span class="text-sm font-bold">
+                {{ 'scheduling.bookingCreate.fields.title' | translate }}
+              </span>
+              <input
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-3"
+                [ngModel]="title()"
+                (ngModelChange)="title.set($event)"
+                [placeholder]="bookingTitle()"
+                maxlength="200"
+              />
+            </label>
+          </div>
+        </section>
+      }
+
+      @if (step() === 2) {
+        <section class="space-y-5">
+          <div>
+            <h3 class="text-lg font-black">
+              {{ 'scheduling.bookingCreate.objectives.title' | translate }}
+            </h3>
+            <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.bookingCreate.objectives.description' | translate }}
+            </p>
+          </div>
+          <label class="block">
+            <span class="text-sm font-bold">
+              {{ 'scheduling.bookingCreate.fields.objective' | translate }}
+            </span>
+            <textarea
+              rows="5"
+              class="mt-2 w-full resize-none rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-3"
+              [ngModel]="objective()"
+              (ngModelChange)="objective.set($event)"
+              [placeholder]="'scheduling.bookingCreate.placeholders.objective' | translate"
+            ></textarea>
+          </label>
+        </section>
+      }
+
+      @if (step() === 3) {
+        <section class="space-y-5">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h3 class="text-lg font-black">
+                {{ 'scheduling.bookingCreate.dateDuration.title' | translate }}
+              </h3>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.bookingCreate.dateDuration.description' | translate }}
+              </p>
+            </div>
+            @if (canSearchSlots()) {
+              <drive-os-button
+                variant="outline"
+                icon="magnifying-glass"
+                [loading]="searching()"
+                (pressed)="searchSlots()"
+              >
+                {{ 'scheduling.bookingCreate.actions.searchSlot' | translate }}
+              </drive-os-button>
+            }
+          </div>
+          <div class="grid gap-4 sm:grid-cols-3">
+            <label class="block">
+              <span class="text-sm font-bold">
+                {{ 'scheduling.bookingCreate.fields.date' | translate }}
+              </span>
+              <input
+                type="date"
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-3"
+                [ngModel]="date()"
+                (ngModelChange)="date.set($event)"
+              />
+            </label>
+            <label class="block">
+              <span class="text-sm font-bold">
+                {{ 'scheduling.bookingCreate.fields.startTime' | translate }}
+              </span>
+              <input
+                type="time"
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-3"
+                [ngModel]="startTime()"
+                (ngModelChange)="startTime.set($event)"
+              />
+            </label>
+            <label class="block">
+              <span class="text-sm font-bold">
+                {{ 'scheduling.bookingCreate.fields.duration' | translate }}
+              </span>
+              <select
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-3"
+                [ngModel]="durationMinutes()"
+                (ngModelChange)="durationMinutes.set(+$event)"
+              >
+                @for (duration of [30, 45, 60, 75, 90, 120, 180]; track duration) {
+                  <option [value]="duration">{{ duration }} min</option>
+                }
+              </select>
+            </label>
+          </div>
+          @if (searching()) {
+            <div class="flex justify-center py-8"><drive-os-spinner /></div>
+          }
+          @if (suggestions().length) {
+            <div class="space-y-3">
+              <h4
+                class="text-sm font-black uppercase tracking-[.1em] text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'scheduling.bookingCreate.slotSearch.results' | translate }}
+              </h4>
+              @for (
+                suggestion of suggestions();
+                track suggestion.startAtUtc + '-' + suggestion.instructorCalendarResourceId
+              ) {
+                <button
+                  type="button"
+                  class="w-full rounded-2xl border border-[var(--driveos-border)] p-4 text-left transition hover:border-blue-400 hover:bg-blue-50/40 dark:hover:bg-blue-950/20"
+                  (click)="selectSuggestion(suggestion)"
+                >
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <div class="font-black">
+                        {{ suggestion.startAtUtc | date: 'EEEE d MMMM · HH:mm' }}–{{
+                          suggestion.endAtUtc | date: 'HH:mm'
+                        }}
+                      </div>
+                      <div class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                        @if (suggestion.instructorCalendarResourceId) {
+                          {{ resourceName(suggestion.instructorCalendarResourceId) }}
+                        }
+                        @if (suggestion.vehicleCalendarResourceId) {
+                          · {{ resourceName(suggestion.vehicleCalendarResourceId) }}
+                        }
+                      </div>
+                    </div>
+                    <span
+                      class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700"
+                    >
+                      {{ suggestion.score }} ·
+                      {{ slotSearchCompatibilityKey(suggestion.compatibility) | translate }}
+                    </span>
+                  </div>
+                  @if (suggestion.reasons.length) {
+                    <div class="mt-3 flex flex-wrap gap-2">
+                      @for (reason of suggestion.reasons; track reason) {
+                        <span
+                          class="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                        >
+                          {{ slotSearchReasonKey(reason) | translate }}
+                        </span>
+                      }
+                    </div>
+                  }
+                </button>
+              }
+            </div>
+          } @else if (!searching() && slotSearchWarnings().length) {
+            <div class="space-y-2">
+              <drive-os-state-banner
+                tone="warning"
+                [title]="'scheduling.bookingCreate.slotSearch.noResult' | translate"
+              />
+              @for (warning of slotSearchWarnings(); track warning) {
+                <drive-os-state-banner
+                  tone="info"
+                  [title]="slotSearchWarningKey(warning) | translate"
+                />
+              }
+            </div>
+          }
+        </section>
+      }
+
+      @if (step() === 4) {
+        <section class="space-y-5">
+          <div>
+            <h3 class="text-lg font-black">
+              {{ 'scheduling.bookingCreate.instructor.title' | translate }}
+            </h3>
+            <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.bookingCreate.instructor.description' | translate }}
+            </p>
+          </div>
+          <label class="block">
+            <span class="text-sm font-bold">
+              {{ 'scheduling.bookingCreate.fields.instructor' | translate }}
+            </span>
+            <select
+              class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-3"
+              [ngModel]="instructorResourceId()"
+              (ngModelChange)="instructorResourceId.set($event)"
+            >
+              <option value="">
+                {{ 'scheduling.bookingCreate.placeholders.instructor' | translate }}
+              </option>
+              @for (instructor of instructors(); track instructor.id) {
+                <option [value]="instructor.id">{{ instructor.displayName }}</option>
+              }
+            </select>
+          </label>
+          @if (selectedInstructor(); as instructor) {
+            <div
+              class="rounded-2xl border border-blue-200 bg-blue-50/50 p-4 dark:border-blue-900 dark:bg-blue-950/20"
+            >
+              <div class="font-bold">{{ instructor.displayName }}</div>
+              <div class="mt-1 text-xs text-blue-800/70 dark:text-blue-200/70">
+                {{ resourceTypeKey(instructor) | translate }} · {{ instructor.status }}
+              </div>
+            </div>
+          }
+        </section>
+      }
+
+      @if (step() === 5) {
+        <section class="space-y-5">
+          <div>
+            <h3 class="text-lg font-black">
+              {{ 'scheduling.bookingCreate.resource.title' | translate }}
+            </h3>
+            <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.bookingCreate.resource.description' | translate }}
+            </p>
+          </div>
+          <div class="grid gap-4 md:grid-cols-2">
+            <label class="block">
+              <span class="text-sm font-bold">
+                {{ 'scheduling.bookingCreate.fields.vehicle' | translate }}
+              </span>
+              <select
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-3"
+                [ngModel]="vehicleResourceId()"
+                (ngModelChange)="vehicleResourceId.set($event)"
+              >
+                <option value="">
+                  {{ 'scheduling.bookingCreate.placeholders.vehicle' | translate }}
+                </option>
+                @for (vehicle of vehicles(); track vehicle.id) {
+                  <option [value]="vehicle.id">{{ vehicle.displayName }}</option>
+                }
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-sm font-bold">
+                {{ 'scheduling.bookingCreate.fields.room' | translate }}
+              </span>
+              <select
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-3"
+                [ngModel]="roomResourceId()"
+                (ngModelChange)="roomResourceId.set($event)"
+              >
+                <option value="">
+                  {{ 'scheduling.bookingCreate.placeholders.room' | translate }}
+                </option>
+                @for (room of rooms(); track room.id) {
+                  <option [value]="room.id">{{ room.displayName }} · {{ room.capacity }}</option>
+                }
+              </select>
+            </label>
+          </div>
+          <drive-os-state-banner
+            tone="info"
+            [title]="'scheduling.bookingCreate.resource.capacityTitle' | translate"
+            [description]="'scheduling.bookingCreate.resource.capacityDescription' | translate"
+          />
+        </section>
+      }
+
+      @if (step() === 6) {
+        <section class="space-y-5">
+          <div>
+            <h3 class="text-lg font-black">
+              {{ 'scheduling.bookingCreate.location.title' | translate }}
+            </h3>
+            <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.bookingCreate.location.description' | translate }}
+            </p>
+          </div>
+          <div class="grid gap-4 md:grid-cols-2">
+            <label class="block">
+              <span class="text-sm font-bold">
+                {{ 'scheduling.bookingCreate.fields.branch' | translate }}
+              </span>
+              <select
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-3"
+                [ngModel]="branchId()"
+                (ngModelChange)="branchId.set($event)"
+              >
+                <option value="">
+                  {{ 'scheduling.bookingCreate.placeholders.branch' | translate }}
+                </option>
+                @for (branch of branches(); track branch.id) {
+                  <option [value]="branch.externalResourceId">{{ branch.displayName }}</option>
+                }
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-sm font-bold">
+                {{ 'scheduling.bookingCreate.fields.meetingPoint' | translate }}
+              </span>
+              <input
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-3"
+                [ngModel]="meetingPoint()"
+                (ngModelChange)="meetingPoint.set($event)"
+                [placeholder]="'scheduling.bookingCreate.placeholders.meetingPoint' | translate"
+              />
+            </label>
+          </div>
+        </section>
+      }
+
+      @if (step() === 7) {
+        <section class="space-y-5">
+          <div>
+            <h3 class="text-lg font-black">
+              {{ 'scheduling.bookingCreate.finance.title' | translate }}
+            </h3>
+            <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.bookingCreate.finance.description' | translate }}
+            </p>
+          </div>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <article
+              class="rounded-2xl border border-amber-200 bg-amber-50/70 p-4 dark:border-amber-900 dark:bg-amber-950/20"
+            >
+              <div class="flex items-start gap-3">
+                <i class="ph ph-wallet mt-0.5 text-xl text-amber-700"></i>
+                <div>
+                  <div class="font-black">
+                    {{ 'scheduling.bookingCreate.finance.creditTitle' | translate }}
+                  </div>
+                  <p class="mt-1 text-sm text-amber-900/70 dark:text-amber-200/70">
+                    {{ 'scheduling.bookingCreate.finance.creditPending' | translate }}
+                  </p>
+                </div>
+              </div>
+            </article>
+            <article
+              class="rounded-2xl border border-amber-200 bg-amber-50/70 p-4 dark:border-amber-900 dark:bg-amber-950/20"
+            >
+              <div class="flex items-start gap-3">
+                <i class="ph ph-currency-eur mt-0.5 text-xl text-amber-700"></i>
+                <div>
+                  <div class="font-black">
+                    {{ 'scheduling.bookingCreate.finance.priceTitle' | translate }}
+                  </div>
+                  <p class="mt-1 text-sm text-amber-900/70 dark:text-amber-200/70">
+                    {{ 'scheduling.bookingCreate.finance.pricePending' | translate }}
+                  </p>
+                </div>
+              </div>
+            </article>
+          </div>
+          <drive-os-state-banner
+            tone="warning"
+            [title]="'scheduling.bookingCreate.external.financeTitle' | translate"
+            [description]="'scheduling.bookingCreate.external.financeDescription' | translate"
+          />
+        </section>
+      }
+
+      @if (step() === 8) {
+        <section class="space-y-5">
+          <div>
+            <h3 class="text-lg font-black">
+              {{ 'scheduling.bookingCreate.confirmation.title' | translate }}
+            </h3>
+            <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.bookingCreate.confirmation.description' | translate }}
+            </p>
+          </div>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <article class="rounded-2xl border border-[var(--driveos-border)] p-4">
+              <div
+                class="text-xs font-bold uppercase tracking-[.1em] text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'scheduling.bookingCreate.summary.student' | translate }}
+              </div>
+              <div class="mt-2 font-black">{{ selectedStudent()?.displayName || '—' }}</div>
+              <div class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ bookingTypeKey() | translate }}
+              </div>
+            </article>
+            <article class="rounded-2xl border border-[var(--driveos-border)] p-4">
+              <div
+                class="text-xs font-bold uppercase tracking-[.1em] text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'scheduling.bookingCreate.summary.period' | translate }}
+              </div>
+              <div class="mt-2 font-black">{{ startAtUtc() | date: 'dd/MM/yyyy · HH:mm' }}</div>
+              <div class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ durationMinutes() }} min
+              </div>
+            </article>
+            <article class="rounded-2xl border border-[var(--driveos-border)] p-4">
+              <div
+                class="text-xs font-bold uppercase tracking-[.1em] text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'scheduling.bookingCreate.summary.instructor' | translate }}
+              </div>
+              <div class="mt-2 font-black">{{ selectedInstructor()?.displayName || '—' }}</div>
+              <div class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ selectedVehicle()?.displayName || selectedRoom()?.displayName || '—' }}
+              </div>
+            </article>
+            <article class="rounded-2xl border border-[var(--driveos-border)] p-4">
+              <div
+                class="text-xs font-bold uppercase tracking-[.1em] text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'scheduling.bookingCreate.summary.location' | translate }}
+              </div>
+              <div class="mt-2 font-black">
+                {{
+                  meetingPoint() || ('scheduling.bookingCreate.summary.defaultLocation' | translate)
+                }}
+              </div>
+              <div class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ objective() }}</div>
+            </article>
+          </div>
+          <label
+            class="flex items-start gap-3 rounded-2xl border border-[var(--driveos-border)] p-4"
+          >
+            <input
+              type="checkbox"
+              class="mt-1 size-4 rounded border-slate-300"
+              [ngModel]="notifyParticipants()"
+              (ngModelChange)="notifyParticipants.set($event)"
+            />
+            <span>
+              <strong class="block">
+                {{ 'scheduling.bookingCreate.fields.notify' | translate }}
+              </strong>
+              <small class="mt-1 block text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.bookingCreate.fields.notifyHelp' | translate }}
+              </small>
+            </span>
+          </label>
+
+          @if (conflictCheck(); as check) {
+            @if (check.isConflictFree) {
+              <drive-os-state-banner
+                tone="success"
+                [title]="'scheduling.bookingCreate.conflicts.none' | translate"
+              />
+            } @else {
+              <div
+                class="rounded-2xl border border-rose-200 bg-rose-50/60 p-4 dark:border-rose-900 dark:bg-rose-950/20"
+              >
+                <div class="flex items-center gap-2 font-black text-rose-800 dark:text-rose-200">
+                  <i class="ph ph-warning-octagon text-xl"></i>
+                  {{ 'scheduling.bookingCreate.conflicts.title' | translate }}
+                </div>
+                <div class="mt-3 space-y-2">
+                  @for (
+                    conflict of check.conflicts;
+                    track conflict.calendarResourceId + '-' + conflict.type
+                  ) {
+                    <div class="rounded-xl bg-white/80 p-3 text-sm dark:bg-slate-950/50">
+                      <div class="font-bold">{{ conflictTypeKey(conflict.type) | translate }}</div>
+                      <div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                        {{ resourceName(conflict.calendarResourceId) }}
+                        @if (conflict.reason) {
+                          · {{ conflict.reason }}
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          }
+        </section>
+      }
+    </div>
+
+    <div
+      class="sticky bottom-0 border-t border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-5 py-4 sm:px-6"
+    >
+      <div class="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          @if (step() > 1 && !successKey()) {
+            <drive-os-button
+              variant="ghost"
+              icon="arrow-left"
+              [disabled]="submitting()"
+              (pressed)="previous()"
+            >
+              {{ 'common.previous' | translate }}
+            </drive-os-button>
+          }
+        </div>
+        <div class="flex flex-wrap justify-end gap-2">
+          @if (step() < steps.length) {
+            <drive-os-button
+              [disabled]="!canGoNext()"
+              (pressed)="next()"
+            >
+              {{ 'common.next' | translate }}
+            </drive-os-button>
+          } @else if (!successKey()) {
+            <drive-os-button
+              variant="outline"
+              [loading]="submitting()"
+              (pressed)="submit('draft')"
+            >
+              {{ 'scheduling.bookingCreate.actions.saveDraft' | translate }}
+            </drive-os-button>
+            @if (canReserve()) {
+              <drive-os-button
+                variant="outline"
+                [loading]="submitting()"
+                (pressed)="submit('hold')"
+              >
+                {{ 'scheduling.bookingCreate.actions.hold' | translate }}
+              </drive-os-button>
+            }
+            @if (canReserve()) {
+              <drive-os-button
+                variant="secondary"
+                [loading]="submitting()"
+                (pressed)="submit('reserve')"
+              >
+                {{ 'scheduling.bookingCreate.actions.reserve' | translate }}
+              </drive-os-button>
+            }
+            @if (canConfirm()) {
+              <drive-os-button
+                [loading]="submitting()"
+                (pressed)="submit('confirm')"
+              >
+                {{
+                  (notifyParticipants()
+                    ? 'scheduling.bookingCreate.actions.confirmNotify'
+                    : 'scheduling.bookingCreate.actions.confirm'
+                  ) | translate
+                }}
+              </drive-os-button>
+            }
+          } @else {
+            <drive-os-button (pressed)="close()">{{ 'common.close' | translate }}</drive-os-button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</drive-os-drawer>

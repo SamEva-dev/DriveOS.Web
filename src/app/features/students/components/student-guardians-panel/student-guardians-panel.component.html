@@ -1,65 +1,158 @@
 <div class="mt-5 grid gap-5">
   @if (guardians().guardianRightsReviewRequired) {
-    <drive-os-state-banner tone="warning" icon="ph ph-warning" [title]="'students.profile.guardians.review' | translate" />
+    <drive-os-state-banner
+      tone="warning"
+      icon="ph ph-warning"
+      [title]="'students.profile.guardians.review' | translate"
+    />
   }
 
   <div class="flex flex-wrap items-start justify-between gap-3">
     <div>
       <h3 class="text-lg font-extrabold">{{ 'students.profile.guardians.title' | translate }}</h3>
-      <p class="text-sm text-slate-500">{{ 'students.profile.guardians.description' | translate }}</p>
+      <p class="text-sm text-slate-500">
+        {{ 'students.profile.guardians.description' | translate }}
+      </p>
     </div>
     @if (canCreate()) {
-      <drive-os-button icon="ph ph-user-plus" (pressed)="openCreate()">{{ 'students.profile.guardians.actions.add' | translate }}</drive-os-button>
+      <drive-os-button
+        icon="ph ph-user-plus"
+        (pressed)="openCreate()"
+      >
+        {{ 'students.profile.guardians.actions.add' | translate }}
+      </drive-os-button>
     }
   </div>
 
   <div class="grid gap-4 xl:grid-cols-2">
     @for (guardian of guardians().items; track guardian.id) {
-      <article class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+      <article
+        class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
         <div class="flex items-start gap-3">
-          <span class="grid size-11 shrink-0 place-items-center rounded-full bg-blue-100 font-black text-blue-800 dark:bg-blue-950/50 dark:text-blue-300">
+          <span
+            class="grid size-11 shrink-0 place-items-center rounded-full bg-blue-100 font-black text-blue-800 dark:bg-blue-950/50 dark:text-blue-300"
+          >
             {{ guardian.firstName.slice(0, 1) }}{{ guardian.lastName.slice(0, 1) }}
           </span>
           <div class="min-w-0 flex-1">
             <div class="flex flex-wrap items-start justify-between gap-2">
               <div>
                 <strong>{{ guardian.firstName }} {{ guardian.lastName }}</strong>
-                <p class="mt-1 text-sm text-slate-500">{{ 'students.profile.guardians.relationshipTypes.' + guardian.relationshipType | translate }} · {{ 'students.profile.guardians.authorityStatuses.' + guardian.parentalAuthorityStatus | translate }}</p>
+                <p class="mt-1 text-sm text-slate-500">
+                  {{
+                    'students.profile.guardians.relationshipTypes.' + guardian.relationshipType
+                      | translate
+                  }}
+                  ·
+                  {{
+                    'students.profile.guardians.authorityStatuses.' +
+                      guardian.parentalAuthorityStatus | translate
+                  }}
+                </p>
               </div>
-              <drive-os-badge [variant]="guardian.status === 'Active' ? 'success' : guardian.status === 'Revoked' ? 'danger' : 'neutral'">{{ 'students.profile.guardians.statuses.' + guardian.status | translate }}</drive-os-badge>
+              <drive-os-badge
+                [variant]="
+                  guardian.status === 'Active'
+                    ? 'success'
+                    : guardian.status === 'Revoked'
+                      ? 'danger'
+                      : 'neutral'
+                "
+              >
+                {{ 'students.profile.guardians.statuses.' + guardian.status | translate }}
+              </drive-os-badge>
             </div>
 
             <dl class="mt-4 grid gap-2 text-sm sm:grid-cols-2">
-              <div><dt class="text-slate-500">{{ 'students.profile.guardians.fields.email' | translate }}</dt><dd>{{ guardian.email || '—' }}</dd></div>
-              <div><dt class="text-slate-500">{{ 'students.profile.guardians.fields.phone' | translate }}</dt><dd>{{ guardian.phone || '—' }}</dd></div>
-              <div><dt class="text-slate-500">{{ 'students.profile.guardians.fields.legalBasis' | translate }}</dt><dd>{{ guardian.legalBasis }}</dd></div>
-              <div><dt class="text-slate-500">{{ 'students.profile.guardians.fields.period' | translate }}</dt><dd>{{ guardian.effectiveFrom }} → {{ guardian.effectiveTo || '∞' }}</dd></div>
+              <div>
+                <dt class="text-slate-500">
+                  {{ 'students.profile.guardians.fields.email' | translate }}
+                </dt>
+                <dd>{{ guardian.email || '—' }}</dd>
+              </div>
+              <div>
+                <dt class="text-slate-500">
+                  {{ 'students.profile.guardians.fields.phone' | translate }}
+                </dt>
+                <dd>{{ guardian.phone || '—' }}</dd>
+              </div>
+              <div>
+                <dt class="text-slate-500">
+                  {{ 'students.profile.guardians.fields.legalBasis' | translate }}
+                </dt>
+                <dd>{{ guardian.legalBasis }}</dd>
+              </div>
+              <div>
+                <dt class="text-slate-500">
+                  {{ 'students.profile.guardians.fields.period' | translate }}
+                </dt>
+                <dd>{{ guardian.effectiveFrom }} → {{ guardian.effectiveTo || '∞' }}</dd>
+              </div>
             </dl>
 
             <div class="mt-4 flex flex-wrap gap-2">
-              @if (guardian.financialRights) { <drive-os-badge variant="info">{{ 'students.profile.guardians.financial' | translate }}</drive-os-badge> }
-              @if (guardian.signatureRights) { <drive-os-badge variant="info">{{ 'students.profile.guardians.signature' | translate }}</drive-os-badge> }
+              @if (guardian.financialRights) {
+                <drive-os-badge variant="info">
+                  {{ 'students.profile.guardians.financial' | translate }}
+                </drive-os-badge>
+              }
+              @if (guardian.signatureRights) {
+                <drive-os-badge variant="info">
+                  {{ 'students.profile.guardians.signature' | translate }}
+                </drive-os-badge>
+              }
               @for (permission of permissionOptions; track permission.value) {
-                @if (hasGuardianPermission(guardian.permissions, permission.value)) { <drive-os-badge variant="neutral">{{ permission.labelKey | translate }}</drive-os-badge> }
+                @if (hasGuardianPermission(guardian.permissions, permission.value)) {
+                  <drive-os-badge variant="neutral">
+                    {{ permission.labelKey | translate }}
+                  </drive-os-badge>
+                }
               }
             </div>
 
             <div class="mt-5 flex flex-wrap justify-end gap-2">
               @if (canInvite() && guardian.status === 'Active' && guardian.email) {
-                <drive-os-button variant="outline" size="sm" icon="ph ph-paper-plane-tilt" [loading]="invitingId() === guardian.id" (pressed)="invite(guardian)">{{ 'students.profile.guardians.actions.invite' | translate }}</drive-os-button>
+                <drive-os-button
+                  variant="outline"
+                  size="sm"
+                  icon="ph ph-paper-plane-tilt"
+                  [loading]="invitingId() === guardian.id"
+                  (pressed)="invite(guardian)"
+                >
+                  {{ 'students.profile.guardians.actions.invite' | translate }}
+                </drive-os-button>
               }
               @if (canUpdate() && guardian.status !== 'Revoked') {
-                <drive-os-button variant="ghost" size="sm" icon="ph ph-pencil" (pressed)="openEdit(guardian)">{{ 'common.actions.edit' | translate }}</drive-os-button>
+                <drive-os-button
+                  variant="ghost"
+                  size="sm"
+                  icon="ph ph-pencil"
+                  (pressed)="openEdit(guardian)"
+                >
+                  {{ 'common.actions.edit' | translate }}
+                </drive-os-button>
               }
               @if (canRevoke() && guardian.status !== 'Revoked') {
-                <drive-os-button variant="ghost" size="sm" icon="ph ph-user-minus" (pressed)="openRevoke(guardian)">{{ 'students.profile.guardians.actions.revoke' | translate }}</drive-os-button>
+                <drive-os-button
+                  variant="ghost"
+                  size="sm"
+                  icon="ph ph-user-minus"
+                  (pressed)="openRevoke(guardian)"
+                >
+                  {{ 'students.profile.guardians.actions.revoke' | translate }}
+                </drive-os-button>
               }
             </div>
           </div>
         </div>
       </article>
     } @empty {
-      <drive-os-empty-state icon="ph-duotone ph-users-three" [title]="'students.profile.guardians.empty' | translate" [description]="'students.profile.guardians.emptyDescription' | translate" />
+      <drive-os-empty-state
+        icon="ph-duotone ph-users-three"
+        [title]="'students.profile.guardians.empty' | translate"
+        [description]="'students.profile.guardians.emptyDescription' | translate"
+      />
     }
   </div>
 
@@ -67,41 +160,215 @@
     <drive-os-card>
       <div class="flex items-start justify-between gap-4">
         <div>
-          <h3 class="font-extrabold">{{ (current.type === 'create' ? 'students.profile.guardians.forms.create' : current.type === 'edit' ? 'students.profile.guardians.forms.edit' : 'students.profile.guardians.forms.revoke') | translate }}</h3>
-          <p class="text-sm text-slate-500">{{ 'students.profile.guardians.forms.description' | translate }}</p>
+          <h3 class="font-extrabold">
+            {{
+              (current.type === 'create'
+                ? 'students.profile.guardians.forms.create'
+                : current.type === 'edit'
+                  ? 'students.profile.guardians.forms.edit'
+                  : 'students.profile.guardians.forms.revoke'
+              ) | translate
+            }}
+          </h3>
+          <p class="text-sm text-slate-500">
+            {{ 'students.profile.guardians.forms.description' | translate }}
+          </p>
         </div>
-        <button type="button" class="grid size-9 place-items-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" (click)="cancel()" [attr.aria-label]="'common.actions.close' | translate"><i class="ph ph-x"></i></button>
+        <button
+          type="button"
+          class="grid size-9 place-items-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+          (click)="cancel()"
+          [attr.aria-label]="'common.actions.close' | translate"
+        >
+          <i class="ph ph-x"></i>
+        </button>
       </div>
 
       @if (current.type === 'create' || current.type === 'edit') {
-        <form class="mt-5 grid gap-4" [formGroup]="guardianForm" (ngSubmit)="save()">
+        <form
+          class="mt-5 grid gap-4"
+          [formGroup]="guardianForm"
+          (ngSubmit)="save()"
+        >
           <div class="grid gap-4 md:grid-cols-2">
             @if (current.type === 'create') {
-              <label class="grid gap-2 md:col-span-2"><span>{{ 'students.profile.guardians.fields.personId' | translate }} *</span><input dosInput formControlName="guardianPersonId" /></label>
-              <label class="grid gap-2"><span>{{ 'students.profile.guardians.fields.firstName' | translate }} *</span><input dosInput formControlName="firstName" /></label>
-              <label class="grid gap-2"><span>{{ 'students.profile.guardians.fields.lastName' | translate }} *</span><input dosInput formControlName="lastName" /></label>
-              <label class="grid gap-2"><span>{{ 'students.profile.guardians.fields.email' | translate }}</span><input dosInput type="email" formControlName="email" /></label>
-              <label class="grid gap-2"><span>{{ 'students.profile.guardians.fields.phone' | translate }}</span><input dosInput formControlName="phone" /></label>
+              <label class="grid gap-2 md:col-span-2">
+                <span>{{ 'students.profile.guardians.fields.personId' | translate }} *</span>
+                <input
+                  dosInput
+                  formControlName="guardianPersonId"
+                />
+              </label>
+              <label class="grid gap-2">
+                <span>{{ 'students.profile.guardians.fields.firstName' | translate }} *</span>
+                <input
+                  dosInput
+                  formControlName="firstName"
+                />
+              </label>
+              <label class="grid gap-2">
+                <span>{{ 'students.profile.guardians.fields.lastName' | translate }} *</span>
+                <input
+                  dosInput
+                  formControlName="lastName"
+                />
+              </label>
+              <label class="grid gap-2">
+                <span>{{ 'students.profile.guardians.fields.email' | translate }}</span>
+                <input
+                  dosInput
+                  type="email"
+                  formControlName="email"
+                />
+              </label>
+              <label class="grid gap-2">
+                <span>{{ 'students.profile.guardians.fields.phone' | translate }}</span>
+                <input
+                  dosInput
+                  formControlName="phone"
+                />
+              </label>
             }
-            <label class="grid gap-2"><span>{{ 'students.profile.guardians.fields.relationshipType' | translate }}</span><select dosInput formControlName="relationshipType">@for (type of relationshipTypes; track type) { <option [value]="type">{{ 'students.profile.guardians.relationshipTypes.' + type | translate }}</option> }</select></label>
-            <label class="grid gap-2"><span>{{ 'students.profile.guardians.fields.authority' | translate }}</span><select dosInput formControlName="parentalAuthorityStatus">@for (status of authorityStatuses; track status) { <option [value]="status">{{ 'students.profile.guardians.authorityStatuses.' + status | translate }}</option> }</select></label>
-            <label class="grid gap-2 md:col-span-2"><span>{{ 'students.profile.guardians.fields.legalBasis' | translate }} *</span><input dosInput formControlName="legalBasis" /></label>
-            <label class="grid gap-2"><span>{{ 'students.profile.guardians.fields.effectiveFrom' | translate }}</span><input dosInput type="date" formControlName="effectiveFrom" /></label>
-            <label class="grid gap-2"><span>{{ 'students.profile.guardians.fields.effectiveTo' | translate }}</span><input dosInput type="date" formControlName="effectiveTo" /></label>
-            <label class="grid gap-2 md:col-span-2"><span>{{ 'students.profile.guardians.fields.notifications' | translate }}</span><input dosInput formControlName="notificationPreferences" /></label>
+            <label class="grid gap-2">
+              <span>{{ 'students.profile.guardians.fields.relationshipType' | translate }}</span>
+              <select
+                dosInput
+                formControlName="relationshipType"
+              >
+                @for (type of relationshipTypes; track type) {
+                  <option [value]="type">
+                    {{ 'students.profile.guardians.relationshipTypes.' + type | translate }}
+                  </option>
+                }
+              </select>
+            </label>
+            <label class="grid gap-2">
+              <span>{{ 'students.profile.guardians.fields.authority' | translate }}</span>
+              <select
+                dosInput
+                formControlName="parentalAuthorityStatus"
+              >
+                @for (status of authorityStatuses; track status) {
+                  <option [value]="status">
+                    {{ 'students.profile.guardians.authorityStatuses.' + status | translate }}
+                  </option>
+                }
+              </select>
+            </label>
+            <label class="grid gap-2 md:col-span-2">
+              <span>{{ 'students.profile.guardians.fields.legalBasis' | translate }} *</span>
+              <input
+                dosInput
+                formControlName="legalBasis"
+              />
+            </label>
+            <label class="grid gap-2">
+              <span>{{ 'students.profile.guardians.fields.effectiveFrom' | translate }}</span>
+              <input
+                dosInput
+                type="date"
+                formControlName="effectiveFrom"
+              />
+            </label>
+            <label class="grid gap-2">
+              <span>{{ 'students.profile.guardians.fields.effectiveTo' | translate }}</span>
+              <input
+                dosInput
+                type="date"
+                formControlName="effectiveTo"
+              />
+            </label>
+            <label class="grid gap-2 md:col-span-2">
+              <span>{{ 'students.profile.guardians.fields.notifications' | translate }}</span>
+              <input
+                dosInput
+                formControlName="notificationPreferences"
+              />
+            </label>
           </div>
           <div class="grid gap-2 sm:grid-cols-2">
-            <label class="inline-flex items-center gap-2"><input type="checkbox" formControlName="financialRights" />{{ 'students.profile.guardians.financial' | translate }}</label>
-            <label class="inline-flex items-center gap-2"><input type="checkbox" formControlName="signatureRights" />{{ 'students.profile.guardians.signature' | translate }}</label>
+            <label class="inline-flex items-center gap-2">
+              <input
+                type="checkbox"
+                formControlName="financialRights"
+              />
+              {{ 'students.profile.guardians.financial' | translate }}
+            </label>
+            <label class="inline-flex items-center gap-2">
+              <input
+                type="checkbox"
+                formControlName="signatureRights"
+              />
+              {{ 'students.profile.guardians.signature' | translate }}
+            </label>
           </div>
-          <fieldset class="rounded-lg border border-[var(--driveos-border)] p-4"><legend class="px-2 font-semibold">{{ 'students.profile.guardians.permissions.title' | translate }}</legend><div class="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">@for (permission of permissionOptions; track permission.value) { <label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" [checked]="hasGuardianPermission(selectedPermissions(), permission.value)" (change)="togglePermission(permission.value)" />{{ permission.labelKey | translate }}</label> }</div></fieldset>
-          <div class="flex justify-end gap-2"><drive-os-button variant="outline" (pressed)="cancel()">{{ 'common.actions.cancel' | translate }}</drive-os-button><drive-os-button type="submit" [loading]="saving()" [disabled]="guardianForm.invalid">{{ 'common.actions.save' | translate }}</drive-os-button></div>
+          <fieldset class="rounded-lg border border-[var(--driveos-border)] p-4">
+            <legend class="px-2 font-semibold">
+              {{ 'students.profile.guardians.permissions.title' | translate }}
+            </legend>
+            <div class="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              @for (permission of permissionOptions; track permission.value) {
+                <label class="inline-flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    [checked]="hasGuardianPermission(selectedPermissions(), permission.value)"
+                    (change)="togglePermission(permission.value)"
+                  />
+                  {{ permission.labelKey | translate }}
+                </label>
+              }
+            </div>
+          </fieldset>
+          <div class="flex justify-end gap-2">
+            <drive-os-button
+              variant="outline"
+              (pressed)="cancel()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              type="submit"
+              [loading]="saving()"
+              [disabled]="guardianForm.invalid"
+            >
+              {{ 'common.actions.save' | translate }}
+            </drive-os-button>
+          </div>
         </form>
       } @else {
-        <form class="mt-5 grid gap-4" [formGroup]="revokeForm" (ngSubmit)="revoke()">
-          <drive-os-state-banner tone="warning" icon="ph ph-warning" [title]="'students.profile.guardians.forms.revokeWarning' | translate" />
-          <label class="grid gap-2"><span>{{ 'students.profile.guardians.fields.reason' | translate }} *</span><textarea dosInput class="min-h-24" formControlName="reason"></textarea></label>
-          <div class="flex justify-end gap-2"><drive-os-button variant="outline" (pressed)="cancel()">{{ 'common.actions.cancel' | translate }}</drive-os-button><drive-os-button type="submit" variant="danger" [loading]="saving()">{{ 'students.profile.guardians.actions.confirmRevoke' | translate }}</drive-os-button></div>
+        <form
+          class="mt-5 grid gap-4"
+          [formGroup]="revokeForm"
+          (ngSubmit)="revoke()"
+        >
+          <drive-os-state-banner
+            tone="warning"
+            icon="ph ph-warning"
+            [title]="'students.profile.guardians.forms.revokeWarning' | translate"
+          />
+          <label class="grid gap-2">
+            <span>{{ 'students.profile.guardians.fields.reason' | translate }} *</span>
+            <textarea
+              dosInput
+              class="min-h-24"
+              formControlName="reason"
+            ></textarea>
+          </label>
+          <div class="flex justify-end gap-2">
+            <drive-os-button
+              variant="outline"
+              (pressed)="cancel()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              type="submit"
+              variant="danger"
+              [loading]="saving()"
+            >
+              {{ 'students.profile.guardians.actions.confirmRevoke' | translate }}
+            </drive-os-button>
+          </div>
         </form>
       }
     </drive-os-card>

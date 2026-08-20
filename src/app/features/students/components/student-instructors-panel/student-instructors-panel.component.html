@@ -1,17 +1,30 @@
 <section class="mt-5 grid gap-5">
   <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
     <div>
-      <h3 class="text-lg font-extrabold">{{ 'students.assignments.instructors.title' | translate }}</h3>
-      <p class="text-sm text-slate-500">{{ 'students.assignments.instructors.description' | translate }}</p>
+      <h3 class="text-lg font-extrabold">
+        {{ 'students.assignments.instructors.title' | translate }}
+      </h3>
+      <p class="text-sm text-slate-500">
+        {{ 'students.assignments.instructors.description' | translate }}
+      </p>
     </div>
     <div class="flex flex-wrap gap-2">
       @if (canAssign()) {
-        <drive-os-button size="sm" variant="secondary" icon="ph ph-user-plus" (pressed)="openAssign()">
+        <drive-os-button
+          size="sm"
+          variant="secondary"
+          icon="ph ph-user-plus"
+          (pressed)="openAssign()"
+        >
           {{ 'students.assignments.instructors.actions.assign' | translate }}
         </drive-os-button>
       }
       @if (canReplace() && instructors().primaryInstructorId) {
-        <drive-os-button size="sm" icon="ph ph-arrows-clockwise" (pressed)="openReplacePrimary()">
+        <drive-os-button
+          size="sm"
+          icon="ph ph-arrows-clockwise"
+          (pressed)="openReplacePrimary()"
+        >
           {{ 'students.assignments.instructors.actions.replacePrimary' | translate }}
         </drive-os-button>
       }
@@ -21,114 +34,381 @@
   <drive-os-card>
     <div class="grid gap-4">
       <div>
-        <h4 class="font-extrabold">{{ 'students.assignments.instructors.suggestions.title' | translate }}</h4>
-        <p class="text-sm text-slate-500">{{ 'students.assignments.instructors.suggestions.description' | translate }}</p>
+        <h4 class="font-extrabold">
+          {{ 'students.assignments.instructors.suggestions.title' | translate }}
+        </h4>
+        <p class="text-sm text-slate-500">
+          {{ 'students.assignments.instructors.suggestions.description' | translate }}
+        </p>
       </div>
-      <form class="grid gap-3 md:grid-cols-[1fr_1fr_auto] md:items-end" [formGroup]="searchForm" (ngSubmit)="searchSuggestions()">
+      <form
+        class="grid gap-3 md:grid-cols-[1fr_1fr_auto] md:items-end"
+        [formGroup]="searchForm"
+        (ngSubmit)="searchSuggestions()"
+      >
         <label class="grid gap-1 text-sm font-semibold">
           {{ 'students.assignments.instructors.fields.trainingCategory' | translate }}
-          <input driveOsInput formControlName="trainingCategory" [placeholder]="'students.assignments.instructors.placeholders.trainingCategory' | translate" />
+          <input
+            driveOsInput
+            formControlName="trainingCategory"
+            [placeholder]="
+              'students.assignments.instructors.placeholders.trainingCategory' | translate
+            "
+          />
         </label>
         <label class="grid gap-1 text-sm font-semibold">
           {{ 'students.assignments.instructors.fields.branchId' | translate }}
-          <input driveOsInput formControlName="branchId" [placeholder]="primaryBranchId() || ('students.assignments.instructors.placeholders.branchId' | translate)" />
+          <input
+            driveOsInput
+            formControlName="branchId"
+            [placeholder]="
+              primaryBranchId() ||
+              ('students.assignments.instructors.placeholders.branchId' | translate)
+            "
+          />
         </label>
-        <drive-os-button type="submit" icon="ph ph-magnifying-glass" [loading]="suggestionsLoading()">
+        <drive-os-button
+          type="submit"
+          icon="ph ph-magnifying-glass"
+          [loading]="suggestionsLoading()"
+        >
           {{ 'students.assignments.instructors.actions.search' | translate }}
         </drive-os-button>
       </form>
 
       @if (suggestionsLoading()) {
-        <div class="grid min-h-28 place-items-center"><drive-os-spinner [label]="'common.loading' | translate" /></div>
+        <div class="grid min-h-28 place-items-center">
+          <drive-os-spinner [label]="'common.loading' | translate" />
+        </div>
       } @else if (suggestions().length) {
         <div class="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
           @for (suggestion of suggestions(); track suggestion.instructorId) {
             <article class="rounded-xl border border-[var(--driveos-border)] p-4">
               <div class="flex items-start justify-between gap-3">
                 <div class="flex min-w-0 items-center gap-3">
-                  <span class="grid size-10 shrink-0 place-items-center rounded-full bg-blue-100 text-blue-800"><i class="ph-duotone ph-chalkboard-teacher"></i></span>
+                  <span
+                    class="grid size-10 shrink-0 place-items-center rounded-full bg-blue-100 text-blue-800"
+                  >
+                    <i class="ph-duotone ph-chalkboard-teacher"></i>
+                  </span>
                   <div class="min-w-0">
-                    <h5 class="truncate font-extrabold">{{ suggestion.displayName || suggestion.instructorId }}</h5>
+                    <h5 class="truncate font-extrabold">
+                      {{ suggestion.displayName || suggestion.instructorId }}
+                    </h5>
                     <p class="truncate text-xs text-slate-500">{{ suggestion.trainingCategory }}</p>
                   </div>
                 </div>
-                <drive-os-badge [variant]="availabilityVariant(suggestion.availabilityStatus)">{{ availabilityLabel(suggestion.availabilityStatus) }}</drive-os-badge>
+                <drive-os-badge [variant]="availabilityVariant(suggestion.availabilityStatus)">
+                  {{ availabilityLabel(suggestion.availabilityStatus) }}
+                </drive-os-badge>
               </div>
               <dl class="mt-4 grid grid-cols-2 gap-3 text-sm">
-                <div><dt class="text-xs uppercase text-slate-500">{{ 'students.assignments.instructors.suggestions.qualification' | translate }}</dt><dd class="font-bold">{{ (suggestion.qualificationVerified ? 'students.assignments.instructors.suggestions.yes' : 'students.assignments.instructors.suggestions.no') | translate }}</dd></div>
-                <div><dt class="text-xs uppercase text-slate-500">{{ 'students.assignments.instructors.suggestions.load' | translate }}</dt><dd class="font-bold">{{ suggestion.loadPercentage === null ? '—' : (suggestion.loadPercentage | number: '1.0-1') + ' %' }}</dd></div>
-                <div><dt class="text-xs uppercase text-slate-500">{{ 'students.assignments.instructors.suggestions.distance' | translate }}</dt><dd>{{ suggestion.averageDistanceKm === null ? '—' : (suggestion.averageDistanceKm | number: '1.0-1') + ' km' }}</dd></div>
-                <div><dt class="text-xs uppercase text-slate-500">{{ 'students.assignments.instructors.suggestions.nextAvailability' | translate }}</dt><dd>{{ (suggestion.nextAvailabilityUtc | date: 'short') || '—' }}</dd></div>
+                <div>
+                  <dt class="text-xs uppercase text-slate-500">
+                    {{ 'students.assignments.instructors.suggestions.qualification' | translate }}
+                  </dt>
+                  <dd class="font-bold">
+                    {{
+                      (suggestion.qualificationVerified
+                        ? 'students.assignments.instructors.suggestions.yes'
+                        : 'students.assignments.instructors.suggestions.no'
+                      ) | translate
+                    }}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-xs uppercase text-slate-500">
+                    {{ 'students.assignments.instructors.suggestions.load' | translate }}
+                  </dt>
+                  <dd class="font-bold">
+                    {{
+                      suggestion.loadPercentage === null
+                        ? '—'
+                        : (suggestion.loadPercentage | number: '1.0-1') + ' %'
+                    }}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-xs uppercase text-slate-500">
+                    {{ 'students.assignments.instructors.suggestions.distance' | translate }}
+                  </dt>
+                  <dd>
+                    {{
+                      suggestion.averageDistanceKm === null
+                        ? '—'
+                        : (suggestion.averageDistanceKm | number: '1.0-1') + ' km'
+                    }}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-xs uppercase text-slate-500">
+                    {{
+                      'students.assignments.instructors.suggestions.nextAvailability' | translate
+                    }}
+                  </dt>
+                  <dd>{{ (suggestion.nextAvailabilityUtc | date: 'short') || '—' }}</dd>
+                </div>
               </dl>
               <div class="mt-3 flex flex-wrap gap-2">
-                @if (suggestion.hasInitialAssessment) { <drive-os-badge variant="info">{{ 'students.assignments.instructors.suggestions.assessmentKnown' | translate }}</drive-os-badge> }
-                @if (suggestion.isPartner) { <drive-os-badge variant="warning">{{ 'students.assignments.instructors.suggestions.partner' | translate }}</drive-os-badge> }
+                @if (suggestion.hasInitialAssessment) {
+                  <drive-os-badge variant="info">
+                    {{ 'students.assignments.instructors.suggestions.assessmentKnown' | translate }}
+                  </drive-os-badge>
+                }
+                @if (suggestion.isPartner) {
+                  <drive-os-badge variant="warning">
+                    {{ 'students.assignments.instructors.suggestions.partner' | translate }}
+                  </drive-os-badge>
+                }
               </div>
               @if (suggestion.warnings.length) {
                 <div class="mt-3 grid gap-1 rounded-lg bg-orange-50 p-3 text-xs text-orange-800">
-                  @for (warning of suggestion.warnings; track warning) { <p><i class="ph ph-warning mr-1"></i>{{ warning }}</p> }
+                  @for (warning of suggestion.warnings; track warning) {
+                    <p>
+                      <i class="ph ph-warning mr-1"></i>
+                      {{ warning }}
+                    </p>
+                  }
                 </div>
               }
               @if (canAssign() || canReplace()) {
                 <div class="mt-4 flex justify-end">
-                  <drive-os-button size="sm" variant="ghost" (pressed)="selectSuggestion(suggestion)">{{ 'students.assignments.instructors.actions.select' | translate }}</drive-os-button>
+                  <drive-os-button
+                    size="sm"
+                    variant="ghost"
+                    (pressed)="selectSuggestion(suggestion)"
+                  >
+                    {{ 'students.assignments.instructors.actions.select' | translate }}
+                  </drive-os-button>
                 </div>
               }
             </article>
           }
         </div>
       } @else if (suggestionSearchDone()) {
-        <drive-os-empty-state icon="ph-duotone ph-magnifying-glass" [title]="'students.assignments.instructors.suggestions.empty' | translate" [description]="'students.assignments.instructors.suggestions.emptyDescription' | translate" />
+        <drive-os-empty-state
+          icon="ph-duotone ph-magnifying-glass"
+          [title]="'students.assignments.instructors.suggestions.empty' | translate"
+          [description]="
+            'students.assignments.instructors.suggestions.emptyDescription' | translate
+          "
+        />
       }
     </div>
   </drive-os-card>
 
   @if (action()?.type === 'assign') {
     <drive-os-card>
-      <form class="grid gap-4 md:grid-cols-2" [formGroup]="assignForm" (ngSubmit)="assign()">
-        <div class="md:col-span-2"><h4 class="font-extrabold">{{ 'students.assignments.instructors.assign.title' | translate }}</h4></div>
-        <label class="grid gap-1 text-sm font-semibold md:col-span-2">{{ 'students.assignments.instructors.fields.instructorId' | translate }}<input driveOsInput formControlName="instructorId" /></label>
-        <label class="grid gap-1 text-sm font-semibold">{{ 'students.assignments.instructors.fields.type' | translate }}
-          <select driveOsInput formControlName="type">
-            <option [ngValue]="2">{{ 'students.assignments.instructors.types.secondary' | translate }}</option>
-            <option [ngValue]="3">{{ 'students.assignments.instructors.types.temporaryReplacement' | translate }}</option>
-            <option [ngValue]="4">{{ 'students.assignments.instructors.types.specialist' | translate }}</option>
-            <option [ngValue]="5">{{ 'students.assignments.instructors.types.examAccompanist' | translate }}</option>
-            <option [ngValue]="6">{{ 'students.assignments.instructors.types.partner' | translate }}</option>
+      <form
+        class="grid gap-4 md:grid-cols-2"
+        [formGroup]="assignForm"
+        (ngSubmit)="assign()"
+      >
+        <div class="md:col-span-2">
+          <h4 class="font-extrabold">
+            {{ 'students.assignments.instructors.assign.title' | translate }}
+          </h4>
+        </div>
+        <label class="grid gap-1 text-sm font-semibold md:col-span-2">
+          {{ 'students.assignments.instructors.fields.instructorId' | translate }}
+          <input
+            driveOsInput
+            formControlName="instructorId"
+          />
+        </label>
+        <label class="grid gap-1 text-sm font-semibold">
+          {{ 'students.assignments.instructors.fields.type' | translate }}
+          <select
+            driveOsInput
+            formControlName="type"
+          >
+            <option [ngValue]="2">
+              {{ 'students.assignments.instructors.types.secondary' | translate }}
+            </option>
+            <option [ngValue]="3">
+              {{ 'students.assignments.instructors.types.temporaryReplacement' | translate }}
+            </option>
+            <option [ngValue]="4">
+              {{ 'students.assignments.instructors.types.specialist' | translate }}
+            </option>
+            <option [ngValue]="5">
+              {{ 'students.assignments.instructors.types.examAccompanist' | translate }}
+            </option>
+            <option [ngValue]="6">
+              {{ 'students.assignments.instructors.types.partner' | translate }}
+            </option>
           </select>
         </label>
-        <label class="grid gap-1 text-sm font-semibold">{{ 'students.assignments.instructors.fields.trainingCategory' | translate }}<input driveOsInput formControlName="trainingCategory" /></label>
-        <label class="grid gap-1 text-sm font-semibold">{{ 'students.assignments.instructors.fields.effectiveFrom' | translate }}<input driveOsInput type="date" formControlName="effectiveFrom" /></label>
-        <label class="grid gap-1 text-sm font-semibold">{{ 'students.assignments.instructors.fields.effectiveTo' | translate }}<input driveOsInput type="date" formControlName="effectiveTo" /></label>
-        <label class="grid gap-1 text-sm font-semibold">{{ 'students.assignments.instructors.fields.scope' | translate }}
-          <select driveOsInput formControlName="maximumScope">
-            <option [ngValue]="127">{{ 'students.assignments.instructors.scopes.127' | translate }}</option>
-            <option [ngValue]="16">{{ 'students.assignments.instructors.scopes.16' | translate }}</option>
-            <option [ngValue]="8">{{ 'students.assignments.instructors.scopes.8' | translate }}</option>
-            <option [ngValue]="4">{{ 'students.assignments.instructors.scopes.4' | translate }}</option>
-            <option [ngValue]="2">{{ 'students.assignments.instructors.scopes.2' | translate }}</option>
-            <option [ngValue]="1">{{ 'students.assignments.instructors.scopes.1' | translate }}</option>
+        <label class="grid gap-1 text-sm font-semibold">
+          {{ 'students.assignments.instructors.fields.trainingCategory' | translate }}
+          <input
+            driveOsInput
+            formControlName="trainingCategory"
+          />
+        </label>
+        <label class="grid gap-1 text-sm font-semibold">
+          {{ 'students.assignments.instructors.fields.effectiveFrom' | translate }}
+          <input
+            driveOsInput
+            type="date"
+            formControlName="effectiveFrom"
+          />
+        </label>
+        <label class="grid gap-1 text-sm font-semibold">
+          {{ 'students.assignments.instructors.fields.effectiveTo' | translate }}
+          <input
+            driveOsInput
+            type="date"
+            formControlName="effectiveTo"
+          />
+        </label>
+        <label class="grid gap-1 text-sm font-semibold">
+          {{ 'students.assignments.instructors.fields.scope' | translate }}
+          <select
+            driveOsInput
+            formControlName="maximumScope"
+          >
+            <option [ngValue]="127">
+              {{ 'students.assignments.instructors.scopes.127' | translate }}
+            </option>
+            <option [ngValue]="16">
+              {{ 'students.assignments.instructors.scopes.16' | translate }}
+            </option>
+            <option [ngValue]="8">
+              {{ 'students.assignments.instructors.scopes.8' | translate }}
+            </option>
+            <option [ngValue]="4">
+              {{ 'students.assignments.instructors.scopes.4' | translate }}
+            </option>
+            <option [ngValue]="2">
+              {{ 'students.assignments.instructors.scopes.2' | translate }}
+            </option>
+            <option [ngValue]="1">
+              {{ 'students.assignments.instructors.scopes.1' | translate }}
+            </option>
           </select>
         </label>
-        <label class="grid gap-1 text-sm font-semibold md:col-span-2">{{ 'students.assignments.instructors.fields.reason' | translate }}<textarea driveOsInput rows="3" formControlName="reason"></textarea></label>
-        <div class="flex justify-end gap-2 md:col-span-2"><drive-os-button type="button" variant="ghost" (pressed)="cancel()">{{ 'common.actions.cancel' | translate }}</drive-os-button><drive-os-button type="submit" [loading]="saving()">{{ 'common.actions.save' | translate }}</drive-os-button></div>
+        <label class="grid gap-1 text-sm font-semibold md:col-span-2">
+          {{ 'students.assignments.instructors.fields.reason' | translate }}
+          <textarea
+            driveOsInput
+            rows="3"
+            formControlName="reason"
+          ></textarea>
+        </label>
+        <div class="flex justify-end gap-2 md:col-span-2">
+          <drive-os-button
+            type="button"
+            variant="ghost"
+            (pressed)="cancel()"
+          >
+            {{ 'common.actions.cancel' | translate }}
+          </drive-os-button>
+          <drive-os-button
+            type="submit"
+            [loading]="saving()"
+          >
+            {{ 'common.actions.save' | translate }}
+          </drive-os-button>
+        </div>
       </form>
     </drive-os-card>
   }
 
   @if (action()?.type === 'replacePrimary') {
     <drive-os-card>
-      <form class="grid gap-4 md:grid-cols-2" [formGroup]="replaceForm" (ngSubmit)="replacePrimary()">
-        <div class="md:col-span-2"><h4 class="font-extrabold">{{ 'students.assignments.instructors.replace.title' | translate }}</h4><p class="text-sm text-slate-500">{{ 'students.assignments.instructors.replace.description' | translate }}</p></div>
-        <label class="grid gap-1 text-sm font-semibold md:col-span-2">{{ 'students.assignments.instructors.fields.instructorId' | translate }}<input driveOsInput formControlName="instructorId" /></label>
-        <label class="grid gap-1 text-sm font-semibold">{{ 'students.assignments.instructors.fields.trainingCategory' | translate }}<input driveOsInput formControlName="trainingCategory" /></label>
-        <label class="grid gap-1 text-sm font-semibold">{{ 'students.assignments.instructors.fields.scope' | translate }}
-          <select driveOsInput formControlName="maximumScope"><option [ngValue]="127">{{ 'students.assignments.instructors.scopes.127' | translate }}</option><option [ngValue]="16">{{ 'students.assignments.instructors.scopes.16' | translate }}</option><option [ngValue]="8">{{ 'students.assignments.instructors.scopes.8' | translate }}</option><option [ngValue]="4">{{ 'students.assignments.instructors.scopes.4' | translate }}</option><option [ngValue]="2">{{ 'students.assignments.instructors.scopes.2' | translate }}</option><option [ngValue]="1">{{ 'students.assignments.instructors.scopes.1' | translate }}</option></select>
+      <form
+        class="grid gap-4 md:grid-cols-2"
+        [formGroup]="replaceForm"
+        (ngSubmit)="replacePrimary()"
+      >
+        <div class="md:col-span-2">
+          <h4 class="font-extrabold">
+            {{ 'students.assignments.instructors.replace.title' | translate }}
+          </h4>
+          <p class="text-sm text-slate-500">
+            {{ 'students.assignments.instructors.replace.description' | translate }}
+          </p>
+        </div>
+        <label class="grid gap-1 text-sm font-semibold md:col-span-2">
+          {{ 'students.assignments.instructors.fields.instructorId' | translate }}
+          <input
+            driveOsInput
+            formControlName="instructorId"
+          />
         </label>
-        <label class="grid gap-1 text-sm font-semibold">{{ 'students.assignments.instructors.fields.effectiveFrom' | translate }}<input driveOsInput type="date" formControlName="effectiveFrom" /></label>
-        <label class="grid gap-1 text-sm font-semibold">{{ 'students.assignments.instructors.fields.effectiveTo' | translate }}<input driveOsInput type="date" formControlName="effectiveTo" /></label>
-        <label class="grid gap-1 text-sm font-semibold md:col-span-2">{{ 'students.assignments.instructors.fields.reason' | translate }}<textarea driveOsInput rows="3" formControlName="reason"></textarea></label>
-        <div class="flex justify-end gap-2 md:col-span-2"><drive-os-button type="button" variant="ghost" (pressed)="cancel()">{{ 'common.actions.cancel' | translate }}</drive-os-button><drive-os-button type="submit" [loading]="saving()">{{ 'students.assignments.instructors.actions.confirmReplace' | translate }}</drive-os-button></div>
+        <label class="grid gap-1 text-sm font-semibold">
+          {{ 'students.assignments.instructors.fields.trainingCategory' | translate }}
+          <input
+            driveOsInput
+            formControlName="trainingCategory"
+          />
+        </label>
+        <label class="grid gap-1 text-sm font-semibold">
+          {{ 'students.assignments.instructors.fields.scope' | translate }}
+          <select
+            driveOsInput
+            formControlName="maximumScope"
+          >
+            <option [ngValue]="127">
+              {{ 'students.assignments.instructors.scopes.127' | translate }}
+            </option>
+            <option [ngValue]="16">
+              {{ 'students.assignments.instructors.scopes.16' | translate }}
+            </option>
+            <option [ngValue]="8">
+              {{ 'students.assignments.instructors.scopes.8' | translate }}
+            </option>
+            <option [ngValue]="4">
+              {{ 'students.assignments.instructors.scopes.4' | translate }}
+            </option>
+            <option [ngValue]="2">
+              {{ 'students.assignments.instructors.scopes.2' | translate }}
+            </option>
+            <option [ngValue]="1">
+              {{ 'students.assignments.instructors.scopes.1' | translate }}
+            </option>
+          </select>
+        </label>
+        <label class="grid gap-1 text-sm font-semibold">
+          {{ 'students.assignments.instructors.fields.effectiveFrom' | translate }}
+          <input
+            driveOsInput
+            type="date"
+            formControlName="effectiveFrom"
+          />
+        </label>
+        <label class="grid gap-1 text-sm font-semibold">
+          {{ 'students.assignments.instructors.fields.effectiveTo' | translate }}
+          <input
+            driveOsInput
+            type="date"
+            formControlName="effectiveTo"
+          />
+        </label>
+        <label class="grid gap-1 text-sm font-semibold md:col-span-2">
+          {{ 'students.assignments.instructors.fields.reason' | translate }}
+          <textarea
+            driveOsInput
+            rows="3"
+            formControlName="reason"
+          ></textarea>
+        </label>
+        <div class="flex justify-end gap-2 md:col-span-2">
+          <drive-os-button
+            type="button"
+            variant="ghost"
+            (pressed)="cancel()"
+          >
+            {{ 'common.actions.cancel' | translate }}
+          </drive-os-button>
+          <drive-os-button
+            type="submit"
+            [loading]="saving()"
+          >
+            {{ 'students.assignments.instructors.actions.confirmReplace' | translate }}
+          </drive-os-button>
+        </div>
       </form>
     </drive-os-card>
   }
@@ -136,10 +416,41 @@
   @if (action(); as current) {
     @if (current.type === 'end') {
       <drive-os-card>
-        <form class="grid gap-4" [formGroup]="endForm" (ngSubmit)="endAssignment()">
-          <drive-os-state-banner tone="warning" icon="ph ph-warning" [title]="'students.assignments.instructors.end.title' | translate" [description]="instructorLabel(current.assignment.instructorId)" />
-          <label class="grid gap-1 text-sm font-semibold">{{ 'students.assignments.instructors.fields.reason' | translate }}<textarea driveOsInput rows="3" formControlName="reason"></textarea></label>
-          <div class="flex justify-end gap-2"><drive-os-button type="button" variant="ghost" (pressed)="cancel()">{{ 'common.actions.cancel' | translate }}</drive-os-button><drive-os-button type="submit" variant="danger" [loading]="saving()">{{ 'students.assignments.instructors.actions.end' | translate }}</drive-os-button></div>
+        <form
+          class="grid gap-4"
+          [formGroup]="endForm"
+          (ngSubmit)="endAssignment()"
+        >
+          <drive-os-state-banner
+            tone="warning"
+            icon="ph ph-warning"
+            [title]="'students.assignments.instructors.end.title' | translate"
+            [description]="instructorLabel(current.assignment.instructorId)"
+          />
+          <label class="grid gap-1 text-sm font-semibold">
+            {{ 'students.assignments.instructors.fields.reason' | translate }}
+            <textarea
+              driveOsInput
+              rows="3"
+              formControlName="reason"
+            ></textarea>
+          </label>
+          <div class="flex justify-end gap-2">
+            <drive-os-button
+              type="button"
+              variant="ghost"
+              (pressed)="cancel()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              type="submit"
+              variant="danger"
+              [loading]="saving()"
+            >
+              {{ 'students.assignments.instructors.actions.end' | translate }}
+            </drive-os-button>
+          </div>
         </form>
       </drive-os-card>
     }
@@ -147,22 +458,133 @@
 
   <div class="grid gap-4 lg:grid-cols-2">
     @for (assignment of activeAssignments(); track assignment.id) {
-      <article class="relative overflow-hidden rounded-xl border bg-[var(--driveos-surface-card)] p-5" [class.border-orange-400]="isPrimary(assignment.instructorId)">
-        @if (isPrimary(assignment.instructorId)) { <span class="absolute right-0 top-0 rounded-bl-xl bg-orange-500 px-3 py-1 text-xs font-bold text-white">{{ 'students.assignments.primary' | translate }}</span> }
-        <div class="flex items-start gap-3"><span class="grid size-12 place-items-center rounded-full bg-blue-100 text-xl text-blue-800"><i class="ph-duotone ph-chalkboard-teacher"></i></span><div class="min-w-0 flex-1"><h4 class="break-all font-extrabold">{{ instructorLabel(assignment.instructorId) }}</h4><div class="mt-3 flex flex-wrap gap-2"><drive-os-badge [variant]="statusVariant(assignment.status)">{{ assignment.status }}</drive-os-badge><drive-os-badge variant="info">{{ assignmentTypeLabel(assignment.type) }}</drive-os-badge></div></div></div>
-        <dl class="mt-5 grid gap-3 sm:grid-cols-2"><div><dt class="text-xs uppercase text-slate-500">{{ 'students.assignments.trainingCategory' | translate }}</dt><dd class="font-bold">{{ assignment.trainingCategory }}</dd></div><div><dt class="text-xs uppercase text-slate-500">{{ 'students.assignments.scope' | translate }}</dt><dd>{{ scopeLabel(assignment.maximumScope) }}</dd></div><div><dt class="text-xs uppercase text-slate-500">{{ 'students.assignments.effectiveFrom' | translate }}</dt><dd>{{ assignment.effectiveFrom | date: 'mediumDate' }}</dd></div><div><dt class="text-xs uppercase text-slate-500">{{ 'students.assignments.effectiveTo' | translate }}</dt><dd>{{ (assignment.effectiveTo | date: 'mediumDate') || ('students.assignments.openEnded' | translate) }}</dd></div></dl>
-        <p class="mt-4 rounded-lg bg-slate-50 p-3 text-sm text-slate-600"><strong>{{ 'students.assignments.reason' | translate }} :</strong> {{ assignment.reason }}</p>
-        @if (canAssign() && !isPrimary(assignment.instructorId)) { <div class="mt-4 flex justify-end"><drive-os-button size="sm" variant="ghost" icon="ph ph-x-circle" (pressed)="openEnd(assignment)">{{ 'students.assignments.instructors.actions.end' | translate }}</drive-os-button></div> }
+      <article
+        class="relative overflow-hidden rounded-xl border bg-[var(--driveos-surface-card)] p-5"
+        [class.border-orange-400]="isPrimary(assignment.instructorId)"
+      >
+        @if (isPrimary(assignment.instructorId)) {
+          <span
+            class="absolute right-0 top-0 rounded-bl-xl bg-orange-500 px-3 py-1 text-xs font-bold text-white"
+          >
+            {{ 'students.assignments.primary' | translate }}
+          </span>
+        }
+        <div class="flex items-start gap-3">
+          <span
+            class="grid size-12 place-items-center rounded-full bg-blue-100 text-xl text-blue-800"
+          >
+            <i class="ph-duotone ph-chalkboard-teacher"></i>
+          </span>
+          <div class="min-w-0 flex-1">
+            <h4 class="break-all font-extrabold">{{ instructorLabel(assignment.instructorId) }}</h4>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <drive-os-badge [variant]="statusVariant(assignment.status)">
+                {{ assignment.status }}
+              </drive-os-badge>
+              <drive-os-badge variant="info">
+                {{ assignmentTypeLabel(assignment.type) }}
+              </drive-os-badge>
+            </div>
+          </div>
+        </div>
+        <dl class="mt-5 grid gap-3 sm:grid-cols-2">
+          <div>
+            <dt class="text-xs uppercase text-slate-500">
+              {{ 'students.assignments.trainingCategory' | translate }}
+            </dt>
+            <dd class="font-bold">{{ assignment.trainingCategory }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs uppercase text-slate-500">
+              {{ 'students.assignments.scope' | translate }}
+            </dt>
+            <dd>{{ scopeLabel(assignment.maximumScope) }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs uppercase text-slate-500">
+              {{ 'students.assignments.effectiveFrom' | translate }}
+            </dt>
+            <dd>{{ assignment.effectiveFrom | date: 'mediumDate' }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs uppercase text-slate-500">
+              {{ 'students.assignments.effectiveTo' | translate }}
+            </dt>
+            <dd>
+              {{
+                (assignment.effectiveTo | date: 'mediumDate') ||
+                  ('students.assignments.openEnded' | translate)
+              }}
+            </dd>
+          </div>
+        </dl>
+        <p class="mt-4 rounded-lg bg-slate-50 p-3 text-sm text-slate-600">
+          <strong>{{ 'students.assignments.reason' | translate }} :</strong>
+          {{ assignment.reason }}
+        </p>
+        @if (canAssign() && !isPrimary(assignment.instructorId)) {
+          <div class="mt-4 flex justify-end">
+            <drive-os-button
+              size="sm"
+              variant="ghost"
+              icon="ph ph-x-circle"
+              (pressed)="openEnd(assignment)"
+            >
+              {{ 'students.assignments.instructors.actions.end' | translate }}
+            </drive-os-button>
+          </div>
+        }
       </article>
     } @empty {
-      <drive-os-empty-state icon="ph-duotone ph-chalkboard-teacher" [title]="'students.assignments.noInstructor' | translate" [description]="'students.assignments.noInstructorDescription' | translate" />
+      <drive-os-empty-state
+        icon="ph-duotone ph-chalkboard-teacher"
+        [title]="'students.assignments.noInstructor' | translate"
+        [description]="'students.assignments.noInstructorDescription' | translate"
+      />
     }
   </div>
 
   @if (pastAssignments().length) {
     <drive-os-card>
-      <h4 class="mb-3 font-extrabold">{{ 'students.assignments.instructors.history' | translate }}</h4>
-      <div class="overflow-x-auto"><table class="w-full min-w-[760px] text-left text-sm"><thead class="text-xs uppercase text-slate-500"><tr><th class="py-2 pr-4">{{ 'students.assignments.instructors.fields.instructor' | translate }}</th><th class="py-2 pr-4">{{ 'students.assignments.instructors.fields.type' | translate }}</th><th class="py-2 pr-4">{{ 'students.assignments.instructors.fields.status' | translate }}</th><th class="py-2 pr-4">{{ 'students.assignments.effectiveFrom' | translate }}</th><th class="py-2">{{ 'students.assignments.effectiveTo' | translate }}</th></tr></thead><tbody>@for (assignment of pastAssignments(); track assignment.id) { <tr class="border-t border-[var(--driveos-border)]"><td class="py-3 pr-4 font-semibold">{{ instructorLabel(assignment.instructorId) }}</td><td class="py-3 pr-4">{{ assignmentTypeLabel(assignment.type) }}</td><td class="py-3 pr-4"><drive-os-badge [variant]="statusVariant(assignment.status)">{{ assignment.status }}</drive-os-badge></td><td class="py-3 pr-4">{{ assignment.effectiveFrom | date: 'mediumDate' }}</td><td class="py-3">{{ assignment.effectiveTo | date: 'mediumDate' }}</td></tr> }</tbody></table></div>
+      <h4 class="mb-3 font-extrabold">
+        {{ 'students.assignments.instructors.history' | translate }}
+      </h4>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[760px] text-left text-sm">
+          <thead class="text-xs uppercase text-slate-500">
+            <tr>
+              <th class="py-2 pr-4">
+                {{ 'students.assignments.instructors.fields.instructor' | translate }}
+              </th>
+              <th class="py-2 pr-4">
+                {{ 'students.assignments.instructors.fields.type' | translate }}
+              </th>
+              <th class="py-2 pr-4">
+                {{ 'students.assignments.instructors.fields.status' | translate }}
+              </th>
+              <th class="py-2 pr-4">{{ 'students.assignments.effectiveFrom' | translate }}</th>
+              <th class="py-2">{{ 'students.assignments.effectiveTo' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (assignment of pastAssignments(); track assignment.id) {
+              <tr class="border-t border-[var(--driveos-border)]">
+                <td class="py-3 pr-4 font-semibold">
+                  {{ instructorLabel(assignment.instructorId) }}
+                </td>
+                <td class="py-3 pr-4">{{ assignmentTypeLabel(assignment.type) }}</td>
+                <td class="py-3 pr-4">
+                  <drive-os-badge [variant]="statusVariant(assignment.status)">
+                    {{ assignment.status }}
+                  </drive-os-badge>
+                </td>
+                <td class="py-3 pr-4">{{ assignment.effectiveFrom | date: 'mediumDate' }}</td>
+                <td class="py-3">{{ assignment.effectiveTo | date: 'mediumDate' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </drive-os-card>
   }
 </section>

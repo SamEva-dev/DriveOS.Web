@@ -1,0 +1,579 @@
+<section class="space-y-5 pb-8">
+  <header
+    class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-4 shadow-sm sm:p-5"
+  >
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div class="min-w-0">
+        <p class="text-xs font-semibold uppercase tracking-[.18em] text-blue-700">
+          {{ 'scheduling.attendance.eyebrow' | translate }}
+        </p>
+        <h1 class="mt-1 text-2xl font-black text-[var(--driveos-text-primary)]">
+          {{ 'scheduling.attendance.title' | translate }}
+        </h1>
+        <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+          {{ 'scheduling.attendance.subtitle' | translate }}
+        </p>
+      </div>
+      <drive-os-button
+        variant="outline"
+        icon="arrow-left"
+        (pressed)="goBack()"
+      >
+        {{ 'scheduling.attendance.actions.backToBooking' | translate }}
+      </drive-os-button>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div
+      class="grid min-h-64 place-items-center rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)]"
+    >
+      <drive-os-spinner />
+    </div>
+  } @else {
+    @for (error of errors(); track $index) {
+      <drive-os-state-banner
+        tone="danger"
+        [title]="error | translate"
+      />
+    }
+
+    @if (booking(); as booking) {
+      <section class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <main
+          class="overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] shadow-sm"
+        >
+          <div class="border-b border-[var(--driveos-border)] p-4 sm:p-5">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <div class="text-lg font-black text-[var(--driveos-text-primary)]">
+                  {{ booking.title }}
+                </div>
+                <div class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                  {{ booking.startAtUtc | date: 'EEE d MMM · HH:mm' }} →
+                  {{ booking.endAtUtc | date: 'HH:mm' }}
+                </div>
+              </div>
+              @if (currentAttendance(); as current) {
+                <span
+                  class="inline-flex w-fit items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-800"
+                >
+                  <i class="ph ph-check-circle"></i>
+                  {{ statusKey(current.status) | translate }}
+                </span>
+              }
+            </div>
+
+            <div
+              class="mt-4 flex gap-1 overflow-x-auto rounded-xl bg-[var(--driveos-surface-muted)] p-1"
+            >
+              @for (
+                tab of [
+                  { id: 'quick', icon: 'ph ph-lightning', key: 'quick' },
+                  { id: 'details', icon: 'ph ph-sliders-horizontal', key: 'details' },
+                  { id: 'history', icon: 'ph ph-clock-counter-clockwise', key: 'history' },
+                ];
+                track tab.id
+              ) {
+                <button
+                  class="flex min-h-10 shrink-0 items-center gap-2 rounded-lg px-3.5 text-sm font-bold transition"
+                  [class.bg-white]="mode() === tab.id"
+                  [class.text-blue-800]="mode() === tab.id"
+                  [class.shadow-sm]="mode() === tab.id"
+                  (click)="mode.set($any(tab.id))"
+                >
+                  <i [class]="tab.icon"></i>
+                  {{ 'scheduling.attendance.tabs.' + tab.key | translate }}
+                </button>
+              }
+            </div>
+          </div>
+
+          @if (mode() === 'quick') {
+            <div class="space-y-5 p-4 sm:p-6">
+              <div>
+                <h2 class="text-lg font-black">
+                  {{ 'scheduling.attendance.quick.title' | translate: { name: studentName() } }}
+                </h2>
+                <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                  {{ 'scheduling.attendance.quick.help' | translate }}
+                </p>
+              </div>
+
+              <div class="grid gap-3 sm:grid-cols-3">
+                @for (value of quickStatuses; track value) {
+                  <button
+                    type="button"
+                    class="group rounded-2xl border p-4 text-left transition"
+                    [class.border-blue-700]="status() === value"
+                    [class.bg-blue-50]="status() === value"
+                    [class.border-[var(--driveos-border)]]="status() !== value"
+                    (click)="selectQuickStatus(value)"
+                  >
+                    <div class="flex items-center justify-between gap-3">
+                      <span
+                        class="grid size-11 place-items-center rounded-xl bg-[var(--driveos-surface-muted)] text-xl"
+                        [class.bg-blue-800]="status() === value"
+                        [class.text-white]="status() === value"
+                      >
+                        <i
+                          [class]="
+                            value === 1
+                              ? 'ph ph-check'
+                              : value === 2
+                                ? 'ph ph-clock'
+                                : 'ph ph-user-minus'
+                          "
+                        ></i>
+                      </span>
+                      <span
+                        class="size-5 rounded-full border-2"
+                        [class.border-blue-700]="status() === value"
+                        [class.bg-blue-700]="status() === value"
+                      ></span>
+                    </div>
+                    <div class="mt-3 font-black">{{ statusKey(value) | translate }}</div>
+                    <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                      {{ 'scheduling.attendance.quick.statusHelp.' + value | translate }}
+                    </p>
+                  </button>
+                }
+              </div>
+
+              @if (status() === 2) {
+                <div class="rounded-2xl border border-orange-200 bg-orange-50 p-4">
+                  <label class="block">
+                    <span class="text-sm font-bold text-orange-950">
+                      {{ 'scheduling.attendance.fields.delayMinutes' | translate }}
+                    </span>
+                    <input
+                      type="number"
+                      min="1"
+                      max="1440"
+                      class="mt-2 w-full rounded-xl border border-orange-200 bg-white px-3 py-2.5"
+                      [value]="delayMinutes()"
+                      (input)="delayMinutes.set(+$any($event.target).value)"
+                    />
+                  </label>
+                </div>
+              }
+
+              @if (currentAttendance()) {
+                <drive-os-state-banner
+                  tone="info"
+                  [title]="'scheduling.attendance.correction.existingTitle' | translate"
+                >
+                  {{ 'scheduling.attendance.correction.existingText' | translate }}
+                </drive-os-state-banner>
+              }
+            </div>
+          }
+
+          @if (mode() === 'details') {
+            <div class="space-y-5 p-4 sm:p-6">
+              <div class="grid gap-4 md:grid-cols-2">
+                <label class="block">
+                  <span class="text-sm font-semibold">
+                    {{ 'scheduling.attendance.fields.status' | translate }}
+                  </span>
+                  <select
+                    class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                    [value]="status()"
+                    (change)="status.set(+$any($event.target).value)"
+                  >
+                    @for (value of statuses; track value) {
+                      <option [value]="value">{{ statusKey(value) | translate }}</option>
+                    }
+                  </select>
+                </label>
+                <label class="block">
+                  <span class="text-sm font-semibold">
+                    {{ 'scheduling.attendance.fields.followUp' | translate }}
+                  </span>
+                  <select
+                    class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                    [value]="followUpAction()"
+                    (change)="followUpAction.set(+$any($event.target).value)"
+                  >
+                    @for (value of followUps; track value) {
+                      <option [value]="value">{{ followUpKey(value) | translate }}</option>
+                    }
+                  </select>
+                </label>
+                <label class="block">
+                  <span class="text-sm font-semibold">
+                    {{ 'scheduling.attendance.fields.arrival' | translate }}
+                  </span>
+                  <input
+                    type="datetime-local"
+                    class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                    [value]="arrivalLocal()"
+                    (input)="arrivalLocal.set($any($event.target).value)"
+                  />
+                </label>
+                <label class="block">
+                  <span class="text-sm font-semibold">
+                    {{ 'scheduling.attendance.fields.departure' | translate }}
+                  </span>
+                  <input
+                    type="datetime-local"
+                    class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                    [value]="departureLocal()"
+                    (input)="departureLocal.set($any($event.target).value)"
+                  />
+                </label>
+                <label class="block">
+                  <span class="text-sm font-semibold">
+                    {{ 'scheduling.attendance.fields.delayMinutes' | translate }}
+                  </span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="1440"
+                    class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                    [value]="delayMinutes()"
+                    (input)="delayMinutes.set(+$any($event.target).value)"
+                  />
+                </label>
+                <label class="block">
+                  <span class="text-sm font-semibold">
+                    {{ 'scheduling.attendance.fields.evidence' | translate }}
+                  </span>
+                  <input
+                    class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                    [value]="evidenceDocumentId()"
+                    (input)="evidenceDocumentId.set($any($event.target).value)"
+                    [placeholder]="'scheduling.attendance.fields.evidencePlaceholder' | translate"
+                  />
+                </label>
+              </div>
+              <label class="block">
+                <span class="text-sm font-semibold">
+                  {{ 'scheduling.attendance.fields.reason' | translate }}
+                </span>
+                <textarea
+                  rows="4"
+                  maxlength="500"
+                  class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                  [value]="reason()"
+                  (input)="reason.set($any($event.target).value)"
+                ></textarea>
+              </label>
+              <drive-os-state-banner
+                tone="info"
+                [title]="'scheduling.attendance.evidence.title' | translate"
+              >
+                {{ 'scheduling.attendance.evidence.text' | translate }}
+              </drive-os-state-banner>
+            </div>
+          }
+
+          @if (mode() === 'history') {
+            <div class="space-y-4 p-4 sm:p-6">
+              <div>
+                <h2 class="text-lg font-black">
+                  {{ 'scheduling.attendance.history.title' | translate }}
+                </h2>
+                <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                  {{ 'scheduling.attendance.history.help' | translate }}
+                </p>
+              </div>
+              @if (!history().length) {
+                <drive-os-state-banner
+                  tone="info"
+                  [title]="'scheduling.attendance.history.emptyTitle' | translate"
+                >
+                  {{ 'scheduling.attendance.history.emptyText' | translate }}
+                </drive-os-state-banner>
+              }
+              @for (entry of history(); track entry.id; let i = $index) {
+                <article class="rounded-2xl border border-[var(--driveos-border)] p-4">
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <div class="font-black">{{ statusKey(entry.status) | translate }}</div>
+                      <div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                        {{ entry.recordedAtUtc | date: 'dd/MM/yyyy HH:mm:ss' }} ·
+                        {{ 'scheduling.attendance.history.actor' | translate }}
+                        {{ entry.recordedBy }}
+                      </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                      @if (i === 0) {
+                        <span
+                          class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-800"
+                        >
+                          {{ 'scheduling.attendance.history.current' | translate }}
+                        </span>
+                      }
+                      @if (entry.overrideApplied) {
+                        <span
+                          class="rounded-full bg-orange-50 px-2.5 py-1 text-xs font-bold text-orange-800"
+                        >
+                          {{ 'scheduling.attendance.history.override' | translate }}
+                        </span>
+                      }
+                    </div>
+                  </div>
+                  <dl class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    <div>
+                      <dt class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+                        {{ 'scheduling.attendance.fields.arrival' | translate }}
+                      </dt>
+                      <dd class="mt-1 text-sm font-semibold">
+                        {{ entry.arrivalTimeUtc ? (entry.arrivalTimeUtc | date: 'HH:mm') : '—' }}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+                        {{ 'scheduling.attendance.fields.departure' | translate }}
+                      </dt>
+                      <dd class="mt-1 text-sm font-semibold">
+                        {{
+                          entry.departureTimeUtc ? (entry.departureTimeUtc | date: 'HH:mm') : '—'
+                        }}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+                        {{ 'scheduling.attendance.summary.credit' | translate }}
+                      </dt>
+                      <dd class="mt-1 text-sm font-semibold">
+                        {{ creditKey(entry.creditDecision) | translate }}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+                        {{ 'scheduling.attendance.summary.charge' | translate }}
+                      </dt>
+                      <dd class="mt-1 text-sm font-semibold">
+                        {{ chargeKey(entry.chargeDecision) | translate }}
+                      </dd>
+                    </div>
+                  </dl>
+                  @if (entry.reason) {
+                    <p class="mt-3 rounded-xl bg-[var(--driveos-surface-muted)] p-3 text-sm">
+                      {{ entry.reason }}
+                    </p>
+                  }
+                  @if (entry.overrideReason) {
+                    <p class="mt-3 text-xs text-orange-700">
+                      <strong>
+                        {{ 'scheduling.attendance.history.overrideReason' | translate }}:
+                      </strong>
+                      {{ entry.overrideReason }}
+                    </p>
+                  }
+                </article>
+              }
+            </div>
+          }
+
+          <footer
+            class="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--driveos-border)] px-4 py-4 sm:px-6"
+          >
+            <div class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.attendance.audit.text' | translate }}
+            </div>
+            <div class="flex flex-wrap gap-2">
+              @if (currentAttendance() && canOverride()) {
+                <drive-os-button
+                  variant="outline"
+                  (pressed)="openOverride()"
+                >
+                  {{ 'scheduling.attendance.actions.override' | translate }}
+                </drive-os-button>
+              }
+              @if ((currentAttendance() ? canCorrect() : canRecord()) && mode() !== 'history') {
+                <drive-os-button
+                  [disabled]="!canSave()"
+                  (pressed)="save()"
+                >
+                  @if (saving()) {
+                    <i class="ph ph-circle-notch mr-2 animate-spin"></i>
+                  }
+                  {{
+                    currentAttendance()
+                      ? ('scheduling.attendance.actions.correct' | translate)
+                      : ('scheduling.attendance.actions.save' | translate)
+                  }}
+                </drive-os-button>
+              }
+            </div>
+          </footer>
+        </main>
+
+        <aside class="space-y-4">
+          <section
+            class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 shadow-sm"
+          >
+            <div
+              class="text-xs font-bold uppercase tracking-[.12em] text-[var(--driveos-text-secondary)]"
+            >
+              {{ 'scheduling.attendance.summary.people' | translate }}
+            </div>
+            <div class="mt-4 space-y-3">
+              <div class="flex items-center gap-3">
+                <span class="grid size-9 place-items-center rounded-xl bg-blue-50 text-blue-800">
+                  <i class="ph ph-student"></i>
+                </span>
+                <div>
+                  <div class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ 'scheduling.attendance.summary.student' | translate }}
+                  </div>
+                  <div class="font-bold">{{ studentName() }}</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span
+                  class="grid size-9 place-items-center rounded-xl bg-orange-50 text-orange-700"
+                >
+                  <i class="ph ph-chalkboard-teacher"></i>
+                </span>
+                <div>
+                  <div class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ 'scheduling.attendance.summary.instructor' | translate }}
+                  </div>
+                  <div class="font-bold">{{ instructorName() }}</div>
+                </div>
+              </div>
+            </div>
+          </section>
+          @if (currentAttendance(); as current) {
+            <section
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 shadow-sm"
+            >
+              <div
+                class="text-xs font-bold uppercase tracking-[.12em] text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'scheduling.attendance.summary.decisions' | translate }}
+              </div>
+              <dl class="mt-4 space-y-3">
+                <div>
+                  <dt class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ 'scheduling.attendance.summary.credit' | translate }}
+                  </dt>
+                  <dd class="font-bold">{{ creditKey(current.creditDecision) | translate }}</dd>
+                </div>
+                <div>
+                  <dt class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ 'scheduling.attendance.summary.charge' | translate }}
+                  </dt>
+                  <dd class="font-bold">{{ chargeKey(current.chargeDecision) | translate }}</dd>
+                </div>
+                <div>
+                  <dt class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ 'scheduling.attendance.fields.followUp' | translate }}
+                  </dt>
+                  <dd class="font-bold">{{ followUpKey(current.followUpAction) | translate }}</dd>
+                </div>
+              </dl>
+            </section>
+            @if (current.followUpAction === 2) {
+              <drive-os-button
+                class="w-full"
+                variant="outline"
+                (pressed)="goReschedule()"
+              >
+                {{ 'scheduling.attendance.actions.reschedule' | translate }}
+              </drive-os-button>
+            }
+          }
+          <drive-os-state-banner
+            tone="info"
+            [title]="'scheduling.attendance.boundary.title' | translate"
+          >
+            {{ 'scheduling.attendance.boundary.text' | translate }}
+          </drive-os-state-banner>
+        </aside>
+      </section>
+    }
+  }
+</section>
+
+<drive-os-drawer
+  [open]="correctionOpen()"
+  size="md"
+  [title]="'scheduling.attendance.correction.title' | translate"
+  [description]="'scheduling.attendance.correction.subtitle' | translate"
+  [closeDisabled]="saving()"
+  (closeRequested)="closeCorrection()"
+>
+  <div class="space-y-4 p-6">
+    <drive-os-state-banner
+      tone="warning"
+      [title]="'scheduling.attendance.correction.warningTitle' | translate"
+    >
+      {{ 'scheduling.attendance.correction.warningText' | translate }}
+    </drive-os-state-banner>
+    <p class="text-sm text-[var(--driveos-text-secondary)]">
+      {{ 'scheduling.attendance.correction.auditText' | translate }}
+    </p>
+  </div>
+  <div
+    driveOsDrawerFooter
+    class="flex justify-end gap-2"
+  >
+    <drive-os-button
+      variant="ghost"
+      [disabled]="saving()"
+      (pressed)="closeCorrection()"
+    >
+      {{ 'common.cancel' | translate }}
+    </drive-os-button>
+    <drive-os-button
+      [disabled]="saving()"
+      (pressed)="confirmCorrection()"
+    >
+      {{ 'scheduling.attendance.correction.confirm' | translate }}
+    </drive-os-button>
+  </div>
+</drive-os-drawer>
+
+<drive-os-drawer
+  [open]="overrideOpen()"
+  size="lg"
+  [title]="'scheduling.attendance.override.title' | translate"
+  [description]="'scheduling.attendance.override.subtitle' | translate"
+  [closeDisabled]="saving()"
+  (closeRequested)="closeOverride()"
+>
+  <div class="space-y-5 p-6">
+    <drive-os-state-banner
+      tone="warning"
+      [title]="'scheduling.attendance.override.warningTitle' | translate"
+    >
+      {{ 'scheduling.attendance.override.warningText' | translate }}
+    </drive-os-state-banner>
+    <label class="block">
+      <span class="text-sm font-semibold">
+        {{ 'scheduling.attendance.override.reason' | translate }}
+      </span>
+      <textarea
+        rows="5"
+        maxlength="500"
+        class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+        [value]="overrideReason()"
+        (input)="overrideReason.set($any($event.target).value)"
+      ></textarea>
+    </label>
+  </div>
+  <div
+    driveOsDrawerFooter
+    class="flex justify-end gap-2"
+  >
+    <drive-os-button
+      variant="ghost"
+      [disabled]="saving()"
+      (pressed)="closeOverride()"
+    >
+      {{ 'common.cancel' | translate }}
+    </drive-os-button>
+    <drive-os-button
+      variant="danger"
+      [disabled]="!overrideReason().trim() || saving()"
+      (pressed)="confirmOverride()"
+    >
+      {{ 'scheduling.attendance.override.confirm' | translate }}
+    </drive-os-button>
+  </div>
+</drive-os-drawer>

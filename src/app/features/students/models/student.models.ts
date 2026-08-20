@@ -114,10 +114,7 @@ export interface StudentIdentity {
   verifiedAtUtc: string | null;
 }
 export type IdentityVerificationStatus =
-  | 'Unverified'
-  | 'Declared'
-  | 'DocumentVerified'
-  | 'ExternallyVerified';
+  'Unverified' | 'Declared' | 'DocumentVerified' | 'ExternallyVerified';
 
 export interface VerifyStudentIdentityRequest {
   status: Extract<IdentityVerificationStatus, 'DocumentVerified' | 'ExternallyVerified'>;
@@ -312,8 +309,12 @@ export interface EnrollmentChecklistItem {
   ruleId: string;
   code: string;
   labelKey: string;
+  descriptionKey: string;
+  impactKey: string;
+  actionLabelKey: string;
   category: string;
   isBlocking: boolean;
+  isDerived: boolean;
   targetRoute: string;
   status: string;
   responsibleUserId: string | null;
@@ -579,7 +580,6 @@ export interface ExternalTransfer {
   audit: readonly ExternalTransferAudit[];
 }
 
-
 export interface SuspendEnrollmentRequest {
   reason: number;
   scope: number;
@@ -684,7 +684,6 @@ export interface EnrollmentClosure {
   reopenJustification: string | null;
   checks: readonly LifecycleCheck[];
 }
-
 
 export type EnrollmentClosureCheckType =
   | 'FutureSessions'

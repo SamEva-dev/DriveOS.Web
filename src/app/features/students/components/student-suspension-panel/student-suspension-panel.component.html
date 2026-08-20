@@ -2,7 +2,9 @@
   <div class="flex flex-wrap items-start justify-between gap-3">
     <div>
       <h3 class="font-extrabold">{{ 'students.lifecycle.suspension.title' | translate }}</h3>
-      <p class="mt-1 text-sm text-slate-500">{{ 'students.lifecycle.suspension.description' | translate }}</p>
+      <p class="mt-1 text-sm text-slate-500">
+        {{ 'students.lifecycle.suspension.description' | translate }}
+      </p>
     </div>
     @if (canSuspend() && !editing()) {
       <drive-os-button
@@ -26,42 +28,87 @@
 
   @if (editing()) {
     <drive-os-card>
-      <form class="space-y-5" [formGroup]="form" (ngSubmit)="submit()">
+      <form
+        class="space-y-5"
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+      >
         <div>
-          <h4 class="font-extrabold">{{ 'students.lifecycle.suspension.form.title' | translate }}</h4>
-          <p class="mt-1 text-sm text-slate-500">{{ 'students.lifecycle.suspension.form.description' | translate }}</p>
+          <h4 class="font-extrabold">
+            {{ 'students.lifecycle.suspension.form.title' | translate }}
+          </h4>
+          <p class="mt-1 text-sm text-slate-500">
+            {{ 'students.lifecycle.suspension.form.description' | translate }}
+          </p>
         </div>
 
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.lifecycle.suspension.fields.reason' | translate }}</span>
-            <select driveOsInput formControlName="reason">
-              @for (reason of [1,2,3,4,5,6,7,8,9]; track reason) {
-                <option [ngValue]="reason">{{ 'students.lifecycle.suspension.reasons.' + reason | translate }}</option>
+            <span class="text-sm font-semibold">
+              {{ 'students.lifecycle.suspension.fields.reason' | translate }}
+            </span>
+            <select
+              driveOsInput
+              formControlName="reason"
+            >
+              @for (reason of [1, 2, 3, 4, 5, 6, 7, 8, 9]; track reason) {
+                <option [ngValue]="reason">
+                  {{ 'students.lifecycle.suspension.reasons.' + reason | translate }}
+                </option>
               }
             </select>
           </label>
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.lifecycle.suspension.fields.startDate' | translate }}</span>
-            <input driveOsInput type="date" formControlName="startDate" />
+            <span class="text-sm font-semibold">
+              {{ 'students.lifecycle.suspension.fields.startDate' | translate }}
+            </span>
+            <input
+              driveOsInput
+              type="date"
+              formControlName="startDate"
+            />
           </label>
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.lifecycle.suspension.fields.expectedEndDate' | translate }}</span>
-            <input driveOsInput type="date" formControlName="expectedEndDate" />
+            <span class="text-sm font-semibold">
+              {{ 'students.lifecycle.suspension.fields.expectedEndDate' | translate }}
+            </span>
+            <input
+              driveOsInput
+              type="date"
+              formControlName="expectedEndDate"
+            />
           </label>
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.lifecycle.suspension.fields.reviewDate' | translate }}</span>
-            <input driveOsInput type="date" formControlName="reviewDate" />
+            <span class="text-sm font-semibold">
+              {{ 'students.lifecycle.suspension.fields.reviewDate' | translate }}
+            </span>
+            <input
+              driveOsInput
+              type="date"
+              formControlName="reviewDate"
+            />
           </label>
         </div>
 
-        <fieldset class="rounded-xl border border-[var(--driveos-border)] p-4" formGroupName="scopes">
-          <legend class="px-2 text-sm font-extrabold">{{ 'students.lifecycle.suspension.fields.scope' | translate }}</legend>
+        <fieldset
+          class="rounded-xl border border-[var(--driveos-border)] p-4"
+          formGroupName="scopes"
+        >
+          <legend class="px-2 text-sm font-extrabold">
+            {{ 'students.lifecycle.suspension.fields.scope' | translate }}
+          </legend>
           <label class="mb-4 flex items-start gap-3 rounded-xl bg-orange-50 p-3 text-sm">
-            <input type="checkbox" [formControl]="form.controls.fullEnrollment" />
+            <input
+              type="checkbox"
+              [formControl]="form.controls.fullEnrollment"
+            />
             <span>
-              <strong class="block">{{ 'students.lifecycle.suspension.scopes.full' | translate }}</strong>
-              <small class="text-slate-600">{{ 'students.lifecycle.suspension.fullHelp' | translate }}</small>
+              <strong class="block">
+                {{ 'students.lifecycle.suspension.scopes.full' | translate }}
+              </strong>
+              <small class="text-slate-600">
+                {{ 'students.lifecycle.suspension.fullHelp' | translate }}
+              </small>
             </span>
           </label>
           <div class="grid gap-2 sm:grid-cols-2 xl:grid-cols-5">
@@ -80,36 +127,70 @@
             }
           </div>
           @if (!canSuspendPedagogical() || !canSuspendFinancial()) {
-            <p class="mt-3 text-xs text-slate-500">{{ 'students.lifecycle.suspension.permissionHelp' | translate }}</p>
+            <p class="mt-3 text-xs text-slate-500">
+              {{ 'students.lifecycle.suspension.permissionHelp' | translate }}
+            </p>
           }
         </fieldset>
 
         <div class="grid gap-4 md:grid-cols-2">
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.lifecycle.suspension.fields.bookingsDecision' | translate }}</span>
-            <select driveOsInput formControlName="bookingsDecision">
-              @for (decision of [1,2,3,4,5]; track decision) {
-                <option [ngValue]="decision">{{ 'students.lifecycle.suspension.bookingsDecisions.' + decision | translate }}</option>
+            <span class="text-sm font-semibold">
+              {{ 'students.lifecycle.suspension.fields.bookingsDecision' | translate }}
+            </span>
+            <select
+              driveOsInput
+              formControlName="bookingsDecision"
+            >
+              @for (decision of [1, 2, 3, 4, 5]; track decision) {
+                <option [ngValue]="decision">
+                  {{ 'students.lifecycle.suspension.bookingsDecisions.' + decision | translate }}
+                </option>
               }
             </select>
           </label>
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.lifecycle.suspension.fields.futureBookingsCount' | translate }}</span>
-            <input driveOsInput type="number" min="0" formControlName="futureBookingsCount" />
+            <span class="text-sm font-semibold">
+              {{ 'students.lifecycle.suspension.fields.futureBookingsCount' | translate }}
+            </span>
+            <input
+              driveOsInput
+              type="number"
+              min="0"
+              formControlName="futureBookingsCount"
+            />
           </label>
         </div>
 
         <label class="block space-y-1.5">
-          <span class="text-sm font-semibold">{{ 'students.lifecycle.suspension.fields.immediateActions' | translate }}</span>
-          <textarea driveOsInput rows="3" formControlName="immediateActions"></textarea>
+          <span class="text-sm font-semibold">
+            {{ 'students.lifecycle.suspension.fields.immediateActions' | translate }}
+          </span>
+          <textarea
+            driveOsInput
+            rows="3"
+            formControlName="immediateActions"
+          ></textarea>
         </label>
         <label class="block space-y-1.5">
-          <span class="text-sm font-semibold">{{ 'students.lifecycle.suspension.fields.creditDecision' | translate }}</span>
-          <textarea driveOsInput rows="2" formControlName="creditDecision"></textarea>
+          <span class="text-sm font-semibold">
+            {{ 'students.lifecycle.suspension.fields.creditDecision' | translate }}
+          </span>
+          <textarea
+            driveOsInput
+            rows="2"
+            formControlName="creditDecision"
+          ></textarea>
         </label>
         <label class="block space-y-1.5">
-          <span class="text-sm font-semibold">{{ 'students.lifecycle.suspension.fields.notificationPlan' | translate }}</span>
-          <textarea driveOsInput rows="2" formControlName="notificationPlan"></textarea>
+          <span class="text-sm font-semibold">
+            {{ 'students.lifecycle.suspension.fields.notificationPlan' | translate }}
+          </span>
+          <textarea
+            driveOsInput
+            rows="2"
+            formControlName="notificationPlan"
+          ></textarea>
         </label>
 
         <drive-os-state-banner
@@ -120,10 +201,17 @@
         />
 
         <div class="flex justify-end gap-2">
-          <drive-os-button variant="outline" (pressed)="cancel()">
+          <drive-os-button
+            variant="outline"
+            (pressed)="cancel()"
+          >
             {{ 'common.cancel' | translate }}
           </drive-os-button>
-          <drive-os-button type="submit" icon="ph ph-pause-circle" [loading]="saving()">
+          <drive-os-button
+            type="submit"
+            icon="ph ph-pause-circle"
+            [loading]="saving()"
+          >
             {{ 'students.lifecycle.suspension.actions.confirm' | translate }}
           </drive-os-button>
         </div>
@@ -132,13 +220,19 @@
   }
 
   @for (item of items(); track item.suspensionId) {
-    <article class="overflow-hidden rounded-xl border border-orange-200 bg-[var(--driveos-surface-card)]">
+    <article
+      class="overflow-hidden rounded-xl border border-orange-200 bg-[var(--driveos-surface-card)]"
+    >
       <header class="flex flex-wrap items-center gap-3 bg-orange-50 p-4">
-        <span class="grid size-11 place-items-center rounded-xl bg-orange-100 text-xl text-orange-700">
+        <span
+          class="grid size-11 place-items-center rounded-xl bg-orange-100 text-xl text-orange-700"
+        >
           <i class="ph-duotone ph-pause-circle"></i>
         </span>
         <div class="min-w-0 flex-1">
-          <h4 class="font-extrabold">{{ 'students.lifecycle.suspension.reasons.' + item.reason | translate }}</h4>
+          <h4 class="font-extrabold">
+            {{ 'students.lifecycle.suspension.reasons.' + item.reason | translate }}
+          </h4>
           <p class="text-xs text-slate-500">
             {{ item.startDate | date: 'mediumDate' }}
             <i class="ph ph-arrow-right mx-1"></i>
@@ -149,28 +243,46 @@
       </header>
       <div class="grid gap-4 p-4 md:grid-cols-2 xl:grid-cols-4">
         <div>
-          <p class="text-xs uppercase text-slate-500">{{ 'students.lifecycle.scope' | translate }}</p>
+          <p class="text-xs uppercase text-slate-500">
+            {{ 'students.lifecycle.scope' | translate }}
+          </p>
           <strong class="text-sm">{{ scopeLabels(item.scope) }}</strong>
         </div>
         <div>
-          <p class="text-xs uppercase text-slate-500">{{ 'students.lifecycle.bookings' | translate }}</p>
-          <strong class="text-sm">{{ item.bookingsDecision }} · {{ item.futureBookingsCount }}</strong>
+          <p class="text-xs uppercase text-slate-500">
+            {{ 'students.lifecycle.bookings' | translate }}
+          </p>
+          <strong class="text-sm">
+            {{ item.bookingsDecision }} · {{ item.futureBookingsCount }}
+          </strong>
         </div>
         <div>
-          <p class="text-xs uppercase text-slate-500">{{ 'students.lifecycle.credit' | translate }}</p>
+          <p class="text-xs uppercase text-slate-500">
+            {{ 'students.lifecycle.credit' | translate }}
+          </p>
           <strong class="text-sm">{{ item.creditDecision }}</strong>
         </div>
         <div>
-          <p class="text-xs uppercase text-slate-500">{{ 'students.lifecycle.reviewDate' | translate }}</p>
+          <p class="text-xs uppercase text-slate-500">
+            {{ 'students.lifecycle.reviewDate' | translate }}
+          </p>
           <strong class="text-sm">{{ item.reviewDate | date: 'mediumDate' }}</strong>
         </div>
       </div>
       <div class="border-t border-[var(--driveos-border)] p-4 text-sm">
-        <p><strong>{{ 'students.lifecycle.immediateActions' | translate }} :</strong> {{ item.immediateActions }}</p>
-        <p class="mt-2"><strong>{{ 'students.lifecycle.notifications' | translate }} :</strong> {{ item.notificationPlan }} · {{ item.notificationStatus }}</p>
+        <p>
+          <strong>{{ 'students.lifecycle.immediateActions' | translate }} :</strong>
+          {{ item.immediateActions }}
+        </p>
+        <p class="mt-2">
+          <strong>{{ 'students.lifecycle.notifications' | translate }} :</strong>
+          {{ item.notificationPlan }} · {{ item.notificationStatus }}
+        </p>
         @if (item.history.length) {
           <details class="mt-4">
-            <summary class="cursor-pointer font-bold">{{ 'students.lifecycle.suspension.history' | translate }} ({{ item.history.length }})</summary>
+            <summary class="cursor-pointer font-bold">
+              {{ 'students.lifecycle.suspension.history' | translate }} ({{ item.history.length }})
+            </summary>
             <div class="mt-3 grid gap-2">
               @for (event of item.history; track event.occurredAtUtc + event.action) {
                 <div class="rounded-lg bg-slate-50 p-3 text-xs">

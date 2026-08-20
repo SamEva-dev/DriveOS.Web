@@ -1,0 +1,596 @@
+<section class="space-y-5">
+  <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+    <div>
+      <p class="text-xs font-black uppercase tracking-[.18em] text-orange-500">
+        {{ 'scheduling.vehicleReplacement.eyebrow' | translate }}
+      </p>
+      <h1 class="mt-1 text-2xl font-black text-blue-950 dark:text-white">
+        {{ 'scheduling.vehicleReplacement.title' | translate }}
+      </h1>
+      <p class="mt-1 max-w-3xl text-sm text-[var(--driveos-text-secondary)]">
+        {{ 'scheduling.vehicleReplacement.subtitle' | translate }}
+      </p>
+    </div>
+    <div
+      class="inline-flex rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-1 shadow-sm"
+    >
+      <a
+        routerLink="../instructor"
+        class="rounded-xl px-4 py-2 text-sm font-bold text-[var(--driveos-text-secondary)] hover:bg-[var(--driveos-surface-muted)]"
+      >
+        {{ 'scheduling.vehicleReplacement.tabs.instructors' | translate }}
+      </a>
+      <span class="rounded-xl bg-blue-800 px-4 py-2 text-sm font-black text-white">
+        {{ 'scheduling.vehicleReplacement.tabs.vehicles' | translate }}
+      </span>
+    </div>
+  </div>
+
+  @for (message of errors(); track message) {
+    <drive-os-state-banner
+      tone="danger"
+      [title]="'common.error' | translate"
+    >
+      {{ message }}
+    </drive-os-state-banner>
+  }
+  @if (success()) {
+    <drive-os-state-banner
+      tone="success"
+      [title]="'scheduling.vehicleReplacement.success.title' | translate"
+    >
+      {{
+        'scheduling.vehicleReplacement.success.text'
+          | translate: { count: success()!.replacedBookingCount }
+      }}
+    </drive-os-state-banner>
+  }
+  @if (!canRead()) {
+    <drive-os-state-banner
+      tone="warning"
+      [title]="'common.accessDenied' | translate"
+    >
+      {{ 'scheduling.vehicleReplacement.noPermission' | translate }}
+    </drive-os-state-banner>
+  }
+
+  <div class="grid gap-3 md:grid-cols-4">
+    @for (
+      item of [
+        { key: 'scope', n: '1' },
+        { key: 'suggestions', n: '2' },
+        { key: 'impacts', n: '3' },
+        { key: 'confirmation', n: '4' },
+      ];
+      track item.key
+    ) {
+      <div
+        class="rounded-2xl border p-4"
+        [class.border-blue-700]="step() === item.key"
+        [class.bg-blue-50]="step() === item.key"
+      >
+        <div class="text-xs font-black uppercase tracking-widest text-orange-500">{{ item.n }}</div>
+        <div class="mt-1 font-black text-blue-950 dark:text-white">
+          {{ 'scheduling.vehicleReplacement.steps.' + item.key | translate }}
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (loading()) {
+    <div class="flex min-h-72 items-center justify-center"><drive-os-spinner /></div>
+  } @else if (canRead()) {
+    <div class="grid gap-5 xl:grid-cols-[1.12fr_.88fr]">
+      <div class="space-y-5">
+        <article
+          class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 shadow-sm"
+        >
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-black text-blue-950 dark:text-white">
+                {{ 'scheduling.vehicleReplacement.scope.title' | translate }}
+              </h2>
+              <p class="text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.vehicleReplacement.scope.help' | translate }}
+              </p>
+            </div>
+            <span class="rounded-full bg-orange-50 px-3 py-1 text-xs font-black text-orange-700">
+              {{ selectedBookingIds().length }}
+              {{ 'scheduling.vehicleReplacement.summary.sessions' | translate }}
+            </span>
+          </div>
+          <div class="mt-5 grid gap-4 md:grid-cols-2">
+            <label class="text-sm font-bold">
+              {{ 'scheduling.vehicleReplacement.fields.unavailableVehicle' | translate }}
+              <select
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [value]="previousVehicleId()"
+                (change)="setPreviousVehicle($any($event.target).value)"
+              >
+                <option value="">—</option>
+                @for (v of vehicles(); track v.id) {
+                  <option [value]="v.externalResourceId">{{ v.displayName }}</option>
+                }
+              </select>
+            </label>
+            <label class="text-sm font-bold">
+              {{ 'scheduling.vehicleReplacement.fields.mode' | translate }}
+              <select
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [value]="mode()"
+                (change)="setMode(+$any($event.target).value)"
+              >
+                @for (m of modes; track m.value) {
+                  <option [value]="m.value">
+                    {{ 'scheduling.vehicleReplacement.modes.' + m.key | translate }}
+                  </option>
+                }
+              </select>
+            </label>
+            <label class="text-sm font-bold">
+              {{ 'scheduling.vehicleReplacement.fields.from' | translate }}
+              <input
+                type="datetime-local"
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [value]="fromLocal()"
+                (change)="fromLocal.set($any($event.target).value); reloadPeriod()"
+              />
+            </label>
+            <label class="text-sm font-bold">
+              {{ 'scheduling.vehicleReplacement.fields.to' | translate }}
+              <input
+                type="datetime-local"
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [value]="toLocal()"
+                (change)="toLocal.set($any($event.target).value); reloadPeriod()"
+              />
+            </label>
+          </div>
+        </article>
+
+        <article
+          class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 shadow-sm"
+        >
+          <h2 class="text-lg font-black text-blue-950 dark:text-white">
+            {{ 'scheduling.vehicleReplacement.requirements.title' | translate }}
+          </h2>
+          <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+            {{ 'scheduling.vehicleReplacement.requirements.help' | translate }}
+          </p>
+          <div class="mt-5 grid gap-4 md:grid-cols-2">
+            <label class="text-sm font-bold">
+              {{ 'scheduling.vehicleReplacement.fields.transmission' | translate }}
+              <select
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [value]="transmissionType()"
+                (change)="transmissionType.set($any($event.target).value)"
+              >
+                <option value="">{{ 'common.notSpecified' | translate }}</option>
+                <option value="Manual">
+                  {{ 'scheduling.vehicleReplacement.transmission.manual' | translate }}
+                </option>
+                <option value="Automatic">
+                  {{ 'scheduling.vehicleReplacement.transmission.automatic' | translate }}
+                </option>
+              </select>
+            </label>
+            <label class="text-sm font-bold">
+              {{ 'scheduling.vehicleReplacement.fields.energy' | translate }}
+              <input
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [value]="energyType()"
+                (input)="energyType.set($any($event.target).value)"
+                [placeholder]="'scheduling.vehicleReplacement.fields.energyPlaceholder' | translate"
+              />
+            </label>
+            <label class="text-sm font-bold md:col-span-2">
+              {{ 'scheduling.vehicleReplacement.fields.adaptations' | translate }}
+              <input
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [value]="adaptations()"
+                (input)="adaptations.set($any($event.target).value)"
+                [placeholder]="
+                  'scheduling.vehicleReplacement.fields.adaptationsPlaceholder' | translate
+                "
+              />
+            </label>
+            <label
+              class="flex items-center gap-3 rounded-2xl bg-[var(--driveos-surface-muted)] p-4 md:col-span-2"
+            >
+              <input
+                type="checkbox"
+                [checked]="dualControlRequired()"
+                (change)="dualControlRequired.set($any($event.target).checked)"
+              />
+              <span>
+                <strong>
+                  {{ 'scheduling.vehicleReplacement.fields.dualControl' | translate }}
+                </strong>
+                <span class="block text-xs text-[var(--driveos-text-secondary)]">
+                  {{ 'scheduling.vehicleReplacement.fields.dualControlHelp' | translate }}
+                </span>
+              </span>
+            </label>
+          </div>
+        </article>
+
+        <article
+          class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 shadow-sm"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-black text-blue-950 dark:text-white">
+                {{ 'scheduling.vehicleReplacement.sessions.title' | translate }}
+              </h2>
+              <p class="text-sm text-[var(--driveos-text-secondary)]">
+                {{ relevantBookings().length }}
+                {{ 'scheduling.vehicleReplacement.sessions.detected' | translate }}
+              </p>
+            </div>
+            <drive-os-button
+              [disabled]="!canSearch()"
+              (pressed)="search()"
+            >
+              @if (searching()) {
+                <i class="ph ph-circle-notch mr-2 animate-spin"></i>
+              }
+              {{ 'scheduling.vehicleReplacement.actions.findReplacement' | translate }}
+            </drive-os-button>
+          </div>
+          <div class="mt-4 space-y-2">
+            @for (booking of relevantBookings(); track booking.id) {
+              <label
+                class="flex cursor-pointer items-center gap-3 rounded-2xl border border-[var(--driveos-border)] p-3 hover:bg-[var(--driveos-surface-muted)]"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="selectedBookingIds().includes(booking.id)"
+                  (change)="toggleBooking(booking.id)"
+                />
+                <div class="min-w-0 flex-1">
+                  <div class="truncate font-black">{{ booking.title }}</div>
+                  <div class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ booking.startAtUtc | date: 'dd/MM/yyyy HH:mm' }} →
+                    {{ booking.endAtUtc | date: 'HH:mm' }} ·
+                    {{ booking.trainingCategory || ('common.notSpecified' | translate) }}
+                  </div>
+                </div>
+              </label>
+            } @empty {
+              <drive-os-empty-state
+                [title]="'scheduling.vehicleReplacement.sessions.empty' | translate"
+              />
+            }
+          </div>
+        </article>
+      </div>
+
+      <div class="space-y-5">
+        <article
+          class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 shadow-sm"
+        >
+          <h2 class="text-lg font-black text-blue-950 dark:text-white">
+            {{ 'scheduling.vehicleReplacement.summary.title' | translate }}
+          </h2>
+          <div class="mt-4 grid grid-cols-3 gap-3 text-center">
+            <div class="rounded-2xl bg-blue-50 p-4">
+              <div class="text-2xl font-black text-blue-900">{{ selectedBookingIds().length }}</div>
+              <div class="text-xs font-bold text-blue-700">
+                {{ 'scheduling.vehicleReplacement.summary.sessions' | translate }}
+              </div>
+            </div>
+            <div class="rounded-2xl bg-orange-50 p-4">
+              <div class="text-2xl font-black text-orange-700">{{ affectedStudentCount() }}</div>
+              <div class="text-xs font-bold text-orange-700">
+                {{ 'scheduling.vehicleReplacement.summary.students' | translate }}
+              </div>
+            </div>
+            <div class="rounded-2xl bg-[var(--driveos-surface-muted)] p-4">
+              <div class="text-2xl font-black">{{ affectedInstructorCount() }}</div>
+              <div class="text-xs font-bold">
+                {{ 'scheduling.vehicleReplacement.summary.instructors' | translate }}
+              </div>
+            </div>
+          </div>
+          @if (trainingCategories().length > 1) {
+            <div class="mt-4">
+              <drive-os-state-banner
+                tone="warning"
+                [title]="'scheduling.vehicleReplacement.multiCategory.title' | translate"
+              >
+                {{ 'scheduling.vehicleReplacement.multiCategory.text' | translate }}
+              </drive-os-state-banner>
+            </div>
+          }
+        </article>
+
+        @if (suggestions().length) {
+          <article
+            class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 shadow-sm"
+          >
+            <div class="flex items-center justify-between">
+              <h2 class="text-lg font-black text-blue-950 dark:text-white">
+                {{ 'scheduling.vehicleReplacement.suggestions.title' | translate }}
+              </h2>
+              <span class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ suggestions().length }}
+              </span>
+            </div>
+            <div class="mt-4 space-y-3">
+              @for (candidate of suggestions(); track candidate.calendarResourceId) {
+                <button
+                  type="button"
+                  class="w-full rounded-2xl border border-[var(--driveos-border)] p-4 text-left transition hover:border-blue-300 hover:shadow-sm"
+                  (click)="inspect(candidate)"
+                >
+                  <div class="flex items-start justify-between gap-3">
+                    <div>
+                      <div class="font-black text-blue-950 dark:text-white">
+                        {{ candidate.displayName }}
+                      </div>
+                      <div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                        {{ candidate.compatibleBookingCount }}/{{ candidate.targetBookingCount }}
+                        {{ 'scheduling.vehicleReplacement.suggestions.compatible' | translate }}
+                      </div>
+                    </div>
+                    <span
+                      class="rounded-full px-3 py-1 text-xs font-black"
+                      [class.bg-emerald-50]="candidate.isAvailableForAllBookings"
+                      [class.text-emerald-700]="candidate.isAvailableForAllBookings"
+                      [class.bg-rose-50]="!candidate.isAvailableForAllBookings"
+                      [class.text-rose-700]="!candidate.isAvailableForAllBookings"
+                    >
+                      {{ candidate.score }}
+                    </span>
+                  </div>
+                  <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
+                    <span>
+                      {{ 'scheduling.vehicleReplacement.checks.technical' | translate }}:
+                      {{
+                        (candidate.technicalCompatibilityVerified ? 'common.yes' : 'common.no')
+                          | translate
+                      }}
+                    </span>
+                    <span>
+                      {{ 'scheduling.vehicleReplacement.checks.insurance' | translate }}:
+                      {{ (candidate.insuranceVerified ? 'common.yes' : 'common.no') | translate }}
+                    </span>
+                    <span>
+                      {{ 'scheduling.vehicleReplacement.checks.maintenance' | translate }}:
+                      {{ (candidate.maintenanceVerified ? 'common.yes' : 'common.no') | translate }}
+                    </span>
+                    <span>
+                      {{ 'scheduling.vehicleReplacement.checks.location' | translate }}:
+                      {{ (candidate.locationVerified ? 'common.yes' : 'common.no') | translate }}
+                    </span>
+                    <span>
+                      {{ 'scheduling.vehicleReplacement.checks.ownership' | translate }}:
+                      {{ (candidate.ownershipVerified ? 'common.yes' : 'common.no') | translate }}
+                    </span>
+                  </div>
+                </button>
+              }
+            </div>
+          </article>
+        }
+
+        @if (preview()) {
+          <article
+            class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 shadow-sm"
+          >
+            <h2 class="text-lg font-black text-blue-950 dark:text-white">
+              {{ 'scheduling.vehicleReplacement.impacts.title' | translate }}
+            </h2>
+            @if (preview()!.canConfirm) {
+              <div class="mt-4">
+                <drive-os-state-banner
+                  tone="success"
+                  [title]="'scheduling.vehicleReplacement.impacts.ready' | translate"
+                >
+                  {{ 'scheduling.vehicleReplacement.impacts.readyText' | translate }}
+                </drive-os-state-banner>
+              </div>
+            } @else {
+              <div class="mt-4">
+                <drive-os-state-banner
+                  tone="warning"
+                  [title]="'scheduling.vehicleReplacement.impacts.blocked' | translate"
+                >
+                  {{ 'scheduling.vehicleReplacement.impacts.blockedText' | translate }}
+                </drive-os-state-banner>
+              </div>
+            }
+            @if (preview()!.blockingReasons.length) {
+              <div class="mt-4 space-y-2">
+                @for (r of preview()!.blockingReasons; track r) {
+                  <div class="rounded-xl bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-800">
+                    {{ blockingReasonKey(r) | translate }}
+                  </div>
+                }
+              </div>
+            }
+            @if (preview()!.externalReviews.length) {
+              <div class="mt-4 space-y-2">
+                @for (r of preview()!.externalReviews; track r) {
+                  <div
+                    class="rounded-xl bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-800"
+                  >
+                    {{ reviewKey(r) | translate }}
+                  </div>
+                }
+              </div>
+            }
+            <label class="mt-5 block text-sm font-bold">
+              {{ 'scheduling.vehicleReplacement.fields.reason' | translate }}
+              <textarea
+                rows="3"
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [value]="reason()"
+                (input)="reason.set($any($event.target).value)"
+              ></textarea>
+            </label>
+            <div class="mt-4 flex justify-end">
+              <drive-os-button
+                [disabled]="!preview()!.canConfirm || !canAssign() || !reason().trim()"
+                (pressed)="openConfirmation()"
+              >
+                {{ 'scheduling.vehicleReplacement.actions.reviewConfirmation' | translate }}
+              </drive-os-button>
+            </div>
+          </article>
+        }
+      </div>
+    </div>
+  }
+</section>
+
+<drive-os-drawer
+  [open]="candidateDrawerOpen()"
+  size="lg"
+  (closed)="candidateDrawerOpen.set(false)"
+>
+  <div driveOsDrawerHeader>
+    <div class="text-lg font-black">{{ selectedCandidate()?.displayName }}</div>
+    <div class="text-sm text-[var(--driveos-text-secondary)]">
+      {{ 'scheduling.vehicleReplacement.candidate.subtitle' | translate }}
+    </div>
+  </div>
+  <div
+    driveOsDrawerBody
+    class="space-y-4"
+  >
+    @if (selectedCandidate(); as c) {
+      <div class="grid grid-cols-2 gap-3">
+        @for (
+          x of [
+            { k: 'technical', v: c.technicalCompatibilityVerified },
+            { k: 'insurance', v: c.insuranceVerified },
+            { k: 'maintenance', v: c.maintenanceVerified },
+            { k: 'location', v: c.locationVerified },
+            { k: 'ownership', v: c.ownershipVerified },
+          ];
+          track x.k
+        ) {
+          <div class="rounded-2xl bg-[var(--driveos-surface-muted)] p-4">
+            <div class="text-xs font-bold text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.vehicleReplacement.checks.' + x.k | translate }}
+            </div>
+            <div
+              class="mt-1 font-black"
+              [class.text-emerald-700]="x.v"
+              [class.text-amber-700]="!x.v"
+            >
+              {{ (x.v ? 'common.verified' : 'common.pending') | translate }}
+            </div>
+          </div>
+        }
+      </div>
+      @if (c.factors.length) {
+        <div>
+          <div class="text-sm font-black">
+            {{ 'scheduling.vehicleReplacement.candidate.factors' | translate }}
+          </div>
+          <div class="mt-2 flex flex-wrap gap-2">
+            @for (f of c.factors; track f) {
+              <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-800">
+                {{ factorKey(f) | translate }}
+              </span>
+            }
+          </div>
+        </div>
+      }
+      @if (c.externalReviews.length) {
+        <drive-os-state-banner
+          tone="warning"
+          [title]="'scheduling.vehicleReplacement.candidate.externalReview' | translate"
+        >
+          {{ 'scheduling.vehicleReplacement.candidate.externalReviewText' | translate }}
+        </drive-os-state-banner>
+      }
+    }
+  </div>
+  <div
+    driveOsDrawerFooter
+    class="flex justify-between gap-2"
+  >
+    <drive-os-button
+      variant="ghost"
+      (pressed)="candidateDrawerOpen.set(false)"
+    >
+      {{ 'common.cancel' | translate }}
+    </drive-os-button>
+    <drive-os-button
+      [disabled]="!selectedCandidate()?.isAvailableForAllBookings"
+      (pressed)="choose(selectedCandidate()!)"
+    >
+      {{ 'scheduling.vehicleReplacement.actions.choose' | translate }}
+    </drive-os-button>
+  </div>
+</drive-os-drawer>
+
+<drive-os-drawer
+  [open]="confirmationDrawerOpen()"
+  size="lg"
+  (closed)="confirmationDrawerOpen.set(false)"
+>
+  <div driveOsDrawerHeader>
+    <div class="text-lg font-black">
+      {{ 'scheduling.vehicleReplacement.confirmation.title' | translate }}
+    </div>
+  </div>
+  <div
+    driveOsDrawerBody
+    class="space-y-4"
+  >
+    <div class="grid grid-cols-2 gap-3">
+      <div class="rounded-2xl bg-rose-50 p-4">
+        <div class="text-xs font-bold text-rose-700">
+          {{ 'scheduling.vehicleReplacement.fields.unavailableVehicle' | translate }}
+        </div>
+        <div class="mt-1 font-black text-rose-950">{{ vehicleName(previousVehicleId()) }}</div>
+      </div>
+      <div class="rounded-2xl bg-emerald-50 p-4">
+        <div class="text-xs font-bold text-emerald-700">
+          {{ 'scheduling.vehicleReplacement.fields.replacementVehicle' | translate }}
+        </div>
+        <div class="mt-1 font-black text-emerald-950">{{ selectedCandidate()?.displayName }}</div>
+      </div>
+    </div>
+    <div class="rounded-2xl bg-[var(--driveos-surface-muted)] p-4">
+      <div class="font-black">
+        {{ selectedBookingIds().length }}
+        {{ 'scheduling.vehicleReplacement.summary.sessions' | translate }} ·
+        {{ affectedStudentCount() }}
+        {{ 'scheduling.vehicleReplacement.summary.students' | translate }}
+      </div>
+      <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{ reason() }}</p>
+    </div>
+    <drive-os-state-banner
+      tone="warning"
+      [title]="'scheduling.vehicleReplacement.confirmation.atomicTitle' | translate"
+    >
+      {{ 'scheduling.vehicleReplacement.confirmation.atomicText' | translate }}
+    </drive-os-state-banner>
+  </div>
+  <div
+    driveOsDrawerFooter
+    class="flex justify-between gap-2"
+  >
+    <drive-os-button
+      variant="ghost"
+      [disabled]="applying()"
+      (pressed)="confirmationDrawerOpen.set(false)"
+    >
+      {{ 'common.cancel' | translate }}
+    </drive-os-button>
+    <drive-os-button
+      [disabled]="!canApply()"
+      (pressed)="apply()"
+    >
+      @if (applying()) {
+        <i class="ph ph-circle-notch mr-2 animate-spin"></i>
+      }
+      {{ 'scheduling.vehicleReplacement.actions.confirmAndNotify' | translate }}
+    </drive-os-button>
+  </div>
+</drive-os-drawer>

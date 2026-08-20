@@ -95,13 +95,10 @@ export const routes: Routes = [
       },
       {
         path: 'planning',
-        loadComponent: () =>
-          import('./shared/pages/coming-soon/coming-soon.page').then(
-            (component) => component.ComingSoonPage,
+        loadChildren: () =>
+          import('./features/scheduling/scheduling.routes').then(
+            (module) => module.SCHEDULING_ROUTES,
           ),
-        data: {
-          titleKey: 'navigation.planning',
-        },
       },
       {
         path: 'instructors',

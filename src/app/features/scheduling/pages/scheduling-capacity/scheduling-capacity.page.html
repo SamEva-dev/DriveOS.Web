@@ -1,0 +1,282 @@
+<section class="mx-auto max-w-[1600px] space-y-6 p-4 sm:p-6">
+  <header class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+    <div>
+      <p class="text-xs font-black uppercase tracking-[0.16em] text-orange-600">{{ 'scheduling.capacity.kicker' | translate }}</p>
+      <h2 class="mt-1 text-2xl font-black tracking-tight text-[var(--driveos-text-primary)] sm:text-3xl">{{ 'scheduling.capacity.title' | translate }}</h2>
+      <p class="mt-2 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'scheduling.capacity.subtitle' | translate }}</p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <select
+        class="h-11 min-w-48 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 text-sm font-bold text-[var(--driveos-text-primary)]"
+        [ngModel]="selectedBranchId()"
+        (ngModelChange)="setBranch($event)"
+        [attr.aria-label]="'scheduling.capacity.filters.branch' | translate"
+      >
+        <option value="">{{ 'scheduling.capacity.filters.allBranches' | translate }}</option>
+        @for (branch of branches(); track branch.id) {
+          <option [value]="branch.externalResourceId">{{ branch.displayName }}</option>
+        }
+      </select>
+      <drive-os-button variant="secondary" icon="arrows-clockwise" [disabled]="loading()" (clicked)="refresh()">
+        {{ 'scheduling.capacity.actions.refresh' | translate }}
+      </drive-os-button>
+      @if (canSimulate()) {
+        <drive-os-button icon="flask" (clicked)="openScenario()">{{ 'scheduling.capacity.actions.simulate' | translate }}</drive-os-button>
+      }
+    </div>
+  </header>
+
+  @if (errors().length) {
+    <drive-os-state-banner tone="danger" [title]="'errors.title' | translate">
+      @for (error of errors(); track error) { <p>{{ error | translate }}</p> }
+    </drive-os-state-banner>
+  }
+
+  <div class="flex gap-2 overflow-x-auto pb-1">
+    @for (option of horizons; track option.value) {
+      <button
+        type="button"
+        class="min-h-10 shrink-0 rounded-xl border px-4 text-sm font-extrabold transition"
+        [class.border-blue-800]="selectedHorizon() === option.value"
+        [class.bg-blue-800]="selectedHorizon() === option.value"
+        [class.text-white]="selectedHorizon() === option.value"
+        [class.border-[var(--driveos-border)]]="selectedHorizon() !== option.value"
+        [class.bg-[var(--driveos-surface-card)]]="selectedHorizon() !== option.value"
+        [class.text-[var(--driveos-text-secondary)]]="selectedHorizon() !== option.value"
+        (click)="setHorizon(option.value)"
+      >{{ option.key | translate }}</button>
+    }
+  </div>
+
+  @if (loading()) {
+    <div class="grid min-h-80 place-items-center rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]">
+      <drive-os-spinner />
+    </div>
+  } @else if (!forecast(); as missing) {
+    <drive-os-empty-state icon="chart-line-up" [title]="'scheduling.capacity.empty.title' | translate" />
+  } @else if (forecast(); as value) {
+    <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
+      <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm xl:col-span-1">
+        <p class="text-xs font-bold uppercase tracking-wide text-[var(--driveos-text-muted)]">{{ 'scheduling.capacity.kpi.saturation' | translate }}</p>
+        <div class="mt-3 flex items-end gap-2"><strong class="text-3xl font-black">{{ value.summary.saturationRatePercent | number:'1.0-1' }}%</strong></div>
+        <span class="mt-3 inline-flex rounded-full px-2.5 py-1 text-xs font-extrabold" [class]="saturationTone(value.summary.saturationRatePercent)">{{ 'scheduling.capacity.kpi.committedVsNet' | translate }}</span>
+      </article>
+      <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm">
+        <p class="text-xs font-bold uppercase tracking-wide text-[var(--driveos-text-muted)]">{{ 'scheduling.capacity.kpi.netAvailable' | translate }}</p>
+        <strong class="mt-3 block text-3xl font-black">{{ value.summary.netAvailableHours | number:'1.0-1' }} h</strong>
+        <p class="mt-2 text-xs text-[var(--driveos-text-secondary)]">{{ 'scheduling.capacity.kpi.resourceHours' | translate }}</p>
+      </article>
+      <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm">
+        <p class="text-xs font-bold uppercase tracking-wide text-[var(--driveos-text-muted)]">{{ 'scheduling.capacity.kpi.committed' | translate }}</p>
+        <strong class="mt-3 block text-3xl font-black">{{ value.summary.committedHours | number:'1.0-1' }} h</strong>
+        <p class="mt-2 text-xs text-[var(--driveos-text-secondary)]">{{ 'scheduling.capacity.kpi.resourceHours' | translate }}</p>
+      </article>
+      <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm">
+        <p class="text-xs font-bold uppercase tracking-wide text-[var(--driveos-text-muted)]">{{ 'scheduling.capacity.kpi.uncoveredDemand' | translate }}</p>
+        <strong class="mt-3 block text-3xl font-black" [class.text-red-600]="value.summary.uncoveredDemandHours > 0">{{ value.summary.uncoveredDemandHours | number:'1.0-1' }} h</strong>
+        <p class="mt-2 text-xs text-[var(--driveos-text-secondary)]">{{ value.summary.waitingListCount }} {{ 'scheduling.capacity.kpi.waitingRequests' | translate }}</p>
+      </article>
+      <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm">
+        <p class="text-xs font-bold uppercase tracking-wide text-[var(--driveos-text-muted)]">{{ 'scheduling.capacity.kpi.instructorNeed' | translate }}</p>
+        <strong class="mt-3 block text-3xl font-black">{{ value.summary.estimatedInstructorNeed }}</strong>
+        <p class="mt-2 text-xs text-[var(--driveos-text-secondary)]">{{ 'scheduling.capacity.kpi.estimatedNeed' | translate }}</p>
+      </article>
+      <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm">
+        <p class="text-xs font-bold uppercase tracking-wide text-[var(--driveos-text-muted)]">{{ 'scheduling.capacity.kpi.vehicleNeed' | translate }}</p>
+        <strong class="mt-3 block text-3xl font-black">{{ value.summary.estimatedVehicleNeed }}</strong>
+        <p class="mt-2 text-xs text-[var(--driveos-text-secondary)]">{{ 'scheduling.capacity.kpi.estimatedNeed' | translate }}</p>
+      </article>
+    </section>
+
+    <section class="flex gap-1 overflow-x-auto rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-1.5">
+      <button type="button" class="rounded-xl px-4 py-2 text-sm font-extrabold" [class.bg-blue-800]="tab() === 'overview'" [class.text-white]="tab() === 'overview'" (click)="setTab('overview')">{{ 'scheduling.capacity.tabs.overview' | translate }}</button>
+      <button type="button" class="rounded-xl px-4 py-2 text-sm font-extrabold" [class.bg-blue-800]="tab() === 'resources'" [class.text-white]="tab() === 'resources'" (click)="setTab('resources')">{{ 'scheduling.capacity.tabs.resources' | translate }}</button>
+      <button type="button" class="rounded-xl px-4 py-2 text-sm font-extrabold" [class.bg-blue-800]="tab() === 'scenarios'" [class.text-white]="tab() === 'scenarios'" (click)="setTab('scenarios')">{{ 'scheduling.capacity.tabs.scenarios' | translate }}</button>
+      <button type="button" class="rounded-xl px-4 py-2 text-sm font-extrabold" [class.bg-blue-800]="tab() === 'methodology'" [class.text-white]="tab() === 'methodology'" (click)="setTab('methodology')">{{ 'scheduling.capacity.tabs.methodology' | translate }}</button>
+    </section>
+
+    @if (tab() === 'overview') {
+      <section class="grid gap-5 xl:grid-cols-[1.6fr_1fr]">
+        <article class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm sm:p-6">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-black">{{ 'scheduling.capacity.charts.demandVsCapacity' | translate }}</h3>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ value.fromUtc | date:'mediumDate' }} → {{ value.toUtc | date:'mediumDate' }}</p>
+            </div>
+            <span class="rounded-full px-3 py-1 text-xs font-extrabold" [class]="confidenceTone(value.confidence)">{{ confidenceKey(value.confidence) | translate }}</span>
+          </div>
+          @if (value.daily.length > 1) {
+            <div class="mt-6 overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-4">
+              <svg viewBox="0 0 1000 260" class="h-64 w-full" role="img" [attr.aria-label]="'scheduling.capacity.charts.demandVsCapacity' | translate">
+                <line x1="0" y1="248" x2="1000" y2="248" class="stroke-slate-300 dark:stroke-slate-700" />
+                <polyline [attr.points]="capacityPolyline()" fill="none" stroke="currentColor" stroke-width="5" class="text-blue-700" />
+                <polyline [attr.points]="demandPolyline()" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="10 8" class="text-orange-500" />
+              </svg>
+              <div class="mt-2 flex flex-wrap gap-5 text-xs font-bold text-[var(--driveos-text-secondary)]">
+                <span class="flex items-center gap-2"><span class="size-2.5 rounded-full bg-blue-700"></span>{{ 'scheduling.capacity.legend.netCapacity' | translate }}</span>
+                <span class="flex items-center gap-2"><span class="size-2.5 rounded-full bg-orange-500"></span>{{ 'scheduling.capacity.legend.estimatedDemand' | translate }}</span>
+              </div>
+            </div>
+          } @else {
+            <drive-os-empty-state icon="chart-line" [title]="'scheduling.capacity.empty.notEnoughData' | translate" />
+          }
+        </article>
+
+        <article class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm sm:p-6">
+          <h3 class="text-lg font-black">{{ 'scheduling.capacity.leadTime.title' | translate }}</h3>
+          @if (value.summary.averageSlotLeadTimeHours !== null) {
+            <div class="mt-5 rounded-2xl bg-blue-50 p-5 dark:bg-blue-950/30">
+              <strong class="text-4xl font-black text-blue-800 dark:text-blue-200">{{ value.summary.averageSlotLeadTimeHours | number:'1.0-1' }} h</strong>
+              <p class="mt-2 text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'scheduling.capacity.leadTime.description' | translate }}</p>
+            </div>
+          } @else {
+            <drive-os-empty-state icon="clock" [title]="'scheduling.capacity.leadTime.unavailable' | translate" />
+          }
+          <div class="mt-5 grid grid-cols-2 gap-3">
+            <div class="rounded-2xl border border-[var(--driveos-border)] p-4"><span class="text-xs font-bold text-[var(--driveos-text-muted)]">{{ 'scheduling.capacity.kpi.theoretical' | translate }}</span><strong class="mt-1 block text-xl font-black">{{ value.summary.theoreticalHours | number:'1.0-1' }} h</strong></div>
+            <div class="rounded-2xl border border-[var(--driveos-border)] p-4"><span class="text-xs font-bold text-[var(--driveos-text-muted)]">{{ 'scheduling.capacity.kpi.netCapacity' | translate }}</span><strong class="mt-1 block text-xl font-black">{{ value.summary.netCapacityHours | number:'1.0-1' }} h</strong></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm sm:p-6">
+        <div class="flex items-center justify-between gap-4"><div><h3 class="text-lg font-black">{{ 'scheduling.capacity.heatmap.title' | translate }}</h3><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'scheduling.capacity.heatmap.subtitle' | translate }}</p></div></div>
+        <div class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7 xl:grid-cols-10">
+          @for (day of value.daily; track day.date) {
+            <article class="rounded-2xl border border-[var(--driveos-border)] p-3">
+              <div class="flex items-start justify-between gap-2"><span class="text-xs font-extrabold">{{ day.date | date:'dd MMM' }}</span><span class="rounded-md px-1.5 py-0.5 text-[0.65rem] font-black" [class]="saturationTone(day.saturationRatePercent)">{{ day.saturationRatePercent | number:'1.0-0' }}%</span></div>
+              <div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div class="h-full rounded-full bg-blue-700" [style.width]="saturationBar(day.saturationRatePercent)"></div></div>
+              <p class="mt-2 text-[0.68rem] text-[var(--driveos-text-muted)]">{{ day.waitingListCount }} {{ 'scheduling.capacity.heatmap.waiting' | translate }}</p>
+            </article>
+          }
+        </div>
+      </section>
+
+      <section class="grid gap-5 xl:grid-cols-2">
+        <article class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm sm:p-6">
+          <h3 class="text-lg font-black">{{ 'scheduling.capacity.branch.title' | translate }}</h3>
+          <div class="mt-5 space-y-4">
+            @for (branch of value.byBranch; track branch.dimensionKey) {
+              <div>
+                <div class="flex items-center justify-between gap-3 text-sm"><strong class="truncate">{{ branch.label }}</strong><span class="font-black">{{ branch.saturationRatePercent | number:'1.0-1' }}%</span></div>
+                <div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div class="h-full rounded-full bg-blue-800" [style.width]="saturationBar(branch.saturationRatePercent)"></div></div>
+                <div class="mt-1 flex justify-between text-[0.68rem] text-[var(--driveos-text-muted)]"><span>{{ branch.committedHours | number:'1.0-1' }} h {{ 'scheduling.capacity.labels.committedShort' | translate }}</span><span>{{ branch.netCapacityHours | number:'1.0-1' }} h {{ 'scheduling.capacity.labels.freeShort' | translate }}</span></div>
+              </div>
+            }
+          </div>
+        </article>
+        <article class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm sm:p-6">
+          <h3 class="text-lg font-black">{{ 'scheduling.capacity.resourceType.title' | translate }}</h3>
+          <div class="mt-5 space-y-3">
+            @for (type of value.byResourceType; track type.dimensionKey) {
+              <div class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 rounded-2xl border border-[var(--driveos-border)] p-4">
+                <div class="min-w-0"><strong class="block truncate">{{ resourceTypeLabel(type) | translate }}</strong><span class="mt-1 block text-xs text-[var(--driveos-text-muted)]">{{ type.committedHours | number:'1.0-1' }} / {{ type.netAvailableHours | number:'1.0-1' }} h</span></div>
+                <span class="rounded-full px-2.5 py-1 text-xs font-black" [class]="saturationTone(type.saturationRatePercent)">{{ type.saturationRatePercent | number:'1.0-0' }}%</span>
+              </div>
+            }
+          </div>
+        </article>
+      </section>
+    }
+
+    @if (tab() === 'resources') {
+      <section class="grid gap-5 xl:grid-cols-2">
+        <article class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm sm:p-6">
+          <h3 class="text-lg font-black">{{ 'scheduling.capacity.resources.critical' | translate }}</h3>
+          <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'scheduling.capacity.resources.criticalHint' | translate }}</p>
+          <div class="mt-5 space-y-3">
+            @for (resource of criticalResources(); track resource.dimensionKey) {
+              <div class="rounded-2xl border border-orange-200 bg-orange-50/60 p-4 dark:border-orange-900/60 dark:bg-orange-950/20">
+                <div class="flex items-center justify-between gap-3"><strong class="truncate">{{ resource.label }}</strong><span class="rounded-full px-2.5 py-1 text-xs font-black" [class]="saturationTone(resource.saturationRatePercent)">{{ resource.saturationRatePercent | number:'1.0-0' }}%</span></div>
+                <div class="mt-3 h-2 overflow-hidden rounded-full bg-white/80 dark:bg-slate-900"><div class="h-full rounded-full bg-orange-500" [style.width]="saturationBar(resource.saturationRatePercent)"></div></div>
+              </div>
+            } @empty { <drive-os-empty-state icon="check-circle" [title]="'scheduling.capacity.resources.noCritical' | translate" /> }
+          </div>
+        </article>
+        <article class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm sm:p-6">
+          <h3 class="text-lg font-black">{{ 'scheduling.capacity.resources.underused' | translate }}</h3>
+          <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'scheduling.capacity.resources.underusedHint' | translate }}</p>
+          <div class="mt-5 space-y-3">
+            @for (resource of underusedResources(); track resource.dimensionKey) {
+              <div class="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4 dark:border-emerald-900/60 dark:bg-emerald-950/20">
+                <div class="flex items-center justify-between gap-3"><strong class="truncate">{{ resource.label }}</strong><span class="text-sm font-black">{{ resource.saturationRatePercent | number:'1.0-0' }}%</span></div>
+                <p class="mt-2 text-xs text-[var(--driveos-text-secondary)]">{{ resource.netCapacityHours | number:'1.0-1' }} h {{ 'scheduling.capacity.labels.freeShort' | translate }}</p>
+              </div>
+            } @empty { <drive-os-empty-state icon="chart-bar" [title]="'scheduling.capacity.resources.noUnderused' | translate" /> }
+          </div>
+        </article>
+      </section>
+    }
+
+    @if (tab() === 'scenarios') {
+      <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        @for (scenario of scenarios; track scenario.value) {
+          <button type="button" class="group rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md disabled:opacity-50" [disabled]="!canSimulate()" (click)="openScenario(scenario.value)">
+            <span class="grid size-12 place-items-center rounded-2xl bg-blue-50 text-blue-800 dark:bg-blue-950/40 dark:text-blue-200"><i [class]="scenario.icon + ' text-2xl'" aria-hidden="true"></i></span>
+            <strong class="mt-5 block text-lg font-black">{{ scenario.key | translate }}</strong>
+            <span class="mt-2 block text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'scheduling.capacity.scenario.cardHint' | translate }}</span>
+          </button>
+        }
+      </section>
+      <drive-os-state-banner tone="info" [title]="'scheduling.capacity.tabs.scenarios' | translate">{{ 'scheduling.capacity.scenario.neverAppliedAutomatically' | translate }}</drive-os-state-banner>
+    }
+
+    @if (tab() === 'methodology') {
+      <section class="grid gap-5 xl:grid-cols-[1.2fr_1fr]">
+        <article class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-6 shadow-sm">
+          <div class="flex items-center justify-between gap-4"><h3 class="text-lg font-black">{{ 'scheduling.capacity.methodology.assumptions' | translate }}</h3><span class="rounded-full px-3 py-1 text-xs font-black" [class]="confidenceTone(value.confidence)">{{ confidenceKey(value.confidence) | translate }}</span></div>
+          <div class="mt-5 space-y-3">
+            @for (assumption of value.assumptions; track assumption) {
+              <div class="flex gap-3 rounded-2xl border border-[var(--driveos-border)] p-4"><i class="ph ph-check-circle mt-0.5 text-lg text-blue-700" aria-hidden="true"></i><p class="text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ assumptionKey(assumption) | translate }}</p></div>
+            }
+          </div>
+        </article>
+        <article class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-6 shadow-sm">
+          <h3 class="text-lg font-black">{{ 'scheduling.capacity.methodology.distinctions' | translate }}</h3>
+          <div class="mt-5 space-y-4 text-sm leading-6 text-[var(--driveos-text-secondary)]">
+            <p><strong class="text-[var(--driveos-text-primary)]">{{ 'scheduling.capacity.methodology.observed' | translate }} :</strong> {{ 'scheduling.capacity.methodology.observedText' | translate }}</p>
+            <p><strong class="text-[var(--driveos-text-primary)]">{{ 'scheduling.capacity.methodology.assumption' | translate }} :</strong> {{ 'scheduling.capacity.methodology.assumptionText' | translate }}</p>
+            <p><strong class="text-[var(--driveos-text-primary)]">{{ 'scheduling.capacity.methodology.forecast' | translate }} :</strong> {{ 'scheduling.capacity.methodology.forecastText' | translate }}</p>
+            <p><strong class="text-[var(--driveos-text-primary)]">{{ 'scheduling.capacity.methodology.uncertainty' | translate }} :</strong> {{ 'scheduling.capacity.methodology.uncertaintyText' | translate }}</p>
+          </div>
+        </article>
+      </section>
+    }
+  }
+</section>
+
+<drive-os-drawer
+  [open]="scenarioDrawerOpen()"
+  size="lg"
+  [title]="'scheduling.capacity.scenario.drawerTitle' | translate"
+  [description]="'scheduling.capacity.scenario.drawerDescription' | translate"
+  [closeDisabled]="scenarioLoading()"
+  (closeRequested)="closeScenario()"
+>
+  <div class="space-y-6 p-6">
+    <div class="grid gap-4 sm:grid-cols-2">
+      <label class="space-y-2 sm:col-span-2"><span class="text-sm font-bold">{{ 'scheduling.capacity.scenario.type' | translate }}</span><select class="h-11 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3" [ngModel]="scenarioType()" (ngModelChange)="scenarioType.set(+$event)">@for (option of scenarios; track option.value) { <option [ngValue]="option.value">{{ option.key | translate }}</option> }</select></label>
+      <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.capacity.scenario.quantity' | translate }}</span><input type="number" min="1" max="1000" class="h-11 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3" [ngModel]="scenarioQuantity()" (ngModelChange)="scenarioQuantity.set(+$event)" /></label>
+      <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.capacity.scenario.hoursPerWeek' | translate }}</span><input type="number" min="0.25" max="168" step="0.25" class="h-11 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3" [ngModel]="scenarioHoursPerWeek()" (ngModelChange)="scenarioHoursPerWeek.set(+$event)" /></label>
+      <label class="space-y-2 sm:col-span-2"><span class="text-sm font-bold">{{ 'scheduling.capacity.scenario.assumption' | translate }}</span><textarea rows="4" maxlength="300" class="w-full rounded-xl border border-[var(--driveos-border)] bg-transparent p-3" [ngModel]="scenarioAssumption()" (ngModelChange)="scenarioAssumption.set($event)" [placeholder]="'scheduling.capacity.scenario.assumptionPlaceholder' | translate"></textarea></label>
+    </div>
+
+    @if (scenarioResult(); as result) {
+      <section class="rounded-3xl border border-blue-200 bg-blue-50/70 p-5 dark:border-blue-900/60 dark:bg-blue-950/20">
+        <div class="flex items-center justify-between gap-4"><div><p class="text-xs font-black uppercase tracking-wide text-blue-700 dark:text-blue-300">{{ 'scheduling.capacity.scenario.result' | translate }}</p><strong class="mt-1 block text-xl font-black">{{ 'scheduling.capacity.scenario.simulationOnly' | translate }}</strong></div><span class="rounded-full bg-white px-3 py-1 text-xs font-black text-blue-800 dark:bg-slate-900 dark:text-blue-200">Applied = {{ result.applied }}</span></div>
+        <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div class="rounded-2xl bg-white/80 p-4 dark:bg-slate-900/70"><span class="text-xs text-[var(--driveos-text-muted)]">{{ 'scheduling.capacity.scenario.addedCapacity' | translate }}</span><strong class="mt-1 block text-lg font-black">+{{ result.addedNetCapacityHours | number:'1.0-1' }} h</strong></div>
+          <div class="rounded-2xl bg-white/80 p-4 dark:bg-slate-900/70"><span class="text-xs text-[var(--driveos-text-muted)]">{{ 'scheduling.capacity.kpi.saturation' | translate }}</span><strong class="mt-1 block text-lg font-black">{{ result.simulatedSummary.saturationRatePercent | number:'1.0-1' }}%</strong></div>
+          <div class="rounded-2xl bg-white/80 p-4 dark:bg-slate-900/70"><span class="text-xs text-[var(--driveos-text-muted)]">{{ 'scheduling.capacity.scenario.improvement' | translate }}</span><strong class="mt-1 block text-lg font-black">{{ scenarioImprovement() | number:'1.0-1' }} pts</strong></div>
+          <div class="rounded-2xl bg-white/80 p-4 dark:bg-slate-900/70"><span class="text-xs text-[var(--driveos-text-muted)]">{{ 'scheduling.capacity.kpi.uncoveredDemand' | translate }}</span><strong class="mt-1 block text-lg font-black">{{ result.simulatedSummary.uncoveredDemandHours | number:'1.0-1' }} h</strong></div>
+        </div>
+      </section>
+    }
+  </div>
+
+  <div driveOsDrawerFooter class="flex justify-end gap-2">
+    <drive-os-button variant="secondary" [disabled]="scenarioLoading()" (clicked)="closeScenario()">{{ 'common.cancel' | translate }}</drive-os-button>
+    <drive-os-button icon="flask" [loading]="scenarioLoading()" [disabled]="!scenarioAssumption().trim()" (clicked)="simulate()">{{ 'scheduling.capacity.actions.simulate' | translate }}</drive-os-button>
+  </div>
+</drive-os-drawer>

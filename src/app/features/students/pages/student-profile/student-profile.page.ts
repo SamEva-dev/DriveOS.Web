@@ -6,9 +6,7 @@ import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
-import {
-  DriveOsBadgeComponent,
-} from '../../../../shared/ui/badge/driveos-badge.component';
+import { DriveOsBadgeComponent } from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/driveos-empty-state.component';
 import { DriveOsSpinnerComponent } from '../../../../shared/ui/spinner/driveos-spinner.component';
 import { DriveOsStateBannerComponent } from '../../../../shared/ui/state-banner/driveos-state-banner.component';
@@ -107,8 +105,6 @@ export class StudentProfilePage {
   readonly verificationSuccess = signal(false);
   readonly verificationError = signal(false);
 
-
-
   constructor() {
     const first = this.visibleTabs()[0];
     if (first) this.selected.set(first.id);
@@ -131,26 +127,29 @@ export class StudentProfilePage {
 
   submitVerification(): void {
     const justification = this.verificationJustification().trim();
-    if (!this.canVerifyIdentity() || justification.length < 10 || this.verificationSubmitting()) return;
+    if (!this.canVerifyIdentity() || justification.length < 10 || this.verificationSubmitting())
+      return;
 
     this.verificationSubmitting.set(true);
     this.verificationSuccess.set(false);
     this.verificationError.set(false);
-    this.api.verifyIdentity(this.studentId, {
-      status: this.verificationStatus(),
-      justification,
-    }).subscribe({
-      next: (identity) => {
-        this.identity.set(identity);
-        this.verificationSubmitting.set(false);
-        this.verificationSuccess.set(true);
-        this.verificationOpen.set(false);
-      },
-      error: () => {
-        this.verificationSubmitting.set(false);
-        this.verificationError.set(true);
-      },
-    });
+    this.api
+      .verifyIdentity(this.studentId, {
+        status: this.verificationStatus(),
+        justification,
+      })
+      .subscribe({
+        next: (identity) => {
+          this.identity.set(identity);
+          this.verificationSubmitting.set(false);
+          this.verificationSuccess.set(true);
+          this.verificationOpen.set(false);
+        },
+        error: () => {
+          this.verificationSubmitting.set(false);
+          this.verificationError.set(true);
+        },
+      });
   }
 
   load(): void {
@@ -188,5 +187,4 @@ export class StudentProfilePage {
       },
     });
   }
-
 }

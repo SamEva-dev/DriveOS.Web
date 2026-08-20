@@ -1,0 +1,626 @@
+<section class="mx-auto max-w-[1600px] space-y-5 p-4 sm:p-6">
+  <header class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+    <div>
+      <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-orange-600">
+        {{ 'scheduling.travel.kicker' | translate }}
+      </p>
+      <h2 class="mt-1 text-2xl font-black tracking-tight">
+        {{ 'scheduling.travel.title' | translate }}
+      </h2>
+      <p class="mt-2 max-w-3xl text-sm text-[var(--driveos-text-secondary)]">
+        {{ 'scheduling.travel.subtitle' | translate }}
+      </p>
+    </div>
+    @if (canRead()) {
+      <drive-os-button (pressed)="openEvaluation()">
+        <i class="ph ph-route mr-2"></i>
+        {{ 'scheduling.travel.actions.evaluate' | translate }}
+      </drive-os-button>
+    }
+  </header>
+
+  @for (message of errors(); track message) {
+    <drive-os-state-banner
+      tone="danger"
+      [title]="message.startsWith('scheduling.') ? (message | translate) : message"
+    />
+  }
+
+  <nav
+    class="flex gap-1 overflow-x-auto rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-1"
+  >
+    <button
+      class="min-h-10 shrink-0 rounded-xl px-4 text-sm font-bold"
+      [class.bg-blue-800]="tab() === 'analysis'"
+      [class.text-white]="tab() === 'analysis'"
+      (click)="setTab('analysis')"
+    >
+      {{ 'scheduling.travel.tabs.analysis' | translate }}
+    </button>
+    <button
+      class="min-h-10 shrink-0 rounded-xl px-4 text-sm font-bold"
+      [class.bg-blue-800]="tab() === 'privacy'"
+      [class.text-white]="tab() === 'privacy'"
+      (click)="setTab('privacy')"
+    >
+      {{ 'scheduling.travel.tabs.privacy' | translate }}
+    </button>
+  </nav>
+
+  @if (loading()) {
+    <div class="grid min-h-64 place-items-center"><drive-os-spinner /></div>
+  } @else if (tab() === 'analysis') {
+    @if (hasBookingContext()) {
+      <section class="grid gap-3 lg:grid-cols-2">
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5"
+        >
+          <div
+            class="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wide text-[var(--driveos-text-secondary)]"
+          >
+            <i class="ph ph-arrow-circle-left"></i>
+            {{ 'scheduling.travel.context.previous' | translate }}
+          </div>
+          @if (previousBooking(); as previous) {
+            <h3 class="mt-3 font-black">{{ previous.title }}</h3>
+            <p class="mt-1 text-sm">
+              {{ previous.startAtUtc | date: 'dd/MM HH:mm' }} →
+              {{ previous.endAtUtc | date: 'HH:mm' }}
+            </p>
+            <p class="mt-2 text-xs text-[var(--driveos-text-secondary)]">
+              {{
+                previous.meetingPoint || ('scheduling.travel.context.noMeetingPoint' | translate)
+              }}
+            </p>
+            <p class="mt-2 text-xs text-[var(--driveos-text-secondary)]">
+              {{ resourceNames(previous) }}
+            </p>
+          } @else {
+            <p class="mt-3 text-sm text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.travel.context.noPrevious' | translate }}
+            </p>
+          }
+        </article>
+        <article
+          class="rounded-2xl border border-blue-200 bg-blue-50/60 p-5 dark:border-blue-900 dark:bg-blue-950/20"
+        >
+          <div
+            class="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wide text-blue-700 dark:text-blue-300"
+          >
+            <i class="ph ph-flag-checkered"></i>
+            {{ 'scheduling.travel.context.next' | translate }}
+          </div>
+          @if (contextBooking(); as booking) {
+            <h3 class="mt-3 font-black">{{ booking.title }}</h3>
+            <p class="mt-1 text-sm">
+              {{ booking.startAtUtc | date: 'dd/MM HH:mm' }} →
+              {{ booking.endAtUtc | date: 'HH:mm' }}
+            </p>
+            <p class="mt-2 text-xs text-[var(--driveos-text-secondary)]">
+              {{ booking.meetingPoint || ('scheduling.travel.context.noMeetingPoint' | translate) }}
+            </p>
+            <p class="mt-2 text-xs text-[var(--driveos-text-secondary)]">
+              {{ resourceNames(booking) }}
+            </p>
+          }
+        </article>
+      </section>
+    }
+
+    @if (result(); as value) {
+      <section
+        class="overflow-hidden rounded-3xl border bg-[var(--driveos-surface)] shadow-sm"
+        [class.border-emerald-300]="value.isFeasible"
+        [class.border-red-300]="!value.isFeasible"
+      >
+        <div
+          class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between"
+          [class.bg-emerald-50]="value.isFeasible"
+          [class.bg-red-50]="!value.isFeasible"
+        >
+          <div>
+            <div
+              class="flex items-center gap-2 text-sm font-black"
+              [class.text-emerald-800]="value.isFeasible"
+              [class.text-red-800]="!value.isFeasible"
+            >
+              <i
+                [class]="
+                  value.isFeasible ? 'ph ph-check-circle text-xl' : 'ph ph-warning-circle text-xl'
+                "
+              ></i>
+              {{
+                (value.isFeasible
+                  ? 'scheduling.travel.result.feasible'
+                  : 'scheduling.travel.result.conflict'
+                ) | translate
+              }}
+            </div>
+            <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+              {{ value.originLabel }} → {{ value.destinationLabel }}
+            </p>
+          </div>
+          <div class="rounded-2xl bg-white/80 px-5 py-3 text-center dark:bg-slate-950/40">
+            <div class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.travel.result.margin' | translate }}
+            </div>
+            <div
+              class="mt-1 text-2xl font-black"
+              [class.text-emerald-700]="value.marginMinutes >= 0"
+              [class.text-red-700]="value.marginMinutes < 0"
+            >
+              {{ value.marginMinutes }} min
+            </div>
+          </div>
+        </div>
+        <div class="grid gap-px bg-[var(--driveos-border)] sm:grid-cols-2 lg:grid-cols-5">
+          <div class="bg-[var(--driveos-surface)] p-4">
+            <div class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.travel.result.available' | translate }}
+            </div>
+            <div class="mt-1 text-xl font-black">{{ value.availableMinutes }} min</div>
+          </div>
+          <div class="bg-[var(--driveos-surface)] p-4">
+            <div class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.travel.result.route' | translate }}
+            </div>
+            <div class="mt-1 text-xl font-black">{{ value.estimatedDurationMinutes }} min</div>
+          </div>
+          <div class="bg-[var(--driveos-surface)] p-4">
+            <div class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.travel.result.buffer' | translate }}
+            </div>
+            <div class="mt-1 text-xl font-black">{{ value.requiredBufferMinutes }} min</div>
+          </div>
+          <div class="bg-[var(--driveos-surface)] p-4">
+            <div class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.travel.result.distance' | translate }}
+            </div>
+            <div class="mt-1 text-xl font-black">
+              {{
+                value.distanceKilometers == null
+                  ? '—'
+                  : (value.distanceKilometers | number: '1.0-1') + ' km'
+              }}
+            </div>
+          </div>
+          <div class="bg-[var(--driveos-surface)] p-4">
+            <div class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.travel.result.required' | translate }}
+            </div>
+            <div class="mt-1 text-xl font-black">{{ value.requiredTotalMinutes }} min</div>
+          </div>
+        </div>
+        <div class="grid gap-4 border-t border-[var(--driveos-border)] p-5 md:grid-cols-2">
+          <div class="rounded-2xl bg-[var(--driveos-surface-muted)] p-4">
+            <div class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.travel.result.departure' | translate }}
+            </div>
+            <div class="mt-2 font-bold">{{ value.departureTimeUtc | date: 'dd/MM HH:mm' }}</div>
+            <span
+              class="mt-2 inline-flex rounded-full bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800"
+            >
+              {{ timeSourceKey(value.departureTimeSource) | translate }}
+            </span>
+          </div>
+          <div class="rounded-2xl bg-[var(--driveos-surface-muted)] p-4">
+            <div class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.travel.result.deadline' | translate }}
+            </div>
+            <div class="mt-2 font-bold">{{ value.arrivalDeadlineUtc | date: 'dd/MM HH:mm' }}</div>
+            <span
+              class="mt-2 inline-flex rounded-full bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800"
+            >
+              {{ timeSourceKey(value.arrivalTimeSource) | translate }}
+            </span>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 border-t border-[var(--driveos-border)] p-5 text-xs">
+          <span class="rounded-full bg-[var(--driveos-surface-muted)] px-3 py-1.5">
+            {{ routeSourceKey(value.routeSource) | translate }}
+          </span>
+          <span class="rounded-full bg-[var(--driveos-surface-muted)] px-3 py-1.5">
+            {{ trafficKey(value.trafficContext) | translate }}
+          </span>
+          <span class="rounded-full bg-[var(--driveos-surface-muted)] px-3 py-1.5">
+            {{ 'scheduling.travel.result.noPersistence' | translate }}
+          </span>
+        </div>
+      </section>
+    } @else {
+      <drive-os-empty-state
+        icon="ph ph-route"
+        [title]="'scheduling.travel.empty.title' | translate"
+      />
+    }
+  } @else {
+    <section class="grid gap-4 lg:grid-cols-2">
+      <article
+        class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5"
+      >
+        <i class="ph ph-map-pin-line text-2xl text-blue-700"></i>
+        <h3 class="mt-3 font-black">{{ 'scheduling.travel.privacy.manual.title' | translate }}</h3>
+        <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+          {{ 'scheduling.travel.privacy.manual.description' | translate }}
+        </p>
+      </article>
+      <article
+        class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5"
+      >
+        <i class="ph ph-crosshair text-2xl text-orange-600"></i>
+        <h3 class="mt-3 font-black">{{ 'scheduling.travel.privacy.precise.title' | translate }}</h3>
+        <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+          {{ 'scheduling.travel.privacy.precise.description' | translate }}
+        </p>
+      </article>
+      <article
+        class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5"
+      >
+        <i class="ph ph-timer text-2xl text-blue-700"></i>
+        <h3 class="mt-3 font-black">
+          {{ 'scheduling.travel.privacy.retention.title' | translate }}
+        </h3>
+        <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+          {{ 'scheduling.travel.privacy.retention.description' | translate }}
+        </p>
+      </article>
+      <article
+        class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5"
+      >
+        <i class="ph ph-shield-check text-2xl text-emerald-700"></i>
+        <h3 class="mt-3 font-black">
+          {{ 'scheduling.travel.privacy.tracking.title' | translate }}
+        </h3>
+        <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+          {{ 'scheduling.travel.privacy.tracking.description' | translate }}
+        </p>
+      </article>
+    </section>
+  }
+</section>
+
+<drive-os-drawer
+  [open]="evaluateDrawerOpen()"
+  size="xl"
+  [title]="'scheduling.travel.drawer.title' | translate"
+  [description]="'scheduling.travel.drawer.subtitle' | translate"
+  (closeRequested)="closeEvaluation()"
+>
+  <div class="space-y-6 p-6">
+    <section class="grid gap-4 lg:grid-cols-2">
+      <div class="rounded-2xl border border-[var(--driveos-border)] p-4">
+        <h3 class="font-black">{{ 'scheduling.travel.form.origin' | translate }}</h3>
+        <div class="mt-4 space-y-3">
+          <label class="block">
+            <span class="text-sm font-semibold">
+              {{ 'scheduling.travel.form.mode' | translate }}
+            </span>
+            <select
+              class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-2.5"
+              [value]="originMode()"
+              (change)="setOriginMode($any($event.target).value)"
+            >
+              <option value="1">{{ 'scheduling.travel.locationMode.manual' | translate }}</option>
+              <option
+                value="2"
+                [disabled]="!canUsePreciseLocation()"
+              >
+                {{ 'scheduling.travel.locationMode.approximate' | translate }}
+              </option>
+              <option
+                value="3"
+                [disabled]="!canUsePreciseLocation()"
+              >
+                {{ 'scheduling.travel.locationMode.oneTime' | translate }}
+              </option>
+              <option
+                value="4"
+                [disabled]="!canUsePreciseLocation()"
+              >
+                {{ 'scheduling.travel.locationMode.mission' | translate }}
+              </option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="text-sm font-semibold">
+              {{ 'scheduling.travel.form.label' | translate }}
+            </span>
+            <input
+              class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+              [value]="originLabel()"
+              (input)="originLabel.set($any($event.target).value)"
+            />
+          </label>
+          @if (originMode() === 1) {
+            <label class="block">
+              <span class="text-sm font-semibold">
+                {{ 'scheduling.travel.form.address' | translate }}
+              </span>
+              <input
+                class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [value]="originAddress()"
+                (input)="originAddress.set($any($event.target).value)"
+              />
+            </label>
+          } @else {
+            <div class="grid grid-cols-2 gap-2">
+              <input
+                type="number"
+                class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [placeholder]="'scheduling.travel.form.latitude' | translate"
+                [value]="originLatitude() ?? ''"
+                (input)="
+                  originLatitude.set(
+                    $any($event.target).value === '' ? null : +$any($event.target).value
+                  )
+                "
+              />
+              <input
+                type="number"
+                class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [placeholder]="'scheduling.travel.form.longitude' | translate"
+                [value]="originLongitude() ?? ''"
+                (input)="
+                  originLongitude.set(
+                    $any($event.target).value === '' ? null : +$any($event.target).value
+                  )
+                "
+              />
+            </div>
+            <drive-os-button
+              variant="outline"
+              [disabled]="locating() !== null"
+              (pressed)="useBrowserLocation('origin')"
+            >
+              {{ 'scheduling.travel.actions.useCurrentPosition' | translate }}
+            </drive-os-button>
+          }
+        </div>
+      </div>
+      <div class="rounded-2xl border border-[var(--driveos-border)] p-4">
+        <h3 class="font-black">{{ 'scheduling.travel.form.destination' | translate }}</h3>
+        <div class="mt-4 space-y-3">
+          <label class="block">
+            <span class="text-sm font-semibold">
+              {{ 'scheduling.travel.form.mode' | translate }}
+            </span>
+            <select
+              class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-2.5"
+              [value]="destinationMode()"
+              (change)="setDestinationMode($any($event.target).value)"
+            >
+              <option value="1">{{ 'scheduling.travel.locationMode.manual' | translate }}</option>
+              <option
+                value="2"
+                [disabled]="!canUsePreciseLocation()"
+              >
+                {{ 'scheduling.travel.locationMode.approximate' | translate }}
+              </option>
+              <option
+                value="3"
+                [disabled]="!canUsePreciseLocation()"
+              >
+                {{ 'scheduling.travel.locationMode.oneTime' | translate }}
+              </option>
+              <option
+                value="4"
+                [disabled]="!canUsePreciseLocation()"
+              >
+                {{ 'scheduling.travel.locationMode.mission' | translate }}
+              </option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="text-sm font-semibold">
+              {{ 'scheduling.travel.form.label' | translate }}
+            </span>
+            <input
+              class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+              [value]="destinationLabel()"
+              (input)="destinationLabel.set($any($event.target).value)"
+            />
+          </label>
+          @if (destinationMode() === 1) {
+            <label class="block">
+              <span class="text-sm font-semibold">
+                {{ 'scheduling.travel.form.address' | translate }}
+              </span>
+              <input
+                class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [value]="destinationAddress()"
+                (input)="destinationAddress.set($any($event.target).value)"
+              />
+            </label>
+          } @else {
+            <div class="grid grid-cols-2 gap-2">
+              <input
+                type="number"
+                class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [placeholder]="'scheduling.travel.form.latitude' | translate"
+                [value]="destinationLatitude() ?? ''"
+                (input)="
+                  destinationLatitude.set(
+                    $any($event.target).value === '' ? null : +$any($event.target).value
+                  )
+                "
+              />
+              <input
+                type="number"
+                class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [placeholder]="'scheduling.travel.form.longitude' | translate"
+                [value]="destinationLongitude() ?? ''"
+                (input)="
+                  destinationLongitude.set(
+                    $any($event.target).value === '' ? null : +$any($event.target).value
+                  )
+                "
+              />
+            </div>
+            <drive-os-button
+              variant="outline"
+              [disabled]="locating() !== null"
+              (pressed)="useBrowserLocation('destination')"
+            >
+              {{ 'scheduling.travel.actions.useCurrentPosition' | translate }}
+            </drive-os-button>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <label>
+        <span class="text-sm font-semibold">
+          {{ 'scheduling.travel.form.previousPlannedEnd' | translate }}
+        </span>
+        <input
+          type="datetime-local"
+          class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+          [value]="previousPlannedEndLocal()"
+          (input)="previousPlannedEndLocal.set($any($event.target).value)"
+        />
+      </label>
+      <label>
+        <span class="text-sm font-semibold">
+          {{ 'scheduling.travel.form.previousActualEnd' | translate }}
+        </span>
+        <input
+          type="datetime-local"
+          class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+          [value]="previousActualEndLocal()"
+          (input)="previousActualEndLocal.set($any($event.target).value)"
+        />
+      </label>
+      <label>
+        <span class="text-sm font-semibold">
+          {{ 'scheduling.travel.form.nextPlannedStart' | translate }}
+        </span>
+        <input
+          type="datetime-local"
+          class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+          [value]="nextPlannedStartLocal()"
+          (input)="nextPlannedStartLocal.set($any($event.target).value)"
+        />
+      </label>
+      <label>
+        <span class="text-sm font-semibold">
+          {{ 'scheduling.travel.form.nextActualStart' | translate }}
+        </span>
+        <input
+          type="datetime-local"
+          class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+          [value]="nextActualStartLocal()"
+          (input)="nextActualStartLocal.set($any($event.target).value)"
+        />
+      </label>
+    </section>
+
+    <section class="rounded-2xl bg-[var(--driveos-surface-muted)] p-4">
+      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <label>
+          <span class="text-sm font-semibold">
+            {{ 'scheduling.travel.form.transportMode' | translate }}
+          </span>
+          <select
+            class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-2.5"
+            [value]="transportMode()"
+            (change)="transportMode.set(+$any($event.target).value)"
+          >
+            <option value="1">{{ 'scheduling.travel.transport.driving' | translate }}</option>
+            <option value="2">{{ 'scheduling.travel.transport.walking' | translate }}</option>
+            <option value="3">{{ 'scheduling.travel.transport.cycling' | translate }}</option>
+            <option value="4">
+              {{ 'scheduling.travel.transport.publicTransport' | translate }}
+            </option>
+            <option value="99">{{ 'scheduling.travel.transport.other' | translate }}</option>
+          </select>
+        </label>
+        <label>
+          <span class="text-sm font-semibold">
+            {{ 'scheduling.travel.form.estimatedDuration' | translate }}
+          </span>
+          <input
+            type="number"
+            min="0"
+            class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+            [value]="manualEstimatedDurationMinutes() ?? ''"
+            (input)="
+              manualEstimatedDurationMinutes.set(
+                $any($event.target).value === '' ? null : +$any($event.target).value
+              )
+            "
+          />
+        </label>
+        <label>
+          <span class="text-sm font-semibold">
+            {{ 'scheduling.travel.form.distance' | translate }}
+          </span>
+          <input
+            type="number"
+            min="0"
+            step="0.1"
+            class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+            [value]="manualDistanceKilometers() ?? ''"
+            (input)="
+              manualDistanceKilometers.set(
+                $any($event.target).value === '' ? null : +$any($event.target).value
+              )
+            "
+          />
+        </label>
+        <label>
+          <span class="text-sm font-semibold">
+            {{ 'scheduling.travel.form.buffer' | translate }}
+          </span>
+          <input
+            type="number"
+            min="0"
+            max="180"
+            class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+            [value]="requiredBufferMinutes() ?? ''"
+            (input)="
+              requiredBufferMinutes.set(
+                $any($event.target).value === '' ? null : +$any($event.target).value
+              )
+            "
+          />
+        </label>
+        <label>
+          <span class="text-sm font-semibold">
+            {{ 'scheduling.travel.form.traffic' | translate }}
+          </span>
+          <input
+            class="mt-1.5 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+            [value]="manualTrafficContext()"
+            (input)="manualTrafficContext.set($any($event.target).value)"
+          />
+        </label>
+      </div>
+      <p class="mt-3 text-xs text-[var(--driveos-text-secondary)]">
+        {{ 'scheduling.travel.form.manualRoutingHint' | translate }}
+      </p>
+    </section>
+  </div>
+  <div
+    driveOsDrawerFooter
+    class="flex justify-end gap-2"
+  >
+    <drive-os-button
+      variant="ghost"
+      (pressed)="closeEvaluation()"
+    >
+      {{ 'common.cancel' | translate }}
+    </drive-os-button>
+    <drive-os-button
+      [disabled]="!canEvaluate()"
+      (pressed)="evaluate()"
+    >
+      {{
+        (evaluating()
+          ? 'scheduling.travel.actions.evaluating'
+          : 'scheduling.travel.actions.evaluate'
+        ) | translate
+      }}
+    </drive-os-button>
+  </div>
+</drive-os-drawer>

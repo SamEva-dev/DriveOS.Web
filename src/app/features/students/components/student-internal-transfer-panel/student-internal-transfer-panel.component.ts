@@ -1,12 +1,23 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
 import { ApiErrorService } from '../../../../core/errors/api-error.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { DriveOsBadgeComponent, DriveOsBadgeVariant } from '../../../../shared/ui/badge/driveos-badge.component';
+import {
+  DriveOsBadgeComponent,
+  DriveOsBadgeVariant,
+} from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsButtonComponent } from '../../../../shared/ui/button/driveos-button.component';
 import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/driveos-empty-state.component';
 import { DriveOsInputDirective } from '../../../../shared/ui/input/driveos-input.directive';
@@ -159,7 +170,9 @@ export class StudentInternalTransferPanelComponent {
         next: (transfer) => {
           this.analyzedTransfer.set(transfer);
           this.saving.set(false);
-          this.toast.success(this.translate.instant('students.mobility.internal.feedback.analyzed'));
+          this.toast.success(
+            this.translate.instant('students.mobility.internal.feedback.analyzed'),
+          );
           this.refreshed.emit();
         },
         error: (error: HttpErrorResponse) => {

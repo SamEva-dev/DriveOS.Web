@@ -2,10 +2,15 @@
   <div class="flex flex-wrap items-start justify-between gap-4">
     <div>
       <h3 class="text-lg font-extrabold">{{ 'students.lifecycle.closure.title' | translate }}</h3>
-      <p class="max-w-3xl text-sm text-slate-500">{{ 'students.lifecycle.closure.description' | translate }}</p>
+      <p class="max-w-3xl text-sm text-slate-500">
+        {{ 'students.lifecycle.closure.description' | translate }}
+      </p>
     </div>
     @if (canCreate() && activeEnrollmentId() && !hasOpenCase()) {
-      <drive-os-button icon="ph ph-archive" (clicked)="open()">
+      <drive-os-button
+        icon="ph ph-archive"
+        (clicked)="open()"
+      >
         {{ 'students.lifecycle.closure.actions.create' | translate }}
       </drive-os-button>
     }
@@ -31,44 +36,87 @@
 
   @if (editing()) {
     <drive-os-card>
-      <form class="grid gap-5" [formGroup]="form" (ngSubmit)="submit()">
+      <form
+        class="grid gap-5"
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+      >
         <div>
           <h4 class="font-extrabold">{{ 'students.lifecycle.closure.form.title' | translate }}</h4>
-          <p class="text-sm text-slate-500">{{ 'students.lifecycle.closure.form.description' | translate }}</p>
+          <p class="text-sm text-slate-500">
+            {{ 'students.lifecycle.closure.form.description' | translate }}
+          </p>
         </div>
         <div class="grid gap-4 md:grid-cols-2">
           <label class="grid gap-1.5 text-sm font-semibold">
             {{ 'students.lifecycle.closure.fields.reason' | translate }}
-            <select driveOsInput formControlName="reason">
-              @for (reason of [1,2,3,4,5,6,7,8,9]; track reason) {
-                <option [ngValue]="reason">{{ 'students.lifecycle.closure.reasons.' + reason | translate }}</option>
+            <select
+              driveOsInput
+              formControlName="reason"
+            >
+              @for (reason of [1, 2, 3, 4, 5, 6, 7, 8, 9]; track reason) {
+                <option [ngValue]="reason">
+                  {{ 'students.lifecycle.closure.reasons.' + reason | translate }}
+                </option>
               }
             </select>
           </label>
           <label class="grid gap-1.5 text-sm font-semibold">
             {{ 'students.lifecycle.closure.fields.closureDate' | translate }}
-            <input driveOsInput type="date" formControlName="closureDate" />
+            <input
+              driveOsInput
+              type="date"
+              formControlName="closureDate"
+            />
           </label>
         </div>
         <label class="grid gap-1.5 text-sm font-semibold">
           {{ 'students.lifecycle.closure.fields.reasonDetail' | translate }}
-          <textarea driveOsInput rows="3" formControlName="reasonDetail"></textarea>
+          <textarea
+            driveOsInput
+            rows="3"
+            formControlName="reasonDetail"
+          ></textarea>
         </label>
 
-        <div formArrayName="checks" class="grid gap-3">
+        <div
+          formArrayName="checks"
+          class="grid gap-3"
+        >
           <div>
-            <h4 class="font-extrabold">{{ 'students.lifecycle.closure.checks.title' | translate }}</h4>
-            <p class="text-sm text-slate-500">{{ 'students.lifecycle.closure.checks.description' | translate }}</p>
+            <h4 class="font-extrabold">
+              {{ 'students.lifecycle.closure.checks.title' | translate }}
+            </h4>
+            <p class="text-sm text-slate-500">
+              {{ 'students.lifecycle.closure.checks.description' | translate }}
+            </p>
           </div>
           @for (control of checks.controls; track $index; let i = $index) {
-            <div [formGroupName]="i" class="grid gap-3 rounded-xl border border-[var(--driveos-border)] p-4 md:grid-cols-[minmax(0,1fr)_13rem]">
+            <div
+              [formGroupName]="i"
+              class="grid gap-3 rounded-xl border border-[var(--driveos-border)] p-4 md:grid-cols-[minmax(0,1fr)_13rem]"
+            >
               <div class="min-w-0">
-                <strong class="text-sm">{{ 'students.lifecycle.closure.checkTypes.' + checkDefinitions[i].type | translate }}</strong>
-                <input driveOsInput class="mt-2" formControlName="detail" [placeholder]="'students.lifecycle.closure.fields.checkDetail' | translate" />
+                <strong class="text-sm">
+                  {{
+                    'students.lifecycle.closure.checkTypes.' + checkDefinitions[i].type | translate
+                  }}
+                </strong>
+                <input
+                  driveOsInput
+                  class="mt-2"
+                  formControlName="detail"
+                  [placeholder]="'students.lifecycle.closure.fields.checkDetail' | translate"
+                />
               </div>
-              <select driveOsInput formControlName="status">
-                @for (status of [1,2,3,4]; track status) {
-                  <option [ngValue]="status">{{ 'students.lifecycle.closure.checkStatuses.' + status | translate }}</option>
+              <select
+                driveOsInput
+                formControlName="status"
+              >
+                @for (status of [1, 2, 3, 4]; track status) {
+                  <option [ngValue]="status">
+                    {{ 'students.lifecycle.closure.checkStatuses.' + status | translate }}
+                  </option>
                 }
               </select>
             </div>
@@ -76,8 +124,18 @@
         </div>
 
         <div class="flex flex-wrap justify-end gap-2">
-          <drive-os-button variant="secondary" type="button" (clicked)="cancel()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
-          <drive-os-button type="submit" icon="ph ph-check" [loading]="saving()">
+          <drive-os-button
+            variant="secondary"
+            type="button"
+            (clicked)="cancel()"
+          >
+            {{ 'common.actions.cancel' | translate }}
+          </drive-os-button>
+          <drive-os-button
+            type="submit"
+            icon="ph ph-check"
+            [loading]="saving()"
+          >
             {{ 'students.lifecycle.closure.actions.confirmCreate' | translate }}
           </drive-os-button>
         </div>
@@ -86,14 +144,25 @@
   }
 
   @for (item of items(); track item.closureId) {
-    <article class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+    <article
+      class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+    >
       <div class="flex flex-wrap items-start gap-3">
-        <span class="grid size-11 place-items-center rounded-xl bg-slate-100 text-xl text-slate-700">
+        <span
+          class="grid size-11 place-items-center rounded-xl bg-slate-100 text-xl text-slate-700"
+        >
           <i class="ph-duotone ph-archive"></i>
         </span>
         <div class="min-w-0 flex-1">
-          <h4 class="font-extrabold">{{ 'students.lifecycle.closure.reasons.' + item.reason | translate }}</h4>
-          <p class="text-sm text-slate-500">{{ item.closureDate | date: 'mediumDate' }} @if (item.reasonDetail) { · {{ item.reasonDetail }} }</p>
+          <h4 class="font-extrabold">
+            {{ 'students.lifecycle.closure.reasons.' + item.reason | translate }}
+          </h4>
+          <p class="text-sm text-slate-500">
+            {{ item.closureDate | date: 'mediumDate' }}
+            @if (item.reasonDetail) {
+              · {{ item.reasonDetail }}
+            }
+          </p>
         </div>
         <drive-os-badge [variant]="variant(item.status)">{{ item.status }}</drive-os-badge>
       </div>
@@ -101,17 +170,35 @@
       <div class="mt-5 grid gap-3">
         @for (check of item.checks; track check.type) {
           @if (canCreate() && (item.status === 'Draft' || item.status === 'ReadyToClose')) {
-            <div class="grid gap-3 rounded-xl border border-[var(--driveos-border)] p-3 lg:grid-cols-[minmax(0,1fr)_12rem_auto] lg:items-center">
+            <div
+              class="grid gap-3 rounded-xl border border-[var(--driveos-border)] p-3 lg:grid-cols-[minmax(0,1fr)_12rem_auto] lg:items-center"
+            >
               <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2">
-                  <strong class="text-sm">{{ 'students.lifecycle.closure.checkTypes.' + check.type | translate }}</strong>
-                  <drive-os-badge [variant]="variant(check.status)">{{ check.status }}</drive-os-badge>
+                  <strong class="text-sm">
+                    {{ 'students.lifecycle.closure.checkTypes.' + check.type | translate }}
+                  </strong>
+                  <drive-os-badge [variant]="variant(check.status)">
+                    {{ check.status }}
+                  </drive-os-badge>
                 </div>
-                <input #detail driveOsInput class="mt-2" [value]="check.detail" [placeholder]="'students.lifecycle.closure.fields.checkDetail' | translate" />
+                <input
+                  #detail
+                  driveOsInput
+                  class="mt-2"
+                  [value]="check.detail"
+                  [placeholder]="'students.lifecycle.closure.fields.checkDetail' | translate"
+                />
               </div>
-              <select #status driveOsInput [value]="checkStatusValue(check.status)">
-                @for (value of [1,2,3,4]; track value) {
-                  <option [value]="value">{{ 'students.lifecycle.closure.checkStatuses.' + value | translate }}</option>
+              <select
+                #status
+                driveOsInput
+                [value]="checkStatusValue(check.status)"
+              >
+                @for (value of [1, 2, 3, 4]; track value) {
+                  <option [value]="value">
+                    {{ 'students.lifecycle.closure.checkStatuses.' + value | translate }}
+                  </option>
                 }
               </select>
               <drive-os-button
@@ -126,8 +213,12 @@
           } @else {
             <div class="rounded-xl border border-[var(--driveos-border)] p-3">
               <div class="flex flex-wrap items-center gap-2">
-                <strong class="text-sm">{{ 'students.lifecycle.closure.checkTypes.' + check.type | translate }}</strong>
-                <drive-os-badge [variant]="variant(check.status)">{{ check.status }}</drive-os-badge>
+                <strong class="text-sm">
+                  {{ 'students.lifecycle.closure.checkTypes.' + check.type | translate }}
+                </strong>
+                <drive-os-badge [variant]="variant(check.status)">
+                  {{ check.status }}
+                </drive-os-badge>
               </div>
               @if (check.detail) {
                 <p class="mt-1 text-sm text-slate-500">{{ check.detail }}</p>
@@ -159,7 +250,11 @@
 
       @if (item.status === 'Closed' && canArchive()) {
         <div class="mt-4 flex justify-end">
-          <drive-os-button variant="secondary" icon="ph ph-package" (clicked)="openArchive(item)">
+          <drive-os-button
+            variant="secondary"
+            icon="ph ph-package"
+            (clicked)="openArchive(item)"
+          >
             {{ 'students.lifecycle.closure.actions.archive' | translate }}
           </drive-os-button>
         </div>
@@ -173,31 +268,61 @@
             [title]="'students.lifecycle.closure.archiveWarningTitle' | translate"
             [description]="'students.lifecycle.closure.archiveWarning' | translate"
           />
-          <form class="mt-4 grid gap-4" [formGroup]="archiveForm" (ngSubmit)="archive()">
+          <form
+            class="mt-4 grid gap-4"
+            [formGroup]="archiveForm"
+            (ngSubmit)="archive()"
+          >
             <div class="grid gap-4 md:grid-cols-2">
               <label class="grid gap-1.5 text-sm font-semibold">
                 {{ 'students.lifecycle.closure.fields.retainUntil' | translate }}
-                <input driveOsInput type="date" formControlName="retainUntil" />
+                <input
+                  driveOsInput
+                  type="date"
+                  formControlName="retainUntil"
+                />
               </label>
               <label class="grid gap-1.5 text-sm font-semibold">
                 {{ 'students.lifecycle.closure.fields.legalBasis' | translate }}
-                <input driveOsInput formControlName="retentionLegalBasis" />
+                <input
+                  driveOsInput
+                  formControlName="retentionLegalBasis"
+                />
               </label>
             </div>
             <div>
-              <p class="text-sm font-semibold">{{ 'students.lifecycle.closure.fields.retentionScope' | translate }}</p>
+              <p class="text-sm font-semibold">
+                {{ 'students.lifecycle.closure.fields.retentionScope' | translate }}
+              </p>
               <div class="mt-2 flex flex-wrap gap-2">
                 @for (scope of retentionScopes; track scope.value) {
-                  <label class="inline-flex items-center gap-2 rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm">
-                    <input type="checkbox" [checked]="isRetentionScopeSelected(scope.value)" (change)="toggleRetentionScope(scope.value, $any($event.target).checked)" />
+                  <label
+                    class="inline-flex items-center gap-2 rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm"
+                  >
+                    <input
+                      type="checkbox"
+                      [checked]="isRetentionScopeSelected(scope.value)"
+                      (change)="toggleRetentionScope(scope.value, $any($event.target).checked)"
+                    />
                     {{ 'students.lifecycle.closure.retentionScopes.' + scope.key | translate }}
                   </label>
                 }
               </div>
             </div>
             <div class="flex justify-end gap-2">
-              <drive-os-button type="button" variant="secondary" (clicked)="archiveId.set(null)">{{ 'common.actions.cancel' | translate }}</drive-os-button>
-              <drive-os-button type="submit" [loading]="saving()">{{ 'students.lifecycle.closure.actions.archive' | translate }}</drive-os-button>
+              <drive-os-button
+                type="button"
+                variant="secondary"
+                (clicked)="archiveId.set(null)"
+              >
+                {{ 'common.actions.cancel' | translate }}
+              </drive-os-button>
+              <drive-os-button
+                type="submit"
+                [loading]="saving()"
+              >
+                {{ 'students.lifecycle.closure.actions.archive' | translate }}
+              </drive-os-button>
             </div>
           </form>
         </div>
@@ -205,21 +330,44 @@
 
       @if (['Closed', 'Archived'].includes(item.status) && canReopen()) {
         <div class="mt-4 flex justify-end">
-          <drive-os-button variant="secondary" icon="ph ph-arrow-counter-clockwise" (clicked)="openReopen(item)">
+          <drive-os-button
+            variant="secondary"
+            icon="ph ph-arrow-counter-clockwise"
+            (clicked)="openReopen(item)"
+          >
             {{ 'students.lifecycle.closure.actions.reopen' | translate }}
           </drive-os-button>
         </div>
       }
 
       @if (reopenId() === item.closureId) {
-        <form class="mt-4 grid gap-3 rounded-xl border border-orange-200 bg-orange-50/40 p-4" [formGroup]="reopenForm" (ngSubmit)="reopen()">
+        <form
+          class="mt-4 grid gap-3 rounded-xl border border-orange-200 bg-orange-50/40 p-4"
+          [formGroup]="reopenForm"
+          (ngSubmit)="reopen()"
+        >
           <label class="grid gap-1.5 text-sm font-semibold">
             {{ 'students.lifecycle.closure.fields.reopenJustification' | translate }}
-            <textarea driveOsInput rows="3" formControlName="justification"></textarea>
+            <textarea
+              driveOsInput
+              rows="3"
+              formControlName="justification"
+            ></textarea>
           </label>
           <div class="flex justify-end gap-2">
-            <drive-os-button type="button" variant="secondary" (clicked)="reopenId.set(null)">{{ 'common.actions.cancel' | translate }}</drive-os-button>
-            <drive-os-button type="submit" [loading]="saving()">{{ 'students.lifecycle.closure.actions.reopen' | translate }}</drive-os-button>
+            <drive-os-button
+              type="button"
+              variant="secondary"
+              (clicked)="reopenId.set(null)"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              type="submit"
+              [loading]="saving()"
+            >
+              {{ 'students.lifecycle.closure.actions.reopen' | translate }}
+            </drive-os-button>
           </div>
         </form>
       }
@@ -227,7 +375,8 @@
       @if (item.retentionLegalBasis) {
         <p class="mt-4 rounded-lg bg-blue-50 p-3 text-sm text-blue-900">
           <strong>{{ 'students.lifecycle.legalBasis' | translate }} :</strong>
-          {{ item.retentionLegalBasis }} · {{ item.retentionScope }} · {{ item.retainUntil | date: 'mediumDate' }}
+          {{ item.retentionLegalBasis }} · {{ item.retentionScope }} ·
+          {{ item.retainUntil | date: 'mediumDate' }}
         </p>
       }
       @if (item.reopenedAtUtc) {

@@ -1,45 +1,105 @@
 <section class="space-y-5">
   <header class="flex flex-wrap items-end justify-between gap-3">
     <div>
-      <p class="text-xs font-bold uppercase tracking-widest text-blue-700">{{ 'contracts.training.eyebrow' | translate }}</p>
-      <h2 class="mt-1 text-xl font-black text-slate-900">{{ 'contracts.training.title' | translate }}</h2>
+      <p class="text-xs font-bold uppercase tracking-widest text-blue-700">
+        {{ 'contracts.training.eyebrow' | translate }}
+      </p>
+      <h2 class="mt-1 text-xl font-black text-slate-900">
+        {{ 'contracts.training.title' | translate }}
+      </h2>
       <p class="mt-1 text-sm text-slate-500">{{ 'contracts.training.description' | translate }}</p>
     </div>
   </header>
 
   @if (loading()) {
-    <div class="grid min-h-40 place-items-center"><drive-os-spinner [label]="'common.loading' | translate" /></div>
+    <div class="grid min-h-40 place-items-center">
+      <drive-os-spinner [label]="'common.loading' | translate" />
+    </div>
   } @else if (!contracts().length) {
-    <drive-os-empty-state icon="ph-file-text" [title]="'contracts.training.empty.title' | translate" [description]="'contracts.training.empty.description' | translate" />
+    <drive-os-empty-state
+      icon="ph-file-text"
+      [title]="'contracts.training.empty.title' | translate"
+      [description]="'contracts.training.empty.description' | translate"
+    />
   } @else {
     <div class="grid gap-5 xl:grid-cols-[22rem_minmax(0,1fr)]">
       <aside class="space-y-2">
         @for (contract of contracts(); track contract.id) {
-          <button type="button" (click)="select(contract.id)"
+          <button
+            type="button"
+            (click)="select(contract.id)"
             class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 text-left transition hover:border-blue-300 hover:shadow-sm"
-            [class.ring-2]="selected()?.id === contract.id" [class.ring-blue-700]="selected()?.id === contract.id">
+            [class.ring-2]="selected()?.id === contract.id"
+            [class.ring-blue-700]="selected()?.id === contract.id"
+          >
             <div class="flex items-start justify-between gap-3">
-              <div class="min-w-0"><p class="truncate font-black text-slate-900">{{ contract.contractNumber }}</p><p class="mt-1 text-xs font-semibold text-slate-500">{{ contract.trainingCode }} · V{{ contract.currentVersionNumber }}</p></div>
-              <span class="rounded-full bg-blue-50 px-2 py-1 text-[11px] font-bold text-blue-800">{{ contract.status }}</span>
+              <div class="min-w-0">
+                <p class="truncate font-black text-slate-900">{{ contract.contractNumber }}</p>
+                <p class="mt-1 text-xs font-semibold text-slate-500">
+                  {{ contract.trainingCode }} · V{{ contract.currentVersionNumber }}
+                </p>
+              </div>
+              <span class="rounded-full bg-blue-50 px-2 py-1 text-[11px] font-bold text-blue-800">
+                {{ contract.status }}
+              </span>
             </div>
-            <p class="mt-3 text-sm font-bold text-slate-700">{{ contract.totalAmount | number:'1.2-2' }} {{ contract.currency }}</p>
-            <p class="mt-1 text-xs text-slate-500">{{ contract.startDate | date:'dd/MM/yyyy' }} @if (contract.endDate) { → {{ contract.endDate | date:'dd/MM/yyyy' }} }</p>
+            <p class="mt-3 text-sm font-bold text-slate-700">
+              {{ contract.totalAmount | number: '1.2-2' }} {{ contract.currency }}
+            </p>
+            <p class="mt-1 text-xs text-slate-500">
+              {{ contract.startDate | date: 'dd/MM/yyyy' }}
+              @if (contract.endDate) {
+                → {{ contract.endDate | date: 'dd/MM/yyyy' }}
+              }
+            </p>
           </button>
         }
       </aside>
 
-      <div class="min-w-0 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+      <div
+        class="min-w-0 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
         @if (detailLoading()) {
-          <div class="grid min-h-48 place-items-center"><drive-os-spinner [label]="'common.loading' | translate" /></div>
+          <div class="grid min-h-48 place-items-center">
+            <drive-os-spinner [label]="'common.loading' | translate" />
+          </div>
         } @else if (selected(); as contract) {
-          <div class="flex flex-wrap justify-between gap-4 border-b border-[var(--driveos-border)] pb-4">
-            <div><p class="text-xs font-bold uppercase tracking-wider text-slate-500">{{ 'contracts.training.contractNumber' | translate }}</p><h3 class="mt-1 text-2xl font-black text-slate-900">{{ contract.contractNumber }}</h3><p class="mt-1 text-sm text-slate-500">{{ 'contracts.training.offerVersion' | translate:{version: contract.sourceOfferVersion} }}</p></div>
+          <div
+            class="flex flex-wrap justify-between gap-4 border-b border-[var(--driveos-border)] pb-4"
+          >
+            <div>
+              <p class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                {{ 'contracts.training.contractNumber' | translate }}
+              </p>
+              <h3 class="mt-1 text-2xl font-black text-slate-900">{{ contract.contractNumber }}</h3>
+              <p class="mt-1 text-sm text-slate-500">
+                {{
+                  'contracts.training.offerVersion'
+                    | translate: { version: contract.sourceOfferVersion }
+                }}
+              </p>
+            </div>
             <div class="text-right">
-              <p class="text-2xl font-black text-blue-800">{{ contract.totalAmount | number:'1.2-2' }} {{ contract.currency }}</p>
-              <p class="text-xs text-slate-500">V{{ contract.currentVersionNumber }} · {{ contract.status }}</p>
+              <p class="text-2xl font-black text-blue-800">
+                {{ contract.totalAmount | number: '1.2-2' }} {{ contract.currency }}
+              </p>
+              <p class="text-xs text-slate-500">
+                V{{ contract.currentVersionNumber }} · {{ contract.status }}
+              </p>
               @if (contract.status === 'Draft' && canGenerate()) {
-                <button type="button" (click)="generate()" [disabled]="generating()" class="mt-3 inline-flex items-center gap-2 rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">
-                  <i class="ph ph-file-arrow-down"></i>{{ (generating() ? 'contracts.training.generation.generating' : 'contracts.training.generation.action') | translate }}
+                <button
+                  type="button"
+                  (click)="generate()"
+                  [disabled]="generating()"
+                  class="mt-3 inline-flex items-center gap-2 rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+                >
+                  <i class="ph ph-file-arrow-down"></i>
+                  {{
+                    (generating()
+                      ? 'contracts.training.generation.generating'
+                      : 'contracts.training.generation.action'
+                    ) | translate
+                  }}
                 </button>
               }
             </div>
@@ -47,50 +107,163 @@
 
           @if (contract.generatedDocumentSha256) {
             <div class="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
-              <div class="flex items-start gap-3"><i class="ph ph-seal-check mt-0.5 text-xl text-emerald-700"></i><div class="min-w-0"><p class="font-black text-emerald-900">{{ 'contracts.training.generation.generated' | translate }}</p><p class="mt-1 text-sm text-emerald-800">{{ contract.generatedDocumentFileName }} · V{{ contract.generatedDocumentVersionNumber }} · {{ contract.generatedAtUtc | date:'dd/MM/yyyy HH:mm' }}</p><p class="mt-2 break-all font-mono text-[11px] text-emerald-700">SHA-256: {{ contract.generatedDocumentSha256 }}</p></div></div>
+              <div class="flex items-start gap-3">
+                <i class="ph ph-seal-check mt-0.5 text-xl text-emerald-700"></i>
+                <div class="min-w-0">
+                  <p class="font-black text-emerald-900">
+                    {{ 'contracts.training.generation.generated' | translate }}
+                  </p>
+                  <p class="mt-1 text-sm text-emerald-800">
+                    {{ contract.generatedDocumentFileName }} · V{{
+                      contract.generatedDocumentVersionNumber
+                    }}
+                    · {{ contract.generatedAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+                  </p>
+                  <p class="mt-2 break-all font-mono text-[11px] text-emerald-700">
+                    SHA-256: {{ contract.generatedDocumentSha256 }}
+                  </p>
+                </div>
+              </div>
             </div>
           }
 
           <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs font-bold text-slate-500">{{ 'contracts.training.trainingCode' | translate }}</p><p class="mt-1 font-bold">{{ contract.terms.trainingCode }}</p></div>
-            <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs font-bold text-slate-500">{{ 'contracts.training.practicalHours' | translate }}</p><p class="mt-1 font-bold">{{ contract.terms.practicalHours }}</p></div>
-            <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs font-bold text-slate-500">{{ 'contracts.training.startDate' | translate }}</p><p class="mt-1 font-bold">{{ contract.startDate | date:'dd/MM/yyyy' }}</p></div>
-            <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs font-bold text-slate-500">{{ 'contracts.training.endDate' | translate }}</p><p class="mt-1 font-bold">{{ contract.endDate ? (contract.endDate | date:'dd/MM/yyyy') : '—' }}</p></div>
+            <div class="rounded-xl bg-slate-50 p-3">
+              <p class="text-xs font-bold text-slate-500">
+                {{ 'contracts.training.trainingCode' | translate }}
+              </p>
+              <p class="mt-1 font-bold">{{ contract.terms.trainingCode }}</p>
+            </div>
+            <div class="rounded-xl bg-slate-50 p-3">
+              <p class="text-xs font-bold text-slate-500">
+                {{ 'contracts.training.practicalHours' | translate }}
+              </p>
+              <p class="mt-1 font-bold">{{ contract.terms.practicalHours }}</p>
+            </div>
+            <div class="rounded-xl bg-slate-50 p-3">
+              <p class="text-xs font-bold text-slate-500">
+                {{ 'contracts.training.startDate' | translate }}
+              </p>
+              <p class="mt-1 font-bold">{{ contract.startDate | date: 'dd/MM/yyyy' }}</p>
+            </div>
+            <div class="rounded-xl bg-slate-50 p-3">
+              <p class="text-xs font-bold text-slate-500">
+                {{ 'contracts.training.endDate' | translate }}
+              </p>
+              <p class="mt-1 font-bold">
+                {{ contract.endDate ? (contract.endDate | date: 'dd/MM/yyyy') : '—' }}
+              </p>
+            </div>
           </div>
 
           <div class="mt-6 grid gap-5 lg:grid-cols-2">
-            <section><h4 class="font-black text-slate-900">{{ 'contracts.training.parties' | translate }}</h4><div class="mt-3 space-y-2">@for (party of contract.parties; track party.kind + party.displayName) {<div class="rounded-xl border border-[var(--driveos-border)] p-3"><div class="flex justify-between gap-3"><span class="font-bold">{{ party.displayName }}</span><span class="text-xs font-bold text-slate-500">{{ party.kind }}</span></div>@if (party.legalReference) {<p class="mt-1 text-xs text-slate-500">{{ party.legalReference }}</p>}</div>}</div></section>
-            <section><h4 class="font-black text-slate-900">{{ 'contracts.training.versions' | translate }}</h4><div class="mt-3 space-y-2">@for (version of contract.versions; track version.id) {<div class="rounded-xl border border-[var(--driveos-border)] p-3"><div class="flex justify-between"><span class="font-bold">Version {{ version.versionNumber }}</span><span class="text-xs text-slate-500">{{ version.createdAtUtc | date:'dd/MM/yyyy HH:mm' }}</span></div><p class="mt-1 text-sm text-slate-600">{{ version.totalAmount | number:'1.2-2' }} {{ version.currency }}</p>@if (version.revisionReason) {<p class="mt-1 text-xs text-slate-500">{{ version.revisionReason }}</p>}</div>}</div></section>
+            <section>
+              <h4 class="font-black text-slate-900">
+                {{ 'contracts.training.parties' | translate }}
+              </h4>
+              <div class="mt-3 space-y-2">
+                @for (party of contract.parties; track party.kind + party.displayName) {
+                  <div class="rounded-xl border border-[var(--driveos-border)] p-3">
+                    <div class="flex justify-between gap-3">
+                      <span class="font-bold">{{ party.displayName }}</span>
+                      <span class="text-xs font-bold text-slate-500">{{ party.kind }}</span>
+                    </div>
+                    @if (party.legalReference) {
+                      <p class="mt-1 text-xs text-slate-500">{{ party.legalReference }}</p>
+                    }
+                  </div>
+                }
+              </div>
+            </section>
+            <section>
+              <h4 class="font-black text-slate-900">
+                {{ 'contracts.training.versions' | translate }}
+              </h4>
+              <div class="mt-3 space-y-2">
+                @for (version of contract.versions; track version.id) {
+                  <div class="rounded-xl border border-[var(--driveos-border)] p-3">
+                    <div class="flex justify-between">
+                      <span class="font-bold">Version {{ version.versionNumber }}</span>
+                      <span class="text-xs text-slate-500">
+                        {{ version.createdAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+                      </span>
+                    </div>
+                    <p class="mt-1 text-sm text-slate-600">
+                      {{ version.totalAmount | number: '1.2-2' }} {{ version.currency }}
+                    </p>
+                    @if (version.revisionReason) {
+                      <p class="mt-1 text-xs text-slate-500">{{ version.revisionReason }}</p>
+                    }
+                  </div>
+                }
+              </div>
+            </section>
           </div>
 
           @if (contract.status === 'Generated') {
             <section class="mt-6 rounded-xl border border-blue-100 bg-blue-50 p-4">
               <div class="flex flex-wrap items-start justify-between gap-4">
                 <div class="max-w-2xl">
-                  <h4 class="font-black text-blue-950">{{ 'contracts.training.signature.title' | translate }}</h4>
-                  <p class="mt-1 text-sm text-blue-800">{{ 'contracts.training.signature.description' | translate }}</p>
-                  @if (!requiredSignatoriesReady()) {<p class="mt-3 text-xs font-bold text-amber-700">{{ 'contracts.training.signature.notReady' | translate }}</p>}
+                  <h4 class="font-black text-blue-950">
+                    {{ 'contracts.training.signature.title' | translate }}
+                  </h4>
+                  <p class="mt-1 text-sm text-blue-800">
+                    {{ 'contracts.training.signature.description' | translate }}
+                  </p>
+                  @if (!requiredSignatoriesReady()) {
+                    <p class="mt-3 text-xs font-bold text-amber-700">
+                      {{ 'contracts.training.signature.notReady' | translate }}
+                    </p>
+                  }
                 </div>
                 @if (canSendForSignature()) {
-                  <button type="button" (click)="sendForSignature()" [disabled]="sendingForSignature() || !requiredSignatoriesReady()" class="inline-flex items-center gap-2 rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"><i class="ph ph-paper-plane-tilt"></i>{{ 'contracts.training.signature.send' | translate }}</button>
+                  <button
+                    type="button"
+                    (click)="sendForSignature()"
+                    [disabled]="sendingForSignature() || !requiredSignatoriesReady()"
+                    class="inline-flex items-center gap-2 rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+                  >
+                    <i class="ph ph-paper-plane-tilt"></i>
+                    {{ 'contracts.training.signature.send' | translate }}
+                  </button>
                 }
               </div>
             </section>
           }
           @if (contract.status === 'SentForSignature' || contract.status === 'PartiallySigned') {
-            <div class="mt-6 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800"><i class="ph ph-seal-check mr-2"></i>{{ 'contracts.training.signature.inProgress' | translate }}</div>
+            <div
+              class="mt-6 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800"
+            >
+              <i class="ph ph-seal-check mr-2"></i>
+              {{ 'contracts.training.signature.inProgress' | translate }}
+            </div>
           }
 
           @if (contract.status === 'Signed') {
             <section class="mt-6 rounded-xl border border-orange-200 bg-orange-50 p-4">
               <div class="flex flex-wrap items-start justify-between gap-4">
                 <div class="max-w-2xl">
-                  <h4 class="font-black text-orange-950">{{ 'contracts.training.activation.title' | translate }}</h4>
-                  <p class="mt-1 text-sm text-orange-800">{{ 'contracts.training.activation.description' | translate }}</p>
+                  <h4 class="font-black text-orange-950">
+                    {{ 'contracts.training.activation.title' | translate }}
+                  </h4>
+                  <p class="mt-1 text-sm text-orange-800">
+                    {{ 'contracts.training.activation.description' | translate }}
+                  </p>
                 </div>
                 @if (canActivate()) {
-                  <button type="button" (click)="activate()" [disabled]="activating()" class="inline-flex items-center gap-2 rounded-lg bg-orange-500 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">
-                    <i class="ph ph-play-circle"></i>{{ (activating() ? 'contracts.training.activation.activating' : 'contracts.training.activation.action') | translate }}
+                  <button
+                    type="button"
+                    (click)="activate()"
+                    [disabled]="activating()"
+                    class="inline-flex items-center gap-2 rounded-lg bg-orange-500 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+                  >
+                    <i class="ph ph-play-circle"></i>
+                    {{
+                      (activating()
+                        ? 'contracts.training.activation.activating'
+                        : 'contracts.training.activation.action'
+                      ) | translate
+                    }}
                   </button>
                 }
               </div>
@@ -98,9 +271,15 @@
           }
 
           @if (contract.status === 'Active') {
-            <div class="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800">
-              <i class="ph ph-check-circle mr-2"></i>{{ 'contracts.training.activation.active' | translate }}
-              @if (contract.activatedAtUtc) { · {{ 'contracts.training.activation.activatedAt' | translate }} {{ contract.activatedAtUtc | date:'dd/MM/yyyy HH:mm' }} }
+            <div
+              class="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800"
+            >
+              <i class="ph ph-check-circle mr-2"></i>
+              {{ 'contracts.training.activation.active' | translate }}
+              @if (contract.activatedAtUtc) {
+                · {{ 'contracts.training.activation.activatedAt' | translate }}
+                {{ contract.activatedAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+              }
             </div>
           }
 
@@ -108,42 +287,114 @@
             <section class="mt-6 rounded-xl border border-[var(--driveos-border)] p-4">
               <div class="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h4 class="font-black text-slate-900">{{ 'contracts.training.signature.processTitle' | translate }}</h4>
-                  <p class="mt-1 text-xs text-slate-500">{{ 'contracts.training.signature.processDescription' | translate }}</p>
+                  <h4 class="font-black text-slate-900">
+                    {{ 'contracts.training.signature.processTitle' | translate }}
+                  </h4>
+                  <p class="mt-1 text-xs text-slate-500">
+                    {{ 'contracts.training.signature.processDescription' | translate }}
+                  </p>
                 </div>
-                <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-800">{{ process.status }}</span>
+                <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-800">
+                  {{ process.status }}
+                </span>
               </div>
 
               <div class="mt-4 grid gap-3 md:grid-cols-3">
-                <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs font-bold text-slate-500">{{ 'contracts.training.signature.version' | translate }}</p><p class="mt-1 font-bold">V{{ process.contractVersionNumber }}</p></div>
-                <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs font-bold text-slate-500">{{ 'contracts.training.signature.requestedAt' | translate }}</p><p class="mt-1 font-bold">{{ process.requestedAtUtc | date:'dd/MM/yyyy HH:mm' }}</p></div>
-                <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs font-bold text-slate-500">SHA-256</p><p class="mt-1 break-all font-mono text-[11px]">{{ process.documentSha256 }}</p></div>
+                <div class="rounded-xl bg-slate-50 p-3">
+                  <p class="text-xs font-bold text-slate-500">
+                    {{ 'contracts.training.signature.version' | translate }}
+                  </p>
+                  <p class="mt-1 font-bold">V{{ process.contractVersionNumber }}</p>
+                </div>
+                <div class="rounded-xl bg-slate-50 p-3">
+                  <p class="text-xs font-bold text-slate-500">
+                    {{ 'contracts.training.signature.requestedAt' | translate }}
+                  </p>
+                  <p class="mt-1 font-bold">
+                    {{ process.requestedAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+                  </p>
+                </div>
+                <div class="rounded-xl bg-slate-50 p-3">
+                  <p class="text-xs font-bold text-slate-500">SHA-256</p>
+                  <p class="mt-1 break-all font-mono text-[11px]">{{ process.documentSha256 }}</p>
+                </div>
               </div>
 
               <div class="mt-4 space-y-2">
                 @for (recipient of process.recipients; track recipient.signatoryId) {
-                  <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--driveos-border)] p-3">
-                    <div><p class="font-bold text-slate-900">{{ recipient.displayName }}</p><p class="mt-1 text-xs text-slate-500">{{ recipient.kind }} · #{{ recipient.signingOrder }}</p></div>
-                    <span class="rounded-full px-2 py-1 text-xs font-bold" [class.bg-emerald-50]="recipient.hasSigned" [class.text-emerald-700]="recipient.hasSigned" [class.bg-amber-50]="!recipient.hasSigned" [class.text-amber-700]="!recipient.hasSigned">{{ (recipient.hasSigned ? 'contracts.training.signature.signed' : 'contracts.training.signature.awaiting') | translate }}</span>
+                  <div
+                    class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--driveos-border)] p-3"
+                  >
+                    <div>
+                      <p class="font-bold text-slate-900">{{ recipient.displayName }}</p>
+                      <p class="mt-1 text-xs text-slate-500">
+                        {{ recipient.kind }} · #{{ recipient.signingOrder }}
+                      </p>
+                    </div>
+                    <span
+                      class="rounded-full px-2 py-1 text-xs font-bold"
+                      [class.bg-emerald-50]="recipient.hasSigned"
+                      [class.text-emerald-700]="recipient.hasSigned"
+                      [class.bg-amber-50]="!recipient.hasSigned"
+                      [class.text-amber-700]="!recipient.hasSigned"
+                    >
+                      {{
+                        (recipient.hasSigned
+                          ? 'contracts.training.signature.signed'
+                          : 'contracts.training.signature.awaiting'
+                        ) | translate
+                      }}
+                    </span>
                   </div>
                 }
               </div>
 
               @if (process.evidence.length) {
                 <div class="mt-5">
-                  <h5 class="text-sm font-black text-slate-900">{{ 'contracts.training.signature.evidenceTitle' | translate }}</h5>
+                  <h5 class="text-sm font-black text-slate-900">
+                    {{ 'contracts.training.signature.evidenceTitle' | translate }}
+                  </h5>
                   <div class="mt-3 space-y-2">
                     @for (proof of process.evidence; track proof.id) {
                       <details class="rounded-xl border border-[var(--driveos-border)] p-3">
-                        <summary class="cursor-pointer text-sm font-bold text-slate-900">{{ proof.provider }} · {{ proof.signedAtUtc | date:'dd/MM/yyyy HH:mm' }}</summary>
+                        <summary class="cursor-pointer text-sm font-bold text-slate-900">
+                          {{ proof.provider }} · {{ proof.signedAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+                        </summary>
                         <div class="mt-3 grid gap-2 text-xs text-slate-600 md:grid-cols-2">
-                          <p><b>{{ 'contracts.training.signature.method' | translate }}:</b> {{ proof.signatureMethod }}</p>
-                          <p><b>{{ 'contracts.training.signature.authentication' | translate }}:</b> {{ proof.authenticationMethod }}</p>
-                          <p><b>{{ 'contracts.training.signature.providerReference' | translate }}:</b> {{ proof.providerSignatureReference }}</p>
-                          <p><b>{{ 'contracts.training.signature.receivedAt' | translate }}:</b> {{ proof.receivedAtUtc | date:'dd/MM/yyyy HH:mm' }}</p>
-                          @if (proof.certificateReference) {<p class="md:col-span-2"><b>{{ 'contracts.training.signature.certificate' | translate }}:</b> {{ proof.certificateReference }}</p>}
-                          @if (proof.ipAddress) {<p><b>IP:</b> {{ proof.ipAddress }}</p>}
-                          <p class="break-all md:col-span-2"><b>SHA-256:</b> {{ proof.documentSha256 }}</p>
+                          <p>
+                            <b>{{ 'contracts.training.signature.method' | translate }}:</b>
+                            {{ proof.signatureMethod }}
+                          </p>
+                          <p>
+                            <b>{{ 'contracts.training.signature.authentication' | translate }}:</b>
+                            {{ proof.authenticationMethod }}
+                          </p>
+                          <p>
+                            <b>
+                              {{ 'contracts.training.signature.providerReference' | translate }}:
+                            </b>
+                            {{ proof.providerSignatureReference }}
+                          </p>
+                          <p>
+                            <b>{{ 'contracts.training.signature.receivedAt' | translate }}:</b>
+                            {{ proof.receivedAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+                          </p>
+                          @if (proof.certificateReference) {
+                            <p class="md:col-span-2">
+                              <b>{{ 'contracts.training.signature.certificate' | translate }}:</b>
+                              {{ proof.certificateReference }}
+                            </p>
+                          }
+                          @if (proof.ipAddress) {
+                            <p>
+                              <b>IP:</b>
+                              {{ proof.ipAddress }}
+                            </p>
+                          }
+                          <p class="break-all md:col-span-2">
+                            <b>SHA-256:</b>
+                            {{ proof.documentSha256 }}
+                          </p>
                         </div>
                       </details>
                     }
@@ -151,77 +402,376 @@
                 </div>
               }
 
-              @if (canRecordSignature() && process.status !== 'Completed' && signableRecipients().length) {
-                <form class="mt-5 grid gap-3 rounded-xl bg-slate-50 p-4 md:grid-cols-2" [formGroup]="signatureEvidenceForm" (ngSubmit)="recordSignature()">
+              @if (
+                canRecordSignature() &&
+                process.status !== 'Completed' &&
+                signableRecipients().length
+              ) {
+                <form
+                  class="mt-5 grid gap-3 rounded-xl bg-slate-50 p-4 md:grid-cols-2"
+                  [formGroup]="signatureEvidenceForm"
+                  (ngSubmit)="recordSignature()"
+                >
                   <div class="md:col-span-2">
-                    <p class="text-sm font-black text-slate-900">{{ 'contracts.training.signature.recordEvidenceTitle' | translate }}</p>
-                    <p class="mt-1 text-xs text-slate-500">{{ 'contracts.training.signature.recordEvidenceDescription' | translate }}</p>
+                    <p class="text-sm font-black text-slate-900">
+                      {{ 'contracts.training.signature.recordEvidenceTitle' | translate }}
+                    </p>
+                    <p class="mt-1 text-xs text-slate-500">
+                      {{ 'contracts.training.signature.recordEvidenceDescription' | translate }}
+                    </p>
                   </div>
-                  <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.signature.signatory' | translate }}<select formControlName="signatoryId" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm">@for (recipient of signableRecipients(); track recipient.signatoryId) {<option [value]="recipient.signatoryId">#{{ recipient.signingOrder }} · {{ recipient.displayName }}</option>}</select></label>
-                  <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.signature.signedAt' | translate }}<input type="datetime-local" formControlName="signedAt" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                  <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.signature.method' | translate }}<input formControlName="signatureMethod" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                  <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.signature.authentication' | translate }}<input formControlName="authenticationMethod" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                  <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.signature.provider' | translate }}<input formControlName="provider" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                  <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.signature.providerReference' | translate }}<input formControlName="providerSignatureReference" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                  <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.signature.certificate' | translate }}<input formControlName="certificateReference" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                  <label class="text-xs font-bold text-slate-600">IP<input formControlName="ipAddress" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                  <label class="text-xs font-bold text-slate-600 md:col-span-2">User-Agent<input formControlName="userAgent" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                  <div class="flex justify-end md:col-span-2"><button type="submit" [disabled]="recordingSignature()" class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"><i class="ph ph-seal-check mr-2"></i>{{ 'contracts.training.signature.recordEvidence' | translate }}</button></div>
+                  <label class="text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.signature.signatory' | translate }}
+                    <select
+                      formControlName="signatoryId"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    >
+                      @for (recipient of signableRecipients(); track recipient.signatoryId) {
+                        <option [value]="recipient.signatoryId">
+                          #{{ recipient.signingOrder }} · {{ recipient.displayName }}
+                        </option>
+                      }
+                    </select>
+                  </label>
+                  <label class="text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.signature.signedAt' | translate }}
+                    <input
+                      type="datetime-local"
+                      formControlName="signedAt"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    />
+                  </label>
+                  <label class="text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.signature.method' | translate }}
+                    <input
+                      formControlName="signatureMethod"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    />
+                  </label>
+                  <label class="text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.signature.authentication' | translate }}
+                    <input
+                      formControlName="authenticationMethod"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    />
+                  </label>
+                  <label class="text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.signature.provider' | translate }}
+                    <input
+                      formControlName="provider"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    />
+                  </label>
+                  <label class="text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.signature.providerReference' | translate }}
+                    <input
+                      formControlName="providerSignatureReference"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    />
+                  </label>
+                  <label class="text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.signature.certificate' | translate }}
+                    <input
+                      formControlName="certificateReference"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    />
+                  </label>
+                  <label class="text-xs font-bold text-slate-600">
+                    IP
+                    <input
+                      formControlName="ipAddress"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    />
+                  </label>
+                  <label class="text-xs font-bold text-slate-600 md:col-span-2">
+                    User-Agent
+                    <input
+                      formControlName="userAgent"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    />
+                  </label>
+                  <div class="flex justify-end md:col-span-2">
+                    <button
+                      type="submit"
+                      [disabled]="recordingSignature()"
+                      class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+                    >
+                      <i class="ph ph-seal-check mr-2"></i>
+                      {{ 'contracts.training.signature.recordEvidence' | translate }}
+                    </button>
+                  </div>
                 </form>
               }
             </section>
           }
 
           <section class="mt-6 rounded-xl border border-[var(--driveos-border)] p-4">
-            <div class="flex flex-wrap items-center justify-between gap-3"><div><h4 class="font-black text-slate-900">{{ 'contracts.training.signatories.title' | translate }}</h4><p class="mt-1 text-xs text-slate-500">{{ 'contracts.training.signatories.description' | translate }}</p></div><span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">{{ contract.signatories.length }}</span></div>
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h4 class="font-black text-slate-900">
+                  {{ 'contracts.training.signatories.title' | translate }}
+                </h4>
+                <p class="mt-1 text-xs text-slate-500">
+                  {{ 'contracts.training.signatories.description' | translate }}
+                </p>
+              </div>
+              <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">
+                {{ contract.signatories.length }}
+              </span>
+            </div>
             <div class="mt-4 space-y-2">
               @for (signatory of contract.signatories; track signatory.id) {
                 <div class="rounded-xl border border-[var(--driveos-border)] p-3">
-                  <div class="flex flex-wrap items-start justify-between gap-3"><div><p class="font-bold text-slate-900">{{ signatory.displayName }}</p><p class="mt-1 text-xs text-slate-500">{{ signatory.kind }} · #{{ signatory.signingOrder }} · {{ signatory.isRequired ? ('contracts.training.signatories.required' | translate) : ('contracts.training.signatories.optional' | translate) }}</p></div><div class="flex gap-2"><span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold">{{ signatory.authorityStatus }}</span><span class="rounded-full bg-blue-50 px-2 py-1 text-xs font-bold text-blue-800">{{ signatory.status }}</span></div></div>
-                  @if (signatory.authorityReference) {<p class="mt-2 text-xs text-slate-500">{{ signatory.authorityReference }}</p>}
-                  @if (signatory.authorityRejectionReason) {<p class="mt-2 text-xs font-semibold text-red-700">{{ signatory.authorityRejectionReason }}</p>}
-                  @if (signatoriesEditable()) {<div class="mt-3 flex flex-wrap gap-2">@if (canManageSignatories()) {<button type="button" (click)="editSignatory(signatory)" class="rounded-lg border px-2.5 py-1.5 text-xs font-bold">{{ 'contracts.training.signatories.edit' | translate }}</button><button type="button" (click)="removeSignatory(signatory.id)" class="rounded-lg border border-red-200 px-2.5 py-1.5 text-xs font-bold text-red-700">{{ 'contracts.training.signatories.delete' | translate }}</button>} @if (canVerifySignatories() && signatory.kind !== 'Student') {<button type="button" (click)="decideAuthority(signatory.id, true)" class="rounded-lg border border-emerald-200 px-2.5 py-1.5 text-xs font-bold text-emerald-700">{{ 'contracts.training.signatories.verify' | translate }}</button><button type="button" (click)="decideAuthority(signatory.id, false)" class="rounded-lg border border-amber-200 px-2.5 py-1.5 text-xs font-bold text-amber-700">{{ 'contracts.training.signatories.rejectAuthority' | translate }}</button>}</div>}
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p class="font-bold text-slate-900">{{ signatory.displayName }}</p>
+                      <p class="mt-1 text-xs text-slate-500">
+                        {{ signatory.kind }} · #{{ signatory.signingOrder }} ·
+                        {{
+                          signatory.isRequired
+                            ? ('contracts.training.signatories.required' | translate)
+                            : ('contracts.training.signatories.optional' | translate)
+                        }}
+                      </p>
+                    </div>
+                    <div class="flex gap-2">
+                      <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold">
+                        {{ signatory.authorityStatus }}
+                      </span>
+                      <span
+                        class="rounded-full bg-blue-50 px-2 py-1 text-xs font-bold text-blue-800"
+                      >
+                        {{ signatory.status }}
+                      </span>
+                    </div>
+                  </div>
+                  @if (signatory.authorityReference) {
+                    <p class="mt-2 text-xs text-slate-500">{{ signatory.authorityReference }}</p>
+                  }
+                  @if (signatory.authorityRejectionReason) {
+                    <p class="mt-2 text-xs font-semibold text-red-700">
+                      {{ signatory.authorityRejectionReason }}
+                    </p>
+                  }
+                  @if (signatoriesEditable()) {
+                    <div class="mt-3 flex flex-wrap gap-2">
+                      @if (canManageSignatories()) {
+                        <button
+                          type="button"
+                          (click)="editSignatory(signatory)"
+                          class="rounded-lg border px-2.5 py-1.5 text-xs font-bold"
+                        >
+                          {{ 'contracts.training.signatories.edit' | translate }}
+                        </button>
+                        <button
+                          type="button"
+                          (click)="removeSignatory(signatory.id)"
+                          class="rounded-lg border border-red-200 px-2.5 py-1.5 text-xs font-bold text-red-700"
+                        >
+                          {{ 'contracts.training.signatories.delete' | translate }}
+                        </button>
+                      }
+                      @if (canVerifySignatories() && signatory.kind !== 'Student') {
+                        <button
+                          type="button"
+                          (click)="decideAuthority(signatory.id, true)"
+                          class="rounded-lg border border-emerald-200 px-2.5 py-1.5 text-xs font-bold text-emerald-700"
+                        >
+                          {{ 'contracts.training.signatories.verify' | translate }}
+                        </button>
+                        <button
+                          type="button"
+                          (click)="decideAuthority(signatory.id, false)"
+                          class="rounded-lg border border-amber-200 px-2.5 py-1.5 text-xs font-bold text-amber-700"
+                        >
+                          {{ 'contracts.training.signatories.rejectAuthority' | translate }}
+                        </button>
+                      }
+                    </div>
+                  }
                 </div>
-              } @empty {<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">{{ 'contracts.training.signatories.empty' | translate }}</p>}
+              } @empty {
+                <p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">
+                  {{ 'contracts.training.signatories.empty' | translate }}
+                </p>
+              }
             </div>
             @if (canManageSignatories() && signatoriesEditable()) {
-              <form class="mt-4 grid gap-3 rounded-xl bg-slate-50 p-4 md:grid-cols-2" [formGroup]="signatoryForm" (ngSubmit)="saveSignatory()">
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.signatories.kind' | translate }}<select formControlName="kind" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"><option value="Student">Student</option><option value="Guardian">Guardian</option><option value="ProviderRepresentative">ProviderRepresentative</option><option value="FunderRepresentative">FunderRepresentative</option><option value="Other">Other</option></select></label>
-                <label class="text-xs font-bold text-slate-600">PersonId<input formControlName="personId" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.signatories.name' | translate }}<input formControlName="displayName" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.signatories.organizationId' | translate }}<input formControlName="representedOrganizationId" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.signatories.order' | translate }}<input type="number" min="1" formControlName="signingOrder" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.signatories.authorityReference' | translate }}<input formControlName="authorityReference" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" formControlName="isRequired" />{{ 'contracts.training.signatories.required' | translate }}</label>
-                <div class="flex justify-end gap-2 md:col-span-2"><button type="button" (click)="cancelSignatoryEdit()" class="rounded-lg border px-3 py-2 text-xs font-bold">{{ 'contracts.training.signatories.cancel' | translate }}</button><button type="submit" [disabled]="savingSignatory()" class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">{{ (editingSignatoryId() ? 'contracts.training.signatories.save' : 'contracts.training.signatories.add') | translate }}</button></div>
+              <form
+                class="mt-4 grid gap-3 rounded-xl bg-slate-50 p-4 md:grid-cols-2"
+                [formGroup]="signatoryForm"
+                (ngSubmit)="saveSignatory()"
+              >
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.signatories.kind' | translate }}
+                  <select
+                    formControlName="kind"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  >
+                    <option value="Student">Student</option>
+                    <option value="Guardian">Guardian</option>
+                    <option value="ProviderRepresentative">ProviderRepresentative</option>
+                    <option value="FunderRepresentative">FunderRepresentative</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  PersonId
+                  <input
+                    formControlName="personId"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.signatories.name' | translate }}
+                  <input
+                    formControlName="displayName"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.signatories.organizationId' | translate }}
+                  <input
+                    formControlName="representedOrganizationId"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.signatories.order' | translate }}
+                  <input
+                    type="number"
+                    min="1"
+                    formControlName="signingOrder"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.signatories.authorityReference' | translate }}
+                  <input
+                    formControlName="authorityReference"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="flex items-center gap-2 text-sm font-semibold">
+                  <input
+                    type="checkbox"
+                    formControlName="isRequired"
+                  />
+                  {{ 'contracts.training.signatories.required' | translate }}
+                </label>
+                <div class="flex justify-end gap-2 md:col-span-2">
+                  <button
+                    type="button"
+                    (click)="cancelSignatoryEdit()"
+                    class="rounded-lg border px-3 py-2 text-xs font-bold"
+                  >
+                    {{ 'contracts.training.signatories.cancel' | translate }}
+                  </button>
+                  <button
+                    type="submit"
+                    [disabled]="savingSignatory()"
+                    class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+                  >
+                    {{
+                      (editingSignatoryId()
+                        ? 'contracts.training.signatories.save'
+                        : 'contracts.training.signatories.add'
+                      ) | translate
+                    }}
+                  </button>
+                </div>
               </form>
             }
           </section>
 
-
           <section class="mt-6 rounded-xl border border-amber-200 bg-amber-50/40 p-4">
             <div class="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h4 class="font-black text-slate-900">{{ 'contracts.training.suspension.title' | translate }}</h4>
-                <p class="mt-1 text-xs text-slate-600">{{ 'contracts.training.suspension.description' | translate }}</p>
+                <h4 class="font-black text-slate-900">
+                  {{ 'contracts.training.suspension.title' | translate }}
+                </h4>
+                <p class="mt-1 text-xs text-slate-600">
+                  {{ 'contracts.training.suspension.description' | translate }}
+                </p>
               </div>
               @if (contract.status === 'Suspended') {
-                <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-800">{{ 'contracts.training.suspension.suspended' | translate }}</span>
+                <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-800">
+                  {{ 'contracts.training.suspension.suspended' | translate }}
+                </span>
               }
             </div>
 
             @if (contract.status === 'Suspended') {
               <div class="mt-4 grid gap-3 text-sm md:grid-cols-2">
-                <div><span class="text-xs font-bold text-slate-500">{{ 'contracts.training.suspension.effectiveDate' | translate }}</span><p class="font-semibold">{{ contract.suspensionEffectiveDate | date:'dd/MM/yyyy' }}</p></div>
-                <div><span class="text-xs font-bold text-slate-500">{{ 'contracts.training.suspension.expectedResumeDate' | translate }}</span><p class="font-semibold">{{ contract.suspensionExpectedResumeDate ? (contract.suspensionExpectedResumeDate | date:'dd/MM/yyyy') : '—' }}</p></div>
-                <div class="md:col-span-2"><span class="text-xs font-bold text-slate-500">{{ 'contracts.training.suspension.reason' | translate }}</span><p class="mt-1 whitespace-pre-wrap">{{ contract.suspensionReason }}</p></div>
+                <div>
+                  <span class="text-xs font-bold text-slate-500">
+                    {{ 'contracts.training.suspension.effectiveDate' | translate }}
+                  </span>
+                  <p class="font-semibold">
+                    {{ contract.suspensionEffectiveDate | date: 'dd/MM/yyyy' }}
+                  </p>
+                </div>
+                <div>
+                  <span class="text-xs font-bold text-slate-500">
+                    {{ 'contracts.training.suspension.expectedResumeDate' | translate }}
+                  </span>
+                  <p class="font-semibold">
+                    {{
+                      contract.suspensionExpectedResumeDate
+                        ? (contract.suspensionExpectedResumeDate | date: 'dd/MM/yyyy')
+                        : '—'
+                    }}
+                  </p>
+                </div>
+                <div class="md:col-span-2">
+                  <span class="text-xs font-bold text-slate-500">
+                    {{ 'contracts.training.suspension.reason' | translate }}
+                  </span>
+                  <p class="mt-1 whitespace-pre-wrap">{{ contract.suspensionReason }}</p>
+                </div>
               </div>
-            } @else if (canSuspend() && (contract.status === 'Active' || contract.status === 'Amended')) {
-              <form class="mt-4 grid gap-3 md:grid-cols-2" [formGroup]="suspensionForm" (ngSubmit)="suspend()">
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.suspension.effectiveDate' | translate }}<input type="date" formControlName="effectiveDate" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.suspension.expectedResumeDate' | translate }}<input type="date" formControlName="expectedResumeDate" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="md:col-span-2 text-xs font-bold text-slate-600">{{ 'contracts.training.suspension.reason' | translate }}<textarea rows="3" maxlength="500" formControlName="reason" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"></textarea></label>
-                <div class="flex justify-end md:col-span-2"><button type="submit" [disabled]="suspending() || suspensionForm.invalid" class="rounded-lg bg-amber-600 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">{{ 'contracts.training.suspension.action' | translate }}</button></div>
+            } @else if (
+              canSuspend() && (contract.status === 'Active' || contract.status === 'Amended')
+            ) {
+              <form
+                class="mt-4 grid gap-3 md:grid-cols-2"
+                [formGroup]="suspensionForm"
+                (ngSubmit)="suspend()"
+              >
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.suspension.effectiveDate' | translate }}
+                  <input
+                    type="date"
+                    formControlName="effectiveDate"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.suspension.expectedResumeDate' | translate }}
+                  <input
+                    type="date"
+                    formControlName="expectedResumeDate"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="md:col-span-2 text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.suspension.reason' | translate }}
+                  <textarea
+                    rows="3"
+                    maxlength="500"
+                    formControlName="reason"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  ></textarea>
+                </label>
+                <div class="flex justify-end md:col-span-2">
+                  <button
+                    type="submit"
+                    [disabled]="suspending() || suspensionForm.invalid"
+                    class="rounded-lg bg-amber-600 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+                  >
+                    {{ 'contracts.training.suspension.action' | translate }}
+                  </button>
+                </div>
               </form>
             }
           </section>
@@ -229,148 +779,669 @@
           <section class="mt-6 rounded-xl border border-red-200 bg-red-50/30 p-4">
             <div class="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h4 class="font-black text-slate-900">{{ 'contracts.training.termination.title' | translate }}</h4>
-                <p class="mt-1 text-xs text-slate-500">{{ 'contracts.training.termination.description' | translate }}</p>
+                <h4 class="font-black text-slate-900">
+                  {{ 'contracts.training.termination.title' | translate }}
+                </h4>
+                <p class="mt-1 text-xs text-slate-500">
+                  {{ 'contracts.training.termination.description' | translate }}
+                </p>
               </div>
               @if (contract.status === 'Terminated') {
-                <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-black text-red-800">{{ 'contracts.training.termination.terminated' | translate }}</span>
+                <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-black text-red-800">
+                  {{ 'contracts.training.termination.terminated' | translate }}
+                </span>
               }
             </div>
 
             @if (contract.status === 'Terminated') {
               <div class="mt-4 grid gap-3 text-sm md:grid-cols-2">
-                <div><span class="text-xs font-bold text-slate-500">{{ 'contracts.training.termination.effectiveDate' | translate }}</span><p class="font-semibold">{{ contract.terminationEffectiveDate | date:'dd/MM/yyyy' }}</p></div>
-                <div><span class="text-xs font-bold text-slate-500">{{ 'contracts.training.termination.recordedAt' | translate }}</span><p class="font-semibold">{{ contract.terminatedAtUtc | date:'dd/MM/yyyy HH:mm' }}</p></div>
-                <div class="md:col-span-2"><span class="text-xs font-bold text-slate-500">{{ 'contracts.training.termination.reason' | translate }}</span><p class="mt-1 whitespace-pre-wrap">{{ contract.terminationReason }}</p></div>
+                <div>
+                  <span class="text-xs font-bold text-slate-500">
+                    {{ 'contracts.training.termination.effectiveDate' | translate }}
+                  </span>
+                  <p class="font-semibold">
+                    {{ contract.terminationEffectiveDate | date: 'dd/MM/yyyy' }}
+                  </p>
+                </div>
+                <div>
+                  <span class="text-xs font-bold text-slate-500">
+                    {{ 'contracts.training.termination.recordedAt' | translate }}
+                  </span>
+                  <p class="font-semibold">
+                    {{ contract.terminatedAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+                  </p>
+                </div>
+                <div class="md:col-span-2">
+                  <span class="text-xs font-bold text-slate-500">
+                    {{ 'contracts.training.termination.reason' | translate }}
+                  </span>
+                  <p class="mt-1 whitespace-pre-wrap">{{ contract.terminationReason }}</p>
+                </div>
               </div>
-            } @else if (canTerminate() && (contract.status === 'Active' || contract.status === 'Amended' || contract.status === 'Suspended')) {
-              <form class="mt-4 grid gap-3 md:grid-cols-2" [formGroup]="terminationForm" (ngSubmit)="terminate()">
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.termination.effectiveDate' | translate }}<input type="date" formControlName="effectiveDate" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="md:col-span-2 text-xs font-bold text-slate-600">{{ 'contracts.training.termination.reason' | translate }}<textarea rows="3" maxlength="500" formControlName="reason" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"></textarea></label>
-                <p class="md:col-span-2 text-xs font-semibold text-red-700">{{ 'contracts.training.termination.warning' | translate }}</p>
-                <div class="flex justify-end md:col-span-2"><button type="submit" [disabled]="terminating() || terminationForm.invalid" class="rounded-lg bg-red-700 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">{{ 'contracts.training.termination.action' | translate }}</button></div>
+            } @else if (
+              canTerminate() &&
+              (contract.status === 'Active' ||
+                contract.status === 'Amended' ||
+                contract.status === 'Suspended')
+            ) {
+              <form
+                class="mt-4 grid gap-3 md:grid-cols-2"
+                [formGroup]="terminationForm"
+                (ngSubmit)="terminate()"
+              >
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.termination.effectiveDate' | translate }}
+                  <input
+                    type="date"
+                    formControlName="effectiveDate"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="md:col-span-2 text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.termination.reason' | translate }}
+                  <textarea
+                    rows="3"
+                    maxlength="500"
+                    formControlName="reason"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  ></textarea>
+                </label>
+                <p class="md:col-span-2 text-xs font-semibold text-red-700">
+                  {{ 'contracts.training.termination.warning' | translate }}
+                </p>
+                <div class="flex justify-end md:col-span-2">
+                  <button
+                    type="submit"
+                    [disabled]="terminating() || terminationForm.invalid"
+                    class="rounded-lg bg-red-700 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+                  >
+                    {{ 'contracts.training.termination.action' | translate }}
+                  </button>
+                </div>
               </form>
             }
           </section>
 
           <section class="mt-6 rounded-xl border border-[var(--driveos-border)] p-4">
             <div class="flex flex-wrap items-start justify-between gap-3">
-              <div><h4 class="font-black text-slate-900">{{ 'contracts.training.completion.title' | translate }}</h4><p class="mt-1 text-xs text-slate-500">{{ 'contracts.training.completion.description' | translate }}</p></div>
-              @if (contract.status === 'Completed') { <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-800">{{ 'contracts.training.completion.completed' | translate }}</span> }
-              @if (contract.status === 'Expired') { <span class="rounded-full bg-slate-200 px-3 py-1 text-xs font-black text-slate-700">{{ 'contracts.training.expiration.expired' | translate }}</span> }
+              <div>
+                <h4 class="font-black text-slate-900">
+                  {{ 'contracts.training.completion.title' | translate }}
+                </h4>
+                <p class="mt-1 text-xs text-slate-500">
+                  {{ 'contracts.training.completion.description' | translate }}
+                </p>
+              </div>
+              @if (contract.status === 'Completed') {
+                <span
+                  class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-800"
+                >
+                  {{ 'contracts.training.completion.completed' | translate }}
+                </span>
+              }
+              @if (contract.status === 'Expired') {
+                <span class="rounded-full bg-slate-200 px-3 py-1 text-xs font-black text-slate-700">
+                  {{ 'contracts.training.expiration.expired' | translate }}
+                </span>
+              }
             </div>
             @if (contract.status === 'Completed') {
               <div class="mt-4 grid gap-3 text-sm md:grid-cols-2">
-                <div><span class="text-xs font-bold text-slate-500">{{ 'contracts.training.completion.effectiveDate' | translate }}</span><p class="font-semibold">{{ contract.completionEffectiveDate | date:'dd/MM/yyyy' }}</p></div>
-                <div><span class="text-xs font-bold text-slate-500">{{ 'contracts.training.completion.recordedAt' | translate }}</span><p class="font-semibold">{{ contract.completedAtUtc | date:'dd/MM/yyyy HH:mm' }}</p></div>
-                <div class="md:col-span-2"><span class="text-xs font-bold text-slate-500">{{ 'contracts.training.completion.note' | translate }}</span><p class="mt-1 whitespace-pre-wrap">{{ contract.completionNote }}</p></div>
+                <div>
+                  <span class="text-xs font-bold text-slate-500">
+                    {{ 'contracts.training.completion.effectiveDate' | translate }}
+                  </span>
+                  <p class="font-semibold">
+                    {{ contract.completionEffectiveDate | date: 'dd/MM/yyyy' }}
+                  </p>
+                </div>
+                <div>
+                  <span class="text-xs font-bold text-slate-500">
+                    {{ 'contracts.training.completion.recordedAt' | translate }}
+                  </span>
+                  <p class="font-semibold">
+                    {{ contract.completedAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+                  </p>
+                </div>
+                <div class="md:col-span-2">
+                  <span class="text-xs font-bold text-slate-500">
+                    {{ 'contracts.training.completion.note' | translate }}
+                  </span>
+                  <p class="mt-1 whitespace-pre-wrap">{{ contract.completionNote }}</p>
+                </div>
               </div>
             } @else if (contract.status === 'Expired') {
               <div class="mt-4 grid gap-3 text-sm md:grid-cols-2">
-                <div><span class="text-xs font-bold text-slate-500">{{ 'contracts.training.expiration.effectiveDate' | translate }}</span><p class="font-semibold">{{ contract.expirationEffectiveDate | date:'dd/MM/yyyy' }}</p></div>
-                <div><span class="text-xs font-bold text-slate-500">{{ 'contracts.training.expiration.recordedAt' | translate }}</span><p class="font-semibold">{{ contract.expiredAtUtc | date:'dd/MM/yyyy HH:mm' }}</p></div>
+                <div>
+                  <span class="text-xs font-bold text-slate-500">
+                    {{ 'contracts.training.expiration.effectiveDate' | translate }}
+                  </span>
+                  <p class="font-semibold">
+                    {{ contract.expirationEffectiveDate | date: 'dd/MM/yyyy' }}
+                  </p>
+                </div>
+                <div>
+                  <span class="text-xs font-bold text-slate-500">
+                    {{ 'contracts.training.expiration.recordedAt' | translate }}
+                  </span>
+                  <p class="font-semibold">
+                    {{ contract.expiredAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+                  </p>
+                </div>
               </div>
             } @else {
-              @if (canComplete() && (contract.status === 'Active' || contract.status === 'Amended')) {
-                <form class="mt-4 grid gap-3 md:grid-cols-2" [formGroup]="completionForm" (ngSubmit)="complete()">
-                  <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.completion.effectiveDate' | translate }}<input type="date" formControlName="effectiveDate" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                  <label class="md:col-span-2 text-xs font-bold text-slate-600">{{ 'contracts.training.completion.note' | translate }}<textarea rows="3" maxlength="500" formControlName="note" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"></textarea></label>
-                  <div class="flex justify-end md:col-span-2"><button type="submit" [disabled]="completing() || completionForm.invalid" class="rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">{{ 'contracts.training.completion.action' | translate }}</button></div>
+              @if (
+                canComplete() && (contract.status === 'Active' || contract.status === 'Amended')
+              ) {
+                <form
+                  class="mt-4 grid gap-3 md:grid-cols-2"
+                  [formGroup]="completionForm"
+                  (ngSubmit)="complete()"
+                >
+                  <label class="text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.completion.effectiveDate' | translate }}
+                    <input
+                      type="date"
+                      formControlName="effectiveDate"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    />
+                  </label>
+                  <label class="md:col-span-2 text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.completion.note' | translate }}
+                    <textarea
+                      rows="3"
+                      maxlength="500"
+                      formControlName="note"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    ></textarea>
+                  </label>
+                  <div class="flex justify-end md:col-span-2">
+                    <button
+                      type="submit"
+                      [disabled]="completing() || completionForm.invalid"
+                      class="rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+                    >
+                      {{ 'contracts.training.completion.action' | translate }}
+                    </button>
+                  </div>
                 </form>
               }
-              @if (canExpire() && contract.endDate && (contract.status === 'Signed' || contract.status === 'Active' || contract.status === 'Amended' || contract.status === 'Suspended')) {
-                <div class="mt-4 flex items-center justify-between gap-3 rounded-lg bg-slate-50 p-3"><p class="text-xs text-slate-600">{{ 'contracts.training.expiration.description' | translate }}</p><button type="button" (click)="expire()" [disabled]="expiring()" class="rounded-lg border px-3 py-2 text-xs font-bold disabled:opacity-50">{{ 'contracts.training.expiration.action' | translate }}</button></div>
+              @if (
+                canExpire() &&
+                contract.endDate &&
+                (contract.status === 'Signed' ||
+                  contract.status === 'Active' ||
+                  contract.status === 'Amended' ||
+                  contract.status === 'Suspended')
+              ) {
+                <div
+                  class="mt-4 flex items-center justify-between gap-3 rounded-lg bg-slate-50 p-3"
+                >
+                  <p class="text-xs text-slate-600">
+                    {{ 'contracts.training.expiration.description' | translate }}
+                  </p>
+                  <button
+                    type="button"
+                    (click)="expire()"
+                    [disabled]="expiring()"
+                    class="rounded-lg border px-3 py-2 text-xs font-bold disabled:opacity-50"
+                  >
+                    {{ 'contracts.training.expiration.action' | translate }}
+                  </button>
+                </div>
               }
             }
           </section>
 
           <section class="mt-6 rounded-xl border border-[var(--driveos-border)] p-4">
             <div class="flex flex-wrap items-start justify-between gap-3">
-              <div><h4 class="font-black text-slate-900">{{ 'contracts.training.amendments.title' | translate }}</h4><p class="mt-1 text-xs text-slate-500">{{ 'contracts.training.amendments.description' | translate }}</p></div>
-              <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">{{ contract.amendments.length }}</span>
+              <div>
+                <h4 class="font-black text-slate-900">
+                  {{ 'contracts.training.amendments.title' | translate }}
+                </h4>
+                <p class="mt-1 text-xs text-slate-500">
+                  {{ 'contracts.training.amendments.description' | translate }}
+                </p>
+              </div>
+              <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">
+                {{ contract.amendments.length }}
+              </span>
             </div>
 
             <div class="mt-4 space-y-2">
               @for (amendment of contract.amendments; track amendment.id) {
                 <div class="rounded-xl border border-[var(--driveos-border)] p-3">
                   <div class="flex flex-wrap items-start justify-between gap-3">
-                    <div><p class="font-bold text-slate-900">#{{ amendment.amendmentNumber }} · {{ amendment.reason }}</p><p class="mt-1 text-xs text-slate-500">{{ 'contracts.training.amendments.baseVersion' | translate }} {{ amendment.baseContractVersionNumber }} · {{ amendment.effectiveDate | date:'dd/MM/yyyy' }} · {{ amendment.totalAmount | number:'1.2-2' }} {{ amendment.currency }}</p></div>
-                    <span class="rounded-full bg-blue-50 px-2 py-1 text-xs font-bold text-blue-800">{{ amendment.status }}</span>
+                    <div>
+                      <p class="font-bold text-slate-900">
+                        #{{ amendment.amendmentNumber }} · {{ amendment.reason }}
+                      </p>
+                      <p class="mt-1 text-xs text-slate-500">
+                        {{ 'contracts.training.amendments.baseVersion' | translate }}
+                        {{ amendment.baseContractVersionNumber }} ·
+                        {{ amendment.effectiveDate | date: 'dd/MM/yyyy' }} ·
+                        {{ amendment.totalAmount | number: '1.2-2' }} {{ amendment.currency }}
+                      </p>
+                    </div>
+                    <span class="rounded-full bg-blue-50 px-2 py-1 text-xs font-bold text-blue-800">
+                      {{ amendment.status }}
+                    </span>
                   </div>
-                  @if (amendment.signedAtUtc) { <p class="mt-2 text-xs text-slate-500">{{ 'contracts.training.amendments.signedAt' | translate }} {{ amendment.signedAtUtc | date:'dd/MM/yyyy HH:mm' }}</p> }
+                  @if (amendment.signedAtUtc) {
+                    <p class="mt-2 text-xs text-slate-500">
+                      {{ 'contracts.training.amendments.signedAt' | translate }}
+                      {{ amendment.signedAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+                    </p>
+                  }
                   <div class="mt-3 flex flex-wrap gap-2">
-                    @if (amendment.status === 'Draft' && canRecordAmendmentSignature()) { <button type="button" (click)="selectAmendmentForProof(amendment)" class="rounded-lg border px-2.5 py-1.5 text-xs font-bold">{{ 'contracts.training.amendments.signedProof' | translate }}</button> }
-                    @if (amendment.status === 'Signed' && canApplyAmendment()) { <button type="button" (click)="applyAmendment(amendment.id)" [disabled]="amendmentActionId() !== null" class="rounded-lg bg-blue-800 px-2.5 py-1.5 text-xs font-bold text-white disabled:opacity-50">{{ 'contracts.training.amendments.apply' | translate }}</button> }
-                    @if ((amendment.status === 'Draft' || amendment.status === 'Signed') && canManageAmendments()) { <button type="button" (click)="cancelAmendment(amendment.id)" [disabled]="amendmentActionId() !== null" class="rounded-lg border border-red-200 px-2.5 py-1.5 text-xs font-bold text-red-700 disabled:opacity-50">{{ 'contracts.training.amendments.cancel' | translate }}</button> }
+                    @if (amendment.status === 'Draft' && canRecordAmendmentSignature()) {
+                      <button
+                        type="button"
+                        (click)="selectAmendmentForProof(amendment)"
+                        class="rounded-lg border px-2.5 py-1.5 text-xs font-bold"
+                      >
+                        {{ 'contracts.training.amendments.signedProof' | translate }}
+                      </button>
+                    }
+                    @if (amendment.status === 'Signed' && canApplyAmendment()) {
+                      <button
+                        type="button"
+                        (click)="applyAmendment(amendment.id)"
+                        [disabled]="amendmentActionId() !== null"
+                        class="rounded-lg bg-blue-800 px-2.5 py-1.5 text-xs font-bold text-white disabled:opacity-50"
+                      >
+                        {{ 'contracts.training.amendments.apply' | translate }}
+                      </button>
+                    }
+                    @if (
+                      (amendment.status === 'Draft' || amendment.status === 'Signed') &&
+                      canManageAmendments()
+                    ) {
+                      <button
+                        type="button"
+                        (click)="cancelAmendment(amendment.id)"
+                        [disabled]="amendmentActionId() !== null"
+                        class="rounded-lg border border-red-200 px-2.5 py-1.5 text-xs font-bold text-red-700 disabled:opacity-50"
+                      >
+                        {{ 'contracts.training.amendments.cancel' | translate }}
+                      </button>
+                    }
                   </div>
                 </div>
-              } @empty { <p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">{{ 'contracts.training.amendments.empty' | translate }}</p> }
+              } @empty {
+                <p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">
+                  {{ 'contracts.training.amendments.empty' | translate }}
+                </p>
+              }
             </div>
 
             @if (canCreateAmendment()) {
-              <form class="mt-4 grid gap-3 rounded-xl bg-slate-50 p-4 md:grid-cols-2" [formGroup]="amendmentForm" (ngSubmit)="createAmendment()">
-                <label class="md:col-span-2 text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.reason' | translate }}<textarea rows="2" formControlName="reason" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"></textarea></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.effectiveDate' | translate }}<input type="date" formControlName="effectiveDate" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.startDate' | translate }}<input type="date" formControlName="startDate" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.endDate' | translate }}<input type="date" formControlName="endDate" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.amount' | translate }}<input type="number" min="0" step="0.01" formControlName="totalAmount" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.currency' | translate }}<input maxlength="3" formControlName="currency" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm uppercase" /></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.practicalHours' | translate }}<input type="number" min="0" step="0.5" formControlName="practicalHours" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="md:col-span-2 text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.services' | translate }}<textarea rows="2" formControlName="servicesSnapshot" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"></textarea></label>
-                <label class="md:col-span-2 text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.payment' | translate }}<textarea rows="2" formControlName="paymentScheduleSnapshot" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"></textarea></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.cancellation' | translate }}<textarea rows="2" formControlName="cancellationTerms" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"></textarea></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.booking' | translate }}<textarea rows="2" formControlName="bookingRules" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"></textarea></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.studentObligations' | translate }}<textarea rows="2" formControlName="studentObligations" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"></textarea></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.providerObligations' | translate }}<textarea rows="2" formControlName="providerObligations" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"></textarea></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.examTerms' | translate }}<textarea rows="2" formControlName="examPresentationTerms" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"></textarea></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.dataTerms' | translate }}<textarea rows="2" formControlName="dataProcessingTerms" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"></textarea></label>
-                <p class="md:col-span-2 text-xs text-amber-700">{{ 'contracts.training.amendments.notRetroactive' | translate }}</p>
-                <div class="flex justify-end md:col-span-2"><button type="submit" [disabled]="savingAmendment()" class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">{{ 'contracts.training.amendments.save' | translate }}</button></div>
+              <form
+                class="mt-4 grid gap-3 rounded-xl bg-slate-50 p-4 md:grid-cols-2"
+                [formGroup]="amendmentForm"
+                (ngSubmit)="createAmendment()"
+              >
+                <label class="md:col-span-2 text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.reason' | translate }}
+                  <textarea
+                    rows="2"
+                    formControlName="reason"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  ></textarea>
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.effectiveDate' | translate }}
+                  <input
+                    type="date"
+                    formControlName="effectiveDate"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.startDate' | translate }}
+                  <input
+                    type="date"
+                    formControlName="startDate"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.endDate' | translate }}
+                  <input
+                    type="date"
+                    formControlName="endDate"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.amount' | translate }}
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    formControlName="totalAmount"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.currency' | translate }}
+                  <input
+                    maxlength="3"
+                    formControlName="currency"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm uppercase"
+                  />
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.practicalHours' | translate }}
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.5"
+                    formControlName="practicalHours"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="md:col-span-2 text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.services' | translate }}
+                  <textarea
+                    rows="2"
+                    formControlName="servicesSnapshot"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  ></textarea>
+                </label>
+                <label class="md:col-span-2 text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.payment' | translate }}
+                  <textarea
+                    rows="2"
+                    formControlName="paymentScheduleSnapshot"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  ></textarea>
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.cancellation' | translate }}
+                  <textarea
+                    rows="2"
+                    formControlName="cancellationTerms"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  ></textarea>
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.booking' | translate }}
+                  <textarea
+                    rows="2"
+                    formControlName="bookingRules"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  ></textarea>
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.studentObligations' | translate }}
+                  <textarea
+                    rows="2"
+                    formControlName="studentObligations"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  ></textarea>
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.providerObligations' | translate }}
+                  <textarea
+                    rows="2"
+                    formControlName="providerObligations"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  ></textarea>
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.examTerms' | translate }}
+                  <textarea
+                    rows="2"
+                    formControlName="examPresentationTerms"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  ></textarea>
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.dataTerms' | translate }}
+                  <textarea
+                    rows="2"
+                    formControlName="dataProcessingTerms"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  ></textarea>
+                </label>
+                <p class="md:col-span-2 text-xs text-amber-700">
+                  {{ 'contracts.training.amendments.notRetroactive' | translate }}
+                </p>
+                <div class="flex justify-end md:col-span-2">
+                  <button
+                    type="submit"
+                    [disabled]="savingAmendment()"
+                    class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+                  >
+                    {{ 'contracts.training.amendments.save' | translate }}
+                  </button>
+                </div>
               </form>
             }
 
             @if (canRecordAmendmentSignature() && contract.amendments.length > 0) {
-              <form class="mt-4 grid gap-3 rounded-xl border border-dashed border-blue-200 bg-blue-50/40 p-4 md:grid-cols-2" [formGroup]="amendmentSignedProofForm" (ngSubmit)="recordAmendmentSignedProof()">
-                <label class="text-xs font-bold text-slate-600">AmendmentId<input formControlName="amendmentId" readonly class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.signedAt' | translate }}<input type="datetime-local" formControlName="signedAt" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="md:col-span-2 text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.signedDocumentReference' | translate }}<input formControlName="signedDocumentReference" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                <label class="md:col-span-2 text-xs font-bold text-slate-600">{{ 'contracts.training.amendments.sha256' | translate }}<input formControlName="documentSha256" maxlength="64" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 font-mono text-xs" /></label>
-                <div class="flex justify-end md:col-span-2"><button type="submit" [disabled]="!amendmentSignedProofForm.controls.amendmentId.value || amendmentActionId() !== null" class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">{{ 'contracts.training.amendments.recordProof' | translate }}</button></div>
+              <form
+                class="mt-4 grid gap-3 rounded-xl border border-dashed border-blue-200 bg-blue-50/40 p-4 md:grid-cols-2"
+                [formGroup]="amendmentSignedProofForm"
+                (ngSubmit)="recordAmendmentSignedProof()"
+              >
+                <label class="text-xs font-bold text-slate-600">
+                  AmendmentId
+                  <input
+                    formControlName="amendmentId"
+                    readonly
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.signedAt' | translate }}
+                  <input
+                    type="datetime-local"
+                    formControlName="signedAt"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="md:col-span-2 text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.signedDocumentReference' | translate }}
+                  <input
+                    formControlName="signedDocumentReference"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                  />
+                </label>
+                <label class="md:col-span-2 text-xs font-bold text-slate-600">
+                  {{ 'contracts.training.amendments.sha256' | translate }}
+                  <input
+                    formControlName="documentSha256"
+                    maxlength="64"
+                    class="mt-1 w-full rounded-lg border bg-white px-3 py-2 font-mono text-xs"
+                  />
+                </label>
+                <div class="flex justify-end md:col-span-2">
+                  <button
+                    type="submit"
+                    [disabled]="
+                      !amendmentSignedProofForm.controls.amendmentId.value ||
+                      amendmentActionId() !== null
+                    "
+                    class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+                  >
+                    {{ 'contracts.training.amendments.recordProof' | translate }}
+                  </button>
+                </div>
               </form>
             }
           </section>
 
-
           @if (canReadDocuments()) {
             <section class="mt-6 rounded-xl border border-[var(--driveos-border)] p-4">
               <div class="flex flex-wrap items-start justify-between gap-3">
-                <div><h4 class="font-black text-slate-900">{{ 'contracts.training.documents.title' | translate }}</h4><p class="mt-1 text-xs text-slate-500">{{ 'contracts.training.documents.description' | translate }}</p></div>
-                <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">{{ documents().length }}</span>
+                <div>
+                  <h4 class="font-black text-slate-900">
+                    {{ 'contracts.training.documents.title' | translate }}
+                  </h4>
+                  <p class="mt-1 text-xs text-slate-500">
+                    {{ 'contracts.training.documents.description' | translate }}
+                  </p>
+                </div>
+                <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">
+                  {{ documents().length }}
+                </span>
               </div>
-              @if (documentsLoading()) { <div class="mt-4"><drive-os-spinner /></div> } @else {
+              @if (documentsLoading()) {
+                <div class="mt-4"><drive-os-spinner /></div>
+              } @else {
                 <div class="mt-4 space-y-3">
                   @for (document of documents(); track document.id) {
                     <article class="rounded-xl border border-[var(--driveos-border)] p-3">
                       <div class="flex flex-wrap items-start justify-between gap-3">
-                        <div><p class="font-bold text-slate-900">{{ document.title }}</p><p class="mt-1 text-xs text-slate-500">{{ document.documentType }} · V{{ document.currentVersionNumber }} · {{ document.visibility }} · contrat V{{ document.contractVersionNumber }}</p></div>
-                        <span class="rounded-full px-2 py-1 text-xs font-bold" [class.bg-emerald-50]="document.status === 'Active'" [class.text-emerald-700]="document.status === 'Active'" [class.bg-slate-100]="document.status !== 'Active'">{{ document.status }}</span>
+                        <div>
+                          <p class="font-bold text-slate-900">{{ document.title }}</p>
+                          <p class="mt-1 text-xs text-slate-500">
+                            {{ document.documentType }} · V{{ document.currentVersionNumber }} ·
+                            {{ document.visibility }} · contrat V{{
+                              document.contractVersionNumber
+                            }}
+                          </p>
+                        </div>
+                        <span
+                          class="rounded-full px-2 py-1 text-xs font-bold"
+                          [class.bg-emerald-50]="document.status === 'Active'"
+                          [class.text-emerald-700]="document.status === 'Active'"
+                          [class.bg-slate-100]="document.status !== 'Active'"
+                        >
+                          {{ document.status }}
+                        </span>
                       </div>
-                      @if (document.retentionLegalBasis || document.retainUntil) { <p class="mt-2 text-xs text-slate-500">{{ document.retentionLegalBasis || '—' }} @if (document.retainUntil) { · {{ 'contracts.training.documents.retainUntil' | translate }} {{ document.retainUntil | date:'dd/MM/yyyy' }} }</p> }
-                      <div class="mt-3 space-y-1">@for (version of document.versions; track version.id) { <div class="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-slate-50 px-3 py-2 text-xs"><span><b>V{{ version.versionNumber }}</b> · {{ version.fileName }} · {{ version.size | number }} o</span><span class="font-mono text-[10px] text-slate-500">{{ version.sha256 }}</span></div> }</div>
-                      @if (document.status === 'Active') { <div class="mt-3 flex flex-wrap gap-2">@if (canUploadDocuments()) { <label class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-bold"><input type="file" class="hidden" (change)="addDocumentVersion(document.id, $event)" />{{ 'contracts.training.documents.newVersion' | translate }}</label> } @if (canArchiveDocuments()) { <button type="button" (click)="archiveDocument(document.id)" [disabled]="documentActionId() !== null" class="rounded-lg border border-red-200 px-2.5 py-1.5 text-xs font-bold text-red-700 disabled:opacity-50">{{ 'contracts.training.documents.archive' | translate }}</button> }</div> }
+                      @if (document.retentionLegalBasis || document.retainUntil) {
+                        <p class="mt-2 text-xs text-slate-500">
+                          {{ document.retentionLegalBasis || '—' }}
+                          @if (document.retainUntil) {
+                            · {{ 'contracts.training.documents.retainUntil' | translate }}
+                            {{ document.retainUntil | date: 'dd/MM/yyyy' }}
+                          }
+                        </p>
+                      }
+                      <div class="mt-3 space-y-1">
+                        @for (version of document.versions; track version.id) {
+                          <div
+                            class="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-slate-50 px-3 py-2 text-xs"
+                          >
+                            <span>
+                              <b>V{{ version.versionNumber }}</b>
+                              · {{ version.fileName }} · {{ version.size | number }} o
+                            </span>
+                            <span class="font-mono text-[10px] text-slate-500">
+                              {{ version.sha256 }}
+                            </span>
+                          </div>
+                        }
+                      </div>
+                      @if (document.status === 'Active') {
+                        <div class="mt-3 flex flex-wrap gap-2">
+                          @if (canUploadDocuments()) {
+                            <label
+                              class="cursor-pointer rounded-lg border px-2.5 py-1.5 text-xs font-bold"
+                            >
+                              <input
+                                type="file"
+                                class="hidden"
+                                (change)="addDocumentVersion(document.id, $event)"
+                              />
+                              {{ 'contracts.training.documents.newVersion' | translate }}
+                            </label>
+                          }
+                          @if (canArchiveDocuments()) {
+                            <button
+                              type="button"
+                              (click)="archiveDocument(document.id)"
+                              [disabled]="documentActionId() !== null"
+                              class="rounded-lg border border-red-200 px-2.5 py-1.5 text-xs font-bold text-red-700 disabled:opacity-50"
+                            >
+                              {{ 'contracts.training.documents.archive' | translate }}
+                            </button>
+                          }
+                        </div>
+                      }
                     </article>
-                  } @empty { <p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">{{ 'contracts.training.documents.empty' | translate }}</p> }
+                  } @empty {
+                    <p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">
+                      {{ 'contracts.training.documents.empty' | translate }}
+                    </p>
+                  }
                 </div>
               }
               @if (canUploadDocuments()) {
-                <form class="mt-4 grid gap-3 rounded-xl bg-slate-50 p-4 md:grid-cols-2" [formGroup]="documentForm" (ngSubmit)="uploadDocument()">
-                  <label class="md:col-span-2 text-xs font-bold text-slate-600">{{ 'contracts.training.documents.titleField' | translate }}<input formControlName="title" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                  <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.documents.type' | translate }}<select formControlName="documentType" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"><option value="MainContract">MainContract</option><option value="Annex">Annex</option><option value="Amendment">Amendment</option><option value="Evidence">Evidence</option><option value="Notice">Notice</option><option value="Other">Other</option></select></label>
-                  <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.documents.visibility' | translate }}<select formControlName="visibility" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"><option value="InternalOnly">InternalOnly</option><option value="Student">Student</option><option value="Signatories">Signatories</option><option value="AuthorizedParties">AuthorizedParties</option></select></label>
-                  <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.documents.retainUntil' | translate }}<input type="date" formControlName="retainUntil" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                  <label class="text-xs font-bold text-slate-600">{{ 'contracts.training.documents.legalBasis' | translate }}<input formControlName="retentionLegalBasis" class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                  <label class="md:col-span-2 text-xs font-bold text-slate-600">{{ 'contracts.training.documents.file' | translate }}<input type="file" (change)="onDocumentFileSelected($event)" class="mt-1 block w-full rounded-lg border bg-white px-3 py-2 text-sm" /></label>
-                  <div class="flex justify-end md:col-span-2"><button type="submit" [disabled]="documentSaving() || !documentFile()" class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">{{ 'contracts.training.documents.upload' | translate }}</button></div>
+                <form
+                  class="mt-4 grid gap-3 rounded-xl bg-slate-50 p-4 md:grid-cols-2"
+                  [formGroup]="documentForm"
+                  (ngSubmit)="uploadDocument()"
+                >
+                  <label class="md:col-span-2 text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.documents.titleField' | translate }}
+                    <input
+                      formControlName="title"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    />
+                  </label>
+                  <label class="text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.documents.type' | translate }}
+                    <select
+                      formControlName="documentType"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    >
+                      <option value="MainContract">MainContract</option>
+                      <option value="Annex">Annex</option>
+                      <option value="Amendment">Amendment</option>
+                      <option value="Evidence">Evidence</option>
+                      <option value="Notice">Notice</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </label>
+                  <label class="text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.documents.visibility' | translate }}
+                    <select
+                      formControlName="visibility"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    >
+                      <option value="InternalOnly">InternalOnly</option>
+                      <option value="Student">Student</option>
+                      <option value="Signatories">Signatories</option>
+                      <option value="AuthorizedParties">AuthorizedParties</option>
+                    </select>
+                  </label>
+                  <label class="text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.documents.retainUntil' | translate }}
+                    <input
+                      type="date"
+                      formControlName="retainUntil"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    />
+                  </label>
+                  <label class="text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.documents.legalBasis' | translate }}
+                    <input
+                      formControlName="retentionLegalBasis"
+                      class="mt-1 w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    />
+                  </label>
+                  <label class="md:col-span-2 text-xs font-bold text-slate-600">
+                    {{ 'contracts.training.documents.file' | translate }}
+                    <input
+                      type="file"
+                      (change)="onDocumentFileSelected($event)"
+                      class="mt-1 block w-full rounded-lg border bg-white px-3 py-2 text-sm"
+                    />
+                  </label>
+                  <div class="flex justify-end md:col-span-2">
+                    <button
+                      type="submit"
+                      [disabled]="documentSaving() || !documentFile()"
+                      class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+                    >
+                      {{ 'contracts.training.documents.upload' | translate }}
+                    </button>
+                  </div>
                 </form>
               }
             </section>
@@ -380,36 +1451,91 @@
             <section class="mt-6 rounded-xl border border-[var(--driveos-border)] p-4">
               <div class="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h4 class="font-black text-slate-900">{{ 'contracts.training.history.title' | translate }}</h4>
-                  <p class="mt-1 text-xs text-slate-500">{{ 'contracts.training.history.description' | translate }}</p>
+                  <h4 class="font-black text-slate-900">
+                    {{ 'contracts.training.history.title' | translate }}
+                  </h4>
+                  <p class="mt-1 text-xs text-slate-500">
+                    {{ 'contracts.training.history.description' | translate }}
+                  </p>
                 </div>
-                @if (history()) { <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">{{ history()!.audit.length }}</span> }
+                @if (history()) {
+                  <span
+                    class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600"
+                  >
+                    {{ history()!.audit.length }}
+                  </span>
+                }
               </div>
               @if (historyLoading()) {
                 <div class="mt-4"><drive-os-spinner /></div>
               } @else if (history(); as contractHistory) {
                 <div class="mt-4 space-y-3">
                   @for (entry of contractHistory.audit; track entry.eventId) {
-                    <article class="flex gap-3 rounded-xl border border-slate-100 bg-slate-50/70 p-3">
+                    <article
+                      class="flex gap-3 rounded-xl border border-slate-100 bg-slate-50/70 p-3"
+                    >
                       <span class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-blue-700"></span>
                       <div class="min-w-0 flex-1">
                         <div class="flex flex-wrap items-center justify-between gap-2">
-                          <p class="break-all text-sm font-bold text-slate-900">{{ entry.action }}</p>
-                          <time class="text-xs text-slate-500">{{ entry.occurredAtUtc | date:'dd/MM/yyyy HH:mm' }}</time>
+                          <p class="break-all text-sm font-bold text-slate-900">
+                            {{ entry.action }}
+                          </p>
+                          <time class="text-xs text-slate-500">
+                            {{ entry.occurredAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+                          </time>
                         </div>
-                        <p class="mt-1 text-xs text-slate-500">{{ entry.aggregateType }} · {{ entry.aggregateId }}</p>
-                        @if (entry.actorUserId) { <p class="mt-1 text-xs text-slate-500">{{ 'contracts.training.history.actor' | translate }} : {{ entry.actorUserId }}</p> }
+                        <p class="mt-1 text-xs text-slate-500">
+                          {{ entry.aggregateType }} · {{ entry.aggregateId }}
+                        </p>
+                        @if (entry.actorUserId) {
+                          <p class="mt-1 text-xs text-slate-500">
+                            {{ 'contracts.training.history.actor' | translate }} :
+                            {{ entry.actorUserId }}
+                          </p>
+                        }
                       </div>
                     </article>
                   } @empty {
-                    <p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">{{ 'contracts.training.history.empty' | translate }}</p>
+                    <p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">
+                      {{ 'contracts.training.history.empty' | translate }}
+                    </p>
                   }
                 </div>
               }
             </section>
           }
 
-          <details class="mt-6 rounded-xl border border-[var(--driveos-border)] p-4"><summary class="cursor-pointer font-black">{{ 'contracts.training.terms' | translate }}</summary><div class="mt-4 grid gap-4 text-sm lg:grid-cols-2"><div><b>{{ 'contracts.training.services' | translate }}</b><p class="mt-1 whitespace-pre-wrap text-slate-600">{{ contract.terms.servicesSnapshot }}</p></div><div><b>{{ 'contracts.training.paymentSchedule' | translate }}</b><p class="mt-1 whitespace-pre-wrap text-slate-600">{{ contract.terms.paymentScheduleSnapshot }}</p></div><div><b>{{ 'contracts.training.cancellation' | translate }}</b><p class="mt-1 whitespace-pre-wrap text-slate-600">{{ contract.terms.cancellationTerms }}</p></div><div><b>{{ 'contracts.training.bookingRules' | translate }}</b><p class="mt-1 whitespace-pre-wrap text-slate-600">{{ contract.terms.bookingRules }}</p></div></div></details>
+          <details class="mt-6 rounded-xl border border-[var(--driveos-border)] p-4">
+            <summary class="cursor-pointer font-black">
+              {{ 'contracts.training.terms' | translate }}
+            </summary>
+            <div class="mt-4 grid gap-4 text-sm lg:grid-cols-2">
+              <div>
+                <b>{{ 'contracts.training.services' | translate }}</b>
+                <p class="mt-1 whitespace-pre-wrap text-slate-600">
+                  {{ contract.terms.servicesSnapshot }}
+                </p>
+              </div>
+              <div>
+                <b>{{ 'contracts.training.paymentSchedule' | translate }}</b>
+                <p class="mt-1 whitespace-pre-wrap text-slate-600">
+                  {{ contract.terms.paymentScheduleSnapshot }}
+                </p>
+              </div>
+              <div>
+                <b>{{ 'contracts.training.cancellation' | translate }}</b>
+                <p class="mt-1 whitespace-pre-wrap text-slate-600">
+                  {{ contract.terms.cancellationTerms }}
+                </p>
+              </div>
+              <div>
+                <b>{{ 'contracts.training.bookingRules' | translate }}</b>
+                <p class="mt-1 whitespace-pre-wrap text-slate-600">
+                  {{ contract.terms.bookingRules }}
+                </p>
+              </div>
+            </div>
+          </details>
         }
       </div>
     </div>

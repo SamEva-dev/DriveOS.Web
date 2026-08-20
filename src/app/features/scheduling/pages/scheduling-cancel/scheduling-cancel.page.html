@@ -1,0 +1,430 @@
+<section class="space-y-5">
+  <header class="flex flex-wrap items-start justify-between gap-4">
+    <div>
+      <button
+        type="button"
+        class="mb-2 inline-flex items-center gap-2 text-sm font-semibold text-blue-800 hover:underline"
+        (click)="backToBooking()"
+      >
+        <i class="ph ph-arrow-left"></i>
+        {{ 'scheduling.cancel.back' | translate }}
+      </button>
+      <h1 class="text-2xl font-black tracking-tight">
+        {{ 'scheduling.cancel.title' | translate }}
+      </h1>
+      <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+        {{ 'scheduling.cancel.subtitle' | translate }}
+      </p>
+    </div>
+  </header>
+
+  @if (errors().length) {
+    <drive-os-state-banner
+      tone="danger"
+      [title]="'common.error' | translate"
+    >
+      <ul class="list-disc pl-5">
+        @for (error of errors(); track error) {
+          <li>{{ error | translate }}</li>
+        }
+      </ul>
+    </drive-os-state-banner>
+  }
+
+  @if (loading()) {
+    <div class="flex min-h-64 items-center justify-center"><drive-os-spinner /></div>
+  } @else if (booking(); as booking) {
+    @if (isAlreadyCancelled() && result(); as cancellation) {
+      <drive-os-state-banner
+        tone="success"
+        [title]="'scheduling.cancel.completed.title' | translate"
+      >
+        {{ 'scheduling.cancel.completed.text' | translate }}
+      </drive-os-state-banner>
+    }
+
+    <div class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
+      <main
+        class="overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] shadow-sm"
+      >
+        <nav class="flex overflow-x-auto border-b border-[var(--driveos-border)] px-3 pt-3">
+          @for (item of steps; track item.id) {
+            <button
+              type="button"
+              class="flex min-w-max items-center gap-2 rounded-t-xl px-4 py-3 text-sm font-bold transition"
+              [class.bg-blue-50]="step() === item.id"
+              [class.text-blue-800]="step() === item.id"
+              [class.text-[var(--driveos-text-secondary)]]="step() !== item.id"
+              (click)="setStep(item.id)"
+            >
+              <i [class]="item.icon"></i>
+              {{ item.key | translate }}
+            </button>
+          }
+        </nav>
+
+        @if (step() === 'reason') {
+          <div class="space-y-6 p-6">
+            <div>
+              <h2 class="text-lg font-black">{{ 'scheduling.cancel.reason.title' | translate }}</h2>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.cancel.reason.help' | translate }}
+              </p>
+            </div>
+            <div class="grid gap-4 md:grid-cols-2">
+              <label class="block">
+                <span class="text-sm font-semibold">
+                  {{ 'scheduling.cancel.reason.initiator' | translate }}
+                </span>
+                <select
+                  class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                  [value]="initiator()"
+                  (change)="initiator.set(+$any($event.target).value); preview.set(null)"
+                >
+                  @for (value of initiators; track value) {
+                    <option [value]="value">{{ initiatorKey(value) | translate }}</option>
+                  }
+                </select>
+              </label>
+              <label class="block">
+                <span class="text-sm font-semibold">
+                  {{ 'scheduling.cancel.reason.code' | translate }}
+                </span>
+                <select
+                  class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                  [value]="reasonCode()"
+                  (change)="reasonCode.set(+$any($event.target).value); preview.set(null)"
+                >
+                  @for (value of reasons; track value) {
+                    <option [value]="value">{{ reasonKey(value) | translate }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+            <label class="block">
+              <span class="text-sm font-semibold">
+                {{ 'scheduling.cancel.reason.details' | translate }}
+              </span>
+              <textarea
+                rows="4"
+                maxlength="500"
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                [value]="reasonDetails()"
+                (input)="reasonDetails.set($any($event.target).value); preview.set(null)"
+                [placeholder]="'scheduling.cancel.reason.detailsPlaceholder' | translate"
+              ></textarea>
+              <span class="mt-1 block text-xs text-[var(--driveos-text-secondary)]">
+                {{ reasonDetails().length }}/500
+              </span>
+            </label>
+          </div>
+        }
+
+        @if (step() === 'policy') {
+          <div class="space-y-5 p-6">
+            <div>
+              <h2 class="text-lg font-black">{{ 'scheduling.cancel.policy.title' | translate }}</h2>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.cancel.policy.help' | translate }}
+              </p>
+            </div>
+            @if (preview(); as p) {
+              <div class="rounded-2xl border border-blue-200 bg-blue-50 p-5">
+                <div class="flex gap-3">
+                  <i class="ph ph-shield-check mt-0.5 text-2xl text-blue-700"></i>
+                  <div>
+                    <div class="font-black text-blue-950">
+                      {{ p.policyExplanationKey | translate }}
+                    </div>
+                    <div class="mt-1 text-sm text-blue-800">
+                      {{ 'scheduling.cancel.policy.version' | translate }} {{ p.policyVersion }} ·
+                      {{ p.policyCode }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="grid gap-4 md:grid-cols-3">
+                <article class="rounded-2xl border border-[var(--driveos-border)] p-4">
+                  <div class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+                    {{ 'scheduling.cancel.policy.notice' | translate }}
+                  </div>
+                  <div class="mt-2 text-xl font-black">
+                    {{ noticeHours() }}h {{ noticeMinutesRemainder() }}m
+                  </div>
+                </article>
+                <article class="rounded-2xl border border-[var(--driveos-border)] p-4">
+                  <div class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+                    {{ 'scheduling.cancel.policy.credit' | translate }}
+                  </div>
+                  <div class="mt-2 font-black">
+                    {{ creditDecisionKey(p.creditDecision) | translate }}
+                  </div>
+                </article>
+                <article class="rounded-2xl border border-[var(--driveos-border)] p-4">
+                  <div class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+                    {{ 'scheduling.cancel.policy.fee' | translate }}
+                  </div>
+                  <div class="mt-2 font-black">{{ feeDecisionKey(p.feeDecision) | translate }}</div>
+                </article>
+              </div>
+              @if (p.creditDecision === 1 || p.feeDecision === 1) {
+                <drive-os-state-banner
+                  tone="warning"
+                  [title]="'scheduling.cancel.policy.manualReviewTitle' | translate"
+                >
+                  {{ 'scheduling.cancel.policy.manualReviewText' | translate }}
+                </drive-os-state-banner>
+              }
+              @if (p.replacementRequired) {
+                <drive-os-state-banner
+                  tone="info"
+                  [title]="'scheduling.cancel.policy.replacementTitle' | translate"
+                >
+                  {{ 'scheduling.cancel.policy.replacementText' | translate }}
+                </drive-os-state-banner>
+              }
+            } @else {
+              <drive-os-state-banner
+                tone="info"
+                [title]="'scheduling.cancel.policy.previewRequiredTitle' | translate"
+              >
+                {{ 'scheduling.cancel.policy.previewRequiredText' | translate }}
+              </drive-os-state-banner>
+            }
+          </div>
+        }
+
+        @if (step() === 'notifications') {
+          <div class="space-y-5 p-6">
+            <div>
+              <h2 class="text-lg font-black">
+                {{ 'scheduling.cancel.notification.title' | translate }}
+              </h2>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.cancel.notification.help' | translate }}
+              </p>
+            </div>
+            <div class="grid gap-3">
+              @for (value of notifications; track value) {
+                <label
+                  class="flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--driveos-border)] p-4"
+                >
+                  <input
+                    type="radio"
+                    name="notificationDecision"
+                    class="mt-1"
+                    [checked]="notificationDecision() === value"
+                    (change)="notificationDecision.set(value)"
+                  />
+                  <span>
+                    <span class="block font-bold">{{ notificationKey(value) | translate }}</span>
+                  </span>
+                </label>
+              }
+            </div>
+          </div>
+        }
+
+        @if (step() === 'confirmation') {
+          <div class="space-y-5 p-6">
+            @if (result(); as cancellation) {
+              <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+                <div class="flex gap-3">
+                  <i class="ph ph-check-circle text-2xl text-emerald-700"></i>
+                  <div>
+                    <h2 class="font-black text-emerald-950">
+                      {{ 'scheduling.cancel.completed.title' | translate }}
+                    </h2>
+                    <p class="mt-1 text-sm text-emerald-800">
+                      {{ cancellation.cancelledAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <dl class="grid gap-4 md:grid-cols-2">
+                <div class="rounded-xl bg-[var(--driveos-surface-muted)] p-4">
+                  <dt class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+                    {{ 'scheduling.cancel.policy.credit' | translate }}
+                  </dt>
+                  <dd class="mt-1 font-bold">
+                    {{ creditDecisionKey(cancellation.creditDecision) | translate }}
+                  </dd>
+                </div>
+                <div class="rounded-xl bg-[var(--driveos-surface-muted)] p-4">
+                  <dt class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+                    {{ 'scheduling.cancel.policy.fee' | translate }}
+                  </dt>
+                  <dd class="mt-1 font-bold">
+                    {{ feeDecisionKey(cancellation.feeDecision) | translate }}
+                  </dd>
+                </div>
+              </dl>
+              @if (cancellation.overrideApplied) {
+                <drive-os-state-banner
+                  tone="warning"
+                  [title]="'scheduling.cancel.override.appliedTitle' | translate"
+                >
+                  {{ cancellation.overrideReason }}
+                </drive-os-state-banner>
+              }
+            } @else {
+              <div>
+                <h2 class="text-lg font-black">
+                  {{ 'scheduling.cancel.confirmation.title' | translate }}
+                </h2>
+                <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                  {{ 'scheduling.cancel.confirmation.help' | translate }}
+                </p>
+              </div>
+              <div class="rounded-2xl border border-rose-200 bg-rose-50 p-5">
+                <div class="text-sm font-bold uppercase text-rose-700">
+                  {{ 'scheduling.cancel.confirmation.booking' | translate }}
+                </div>
+                <div class="mt-2 text-xl font-black text-rose-950">
+                  {{ booking.startAtUtc | date: 'EEE d MMM · HH:mm' }}–{{
+                    booking.endAtUtc | date: 'HH:mm'
+                  }}
+                </div>
+                <div class="mt-1 text-sm text-rose-800">{{ booking.title }}</div>
+              </div>
+            }
+          </div>
+        }
+
+        <footer
+          class="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--driveos-border)] px-6 py-4"
+        >
+          <drive-os-button
+            variant="ghost"
+            (pressed)="backToBooking()"
+          >
+            {{ 'scheduling.cancel.actions.keep' | translate }}
+          </drive-os-button>
+          <div class="flex flex-wrap gap-2">
+            @if (!isAlreadyCancelled()) {
+              <drive-os-button
+                variant="outline"
+                [disabled]="!canPreview()"
+                (pressed)="previewCancellation()"
+              >
+                @if (previewing()) {
+                  <i class="ph ph-circle-notch mr-2 animate-spin"></i>
+                }
+                {{ 'scheduling.cancel.actions.evaluate' | translate }}
+              </drive-os-button>
+              @if (canOverride() && preview()) {
+                <drive-os-button
+                  variant="outline"
+                  (pressed)="openOverride()"
+                >
+                  {{ 'scheduling.cancel.actions.override' | translate }}
+                </drive-os-button>
+              }
+              <drive-os-button
+                variant="danger"
+                [disabled]="!canSubmit()"
+                (pressed)="cancel()"
+              >
+                @if (saving()) {
+                  <i class="ph ph-circle-notch mr-2 animate-spin"></i>
+                }
+                {{ 'scheduling.cancel.actions.confirm' | translate }}
+              </drive-os-button>
+            }
+          </div>
+        </footer>
+      </main>
+
+      <aside class="space-y-4">
+        <section
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 shadow-sm"
+        >
+          <div class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+            {{ 'scheduling.cancel.summary.session' | translate }}
+          </div>
+          <div class="mt-2 text-lg font-black">{{ booking.title }}</div>
+          <div class="mt-2 text-sm">
+            {{ booking.startAtUtc | date: 'dd/MM/yyyy HH:mm' }} →
+            {{ booking.endAtUtc | date: 'HH:mm' }}
+          </div>
+          <div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+            {{ 'scheduling.cancel.summary.bookingId' | translate }} {{ booking.id }}
+          </div>
+        </section>
+        <section
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 shadow-sm"
+        >
+          <div class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+            {{ 'scheduling.cancel.summary.credit' | translate }}
+          </div>
+          <div class="mt-2 font-bold">
+            {{
+              'scheduling.cancel.creditReservationStatus.' + booking.creditReservationStatus
+                | translate
+            }}
+          </div>
+          @if (booking.creditQuantity) {
+            <div class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+              {{ booking.creditQuantity }} {{ 'scheduling.cancel.summary.creditUnits' | translate }}
+            </div>
+          }
+        </section>
+        <drive-os-state-banner
+          tone="info"
+          [title]="'scheduling.cancel.audit.title' | translate"
+        >
+          {{ 'scheduling.cancel.audit.text' | translate }}
+        </drive-os-state-banner>
+      </aside>
+    </div>
+  }
+</section>
+
+<drive-os-drawer
+  [open]="overrideOpen()"
+  size="lg"
+  [title]="'scheduling.cancel.override.title' | translate"
+  [description]="'scheduling.cancel.override.subtitle' | translate"
+  [closeDisabled]="saving()"
+  (closeRequested)="closeOverride()"
+>
+  <div class="space-y-5 p-6">
+    <drive-os-state-banner
+      tone="warning"
+      [title]="'scheduling.cancel.override.warningTitle' | translate"
+    >
+      {{ 'scheduling.cancel.override.warningText' | translate }}
+    </drive-os-state-banner>
+    <label class="block">
+      <span class="text-sm font-semibold">
+        {{ 'scheduling.cancel.override.reason' | translate }}
+      </span>
+      <textarea
+        rows="5"
+        maxlength="500"
+        class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+        [value]="overrideReason()"
+        (input)="overrideReason.set($any($event.target).value)"
+      ></textarea>
+    </label>
+  </div>
+  <div
+    driveOsDrawerFooter
+    class="flex justify-end gap-2"
+  >
+    <drive-os-button
+      variant="ghost"
+      [disabled]="saving()"
+      (pressed)="closeOverride()"
+    >
+      {{ 'common.cancel' | translate }}
+    </drive-os-button>
+    <drive-os-button
+      variant="danger"
+      [disabled]="!overrideReason().trim() || saving()"
+      (pressed)="applyOverride()"
+    >
+      {{ 'scheduling.cancel.override.confirm' | translate }}
+    </drive-os-button>
+  </div>
+</drive-os-drawer>

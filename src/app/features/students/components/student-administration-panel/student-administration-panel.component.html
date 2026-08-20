@@ -1,10 +1,14 @@
 @let value = administration();
 <div class="grid gap-5">
-  <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+  <section
+    class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+  >
     <div class="flex flex-wrap items-start justify-between gap-4">
       <div>
         <div class="flex flex-wrap items-center gap-2">
-          <h3 class="font-extrabold">{{ 'students.profile.administration.progress' | translate }}</h3>
+          <h3 class="font-extrabold">
+            {{ 'students.profile.administration.progress' | translate }}
+          </h3>
           <drive-os-badge [variant]="statusVariant(value.status)">
             {{ 'students.profile.administration.statuses.' + value.status | translate }}
           </drive-os-badge>
@@ -30,18 +34,31 @@
       </div>
     </div>
     <div class="mt-4 h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
-      <div class="h-full rounded-full bg-orange-500" [style.width.%]="completion()"></div>
+      <div
+        class="h-full rounded-full bg-orange-500"
+        [style.width.%]="completion()"
+      ></div>
     </div>
   </section>
 
-  <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+  <section
+    class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+  >
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div>
-        <h3 class="font-extrabold">{{ 'students.profile.administration.blocksTitle' | translate }}</h3>
-        <p class="text-sm text-slate-500">{{ 'students.profile.administration.blocksDescription' | translate }}</p>
+        <h3 class="font-extrabold">
+          {{ 'students.profile.administration.blocksTitle' | translate }}
+        </h3>
+        <p class="text-sm text-slate-500">
+          {{ 'students.profile.administration.blocksDescription' | translate }}
+        </p>
       </div>
       @if (canUpdate()) {
-        <drive-os-button size="sm" icon="ph ph-lock" (pressed)="openAddBlock()">
+        <drive-os-button
+          size="sm"
+          icon="ph ph-lock"
+          (pressed)="openAddBlock()"
+        >
           {{ 'students.profile.administration.actions.addBlock' | translate }}
         </drive-os-button>
       }
@@ -50,7 +67,9 @@
     @if (value.activeBlocks.length) {
       <div class="mt-4 grid gap-3">
         @for (block of value.activeBlocks; track block.id) {
-          <article class="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900/60 dark:bg-red-950/20">
+          <article
+            class="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900/60 dark:bg-red-950/20"
+          >
             <div class="flex flex-wrap items-start justify-between gap-3">
               <div class="min-w-0">
                 <div class="flex items-center gap-2 text-red-700 dark:text-red-300">
@@ -58,7 +77,9 @@
                   <strong>{{ block.code }}</strong>
                 </div>
                 <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">{{ block.reason }}</p>
-                <small class="mt-2 block text-slate-500">{{ block.appliedAtUtc | date: 'medium' }}</small>
+                <small class="mt-2 block text-slate-500">
+                  {{ block.appliedAtUtc | date: 'medium' }}
+                </small>
               </div>
               @if (canUpdate()) {
                 <drive-os-button
@@ -85,14 +106,24 @@
     }
   </section>
 
-  <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+  <section
+    class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+  >
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div>
-        <h3 class="font-extrabold">{{ 'students.profile.administration.requirements' | translate }}</h3>
-        <p class="text-sm text-slate-500">{{ 'students.profile.administration.requirementsDescription' | translate }}</p>
+        <h3 class="font-extrabold">
+          {{ 'students.profile.administration.requirements' | translate }}
+        </h3>
+        <p class="text-sm text-slate-500">
+          {{ 'students.profile.administration.requirementsDescription' | translate }}
+        </p>
       </div>
       @if (canUpdate()) {
-        <drive-os-button size="sm" icon="ph ph-plus" (pressed)="openCreateRequirement()">
+        <drive-os-button
+          size="sm"
+          icon="ph ph-plus"
+          (pressed)="openCreateRequirement()"
+        >
           {{ 'students.profile.administration.actions.addRequirement' | translate }}
         </drive-os-button>
       }
@@ -108,24 +139,39 @@
             [class.bg-slate-100]="!item.isBlocking"
             [class.dark:bg-slate-800]="!item.isBlocking"
           >
-            <i class="ph" [class.ph-lock]="item.isBlocking" [class.ph-check-square]="!item.isBlocking"></i>
+            <i
+              class="ph"
+              [class.ph-lock]="item.isBlocking"
+              [class.ph-check-square]="!item.isBlocking"
+            ></i>
           </span>
           <div class="min-w-0">
             <div class="flex flex-wrap items-center gap-2">
               <strong>{{ item.labelKey | translate }}</strong>
-              <code class="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ item.code }}</code>
+              <code
+                class="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+              >
+                {{ item.code }}
+              </code>
             </div>
             <div class="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
               <span>{{ item.policySource }}</span>
               @if (item.dueAtUtc) {
-                <span>{{ 'students.profile.administration.due' | translate }} {{ item.dueAtUtc | date: 'mediumDate' }}</span>
+                <span>
+                  {{ 'students.profile.administration.due' | translate }}
+                  {{ item.dueAtUtc | date: 'mediumDate' }}
+                </span>
               }
               @if (item.isBlocking) {
-                <span class="font-semibold text-red-600">{{ 'students.profile.administration.blocking' | translate }}</span>
+                <span class="font-semibold text-red-600">
+                  {{ 'students.profile.administration.blocking' | translate }}
+                </span>
               }
             </div>
             @if (item.decisionReason) {
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ item.decisionReason }}</p>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                {{ item.decisionReason }}
+              </p>
             }
           </div>
           <div class="flex flex-wrap items-center gap-2 lg:justify-end">
@@ -133,15 +179,29 @@
               {{ 'students.profile.administration.requirementStatuses.' + item.status | translate }}
             </drive-os-badge>
             @if (canUpdate()) {
-              <drive-os-button variant="ghost" size="sm" icon="ph ph-pencil" [ariaLabel]="'common.actions.edit' | translate" (pressed)="openEditRequirement(item)" />
+              <drive-os-button
+                variant="ghost"
+                size="sm"
+                icon="ph ph-pencil"
+                [ariaLabel]="'common.actions.edit' | translate"
+                (pressed)="openEditRequirement(item)"
+              />
             }
             @if (canValidate()) {
-              <drive-os-button variant="outline" size="sm" (pressed)="openRequirementDecision(item)">
+              <drive-os-button
+                variant="outline"
+                size="sm"
+                (pressed)="openRequirementDecision(item)"
+              >
                 {{ 'students.profile.administration.actions.decide' | translate }}
               </drive-os-button>
             }
             @if (canRequestException() && item.status !== 'Validated' && item.status !== 'Waived') {
-              <drive-os-button variant="ghost" size="sm" (pressed)="openExceptionRequest(item)">
+              <drive-os-button
+                variant="ghost"
+                size="sm"
+                (pressed)="openExceptionRequest(item)"
+              >
                 {{ 'students.profile.administration.actions.requestException' | translate }}
               </drive-os-button>
             }
@@ -158,32 +218,52 @@
   </section>
 
   @if (value.exceptions.length) {
-    <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
-      <h3 class="font-extrabold">{{ 'students.profile.administration.exceptions.title' | translate }}</h3>
-      <p class="text-sm text-slate-500">{{ 'students.profile.administration.exceptions.description' | translate }}</p>
+    <section
+      class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+    >
+      <h3 class="font-extrabold">
+        {{ 'students.profile.administration.exceptions.title' | translate }}
+      </h3>
+      <p class="text-sm text-slate-500">
+        {{ 'students.profile.administration.exceptions.description' | translate }}
+      </p>
       <div class="mt-4 grid gap-3">
         @for (exception of value.exceptions; track exception.id) {
           <article class="rounded-lg border border-[var(--driveos-border)] p-4">
             <div class="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <div class="flex flex-wrap items-center gap-2">
-                  <strong>{{ 'students.profile.administration.exceptions.request' | translate }}</strong>
+                  <strong>
+                    {{ 'students.profile.administration.exceptions.request' | translate }}
+                  </strong>
                   <drive-os-badge [variant]="exceptionVariant(exception.status)">
-                    {{ 'students.profile.administration.exceptionStatuses.' + exception.status | translate }}
+                    {{
+                      'students.profile.administration.exceptionStatuses.' + exception.status
+                        | translate
+                    }}
                   </drive-os-badge>
                 </div>
                 <p class="mt-2 text-sm">{{ exception.requestReason }}</p>
                 @if (exception.decisionReason) {
                   <p class="mt-2 text-sm text-slate-500">{{ exception.decisionReason }}</p>
                 }
-                <small class="mt-2 block text-slate-500">{{ exception.requestedAtUtc | date: 'medium' }}</small>
+                <small class="mt-2 block text-slate-500">
+                  {{ exception.requestedAtUtc | date: 'medium' }}
+                </small>
               </div>
               @if (canApproveException() && exception.status === 'Requested') {
                 <div class="flex gap-2">
-                  <drive-os-button variant="outline" size="sm" (pressed)="openExceptionDecision(exception.id, false)">
+                  <drive-os-button
+                    variant="outline"
+                    size="sm"
+                    (pressed)="openExceptionDecision(exception.id, false)"
+                  >
                     {{ 'common.actions.reject' | translate }}
                   </drive-os-button>
-                  <drive-os-button size="sm" (pressed)="openExceptionDecision(exception.id, true)">
+                  <drive-os-button
+                    size="sm"
+                    (pressed)="openExceptionDecision(exception.id, true)"
+                  >
                     {{ 'common.actions.approve' | translate }}
                   </drive-os-button>
                 </div>
@@ -196,16 +276,26 @@
   }
 
   @if (value.history.length) {
-    <section class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
-      <h3 class="font-extrabold">{{ 'students.profile.administration.history.title' | translate }}</h3>
-      <p class="text-sm text-slate-500">{{ 'students.profile.administration.history.description' | translate }}</p>
+    <section
+      class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+    >
+      <h3 class="font-extrabold">
+        {{ 'students.profile.administration.history.title' | translate }}
+      </h3>
+      <p class="text-sm text-slate-500">
+        {{ 'students.profile.administration.history.description' | translate }}
+      </p>
       <ol class="mt-4 grid gap-3">
         @for (entry of value.history; track $index) {
           <li class="flex gap-3 text-sm">
             <span class="mt-1 size-2 shrink-0 rounded-full bg-blue-800"></span>
             <div class="min-w-0 flex-1">
-              <strong>{{ 'students.profile.administration.history.actions.' + entry.action | translate }}</strong>
-              <div class="mt-0.5 text-xs text-slate-500">{{ entry.occurredAtUtc | date: 'medium' }}</div>
+              <strong>
+                {{ 'students.profile.administration.history.actions.' + entry.action | translate }}
+              </strong>
+              <div class="mt-0.5 text-xs text-slate-500">
+                {{ entry.occurredAtUtc | date: 'medium' }}
+              </div>
             </div>
           </li>
         }
@@ -219,98 +309,230 @@
         <div>
           <h3 class="font-extrabold">
             @switch (currentAction.type) {
-              @case ('create-requirement') { {{ 'students.profile.administration.forms.createRequirement' | translate }} }
-              @case ('edit-requirement') { {{ 'students.profile.administration.forms.editRequirement' | translate }} }
-              @case ('decide-requirement') { {{ 'students.profile.administration.forms.decideRequirement' | translate }} }
-              @case ('request-exception') { {{ 'students.profile.administration.forms.requestException' | translate }} }
-              @case ('add-block') { {{ 'students.profile.administration.forms.addBlock' | translate }} }
-              @case ('release-block') { {{ 'students.profile.administration.forms.releaseBlock' | translate }} }
-              @case ('decide-exception') { {{ (currentAction.approve ? 'students.profile.administration.forms.approveException' : 'students.profile.administration.forms.rejectException') | translate }} }
+              @case ('create-requirement') {
+                {{ 'students.profile.administration.forms.createRequirement' | translate }}
+              }
+              @case ('edit-requirement') {
+                {{ 'students.profile.administration.forms.editRequirement' | translate }}
+              }
+              @case ('decide-requirement') {
+                {{ 'students.profile.administration.forms.decideRequirement' | translate }}
+              }
+              @case ('request-exception') {
+                {{ 'students.profile.administration.forms.requestException' | translate }}
+              }
+              @case ('add-block') {
+                {{ 'students.profile.administration.forms.addBlock' | translate }}
+              }
+              @case ('release-block') {
+                {{ 'students.profile.administration.forms.releaseBlock' | translate }}
+              }
+              @case ('decide-exception') {
+                {{
+                  (currentAction.approve
+                    ? 'students.profile.administration.forms.approveException'
+                    : 'students.profile.administration.forms.rejectException'
+                  ) | translate
+                }}
+              }
             }
           </h3>
-          <p class="text-sm text-slate-500">{{ 'students.profile.administration.forms.description' | translate }}</p>
+          <p class="text-sm text-slate-500">
+            {{ 'students.profile.administration.forms.description' | translate }}
+          </p>
         </div>
-        <button type="button" class="grid size-9 place-items-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" (click)="cancelAction()" [attr.aria-label]="'common.actions.close' | translate">
+        <button
+          type="button"
+          class="grid size-9 place-items-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+          (click)="cancelAction()"
+          [attr.aria-label]="'common.actions.close' | translate"
+        >
           <i class="ph ph-x"></i>
         </button>
       </div>
 
-      @if (currentAction.type === 'create-requirement' || currentAction.type === 'edit-requirement') {
-        <form class="mt-5 grid gap-4" [formGroup]="requirementForm" (ngSubmit)="saveRequirement()">
+      @if (
+        currentAction.type === 'create-requirement' || currentAction.type === 'edit-requirement'
+      ) {
+        <form
+          class="mt-5 grid gap-4"
+          [formGroup]="requirementForm"
+          (ngSubmit)="saveRequirement()"
+        >
           <div class="grid gap-4 md:grid-cols-2">
             <label class="grid gap-2">
               <span>{{ 'students.profile.administration.fields.code' | translate }} *</span>
-              <input dosInput formControlName="code" />
+              <input
+                dosInput
+                formControlName="code"
+              />
             </label>
             <label class="grid gap-2">
               <span>{{ 'students.profile.administration.fields.labelKey' | translate }} *</span>
-              <input dosInput formControlName="labelKey" />
+              <input
+                dosInput
+                formControlName="labelKey"
+              />
             </label>
             <label class="grid gap-2">
               <span>{{ 'students.profile.administration.fields.policySource' | translate }} *</span>
-              <input dosInput formControlName="policySource" />
+              <input
+                dosInput
+                formControlName="policySource"
+              />
             </label>
             <label class="grid gap-2">
               <span>{{ 'students.profile.administration.fields.dueDate' | translate }}</span>
-              <input dosInput type="datetime-local" formControlName="dueAtUtc" />
+              <input
+                dosInput
+                type="datetime-local"
+                formControlName="dueAtUtc"
+              />
             </label>
           </div>
           <label class="inline-flex items-center gap-2">
-            <input type="checkbox" formControlName="isBlocking" />
+            <input
+              type="checkbox"
+              formControlName="isBlocking"
+            />
             {{ 'students.profile.administration.fields.isBlocking' | translate }}
           </label>
           <div class="flex justify-end gap-2">
-            <drive-os-button variant="outline" (pressed)="cancelAction()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
-            <drive-os-button type="submit" [loading]="saving()" [disabled]="requirementForm.invalid">{{ 'common.actions.save' | translate }}</drive-os-button>
+            <drive-os-button
+              variant="outline"
+              (pressed)="cancelAction()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              type="submit"
+              [loading]="saving()"
+              [disabled]="requirementForm.invalid"
+            >
+              {{ 'common.actions.save' | translate }}
+            </drive-os-button>
           </div>
         </form>
       } @else if (currentAction.type === 'decide-requirement') {
-        <form class="mt-5 grid gap-4" [formGroup]="decisionForm" (ngSubmit)="decideRequirement()">
+        <form
+          class="mt-5 grid gap-4"
+          [formGroup]="decisionForm"
+          (ngSubmit)="decideRequirement()"
+        >
           <label class="grid gap-2">
             <span>{{ 'students.profile.administration.fields.status' | translate }}</span>
-            <select dosInput formControlName="status">
-              <option value="Submitted">{{ 'students.profile.administration.requirementStatuses.Submitted' | translate }}</option>
-              <option value="Validated">{{ 'students.profile.administration.requirementStatuses.Validated' | translate }}</option>
-              <option value="Rejected">{{ 'students.profile.administration.requirementStatuses.Rejected' | translate }}</option>
-              <option value="Expired">{{ 'students.profile.administration.requirementStatuses.Expired' | translate }}</option>
+            <select
+              dosInput
+              formControlName="status"
+            >
+              <option value="Submitted">
+                {{ 'students.profile.administration.requirementStatuses.Submitted' | translate }}
+              </option>
+              <option value="Validated">
+                {{ 'students.profile.administration.requirementStatuses.Validated' | translate }}
+              </option>
+              <option value="Rejected">
+                {{ 'students.profile.administration.requirementStatuses.Rejected' | translate }}
+              </option>
+              <option value="Expired">
+                {{ 'students.profile.administration.requirementStatuses.Expired' | translate }}
+              </option>
             </select>
           </label>
           <label class="grid gap-2">
             <span>{{ 'students.profile.administration.fields.reason' | translate }}</span>
-            <textarea dosInput class="min-h-24" formControlName="reason"></textarea>
+            <textarea
+              dosInput
+              class="min-h-24"
+              formControlName="reason"
+            ></textarea>
           </label>
           <div class="flex justify-end gap-2">
-            <drive-os-button variant="outline" (pressed)="cancelAction()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
-            <drive-os-button type="submit" [loading]="saving()">{{ 'students.profile.administration.actions.applyDecision' | translate }}</drive-os-button>
+            <drive-os-button
+              variant="outline"
+              (pressed)="cancelAction()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              type="submit"
+              [loading]="saving()"
+            >
+              {{ 'students.profile.administration.actions.applyDecision' | translate }}
+            </drive-os-button>
           </div>
         </form>
       } @else if (currentAction.type === 'add-block') {
-        <form class="mt-5 grid gap-4" [formGroup]="blockForm" (ngSubmit)="addBlock()">
+        <form
+          class="mt-5 grid gap-4"
+          [formGroup]="blockForm"
+          (ngSubmit)="addBlock()"
+        >
           <label class="grid gap-2">
             <span>{{ 'students.profile.administration.fields.blockCode' | translate }} *</span>
-            <input dosInput formControlName="code" />
+            <input
+              dosInput
+              formControlName="code"
+            />
           </label>
           <label class="grid gap-2">
             <span>{{ 'students.profile.administration.fields.reason' | translate }} *</span>
-            <textarea dosInput class="min-h-24" formControlName="reason"></textarea>
+            <textarea
+              dosInput
+              class="min-h-24"
+              formControlName="reason"
+            ></textarea>
           </label>
           <div class="flex justify-end gap-2">
-            <drive-os-button variant="outline" (pressed)="cancelAction()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
-            <drive-os-button type="submit" variant="danger" [loading]="saving()" [disabled]="blockForm.invalid">{{ 'students.profile.administration.actions.confirmBlock' | translate }}</drive-os-button>
+            <drive-os-button
+              variant="outline"
+              (pressed)="cancelAction()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              type="submit"
+              variant="danger"
+              [loading]="saving()"
+              [disabled]="blockForm.invalid"
+            >
+              {{ 'students.profile.administration.actions.confirmBlock' | translate }}
+            </drive-os-button>
           </div>
         </form>
       } @else {
-        <form class="mt-5 grid gap-4" [formGroup]="reasonForm" (ngSubmit)="submitReasonAction()">
+        <form
+          class="mt-5 grid gap-4"
+          [formGroup]="reasonForm"
+          (ngSubmit)="submitReasonAction()"
+        >
           <label class="grid gap-2">
             <span>{{ 'students.profile.administration.fields.reason' | translate }} *</span>
-            <textarea dosInput class="min-h-24" formControlName="reason"></textarea>
+            <textarea
+              dosInput
+              class="min-h-24"
+              formControlName="reason"
+            ></textarea>
             @if (currentAction.type === 'request-exception') {
-              <small class="text-slate-500">{{ 'students.profile.administration.forms.exceptionReasonHint' | translate }}</small>
+              <small class="text-slate-500">
+                {{ 'students.profile.administration.forms.exceptionReasonHint' | translate }}
+              </small>
             }
           </label>
           <div class="flex justify-end gap-2">
-            <drive-os-button variant="outline" (pressed)="cancelAction()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
-            <drive-os-button type="submit" [loading]="saving()" [disabled]="reasonForm.invalid">{{ 'common.actions.confirm' | translate }}</drive-os-button>
+            <drive-os-button
+              variant="outline"
+              (pressed)="cancelAction()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              type="submit"
+              [loading]="saving()"
+              [disabled]="reasonForm.invalid"
+            >
+              {{ 'common.actions.confirm' | translate }}
+            </drive-os-button>
           </div>
         </form>
       }

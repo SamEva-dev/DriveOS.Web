@@ -91,7 +91,6 @@ describe('StudentsApiService', () => {
     }
   });
 
-
   it('creates, reviews and applies an enrollment reactivation', () => {
     const id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
     const reactivationId = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
@@ -101,9 +100,7 @@ describe('StudentsApiService', () => {
       resumeDate: '2026-08-18',
       conditions: '',
       pedagogyReviewRequested: false,
-      checks: [
-        { type: 1, status: 1 as const, detail: 'Resolved' },
-      ],
+      checks: [{ type: 1, status: 1 as const, detail: 'Resolved' }],
     };
 
     service.createReactivation(id, request).subscribe();
@@ -129,7 +126,6 @@ describe('StudentsApiService', () => {
     httpRequest.flush(null);
   });
 
-
   it('creates, reviews, completes, archives and reopens an enrollment closure', () => {
     const id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
     const closureId = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
@@ -147,7 +143,9 @@ describe('StudentsApiService', () => {
     expect(httpRequest.request.body.enrollmentId).toBe(request.enrollmentId);
     httpRequest.flush(closureId);
 
-    service.reviewClosureCheck(id, closureId, 'FutureSessions', { status: 2, detail: 'Resolved' }).subscribe();
+    service
+      .reviewClosureCheck(id, closureId, 'FutureSessions', { status: 2, detail: 'Resolved' })
+      .subscribe();
     httpRequest = http.expectOne(
       `https://api.driveos.test/api/students/${id}/close/${closureId}/checks/FutureSessions`,
     );
@@ -161,11 +159,13 @@ describe('StudentsApiService', () => {
     expect(httpRequest.request.method).toBe('POST');
     httpRequest.flush(null);
 
-    service.archiveStudent(id, closureId, {
-      retainUntil: '2036-08-18',
-      retentionLegalBasis: 'Legal obligation',
-      retentionScope: 127,
-    }).subscribe();
+    service
+      .archiveStudent(id, closureId, {
+        retainUntil: '2036-08-18',
+        retentionLegalBasis: 'Legal obligation',
+        retentionScope: 127,
+      })
+      .subscribe();
     httpRequest = http.expectOne(
       `https://api.driveos.test/api/students/${id}/close/${closureId}/archive`,
     );
@@ -173,7 +173,9 @@ describe('StudentsApiService', () => {
     expect(httpRequest.request.body.retentionScope).toBe(127);
     httpRequest.flush(null);
 
-    service.reopenEnrollment(id, closureId, { justification: 'Administrative correction required.' }).subscribe();
+    service
+      .reopenEnrollment(id, closureId, { justification: 'Administrative correction required.' })
+      .subscribe();
     httpRequest = http.expectOne(
       `https://api.driveos.test/api/students/${id}/close/${closureId}/reopen`,
     );
@@ -238,18 +240,17 @@ describe('StudentsApiService', () => {
   });
   it('verifies the student identity through the dedicated endpoint', () => {
     const id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
-    service.verifyIdentity(id, {
-      status: 'DocumentVerified',
-      justification: 'Identity document checked in branch.',
-    }).subscribe();
+    service
+      .verifyIdentity(id, {
+        status: 'DocumentVerified',
+        justification: 'Identity document checked in branch.',
+      })
+      .subscribe();
 
-    const request = http.expectOne(
-      `https://api.driveos.test/api/students/${id}/identity/verify`,
-    );
+    const request = http.expectOne(`https://api.driveos.test/api/students/${id}/identity/verify`);
     expect(request.request.method).toBe('POST');
     expect(request.request.body.status).toBe('DocumentVerified');
     expect(request.request.body.justification).toContain('Identity document');
     request.flush({});
   });
-
 });

@@ -11,7 +11,11 @@ import { StudentReactivationPanelComponent } from '../../components/student-reac
 import { StudentSuspensionPanelComponent } from '../../components/student-suspension-panel/student-suspension-panel.component';
 import { StudentsApiService } from '../../data-access/students-api.service';
 import { STUDENT_PERMISSIONS } from '../../domain/student-permissions';
-import { EnrollmentClosure, EnrollmentReactivation, EnrollmentSuspension } from '../../models/student.models';
+import {
+  EnrollmentClosure,
+  EnrollmentReactivation,
+  EnrollmentSuspension,
+} from '../../models/student.models';
 
 type LifecycleSection = 'suspensions' | 'reactivations' | 'closures';
 interface LifecycleTab {
@@ -80,7 +84,8 @@ export class StudentLifecyclePage {
   constructor() {
     const requested = this.selected();
     const first = this.visibleTabs()[0];
-    if (!this.visibleTabs().some((tab) => tab.id === requested) && first) this.selected.set(first.id);
+    if (!this.visibleTabs().some((tab) => tab.id === requested) && first)
+      this.selected.set(first.id);
     this.load();
   }
   load(): void {

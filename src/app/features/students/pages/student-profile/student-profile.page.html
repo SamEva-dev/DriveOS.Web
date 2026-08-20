@@ -59,7 +59,12 @@
         <div class="flex items-center justify-between">
           <h3 class="font-extrabold">{{ 'students.profile.identity.legal' | translate }}</h3>
           <drive-os-badge
-            [variant]="value.verificationStatus === 'DocumentVerified' || value.verificationStatus === 'ExternallyVerified' ? 'success' : 'warning'"
+            [variant]="
+              value.verificationStatus === 'DocumentVerified' ||
+              value.verificationStatus === 'ExternallyVerified'
+                ? 'success'
+                : 'warning'
+            "
           >
             {{ 'students.profile.verification.' + value.verificationStatus | translate }}
           </drive-os-badge>
@@ -109,7 +114,9 @@
         >
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h3 class="font-extrabold">{{ 'students.profile.verification.title' | translate }}</h3>
+              <h3 class="font-extrabold">
+                {{ 'students.profile.verification.title' | translate }}
+              </h3>
               <p class="mt-1 text-sm text-slate-500">
                 {{ 'students.profile.verification.description' | translate }}
               </p>
@@ -128,17 +135,26 @@
 
           <dl class="mt-4 grid gap-3 text-sm">
             <div class="flex items-center justify-between gap-3">
-              <dt class="text-slate-500">{{ 'students.profile.verification.currentStatus' | translate }}</dt>
+              <dt class="text-slate-500">
+                {{ 'students.profile.verification.currentStatus' | translate }}
+              </dt>
               <dd>
                 <drive-os-badge
-                  [variant]="value.verificationStatus === 'DocumentVerified' || value.verificationStatus === 'ExternallyVerified' ? 'success' : 'warning'"
+                  [variant]="
+                    value.verificationStatus === 'DocumentVerified' ||
+                    value.verificationStatus === 'ExternallyVerified'
+                      ? 'success'
+                      : 'warning'
+                  "
                 >
                   {{ 'students.profile.verification.' + value.verificationStatus | translate }}
                 </drive-os-badge>
               </dd>
             </div>
             <div class="flex items-center justify-between gap-3">
-              <dt class="text-slate-500">{{ 'students.profile.verification.verifiedAt' | translate }}</dt>
+              <dt class="text-slate-500">
+                {{ 'students.profile.verification.verifiedAt' | translate }}
+              </dt>
               <dd class="font-semibold">
                 {{ value.verifiedAtUtc ? (value.verifiedAtUtc | date: 'medium') : '—' }}
               </dd>
@@ -163,8 +179,12 @@
           }
 
           @if (verificationOpen()) {
-            <div class="mt-5 rounded-xl border border-[var(--driveos-border)] bg-slate-50/60 p-4 dark:bg-slate-900/30">
-              <h4 class="font-bold">{{ 'students.profile.verification.form.title' | translate }}</h4>
+            <div
+              class="mt-5 rounded-xl border border-[var(--driveos-border)] bg-slate-50/60 p-4 dark:bg-slate-900/30"
+            >
+              <h4 class="font-bold">
+                {{ 'students.profile.verification.form.title' | translate }}
+              </h4>
               <p class="mt-1 text-xs text-slate-500">
                 {{ 'students.profile.verification.form.hint' | translate }}
               </p>
@@ -176,8 +196,12 @@
                   [ngModel]="verificationStatus()"
                   (ngModelChange)="verificationStatus.set($event)"
                 >
-                  <option value="DocumentVerified">{{ 'students.profile.verification.DocumentVerified' | translate }}</option>
-                  <option value="ExternallyVerified">{{ 'students.profile.verification.ExternallyVerified' | translate }}</option>
+                  <option value="DocumentVerified">
+                    {{ 'students.profile.verification.DocumentVerified' | translate }}
+                  </option>
+                  <option value="ExternallyVerified">
+                    {{ 'students.profile.verification.ExternallyVerified' | translate }}
+                  </option>
                 </select>
               </label>
 
@@ -188,7 +212,9 @@
                   class="mt-1 w-full rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2"
                   [ngModel]="verificationJustification()"
                   (ngModelChange)="verificationJustification.set($event)"
-                  [placeholder]="'students.profile.verification.form.justificationPlaceholder' | translate"
+                  [placeholder]="
+                    'students.profile.verification.form.justificationPlaceholder' | translate
+                  "
                 ></textarea>
               </label>
               <p class="mt-1 text-xs text-slate-500">
@@ -207,11 +233,16 @@
                 <button
                   type="button"
                   class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-blue-800 px-4 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
-                  [disabled]="verificationJustification().trim().length < 10 || verificationSubmitting()"
+                  [disabled]="
+                    verificationJustification().trim().length < 10 || verificationSubmitting()
+                  "
                   (click)="submitVerification()"
                 >
-                  @if (verificationSubmitting()) { <i class="ph ph-circle-notch animate-spin"></i> }
-                  @else { <i class="ph ph-seal-check"></i> }
+                  @if (verificationSubmitting()) {
+                    <i class="ph ph-circle-notch animate-spin"></i>
+                  } @else {
+                    <i class="ph ph-seal-check"></i>
+                  }
                   {{ 'students.profile.verification.form.submit' | translate }}
                 </button>
               </div>

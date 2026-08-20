@@ -1,11 +1,22 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
 import { ApiErrorService } from '../../../../core/errors/api-error.service';
-import { DriveOsBadgeComponent, DriveOsBadgeVariant } from '../../../../shared/ui/badge/driveos-badge.component';
+import {
+  DriveOsBadgeComponent,
+  DriveOsBadgeVariant,
+} from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsButtonComponent } from '../../../../shared/ui/button/driveos-button.component';
 import { DriveOsCardComponent } from '../../../../shared/ui/card/driveos-card.component';
 import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/driveos-empty-state.component';
@@ -66,7 +77,10 @@ export class StudentReactivationPanelComponent {
     this.authorization.hasAll([STUDENT_PERMISSIONS.reactivate, STUDENT_PERMISSIONS.complianceRead]),
   );
   readonly canApply = computed(() =>
-    this.authorization.hasAll([STUDENT_PERMISSIONS.reactivate, STUDENT_PERMISSIONS.enrollmentReactivate]),
+    this.authorization.hasAll([
+      STUDENT_PERMISSIONS.reactivate,
+      STUDENT_PERMISSIONS.enrollmentReactivate,
+    ]),
   );
   readonly canRequestPedagogyReview = computed(() =>
     this.authorization.hasPermission(STUDENT_PERMISSIONS.pedagogyReviewRequest),
@@ -75,7 +89,9 @@ export class StudentReactivationPanelComponent {
     this.suspensions().filter((item) => item.status === 'Active'),
   );
   readonly hasOpenReactivation = computed(() =>
-    this.items().some((item) => !['Applied', 'Cancelled', 'NewEnrollmentRequired'].includes(item.status)),
+    this.items().some(
+      (item) => !['Applied', 'Cancelled', 'NewEnrollmentRequired'].includes(item.status),
+    ),
   );
 
   readonly checkDefinitions: readonly CheckDefinition[] = [
@@ -115,7 +131,8 @@ export class StudentReactivationPanelComponent {
   }
 
   open(): void {
-    if (!this.canReactivate() || !this.activeSuspensions().length || this.hasOpenReactivation()) return;
+    if (!this.canReactivate() || !this.activeSuspensions().length || this.hasOpenReactivation())
+      return;
     this.form.reset({
       suspensionId: this.activeSuspensions()[0]?.suspensionId ?? '',
       mode: 2,
@@ -142,19 +159,27 @@ export class StudentReactivationPanelComponent {
     const value = this.form.getRawValue();
     const mode = Number(value.mode) as 1 | 2 | 3 | 4;
     if (mode === 3 && !value.conditions.trim()) {
-      this.toast.error(this.translate.instant('students.lifecycle.reactivation.validation.conditionsRequired'));
+      this.toast.error(
+        this.translate.instant('students.lifecycle.reactivation.validation.conditionsRequired'),
+      );
       return;
     }
     if (value.pedagogyReviewRequested && !this.canRequestPedagogyReview()) {
-      this.toast.error(this.translate.instant('students.lifecycle.reactivation.validation.pedagogyPermission'));
+      this.toast.error(
+        this.translate.instant('students.lifecycle.reactivation.validation.pedagogyPermission'),
+      );
       return;
     }
     if (mode === 1 && value.resumeDate !== this.today()) {
-      this.toast.error(this.translate.instant('students.lifecycle.reactivation.validation.immediateToday'));
+      this.toast.error(
+        this.translate.instant('students.lifecycle.reactivation.validation.immediateToday'),
+      );
       return;
     }
     if ((mode === 1 || mode === 2) && value.checks.some((check) => Number(check.status) === 3)) {
-      this.toast.error(this.translate.instant('students.lifecycle.reactivation.validation.failedChecks'));
+      this.toast.error(
+        this.translate.instant('students.lifecycle.reactivation.validation.failedChecks'),
+      );
       return;
     }
 
@@ -176,7 +201,9 @@ export class StudentReactivationPanelComponent {
       next: () => {
         this.saving.set(false);
         this.editing.set(false);
-        this.toast.success(this.translate.instant('students.lifecycle.reactivation.feedback.created'));
+        this.toast.success(
+          this.translate.instant('students.lifecycle.reactivation.feedback.created'),
+        );
         this.changed.emit();
       },
       error: (error: HttpErrorResponse) => {
@@ -196,22 +223,26 @@ export class StudentReactivationPanelComponent {
     const key = `${item.reactivationId}:${check.type}`;
     if (this.reviewingKey()) return;
     this.reviewingKey.set(key);
-    this.api.reviewReactivationCheck(
-      this.studentId(),
-      item.reactivationId,
-      check.type as ReactivationCheckType,
-      { status, detail: detail.trim() },
-    ).subscribe({
-      next: () => {
-        this.reviewingKey.set(null);
-        this.toast.success(this.translate.instant('students.lifecycle.reactivation.feedback.checkUpdated'));
-        this.changed.emit();
-      },
-      error: (error: HttpErrorResponse) => {
-        this.reviewingKey.set(null);
-        for (const message of this.errors.getMessages(error)) this.toast.error(message);
-      },
-    });
+    this.api
+      .reviewReactivationCheck(
+        this.studentId(),
+        item.reactivationId,
+        check.type as ReactivationCheckType,
+        { status, detail: detail.trim() },
+      )
+      .subscribe({
+        next: () => {
+          this.reviewingKey.set(null);
+          this.toast.success(
+            this.translate.instant('students.lifecycle.reactivation.feedback.checkUpdated'),
+          );
+          this.changed.emit();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.reviewingKey.set(null);
+          for (const message of this.errors.getMessages(error)) this.toast.error(message);
+        },
+      });
   }
 
   apply(item: EnrollmentReactivation): void {
@@ -220,7 +251,9 @@ export class StudentReactivationPanelComponent {
     this.api.applyReactivation(this.studentId(), item.reactivationId).subscribe({
       next: () => {
         this.applyingId.set(null);
-        this.toast.success(this.translate.instant('students.lifecycle.reactivation.feedback.applied'));
+        this.toast.success(
+          this.translate.instant('students.lifecycle.reactivation.feedback.applied'),
+        );
         this.changed.emit();
       },
       error: (error: HttpErrorResponse) => {
@@ -232,7 +265,11 @@ export class StudentReactivationPanelComponent {
 
   canApplyItem(item: EnrollmentReactivation): boolean {
     if (['Applied', 'NewEnrollmentRequired', 'Cancelled'].includes(item.status)) return false;
-    if (new Date(`${item.resumeDate}T00:00:00`).getTime() > new Date(`${this.today()}T00:00:00`).getTime()) return false;
+    if (
+      new Date(`${item.resumeDate}T00:00:00`).getTime() >
+      new Date(`${this.today()}T00:00:00`).getTime()
+    )
+      return false;
     return !item.checks.some((check) => check.status === 'Failed');
   }
 

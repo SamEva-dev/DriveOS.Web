@@ -1,0 +1,218 @@
+<div class="mx-auto max-w-[1600px] space-y-6 p-4 sm:p-6 lg:p-8">
+  <section class="overflow-hidden rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm">
+    <div class="flex flex-col gap-5 border-b border-[var(--driveos-border)] p-5 lg:flex-row lg:items-center lg:justify-between lg:p-6">
+      <div>
+        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-orange-600">{{ 'scheduling.availability.kicker' | translate }}</p>
+        <h2 class="mt-1 text-2xl font-black tracking-tight text-[var(--driveos-text-primary)]">{{ 'scheduling.availability.title' | translate }}</h2>
+        <p class="mt-2 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'scheduling.availability.subtitle' | translate }}</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        @if (canManage()) {
+          <drive-os-button variant="outline" icon="plus" (pressed)="open('plan')">{{ 'scheduling.availability.actions.newPlan' | translate }}</drive-os-button>
+          <drive-os-button icon="plus" (pressed)="open('rule')" [disabled]="!draftPlan()">{{ 'scheduling.availability.actions.addRange' | translate }}</drive-os-button>
+        }
+      </div>
+    </div>
+
+    <div class="border-b border-[var(--driveos-border)] px-4 sm:px-6">
+      <div class="flex gap-1 overflow-x-auto">
+        <button type="button" (click)="setContext('instructors')" class="flex min-h-12 shrink-0 items-center gap-2 border-b-2 px-4 text-sm font-bold transition" [class.border-blue-800]="context() === 'instructors'" [class.text-blue-800]="context() === 'instructors'" [class.border-transparent]="context() !== 'instructors'">
+          <i class="ph ph-chalkboard-teacher text-lg"></i>{{ 'scheduling.availability.tabs.instructors' | translate }}
+        </button>
+        <button type="button" (click)="setContext('students')" class="flex min-h-12 shrink-0 items-center gap-2 border-b-2 px-4 text-sm font-bold transition" [class.border-blue-800]="context() === 'students'" [class.text-blue-800]="context() === 'students'" [class.border-transparent]="context() !== 'students'">
+          <i class="ph ph-student text-lg"></i>{{ 'scheduling.availability.tabs.students' | translate }}
+        </button>
+        <button type="button" (click)="setContext('resources')" class="flex min-h-12 shrink-0 items-center gap-2 border-b-2 px-4 text-sm font-bold transition" [class.border-blue-800]="context() === 'resources'" [class.text-blue-800]="context() === 'resources'" [class.border-transparent]="context() !== 'resources'">
+          <i class="ph ph-cube text-lg"></i>{{ 'scheduling.availability.tabs.resources' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div class="grid gap-4 p-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:p-6">
+      <label class="block">
+        <span class="mb-2 block text-xs font-extrabold uppercase tracking-wider text-[var(--driveos-text-muted)]">{{ 'scheduling.availability.resourceLabel' | translate }}</span>
+        <select class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-[var(--driveos-surface-card)] px-3 text-sm font-semibold text-[var(--driveos-text-primary)] outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20" [value]="selectedResourceId() ?? ''" (change)="selectResource($any($event.target).value)">
+          @for (resource of contextResources(); track resource.id) {
+            <option [value]="resource.id">{{ resource.displayName }} · {{ resourceTypeKey(resource.resourceType) | translate }}</option>
+          }
+        </select>
+      </label>
+      @if (selectedResource(); as resource) {
+        <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
+          <span class="rounded-full bg-slate-100 px-3 py-1.5 text-slate-700 dark:bg-slate-800 dark:text-slate-200">{{ resource.status }}</span>
+          <span class="rounded-full bg-blue-50 px-3 py-1.5 text-blue-800 dark:bg-blue-950/40 dark:text-blue-200">{{ resource.timeZoneId }}</span>
+          @if (materialContext()) { <span class="rounded-full bg-orange-50 px-3 py-1.5 text-orange-700 dark:bg-orange-950/30 dark:text-orange-200">{{ 'scheduling.availability.capacity' | translate }} {{ resource.capacity }}</span> }
+        </div>
+      }
+    </div>
+  </section>
+
+  @if (errors().length) {
+    <drive-os-state-banner tone="danger" icon="warning" [title]="'errors.title' | translate" [description]="errors().join(' · ')" />
+  }
+  @if (successKey()) {
+    <drive-os-state-banner tone="success" icon="check-circle" [title]="successKey()! | translate" />
+  }
+  @if (lastImpact(); as impact) {
+    @if (impact.impactedBookings.length) {
+      <drive-os-state-banner tone="warning" icon="warning-diamond" [title]="'scheduling.availability.impact.title' | translate" [description]="('scheduling.availability.impact.description' | translate:{ count: impact.impactedBookings.length })" />
+    }
+  }
+
+  @if (loading()) {
+    <div class="grid min-h-72 place-items-center"><drive-os-spinner /></div>
+  } @else if (!selectedResource()) {
+    <drive-os-empty-state [title]="'scheduling.availability.emptyResources' | translate" icon="calendar-x" />
+  } @else {
+    <section class="grid gap-6 xl:grid-cols-[minmax(0,1.55fr)_minmax(320px,.75fr)]">
+      <div class="space-y-6">
+        <article class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm sm:p-6">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h3 class="text-lg font-black text-[var(--driveos-text-primary)]">{{ 'scheduling.availability.weekly.title' | translate }}</h3>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'scheduling.availability.weekly.subtitle' | translate }}</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              @if (canManage()) {
+                <drive-os-button size="sm" variant="outline" icon="warning-circle" (pressed)="open('exception')">{{ 'scheduling.availability.actions.exception' | translate }}</drive-os-button>
+                @if (studentContext()) { <drive-os-button size="sm" variant="outline" icon="sliders" (pressed)="open('preferences')">{{ 'scheduling.availability.actions.preferences' | translate }}</drive-os-button> }
+              }
+            </div>
+          </div>
+
+          @if (selectedPlan(); as plan) {
+            <div class="mt-5 overflow-hidden rounded-2xl border border-[var(--driveos-border)]">
+              @for (day of weekdays; track day.value) {
+                <div class="grid min-h-20 gap-3 border-b border-[var(--driveos-border)] p-4 last:border-b-0 md:grid-cols-[150px_1fr]">
+                  <div class="font-extrabold text-[var(--driveos-text-primary)]">{{ day.key | translate }}</div>
+                  <div class="flex flex-wrap gap-2">
+                    @for (rule of rulesForDay(day.value); track rule.id) {
+                      <div class="group flex items-center gap-2 rounded-xl border px-3 py-2" [class.border-orange-200]="rule.type === 'Preferred'" [class.bg-orange-50]="rule.type === 'Preferred'" [class.border-blue-200]="rule.type !== 'Preferred'" [class.bg-blue-50]="rule.type !== 'Preferred'">
+                        <span class="font-black text-slate-900">{{ rule.startTime.slice(0,5) }}–{{ rule.endTime.slice(0,5) }}</span>
+                        <span class="rounded-full bg-white/80 px-2 py-0.5 text-[0.68rem] font-extrabold uppercase tracking-wide text-slate-600">{{ ruleTypeKey(rule.type) | translate }}</span>
+                        <span class="text-xs text-slate-500">{{ sourceKey(rule.source) | translate }}</span>
+                        @if (materialContext()) { <span class="text-xs font-bold text-slate-600">×{{ rule.capacity }}</span> }
+                        @if (canManage() && plan.status === 'Draft') {
+                          <button type="button" class="ml-1 grid size-7 place-items-center rounded-lg text-slate-400 opacity-70 hover:bg-white hover:text-red-600 group-hover:opacity-100" (click)="removeRule(plan, rule)" [attr.aria-label]="'common.actions.delete' | translate"><i class="ph ph-trash"></i></button>
+                        }
+                      </div>
+                    } @empty {
+                      <span class="text-sm text-[var(--driveos-text-muted)]">{{ 'scheduling.availability.weekly.none' | translate }}</span>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <drive-os-empty-state class="mt-6 block" [title]="'scheduling.availability.noPlan' | translate" icon="calendar-blank" />
+          }
+        </article>
+
+        <article class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm sm:p-6">
+          <div class="flex items-center justify-between gap-4">
+            <div><h3 class="text-lg font-black text-[var(--driveos-text-primary)]">{{ 'scheduling.availability.exceptions.title' | translate }}</h3><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'scheduling.availability.exceptions.subtitle' | translate }}</p></div>
+            @if (canManage()) { <drive-os-button size="sm" variant="outline" icon="plus" (pressed)="open('exception')">{{ 'common.actions.create' | translate }}</drive-os-button> }
+          </div>
+          <div class="mt-5 space-y-3">
+            @for (exception of selectedPlan()?.exceptions ?? []; track exception.id) {
+              <div class="flex flex-col gap-3 rounded-2xl border border-[var(--driveos-border)] p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center gap-2"><span class="font-black text-[var(--driveos-text-primary)]">{{ exception.date }} · {{ exception.startTime.slice(0,5) }}–{{ exception.endTime.slice(0,5) }}</span><span class="rounded-full bg-orange-50 px-2.5 py-1 text-xs font-extrabold text-orange-700">{{ exceptionTypeKey(exception.type) | translate }}</span></div>
+                  <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ sourceKey(exception.source) | translate }}@if (exception.reason) { · {{ exception.reason }} }</p>
+                </div>
+                @if (selectedPlan(); as plan) { @if (canManage()) { <button type="button" class="grid size-9 place-items-center rounded-xl border border-[var(--driveos-border)] text-slate-500 hover:border-red-200 hover:bg-red-50 hover:text-red-600" (click)="removeException(plan, exception.id)"><i class="ph ph-trash"></i></button> } }
+              </div>
+            } @empty { <p class="rounded-2xl bg-[var(--driveos-surface-subtle)] p-5 text-sm text-[var(--driveos-text-muted)]">{{ 'scheduling.availability.exceptions.none' | translate }}</p> }
+          </div>
+        </article>
+      </div>
+
+      <aside class="space-y-6">
+        <article class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm">
+          <h3 class="font-black text-[var(--driveos-text-primary)]">{{ 'scheduling.availability.plan.title' | translate }}</h3>
+          @if (selectedPlan(); as plan) {
+            <div class="mt-4 space-y-3 text-sm">
+              <div class="flex justify-between gap-4"><span class="text-[var(--driveos-text-muted)]">{{ 'scheduling.availability.plan.status' | translate }}</span><span class="font-extrabold">{{ planStatusKey(plan.status) | translate }}</span></div>
+              <div class="flex justify-between gap-4"><span class="text-[var(--driveos-text-muted)]">{{ 'scheduling.availability.plan.period' | translate }}</span><span class="text-right font-bold">{{ plan.effectiveFrom }} → {{ plan.effectiveTo || '∞' }}</span></div>
+              <div class="flex justify-between gap-4"><span class="text-[var(--driveos-text-muted)]">{{ 'scheduling.availability.plan.rules' | translate }}</span><span class="font-bold">{{ plan.rules.length }}</span></div>
+              <div class="flex justify-between gap-4"><span class="text-[var(--driveos-text-muted)]">{{ 'scheduling.availability.plan.exceptions' | translate }}</span><span class="font-bold">{{ plan.exceptions.length }}</span></div>
+            </div>
+            @if (canManage()) {
+              <div class="mt-5 grid gap-2">
+                @if (plan.status === 'Draft') { <drive-os-button fullWidth variant="primary" icon="check-circle" (pressed)="activate(plan)">{{ 'scheduling.availability.actions.activate' | translate }}</drive-os-button> }
+                @if (plan.status !== 'Archived') { <drive-os-button fullWidth variant="outline" icon="archive" (pressed)="archive(plan)">{{ 'scheduling.availability.actions.archive' | translate }}</drive-os-button> }
+              </div>
+            }
+          } @else { <p class="mt-3 text-sm text-[var(--driveos-text-muted)]">{{ 'scheduling.availability.noPlan' | translate }}</p> }
+        </article>
+
+        @if (studentContext() && selectedPlan(); as plan) {
+          <article class="rounded-3xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm">
+            <div class="flex items-center justify-between"><h3 class="font-black text-[var(--driveos-text-primary)]">{{ 'scheduling.availability.preferences.title' | translate }}</h3>@if (canManage()) { <button type="button" class="text-sm font-extrabold text-blue-800 hover:underline" (click)="open('preferences')">{{ 'common.actions.edit' | translate }}</button> }</div>
+            <dl class="mt-4 space-y-3 text-sm">
+              <div><dt class="text-[var(--driveos-text-muted)]">{{ 'scheduling.availability.preferences.meetingPoint' | translate }}</dt><dd class="mt-0.5 font-bold text-[var(--driveos-text-primary)]">{{ plan.preferences.preferredMeetingPoint || '—' }}</dd></div>
+              <div class="grid grid-cols-2 gap-3"><div><dt class="text-[var(--driveos-text-muted)]">{{ 'scheduling.availability.preferences.distance' | translate }}</dt><dd class="font-bold">{{ plan.preferences.maximumTravelDistanceKm ?? '—' }} km</dd></div><div><dt class="text-[var(--driveos-text-muted)]">{{ 'scheduling.availability.preferences.frequency' | translate }}</dt><dd class="font-bold">{{ plan.preferences.trainingFrequencyPerWeek ?? '—' }}</dd></div></div>
+              <div class="rounded-xl bg-blue-50 p-3 text-xs leading-5 text-blue-900 dark:bg-blue-950/30 dark:text-blue-100"><i class="ph ph-shield-check mr-1"></i>{{ 'scheduling.availability.preferences.locationPrivacy' | translate }}</div>
+            </dl>
+          </article>
+        }
+
+        <article class="rounded-3xl border border-blue-100 bg-blue-50/70 p-5 dark:border-blue-900 dark:bg-blue-950/20">
+          <div class="flex gap-3"><span class="grid size-9 shrink-0 place-items-center rounded-xl bg-blue-800 text-white"><i class="ph ph-info"></i></span><div><h3 class="font-black text-blue-950 dark:text-blue-100">{{ 'scheduling.availability.priority.title' | translate }}</h3><p class="mt-1 text-sm leading-6 text-blue-900/80 dark:text-blue-200">{{ (instructorContext() ? 'scheduling.availability.priority.instructor' : studentContext() ? 'scheduling.availability.priority.student' : 'scheduling.availability.priority.resource') | translate }}</p></div></div>
+        </article>
+      </aside>
+    </section>
+  }
+</div>
+
+<drive-os-drawer [open]="drawerMode() !== null" size="lg" [title]="('scheduling.availability.drawer.' + drawerMode() + '.title') | translate" [description]="('scheduling.availability.drawer.' + drawerMode() + '.description') | translate" [closeDisabled]="saving()" (closeRequested)="closeDrawer()">
+  <div class="space-y-5 p-6">
+    @if (drawerMode() === 'plan') {
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.effectiveFrom' | translate }}</span><input type="date" class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="planFrom()" (input)="planFrom.set($any($event.target).value)" /></label>
+        <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.effectiveTo' | translate }}</span><input type="date" class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="planTo()" (input)="planTo.set($any($event.target).value)" /></label>
+      </div>
+    }
+    @if (drawerMode() === 'rule') {
+      @if (!draftPlan()) { <drive-os-state-banner tone="warning" [title]="'scheduling.availability.ruleNeedsDraft' | translate" /> }
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.day' | translate }}</span><select class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="ruleDay()" (change)="ruleDay.set(+$any($event.target).value)">@for (day of weekdays; track day.value) { <option [value]="day.value">{{ day.key | translate }}</option> }</select></label>
+        <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.type' | translate }}</span><select class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="ruleType()" (change)="ruleType.set(+$any($event.target).value)"><option value="1">{{ 'scheduling.availability.ruleTypes.Available' | translate }}</option>@if (!materialContext()) { <option value="2">{{ 'scheduling.availability.ruleTypes.Preferred' | translate }}</option> }@if (instructorContext()) { <option value="3">{{ 'scheduling.availability.ruleTypes.OnCall' | translate }}</option><option value="4">{{ 'scheduling.availability.ruleTypes.PartnerAvailability' | translate }}</option> }</select></label>
+        <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.start' | translate }}</span><input type="time" class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="ruleStart()" (input)="ruleStart.set($any($event.target).value)" /></label>
+        <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.end' | translate }}</span><input type="time" class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="ruleEnd()" (input)="ruleEnd.set($any($event.target).value)" /></label>
+        <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.source' | translate }}</span><select class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="ruleSource()" (change)="ruleSource.set(+$any($event.target).value)"><option value="1">{{ 'scheduling.availability.sources.Contract' | translate }}</option><option value="2">{{ 'scheduling.availability.sources.SelfDeclared' | translate }}</option><option value="3">{{ 'scheduling.availability.sources.HrSchedule' | translate }}</option><option value="4">{{ 'scheduling.availability.sources.Mission' | translate }}</option><option value="6">{{ 'scheduling.availability.sources.OrganizationRule' | translate }}</option><option value="7">{{ 'scheduling.availability.sources.StudentDeclared' | translate }}</option></select></label>
+        <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.priority' | translate }}</span><input type="number" min="0" max="1000" class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="rulePriority()" (input)="rulePriority.set(+$any($event.target).value)" /></label>
+        @if (materialContext()) { <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.capacity' | translate }}</span><input type="number" min="1" class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="ruleCapacity()" (input)="ruleCapacity.set(+$any($event.target).value)" /></label> }
+        @if (instructorContext()) { <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.trainingCategory' | translate }}</span><input class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="ruleTrainingCategory()" (input)="ruleTrainingCategory.set($any($event.target).value)" placeholder="B, A2…" /></label><label class="space-y-2 sm:col-span-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.serviceArea' | translate }}</span><input class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="ruleServiceArea()" (input)="ruleServiceArea.set($any($event.target).value)" /></label> }
+      </div>
+    }
+    @if (drawerMode() === 'exception') {
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.date' | translate }}</span><input type="date" class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="exceptionDate()" (input)="exceptionDate.set($any($event.target).value)" /></label>
+        <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.exceptionType' | translate }}</span><select class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="exceptionType()" (change)="exceptionType.set(+$any($event.target).value)"><option value="1">{{ 'scheduling.availability.exceptionTypes.Available' | translate }}</option><option value="2">{{ 'scheduling.availability.exceptionTypes.Unavailable' | translate }}</option>@if (materialContext()) { <option value="10">{{ 'scheduling.availability.exceptionTypes.Maintenance' | translate }}</option><option value="12">{{ 'scheduling.availability.exceptionTypes.Breakdown' | translate }}</option><option value="13">{{ 'scheduling.availability.exceptionTypes.Cleaning' | translate }}</option><option value="14">{{ 'scheduling.availability.exceptionTypes.Inspection' | translate }}</option><option value="15">{{ 'scheduling.availability.exceptionTypes.Transfer' | translate }}</option><option value="16">{{ 'scheduling.availability.exceptionTypes.Closure' | translate }}</option><option value="17">{{ 'scheduling.availability.exceptionTypes.Rental' | translate }}</option><option value="19">{{ 'scheduling.availability.exceptionTypes.PartnerRestriction' | translate }}</option> }</select></label>
+        @if (!materialContext()) {
+          <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.source' | translate }}</span><select class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="exceptionSource() ?? ''" (change)="exceptionSource.set($any($event.target).value === '' ? null : +$any($event.target).value)"><option value="2">{{ 'scheduling.availability.sources.SelfDeclared' | translate }}</option>@if (instructorContext()) { <option value="5">{{ 'scheduling.availability.sources.Absence' | translate }}</option><option value="3">{{ 'scheduling.availability.sources.HrSchedule' | translate }}</option><option value="4">{{ 'scheduling.availability.sources.Mission' | translate }}</option><option value="6">{{ 'scheduling.availability.sources.OrganizationRule' | translate }}</option> }@if (studentContext()) { <option value="7">{{ 'scheduling.availability.sources.StudentDeclared' | translate }}</option> }</select></label>
+        }
+        <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.start' | translate }}</span><input type="time" class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="exceptionStart()" (input)="exceptionStart.set($any($event.target).value)" /></label>
+        <label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.end' | translate }}</span><input type="time" class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="exceptionEnd()" (input)="exceptionEnd.set($any($event.target).value)" /></label>
+        <label class="space-y-2 sm:col-span-2"><span class="text-sm font-bold">{{ 'scheduling.availability.fields.reason' | translate }}</span><textarea rows="3" class="w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent p-3" [value]="exceptionReason()" (input)="exceptionReason.set($any($event.target).value)"></textarea></label>
+      </div>
+    }
+    @if (drawerMode() === 'preferences') {
+      <div class="space-y-4">
+        <label class="block space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.preferences.meetingPoint' | translate }}</span><input class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="prefMeetingPoint()" (input)="prefMeetingPoint.set($any($event.target).value)" /></label>
+        <div class="grid gap-4 sm:grid-cols-3"><label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.preferences.distance' | translate }}</span><input type="number" min="0" class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="prefMaxDistance() ?? ''" (input)="prefMaxDistance.set($any($event.target).value === '' ? null : +$any($event.target).value)" /></label><label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.preferences.notice' | translate }}</span><input type="number" min="0" class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="prefMinimumNotice() ?? ''" (input)="prefMinimumNotice.set($any($event.target).value === '' ? null : +$any($event.target).value)" /></label><label class="space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.preferences.frequency' | translate }}</span><input type="number" min="1" max="21" class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="prefFrequency() ?? ''" (input)="prefFrequency.set($any($event.target).value === '' ? null : +$any($event.target).value)" /></label></div>
+        <label class="block space-y-2"><span class="text-sm font-bold">{{ 'scheduling.availability.preferences.instructor' | translate }}</span><select class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3" [value]="prefInstructorId()" (change)="prefInstructorId.set($any($event.target).value)"><option value="">{{ 'scheduling.availability.preferences.noInstructorPreference' | translate }}</option>@for (instructor of instructorResources(); track instructor.id) { <option [value]="instructor.externalResourceId">{{ instructor.displayName }}</option> }</select></label>
+        <label class="flex items-start gap-3 rounded-2xl border border-[var(--driveos-border)] p-4"><input type="checkbox" class="mt-1 size-4" [checked]="prefIntensive()" (change)="prefIntensive.set($any($event.target).checked)" /><span><strong class="block text-sm">{{ 'scheduling.availability.preferences.intensive' | translate }}</strong><span class="text-xs text-[var(--driveos-text-muted)]">{{ 'scheduling.availability.preferences.intensiveHelp' | translate }}</span></span></label>
+        <label class="flex items-start gap-3 rounded-2xl border border-blue-200 bg-blue-50/60 p-4"><input type="checkbox" class="mt-1 size-4" [checked]="prefGeo()" (change)="prefGeo.set($any($event.target).checked)" /><span><strong class="block text-sm text-blue-950">{{ 'scheduling.availability.preferences.geo' | translate }}</strong><span class="text-xs text-blue-800">{{ 'scheduling.availability.preferences.geoHelp' | translate }}</span></span></label>
+      </div>
+    }
+  </div>
+  <div driveOsDrawerFooter class="flex justify-end gap-2">
+    <drive-os-button variant="ghost" [disabled]="saving()" (pressed)="closeDrawer()">{{ 'common.actions.cancel' | translate }}</drive-os-button>
+    @if (drawerMode() === 'plan') { <drive-os-button [loading]="saving()" (pressed)="createPlan()">{{ 'common.actions.create' | translate }}</drive-os-button> }
+    @if (drawerMode() === 'rule') { <drive-os-button [loading]="saving()" [disabled]="!draftPlan()" (pressed)="addRule()">{{ 'common.actions.save' | translate }}</drive-os-button> }
+    @if (drawerMode() === 'exception') { <drive-os-button [loading]="saving()" [disabled]="!selectedPlan()" (pressed)="addException()">{{ 'common.actions.save' | translate }}</drive-os-button> }
+    @if (drawerMode() === 'preferences') { <drive-os-button [loading]="saving()" [disabled]="!selectedPlan()" (pressed)="savePreferences()">{{ 'common.actions.save' | translate }}</drive-os-button> }
+  </div>
+</drive-os-drawer>

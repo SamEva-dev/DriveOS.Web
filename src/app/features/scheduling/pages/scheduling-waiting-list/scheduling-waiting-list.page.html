@@ -1,0 +1,947 @@
+<section class="mx-auto max-w-[1600px] space-y-5 px-4 py-5 sm:px-6 lg:py-6">
+  <header class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+    <div>
+      <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-orange-600">
+        {{ 'scheduling.waitingList.kicker' | translate }}
+      </p>
+      <h1 class="mt-1 text-2xl font-black text-[var(--driveos-text-primary)] md:text-3xl">
+        {{ 'scheduling.waitingList.title' | translate }}
+      </h1>
+      <p class="mt-2 max-w-3xl text-sm text-[var(--driveos-text-secondary)]">
+        {{ 'scheduling.waitingList.subtitle' | translate }}
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <drive-os-button
+        variant="secondary"
+        (pressed)="load()"
+      >
+        <i class="ph ph-arrow-clockwise mr-2"></i>
+        {{ 'common.actions.refresh' | translate }}
+      </drive-os-button>
+      @if (canManage()) {
+        <drive-os-button (pressed)="openCreate()">
+          <i class="ph ph-plus mr-2"></i>
+          {{ 'scheduling.waitingList.actions.add' | translate }}
+        </drive-os-button>
+      }
+    </div>
+  </header>
+
+  @if (errors().length) {
+    <drive-os-state-banner
+      tone="danger"
+      [title]="'errors.title' | translate"
+      [description]="errors().join(' · ')"
+    />
+  }
+  @if (successKey()) {
+    <drive-os-state-banner
+      tone="success"
+      [title]="successKey()! | translate"
+    />
+  }
+
+  <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+    <article
+      class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-4 shadow-sm"
+    >
+      <p class="text-xs font-extrabold uppercase tracking-wide text-[var(--driveos-text-muted)]">
+        {{ 'scheduling.waitingList.kpi.waiting' | translate }}
+      </p>
+      <strong class="mt-3 block text-3xl font-black">{{ waitingCount() }}</strong>
+    </article>
+    <article
+      class="rounded-2xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-900/50 dark:bg-blue-950/20"
+    >
+      <p class="text-xs font-extrabold uppercase tracking-wide text-blue-700 dark:text-blue-300">
+        {{ 'scheduling.waitingList.kpi.proposals' | translate }}
+      </p>
+      <strong class="mt-3 block text-3xl font-black text-blue-950 dark:text-blue-100">
+        {{ proposalCount() }}
+      </strong>
+    </article>
+    <article
+      class="rounded-2xl border border-orange-200 bg-orange-50 p-4 dark:border-orange-900/50 dark:bg-orange-950/20"
+    >
+      <p
+        class="text-xs font-extrabold uppercase tracking-wide text-orange-700 dark:text-orange-300"
+      >
+        {{ 'scheduling.waitingList.kpi.holds' | translate }}
+      </p>
+      <strong class="mt-3 block text-3xl font-black text-orange-950 dark:text-orange-100">
+        {{ holdCount() }}
+      </strong>
+    </article>
+    <article
+      class="rounded-2xl border border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-950/20"
+    >
+      <p class="text-xs font-extrabold uppercase tracking-wide text-red-700 dark:text-red-300">
+        {{ 'scheduling.waitingList.kpi.urgent' | translate }}
+      </p>
+      <strong class="mt-3 block text-3xl font-black text-red-950 dark:text-red-100">
+        {{ urgentCount() }}
+      </strong>
+    </article>
+  </div>
+
+  <div
+    class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-2 shadow-sm"
+  >
+    <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex gap-1 overflow-x-auto p-1">
+        <button
+          class="whitespace-nowrap rounded-xl px-4 py-2 text-sm font-extrabold"
+          [class.bg-blue-800]="tab() === 'waiting'"
+          [class.text-white]="tab() === 'waiting'"
+          (click)="setTab('waiting')"
+        >
+          {{ 'scheduling.waitingList.tabs.waiting' | translate }}
+          <span class="ml-1 opacity-70">{{ waitingCount() }}</span>
+        </button>
+        <button
+          class="whitespace-nowrap rounded-xl px-4 py-2 text-sm font-extrabold"
+          [class.bg-blue-800]="tab() === 'proposals'"
+          [class.text-white]="tab() === 'proposals'"
+          (click)="setTab('proposals')"
+        >
+          {{ 'scheduling.waitingList.tabs.proposals' | translate }}
+          <span class="ml-1 opacity-70">{{ proposalCount() }}</span>
+        </button>
+        <button
+          class="whitespace-nowrap rounded-xl px-4 py-2 text-sm font-extrabold"
+          [class.bg-blue-800]="tab() === 'holds'"
+          [class.text-white]="tab() === 'holds'"
+          (click)="setTab('holds')"
+        >
+          {{ 'scheduling.waitingList.tabs.holds' | translate }}
+          <span class="ml-1 opacity-70">{{ holdCount() }}</span>
+        </button>
+        <button
+          class="whitespace-nowrap rounded-xl px-4 py-2 text-sm font-extrabold"
+          [class.bg-blue-800]="tab() === 'history'"
+          [class.text-white]="tab() === 'history'"
+          (click)="setTab('history')"
+        >
+          {{ 'scheduling.waitingList.tabs.history' | translate }}
+        </button>
+      </div>
+      <label class="relative min-w-0 lg:w-80">
+        <i
+          class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[var(--driveos-text-muted)]"
+        ></i>
+        <input
+          class="h-11 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent pl-10 pr-3 text-sm"
+          [placeholder]="'scheduling.waitingList.searchPlaceholder' | translate"
+          [value]="search()"
+          (input)="search.set($any($event.target).value)"
+        />
+      </label>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="grid min-h-64 place-items-center"><drive-os-spinner></drive-os-spinner></div>
+  } @else if (!filtered().length) {
+    <drive-os-empty-state
+      icon="ph ph-list-checks"
+      [title]="'scheduling.waitingList.empty.title' | translate"
+    ></drive-os-empty-state>
+  } @else {
+    <div class="grid gap-3 xl:grid-cols-2">
+      @for (entry of filtered(); track entry.id) {
+        <button
+          type="button"
+          class="group rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md"
+          (click)="openDetail(entry)"
+        >
+          <div class="flex items-start gap-4">
+            <div
+              class="grid size-12 shrink-0 place-items-center rounded-2xl bg-blue-50 text-lg font-black text-blue-800 dark:bg-blue-950/30 dark:text-blue-200"
+            >
+              {{ studentLabel(entry.studentId).slice(0, 2).toUpperCase() }}
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <span
+                  class="rounded-full px-2.5 py-1 text-[0.68rem] font-extrabold uppercase tracking-wide"
+                  [class.bg-red-100]="priorityLevel(entry.effectivePriorityScore) === 'critical'"
+                  [class.text-red-700]="priorityLevel(entry.effectivePriorityScore) === 'critical'"
+                  [class.bg-orange-100]="priorityLevel(entry.effectivePriorityScore) === 'high'"
+                  [class.text-orange-800]="priorityLevel(entry.effectivePriorityScore) === 'high'"
+                  [class.bg-slate-100]="
+                    priorityLevel(entry.effectivePriorityScore) === 'normal' ||
+                    priorityLevel(entry.effectivePriorityScore) === 'low'
+                  "
+                  [class.text-slate-700]="
+                    priorityLevel(entry.effectivePriorityScore) === 'normal' ||
+                    priorityLevel(entry.effectivePriorityScore) === 'low'
+                  "
+                >
+                  {{
+                    'scheduling.waitingList.priority.' + priorityLevel(entry.effectivePriorityScore)
+                      | translate
+                  }}
+                  · {{ entry.effectivePriorityScore }}
+                </span>
+                <span
+                  class="rounded-full border border-[var(--driveos-border)] px-2.5 py-1 text-[0.68rem] font-extrabold"
+                >
+                  {{ 'scheduling.waitingList.status.' + entryStatusName(entry) | translate }}
+                </span>
+              </div>
+              <h3 class="mt-2 truncate text-lg font-black text-[var(--driveos-text-primary)]">
+                {{ studentLabel(entry.studentId) }}
+              </h3>
+              <p class="mt-1 text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ bookingTypeKey(entry.requestedSessionType) | translate }} ·
+                {{ entry.durationMinutes }} min
+              </p>
+              <p class="mt-2 line-clamp-2 text-sm text-[var(--driveos-text-secondary)]">
+                {{ entry.reason }}
+              </p>
+              <div class="mt-4 grid gap-2 text-xs text-[var(--driveos-text-muted)] sm:grid-cols-2">
+                <span>
+                  <i class="ph ph-calendar-blank mr-1"></i>
+                  {{ entry.preferredFromUtc | date: 'short' }} →
+                  {{ entry.preferredToUtc | date: 'short' }}
+                </span>
+                <span>
+                  <i class="ph ph-map-pin mr-1"></i>
+                  {{ branchLabel(entry.preferredBranchId) }}
+                </span>
+                <span>
+                  <i class="ph ph-user mr-1"></i>
+                  {{ instructorLabel(entry.preferredInstructorId) }}
+                </span>
+                <span>
+                  <i class="ph ph-hourglass mr-1"></i>
+                  {{ 'scheduling.waitingList.expires' | translate }}
+                  {{ entry.expiresAtUtc | date: 'short' }}
+                </span>
+              </div>
+            </div>
+            <i
+              class="ph ph-caret-right mt-2 text-lg text-[var(--driveos-text-muted)] transition group-hover:translate-x-0.5"
+            ></i>
+          </div>
+        </button>
+      }
+    </div>
+  }
+</section>
+
+<drive-os-drawer
+  [open]="drawerMode() !== null"
+  size="xl"
+  (closeRequested)="closeDrawer()"
+>
+  <div driveOsDrawerTitle>
+    @switch (drawerMode()) {
+      @case ('create') {
+        {{ 'scheduling.waitingList.create.title' | translate }}
+      }
+      @case ('preferences') {
+        {{ 'scheduling.waitingList.preferences.title' | translate }}
+      }
+      @case ('slotSearch') {
+        {{ 'scheduling.waitingList.slotSearch.title' | translate }}
+      }
+      @case ('cancel') {
+        {{ 'scheduling.waitingList.cancel.title' | translate }}
+      }
+      @default {
+        {{
+          selectedEntry()
+            ? studentLabel(selectedEntry()!.studentId)
+            : ('scheduling.waitingList.detail.title' | translate)
+        }}
+      }
+    }
+  </div>
+  <div driveOsDrawerDescription>{{ 'scheduling.waitingList.drawerDescription' | translate }}</div>
+
+  <div class="space-y-5 p-5">
+    @if (drawerMode() === 'create') {
+      <div
+        class="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900 dark:border-blue-900/50 dark:bg-blue-950/20 dark:text-blue-100"
+      >
+        {{ 'scheduling.waitingList.create.help' | translate }}
+      </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        <label class="space-y-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.student' | translate }}
+          </span>
+          <select
+            class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3"
+            [value]="studentId()"
+            (change)="studentId.set($any($event.target).value)"
+          >
+            @for (student of students(); track student.id) {
+              <option [value]="student.externalResourceId">{{ student.displayName }}</option>
+            }
+          </select>
+        </label>
+        <label class="space-y-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.service' | translate }}
+          </span>
+          <select
+            class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3"
+            [value]="bookingType()"
+            (change)="bookingType.set(+$any($event.target).value)"
+          >
+            @for (type of [1, 2, 3, 4, 5, 99]; track type) {
+              <option [value]="type">{{ bookingTypeKey(type) | translate }}</option>
+            }
+          </select>
+        </label>
+        <label class="space-y-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.duration' | translate }}
+          </span>
+          <input
+            type="number"
+            min="15"
+            max="720"
+            step="15"
+            class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3"
+            [value]="durationMinutes()"
+            (input)="durationMinutes.set(+$any($event.target).value)"
+          />
+        </label>
+        <label class="space-y-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.from' | translate }}
+          </span>
+          <input
+            type="datetime-local"
+            class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3"
+            [value]="preferredFrom()"
+            (input)="preferredFrom.set($any($event.target).value)"
+          />
+        </label>
+        <label class="space-y-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.to' | translate }}
+          </span>
+          <input
+            type="datetime-local"
+            class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3"
+            [value]="preferredTo()"
+            (input)="preferredTo.set($any($event.target).value)"
+          />
+        </label>
+        <label class="space-y-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.branch' | translate }}
+          </span>
+          <select
+            class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3"
+            [value]="preferredBranchId()"
+            (change)="preferredBranchId.set($any($event.target).value)"
+          >
+            <option value="">{{ 'common.all' | translate }}</option>
+            @for (branch of branches(); track branch.id) {
+              <option [value]="branch.externalResourceId">{{ branch.displayName }}</option>
+            }
+          </select>
+        </label>
+        <label class="space-y-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.instructor' | translate }}
+          </span>
+          <select
+            class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3"
+            [value]="preferredInstructorId()"
+            (change)="preferredInstructorId.set($any($event.target).value)"
+          >
+            <option value="">{{ 'scheduling.waitingList.anyInstructor' | translate }}</option>
+            @for (instructor of instructors(); track instructor.id) {
+              <option [value]="instructor.externalResourceId">{{ instructor.displayName }}</option>
+            }
+          </select>
+        </label>
+        <label class="space-y-2 md:col-span-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.reason' | translate }}
+          </span>
+          <textarea
+            rows="3"
+            class="w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent p-3"
+            [value]="reason()"
+            (input)="reason.set($any($event.target).value)"
+          ></textarea>
+        </label>
+        <label class="space-y-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.expiresAt' | translate }}
+          </span>
+          <input
+            type="datetime-local"
+            class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3"
+            [value]="expiresAt()"
+            (input)="expiresAt.set($any($event.target).value)"
+          />
+        </label>
+        <label class="space-y-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.examAt' | translate }}
+          </span>
+          <input
+            type="datetime-local"
+            class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3"
+            [value]="examAt()"
+            (input)="examAt.set($any($event.target).value)"
+          />
+        </label>
+      </div>
+      <div class="rounded-2xl border border-[var(--driveos-border)] p-4">
+        <h3 class="font-black">{{ 'scheduling.waitingList.priority.title' | translate }}</h3>
+        <p class="mt-1 text-xs text-[var(--driveos-text-muted)]">
+          {{ 'scheduling.waitingList.priority.help' | translate }}
+        </p>
+        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+          <label class="flex items-center gap-3 rounded-xl bg-[var(--driveos-surface-muted)] p-3">
+            <input
+              type="checkbox"
+              [checked]="noFutureSession()"
+              (change)="noFutureSession.set($any($event.target).checked)"
+            />
+            <span class="text-sm font-bold">
+              {{ 'scheduling.waitingList.priorityFactors.noFutureSession' | translate }}
+            </span>
+          </label>
+          <label class="flex items-center gap-3 rounded-xl bg-[var(--driveos-surface-muted)] p-3">
+            <input
+              type="checkbox"
+              [checked]="schoolCancellation()"
+              (change)="schoolCancellation.set($any($event.target).checked)"
+            />
+            <span class="text-sm font-bold">
+              {{ 'scheduling.waitingList.priorityFactors.schoolCancellation' | translate }}
+            </span>
+          </label>
+          <label class="flex items-center gap-3 rounded-xl bg-[var(--driveos-surface-muted)] p-3">
+            <input
+              type="checkbox"
+              [checked]="limitedAvailability()"
+              (change)="limitedAvailability.set($any($event.target).checked)"
+            />
+            <span class="text-sm font-bold">
+              {{ 'scheduling.waitingList.priorityFactors.limitedAvailability' | translate }}
+            </span>
+          </label>
+          <label class="flex items-center gap-3 rounded-xl bg-[var(--driveos-surface-muted)] p-3">
+            <input
+              type="checkbox"
+              [checked]="regulatoryPriority()"
+              (change)="regulatoryPriority.set($any($event.target).checked)"
+            />
+            <span class="text-sm font-bold">
+              {{ 'scheduling.waitingList.priorityFactors.regulatoryPriority' | translate }}
+            </span>
+          </label>
+          <label class="flex items-center gap-3 rounded-xl bg-[var(--driveos-surface-muted)] p-3">
+            <input
+              type="checkbox"
+              [checked]="commercialPriority()"
+              (change)="commercialPriority.set($any($event.target).checked)"
+            />
+            <span class="text-sm font-bold">
+              {{ 'scheduling.waitingList.priorityFactors.commercialPriority' | translate }}
+            </span>
+          </label>
+          <label class="space-y-2">
+            <span class="text-xs font-bold">
+              {{ 'scheduling.waitingList.fields.interruptionDays' | translate }}
+            </span>
+            <input
+              type="number"
+              min="0"
+              class="h-10 w-full rounded-xl border bg-transparent px-3"
+              [value]="interruptionDays()"
+              (input)="interruptionDays.set(+$any($event.target).value)"
+            />
+          </label>
+          <label class="space-y-2">
+            <span class="text-xs font-bold">
+              {{ 'scheduling.waitingList.fields.urgency' | translate }}
+            </span>
+            <select
+              class="h-10 w-full rounded-xl border bg-transparent px-3"
+              [value]="pedagogicalUrgency()"
+              (change)="pedagogicalUrgency.set(+$any($event.target).value)"
+            >
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </label>
+          <label class="space-y-2">
+            <span class="text-xs font-bold">
+              {{ 'scheduling.waitingList.fields.manualAdjustment' | translate }}
+            </span>
+            <input
+              type="number"
+              min="-20"
+              max="20"
+              class="h-10 w-full rounded-xl border bg-transparent px-3"
+              [value]="manualAdjustment()"
+              (input)="manualAdjustment.set(+$any($event.target).value)"
+            />
+          </label>
+          @if (manualAdjustment() !== 0) {
+            <label class="space-y-2 sm:col-span-2">
+              <span class="text-xs font-bold">
+                {{ 'scheduling.waitingList.fields.manualReason' | translate }}
+              </span>
+              <input
+                class="h-10 w-full rounded-xl border bg-transparent px-3"
+                [value]="manualAdjustmentReason()"
+                (input)="manualAdjustmentReason.set($any($event.target).value)"
+              />
+            </label>
+          }
+        </div>
+      </div>
+    }
+
+    @if (drawerMode() === 'detail' && selectedEntry(); as entry) {
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div class="rounded-2xl bg-[var(--driveos-surface-muted)] p-4">
+          <p
+            class="text-xs font-extrabold uppercase tracking-wide text-[var(--driveos-text-muted)]"
+          >
+            {{ 'scheduling.waitingList.fields.priority' | translate }}
+          </p>
+          <p class="mt-2 text-2xl font-black">{{ entry.effectivePriorityScore }}</p>
+          <p class="text-xs font-bold">
+            {{
+              'scheduling.waitingList.priority.' + priorityLevel(entry.effectivePriorityScore)
+                | translate
+            }}
+          </p>
+        </div>
+        <div class="rounded-2xl bg-[var(--driveos-surface-muted)] p-4">
+          <p
+            class="text-xs font-extrabold uppercase tracking-wide text-[var(--driveos-text-muted)]"
+          >
+            {{ 'scheduling.waitingList.fields.service' | translate }}
+          </p>
+          <p class="mt-2 font-black">
+            {{ bookingTypeKey(entry.requestedSessionType) | translate }}
+          </p>
+          <p class="text-xs">{{ entry.durationMinutes }} min</p>
+        </div>
+        <div class="rounded-2xl bg-[var(--driveos-surface-muted)] p-4">
+          <p
+            class="text-xs font-extrabold uppercase tracking-wide text-[var(--driveos-text-muted)]"
+          >
+            {{ 'scheduling.waitingList.fields.status' | translate }}
+          </p>
+          <p class="mt-2 font-black">
+            {{ 'scheduling.waitingList.status.' + entryStatusName(entry) | translate }}
+          </p>
+        </div>
+      </div>
+      <div class="rounded-2xl border border-[var(--driveos-border)] p-4">
+        <h3 class="font-black">{{ 'scheduling.waitingList.detail.request' | translate }}</h3>
+        <dl class="mt-3 grid gap-3 text-sm sm:grid-cols-2">
+          <div>
+            <dt class="font-bold text-[var(--driveos-text-muted)]">
+              {{ 'scheduling.waitingList.fields.period' | translate }}
+            </dt>
+            <dd>
+              {{ entry.preferredFromUtc | date: 'medium' }} →
+              {{ entry.preferredToUtc | date: 'medium' }}
+            </dd>
+          </div>
+          <div>
+            <dt class="font-bold text-[var(--driveos-text-muted)]">
+              {{ 'scheduling.waitingList.fields.expiresAt' | translate }}
+            </dt>
+            <dd>{{ entry.expiresAtUtc | date: 'medium' }}</dd>
+          </div>
+          <div>
+            <dt class="font-bold text-[var(--driveos-text-muted)]">
+              {{ 'scheduling.waitingList.fields.branch' | translate }}
+            </dt>
+            <dd>{{ branchLabel(entry.preferredBranchId) }}</dd>
+          </div>
+          <div>
+            <dt class="font-bold text-[var(--driveos-text-muted)]">
+              {{ 'scheduling.waitingList.fields.instructor' | translate }}
+            </dt>
+            <dd>{{ instructorLabel(entry.preferredInstructorId) }}</dd>
+          </div>
+          <div class="sm:col-span-2">
+            <dt class="font-bold text-[var(--driveos-text-muted)]">
+              {{ 'scheduling.waitingList.fields.reason' | translate }}
+            </dt>
+            <dd>{{ entry.reason }}</dd>
+          </div>
+        </dl>
+      </div>
+      <div class="rounded-2xl border border-[var(--driveos-border)] p-4">
+        <h3 class="font-black">
+          {{ 'scheduling.waitingList.detail.priorityExplanation' | translate }}
+        </h3>
+        <div class="mt-3 flex flex-wrap gap-2">
+          @for (factor of priorityFactors(entry); track factor) {
+            <span class="rounded-xl bg-[var(--driveos-surface-muted)] px-3 py-2 text-xs font-bold">
+              {{ priorityFactorKey(factor) | translate }}
+              <strong class="ml-1 text-blue-800">{{ priorityFactorPoints(factor) }}</strong>
+            </span>
+          }
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center justify-between">
+          <h3 class="font-black">{{ 'scheduling.waitingList.detail.proposals' | translate }}</h3>
+          <span class="text-xs font-bold text-[var(--driveos-text-muted)]">
+            {{ entry.proposals.length }}
+          </span>
+        </div>
+        <div class="mt-3 space-y-3">
+          @for (proposal of entry.proposals; track proposal.id) {
+            <article class="rounded-2xl border border-[var(--driveos-border)] p-4">
+              <div class="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <p class="font-black">
+                    {{ proposal.startAtUtc | date: 'fullDate' }} ·
+                    {{ proposal.startAtUtc | date: 'shortTime' }}–{{
+                      proposal.endAtUtc | date: 'shortTime'
+                    }}
+                  </p>
+                  <p class="mt-1 text-xs text-[var(--driveos-text-muted)]">
+                    {{ branchLabel(proposal.branchId) }} ·
+                    {{ instructorLabel(proposal.instructorId) }}
+                  </p>
+                </div>
+                <span
+                  class="rounded-full bg-[var(--driveos-surface-muted)] px-2.5 py-1 text-xs font-extrabold"
+                >
+                  {{
+                    'scheduling.waitingList.proposalStatus.' + proposalStatusName(proposal)
+                      | translate
+                  }}
+                </span>
+              </div>
+              <div class="mt-3 flex flex-wrap gap-2">
+                @if (effectiveProposalStatus(proposal) === 1 && canManage()) {
+                  <drive-os-button
+                    size="sm"
+                    variant="secondary"
+                    [loading]="saving()"
+                    (pressed)="hold(proposal)"
+                  >
+                    {{ 'scheduling.waitingList.actions.hold' | translate }}
+                  </drive-os-button>
+                  <drive-os-button
+                    size="sm"
+                    [loading]="saving()"
+                    (pressed)="accept(proposal)"
+                  >
+                    {{ 'scheduling.waitingList.actions.accept' | translate }}
+                  </drive-os-button>
+                  <drive-os-button
+                    size="sm"
+                    variant="ghost"
+                    [loading]="saving()"
+                    (pressed)="decline(proposal)"
+                  >
+                    {{ 'scheduling.waitingList.actions.decline' | translate }}
+                  </drive-os-button>
+                }
+                @if (effectiveProposalStatus(proposal) === 2 && canManage()) {
+                  <drive-os-button
+                    size="sm"
+                    [loading]="saving()"
+                    (pressed)="accept(proposal)"
+                  >
+                    {{ 'scheduling.waitingList.actions.accept' | translate }}
+                  </drive-os-button>
+                }
+                @if (
+                  effectiveProposalStatus(proposal) === 3 &&
+                  canManage() &&
+                  !proposal.fulfilledBookingId
+                ) {
+                  <drive-os-button
+                    size="sm"
+                    [loading]="saving()"
+                    (pressed)="prepareBooking(proposal)"
+                  >
+                    {{ 'scheduling.waitingList.actions.createBooking' | translate }}
+                  </drive-os-button>
+                }
+                @if (proposal.fulfilledBookingId) {
+                  <drive-os-button
+                    size="sm"
+                    variant="ghost"
+                    (pressed)="openHeldBooking(proposal)"
+                  >
+                    {{ 'scheduling.waitingList.actions.openBooking' | translate }}
+                  </drive-os-button>
+                }
+              </div>
+            </article>
+          } @empty {
+            <p
+              class="rounded-xl bg-[var(--driveos-surface-muted)] p-4 text-sm text-[var(--driveos-text-muted)]"
+            >
+              {{ 'scheduling.waitingList.detail.noProposals' | translate }}
+            </p>
+          }
+        </div>
+      </div>
+    }
+
+    @if (drawerMode() === 'preferences' && selectedEntry()) {
+      <div class="grid gap-4 md:grid-cols-2">
+        <label class="space-y-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.from' | translate }}
+          </span>
+          <input
+            type="datetime-local"
+            class="h-11 w-full rounded-xl border bg-transparent px-3"
+            [value]="editPreferredFrom()"
+            (input)="editPreferredFrom.set($any($event.target).value)"
+          />
+        </label>
+        <label class="space-y-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.to' | translate }}
+          </span>
+          <input
+            type="datetime-local"
+            class="h-11 w-full rounded-xl border bg-transparent px-3"
+            [value]="editPreferredTo()"
+            (input)="editPreferredTo.set($any($event.target).value)"
+          />
+        </label>
+        <label class="space-y-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.branch' | translate }}
+          </span>
+          <select
+            class="h-11 w-full rounded-xl border bg-transparent px-3"
+            [value]="editBranchId()"
+            (change)="editBranchId.set($any($event.target).value)"
+          >
+            <option value="">{{ 'common.all' | translate }}</option>
+            @for (branch of branches(); track branch.id) {
+              <option [value]="branch.externalResourceId">{{ branch.displayName }}</option>
+            }
+          </select>
+        </label>
+        <label class="space-y-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.instructor' | translate }}
+          </span>
+          <select
+            class="h-11 w-full rounded-xl border bg-transparent px-3"
+            [value]="editInstructorId()"
+            (change)="editInstructorId.set($any($event.target).value)"
+          >
+            <option value="">{{ 'scheduling.waitingList.anyInstructor' | translate }}</option>
+            @for (instructor of instructors(); track instructor.id) {
+              <option [value]="instructor.externalResourceId">{{ instructor.displayName }}</option>
+            }
+          </select>
+        </label>
+        <label class="space-y-2 md:col-span-2">
+          <span class="text-sm font-bold">
+            {{ 'scheduling.waitingList.fields.expiresAt' | translate }}
+          </span>
+          <input
+            type="datetime-local"
+            class="h-11 w-full rounded-xl border bg-transparent px-3"
+            [value]="editExpiresAt()"
+            (input)="editExpiresAt.set($any($event.target).value)"
+          />
+        </label>
+      </div>
+    }
+
+    @if (drawerMode() === 'slotSearch' && selectedEntry(); as entry) {
+      <div
+        class="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900 dark:border-blue-900/50 dark:bg-blue-950/20 dark:text-blue-100"
+      >
+        {{ 'scheduling.waitingList.slotSearch.help' | translate }}
+      </div>
+      <label class="block space-y-2">
+        <span class="text-sm font-bold">
+          {{ 'scheduling.waitingList.fields.trainingCategory' | translate }}
+        </span>
+        <input
+          class="h-11 w-full rounded-xl border border-[var(--driveos-border-strong)] bg-transparent px-3"
+          [placeholder]="
+            'scheduling.waitingList.slotSearch.trainingCategoryPlaceholder' | translate
+          "
+          [value]="searchTrainingCategory()"
+          (input)="searchTrainingCategory.set($any($event.target).value)"
+        />
+      </label>
+      @if (searching()) {
+        <div class="grid min-h-48 place-items-center"><drive-os-spinner></drive-os-spinner></div>
+      }
+      @if (slotWarnings().length) {
+        <div class="space-y-2">
+          @for (warning of slotWarnings(); track warning) {
+            <p class="rounded-xl bg-orange-50 px-3 py-2 text-xs font-bold text-orange-800">
+              {{ warningKey(warning) | translate }}
+            </p>
+          }
+        </div>
+      }
+      @if (!searching()) {
+        <div class="space-y-3">
+          @for (
+            slot of slotSuggestions();
+            track slot.startAtUtc + (slot.instructorCalendarResourceId || '')
+          ) {
+            <article class="rounded-2xl border border-[var(--driveos-border)] p-4">
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p class="font-black">
+                    {{ slot.startAtUtc | date: 'fullDate' }} ·
+                    {{ slot.startAtUtc | date: 'shortTime' }}–{{
+                      slot.endAtUtc | date: 'shortTime'
+                    }}
+                  </p>
+                  <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                    {{ slot.instructorDisplayName || '—' }}
+                    @if (slot.vehicleDisplayName) {
+                      · {{ slot.vehicleDisplayName }}
+                    }
+                    @if (slot.roomDisplayName) {
+                      · {{ slot.roomDisplayName }}
+                    }
+                  </p>
+                  <div class="mt-2 flex flex-wrap gap-1">
+                    @for (reason of slot.reasons.slice(0, 4); track reason) {
+                      <span
+                        class="rounded-lg bg-[var(--driveos-surface-muted)] px-2 py-1 text-[0.68rem] font-bold"
+                      >
+                        {{ reasonKey(reason) | translate }}
+                      </span>
+                    }
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="text-right">
+                    <p class="text-xs font-bold text-[var(--driveos-text-muted)]">
+                      {{ 'scheduling.waitingList.slotSearch.score' | translate }}
+                    </p>
+                    <p class="text-2xl font-black text-blue-800">{{ slot.score }}</p>
+                  </div>
+                  <drive-os-button
+                    size="sm"
+                    [loading]="saving()"
+                    (pressed)="propose(slot)"
+                  >
+                    {{ 'scheduling.waitingList.actions.propose' | translate }}
+                  </drive-os-button>
+                </div>
+              </div>
+            </article>
+          } @empty {
+            <drive-os-empty-state
+              icon="ph ph-calendar-x"
+              [title]="'scheduling.waitingList.slotSearch.empty' | translate"
+            ></drive-os-empty-state>
+          }
+        </div>
+      }
+    }
+
+    @if (drawerMode() === 'cancel') {
+      <div class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">
+        {{ 'scheduling.waitingList.cancel.warning' | translate }}
+      </div>
+      <label class="block space-y-2">
+        <span class="text-sm font-bold">
+          {{ 'scheduling.waitingList.fields.reason' | translate }}
+        </span>
+        <textarea
+          rows="5"
+          class="w-full rounded-xl border bg-transparent p-3"
+          [value]="cancelReason()"
+          (input)="cancelReason.set($any($event.target).value)"
+        ></textarea>
+      </label>
+    }
+  </div>
+
+  <div
+    driveOsDrawerFooter
+    class="flex flex-wrap justify-between gap-2"
+  >
+    <drive-os-button
+      variant="ghost"
+      [disabled]="saving() || searching()"
+      (pressed)="closeDrawer()"
+    >
+      {{ 'common.actions.close' | translate }}
+    </drive-os-button>
+    <div class="flex flex-wrap gap-2">
+      @if (drawerMode() === 'create') {
+        <drive-os-button
+          [loading]="saving()"
+          (pressed)="create()"
+        >
+          {{ 'scheduling.waitingList.create.confirm' | translate }}
+        </drive-os-button>
+      }
+      @if (drawerMode() === 'detail' && selectedEntry(); as entry) {
+        @if (canManage() && ![6, 7, 8].includes(effectiveEntryStatus(entry))) {
+          <drive-os-button
+            variant="secondary"
+            (pressed)="openPreferences(entry)"
+          >
+            {{ 'scheduling.waitingList.actions.preferences' | translate }}
+          </drive-os-button>
+          <drive-os-button (pressed)="searchSlot(entry)">
+            {{ 'scheduling.waitingList.actions.findSlot' | translate }}
+          </drive-os-button>
+          <drive-os-button
+            variant="ghost"
+            (pressed)="openCancel(entry)"
+          >
+            {{ 'scheduling.waitingList.actions.cancel' | translate }}
+          </drive-os-button>
+        }
+      }
+      @if (drawerMode() === 'preferences') {
+        <drive-os-button
+          [loading]="saving()"
+          (pressed)="savePreferences()"
+        >
+          {{ 'common.actions.save' | translate }}
+        </drive-os-button>
+      }
+      @if (drawerMode() === 'cancel') {
+        <drive-os-button
+          [loading]="saving()"
+          [disabled]="!cancelReason().trim()"
+          (pressed)="cancel()"
+        >
+          {{ 'scheduling.waitingList.cancel.confirm' | translate }}
+        </drive-os-button>
+      }
+    </div>
+  </div>
+</drive-os-drawer>
+
+<driveos-booking-create-drawer
+  [open]="bookingDrawerOpen()"
+  [resources]="resources()"
+  [preset]="bookingPreset()"
+  (closeRequested)="closeBookingDrawer()"
+  (bookingCreated)="onBookingCreated($event)"
+/>

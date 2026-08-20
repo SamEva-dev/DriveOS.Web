@@ -1,18 +1,39 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
-import { DriveOsBadgeComponent, DriveOsBadgeVariant } from '../../../../shared/ui/badge/driveos-badge.component';
+import {
+  DriveOsBadgeComponent,
+  DriveOsBadgeVariant,
+} from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsSpinnerComponent } from '../../../../shared/ui/spinner/driveos-spinner.component';
 import { ContractsApiService } from '../../data-access/contracts-api.service';
 import { CONTRACTS_PERMISSIONS } from '../../domain/contracts-permissions';
-import { TrainingContractDetail, TrainingContractListItem } from '../../models/training-contract.models';
+import {
+  TrainingContractDetail,
+  TrainingContractListItem,
+} from '../../models/training-contract.models';
 
 @Component({
   selector: 'driveos-student-contract-summary',
   standalone: true,
-  imports: [CurrencyPipe, DatePipe, RouterLink, TranslatePipe, DriveOsBadgeComponent, DriveOsSpinnerComponent],
+  imports: [
+    CurrencyPipe,
+    DatePipe,
+    RouterLink,
+    TranslatePipe,
+    DriveOsBadgeComponent,
+    DriveOsSpinnerComponent,
+  ],
   templateUrl: './student-contract-summary.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -33,7 +54,9 @@ export class StudentContractSummaryComponent {
   });
 
   readonly requiredSignatureCount = computed(
-    () => this.detail()?.currentSignatureProcess?.recipients.filter((recipient) => recipient.isRequired).length ?? 0,
+    () =>
+      this.detail()?.currentSignatureProcess?.recipients.filter((recipient) => recipient.isRequired)
+        .length ?? 0,
   );
 
   readonly signedRequiredCount = computed(
@@ -48,13 +71,19 @@ export class StudentContractSummaryComponent {
     if (!contract) return 'contracts.training.summary.alerts.missing';
 
     switch (contract.status) {
-      case 'Draft': return 'contracts.training.summary.alerts.draft';
-      case 'Generated': return 'contracts.training.summary.alerts.generated';
+      case 'Draft':
+        return 'contracts.training.summary.alerts.draft';
+      case 'Generated':
+        return 'contracts.training.summary.alerts.generated';
       case 'SentForSignature':
-      case 'PartiallySigned': return 'contracts.training.summary.alerts.signature';
-      case 'Signed': return 'contracts.training.summary.alerts.activation';
-      case 'Suspended': return 'contracts.training.summary.alerts.suspended';
-      default: return null;
+      case 'PartiallySigned':
+        return 'contracts.training.summary.alerts.signature';
+      case 'Signed':
+        return 'contracts.training.summary.alerts.activation';
+      case 'Suspended':
+        return 'contracts.training.summary.alerts.suspended';
+      default:
+        return null;
     }
   });
 
@@ -79,16 +108,21 @@ export class StudentContractSummaryComponent {
       case 'Active':
       case 'Amended':
       case 'Signed':
-      case 'Completed': return 'success';
+      case 'Completed':
+        return 'success';
       case 'Generated':
       case 'SentForSignature':
-      case 'PartiallySigned': return 'info';
+      case 'PartiallySigned':
+        return 'info';
       case 'Draft':
-      case 'Suspended': return 'warning';
+      case 'Suspended':
+        return 'warning';
       case 'Terminated':
       case 'Expired':
-      case 'Cancelled': return 'danger';
-      default: return 'neutral';
+      case 'Cancelled':
+        return 'danger';
+      default:
+        return 'neutral';
     }
   }
 
@@ -130,7 +164,9 @@ export class StudentContractSummaryComponent {
     });
   }
 
-  private selectPrimary(contracts: readonly TrainingContractListItem[]): TrainingContractListItem | null {
+  private selectPrimary(
+    contracts: readonly TrainingContractListItem[],
+  ): TrainingContractListItem | null {
     if (!contracts.length) return null;
 
     const rank: Record<string, number> = {
@@ -148,10 +184,12 @@ export class StudentContractSummaryComponent {
       Cancelled: 11,
     };
 
-    return [...contracts].sort((left, right) => {
-      const statusDelta = (rank[left.status] ?? 99) - (rank[right.status] ?? 99);
-      if (statusDelta !== 0) return statusDelta;
-      return new Date(right.createdAtUtc).getTime() - new Date(left.createdAtUtc).getTime();
-    })[0] ?? null;
+    return (
+      [...contracts].sort((left, right) => {
+        const statusDelta = (rank[left.status] ?? 99) - (rank[right.status] ?? 99);
+        if (statusDelta !== 0) return statusDelta;
+        return new Date(right.createdAtUtc).getTime() - new Date(left.createdAtUtc).getTime();
+      })[0] ?? null
+    );
   }
 }

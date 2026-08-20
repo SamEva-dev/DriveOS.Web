@@ -1,12 +1,23 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
 import { ApiErrorService } from '../../../../core/errors/api-error.service';
-import { DriveOsBadgeComponent, DriveOsBadgeVariant } from '../../../../shared/ui/badge/driveos-badge.component';
+import {
+  DriveOsBadgeComponent,
+  DriveOsBadgeVariant,
+} from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsButtonComponent } from '../../../../shared/ui/button/driveos-button.component';
 import { DriveOsCardComponent } from '../../../../shared/ui/card/driveos-card.component';
 import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/driveos-empty-state.component';
@@ -25,7 +36,10 @@ type DocumentAction =
   | { type: 'archive'; document: StudentDocument }
   | null;
 
-interface VisibilityOption { value: number; labelKey: string }
+interface VisibilityOption {
+  value: number;
+  labelKey: string;
+}
 
 @Component({
   selector: 'driveos-student-documents-panel',
@@ -70,8 +84,16 @@ export class StudentDocumentsPanelComponent {
   readonly canDownload = computed(() => this.hasPermission(STUDENT_PERMISSIONS.documentDownload));
 
   readonly categories = [
-    'Identity', 'Residence', 'Authorization', 'Photograph', 'RegulatoryEvidence',
-    'Funding', 'Contract', 'Exam', 'Certificate', 'PartnerDocument',
+    'Identity',
+    'Residence',
+    'Authorization',
+    'Photograph',
+    'RegulatoryEvidence',
+    'Funding',
+    'Contract',
+    'Exam',
+    'Certificate',
+    'PartnerDocument',
   ] as const;
   readonly visibilityOptions: readonly VisibilityOption[] = [
     { value: 1, labelKey: 'students.enrollment.documents.visibility.student' },
@@ -205,7 +227,11 @@ export class StudentDocumentsPanelComponent {
       return;
     }
     this.run(
-      this.api.archiveDocument(this.studentId(), current.document.id, this.archiveForm.getRawValue().reason.trim()),
+      this.api.archiveDocument(
+        this.studentId(),
+        current.document.id,
+        this.archiveForm.getRawValue().reason.trim(),
+      ),
       'students.enrollment.documents.feedback.archived',
     );
   }
@@ -233,7 +259,8 @@ export class StudentDocumentsPanelComponent {
   statusVariant(status: string): DriveOsBadgeVariant {
     if (status === 'Approved') return 'success';
     if (['Rejected', 'Expired'].includes(status)) return 'danger';
-    if (['Requested', 'Uploaded', 'Processing', 'PendingReview', 'Expiring'].includes(status)) return 'warning';
+    if (['Requested', 'Uploaded', 'Processing', 'PendingReview', 'Expiring'].includes(status))
+      return 'warning';
     return 'neutral';
   }
 
@@ -265,10 +292,17 @@ export class StudentDocumentsPanelComponent {
   private visibilityMask(value: string | number): number {
     if (typeof value === 'number') return value;
     const names: Record<string, number> = {
-      Student: 1, Guardians: 2, AdministrativeStaff: 4,
-      PedagogicalStaff: 8, FinanceStaff: 16, Partners: 32,
+      Student: 1,
+      Guardians: 2,
+      AdministrativeStaff: 4,
+      PedagogicalStaff: 8,
+      FinanceStaff: 16,
+      Partners: 32,
     };
-    return value.split(',').map((part) => part.trim()).reduce((mask, name) => mask | (names[name] ?? 0), 0);
+    return value
+      .split(',')
+      .map((part) => part.trim())
+      .reduce((mask, name) => mask | (names[name] ?? 0), 0);
   }
 
   private showError(error: HttpErrorResponse): void {

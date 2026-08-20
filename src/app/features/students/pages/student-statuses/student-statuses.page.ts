@@ -72,7 +72,9 @@ export class StudentStatusesPage {
 
   readonly canApplyBlock = computed(() => this.hasPermission(STUDENT_PERMISSIONS.blocksApply));
   readonly canReleaseBlock = computed(() => this.hasPermission(STUDENT_PERMISSIONS.blocksRelease));
-  readonly canOverrideBlock = computed(() => this.hasPermission(STUDENT_PERMISSIONS.blocksOverride));
+  readonly canOverrideBlock = computed(() =>
+    this.hasPermission(STUDENT_PERMISSIONS.blocksOverride),
+  );
 
   readonly blockingActionOptions: readonly BlockingActionOption[] = [
     { value: 1, code: 'Schedule' },
@@ -203,7 +205,9 @@ export class StudentStatusesPage {
     if (this.applyForm.invalid || blockingActions === 0 || this.saving()) {
       this.applyForm.markAllAsTouched();
       if (blockingActions === 0) {
-        this.toast.error(this.translate.instant('students.statuses.validation.blockingActionRequired'));
+        this.toast.error(
+          this.translate.instant('students.statuses.validation.blockingActionRequired'),
+        );
       }
       return;
     }

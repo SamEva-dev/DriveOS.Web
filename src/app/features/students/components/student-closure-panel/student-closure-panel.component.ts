@@ -1,11 +1,23 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
 import { ApiErrorService } from '../../../../core/errors/api-error.service';
-import { DriveOsBadgeComponent, DriveOsBadgeVariant } from '../../../../shared/ui/badge/driveos-badge.component';
+import {
+  DriveOsBadgeComponent,
+  DriveOsBadgeVariant,
+} from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsButtonComponent } from '../../../../shared/ui/button/driveos-button.component';
 import { DriveOsCardComponent } from '../../../../shared/ui/card/driveos-card.component';
 import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/driveos-empty-state.component';
@@ -78,9 +90,13 @@ export class StudentClosurePanelComponent implements OnInit {
       STUDENT_PERMISSIONS.contractsTerminate,
     ]),
   );
-  readonly canArchive = computed(() => this.authorization.hasPermission(STUDENT_PERMISSIONS.archive));
+  readonly canArchive = computed(() =>
+    this.authorization.hasPermission(STUDENT_PERMISSIONS.archive),
+  );
   readonly canReopen = computed(() => this.authorization.hasPermission(STUDENT_PERMISSIONS.reopen));
-  readonly activeEnrollmentId = computed(() => this.overview()?.activeEnrollment?.enrollmentId ?? null);
+  readonly activeEnrollmentId = computed(
+    () => this.overview()?.activeEnrollment?.enrollmentId ?? null,
+  );
   readonly hasOpenCase = computed(() =>
     this.items().some((item) => ['Draft', 'ReadyToClose'].includes(item.status)),
   );
@@ -131,7 +147,10 @@ export class StudentClosurePanelComponent implements OnInit {
   });
 
   readonly reopenForm = this.fb.nonNullable.group({
-    justification: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(2000)]],
+    justification: [
+      '',
+      [Validators.required, Validators.minLength(10), Validators.maxLength(2000)],
+    ],
   });
 
   ngOnInit(): void {
@@ -171,11 +190,15 @@ export class StudentClosurePanelComponent implements OnInit {
     if (!enrollmentId) return;
     const value = this.form.getRawValue();
     if (Number(value.reason) === 9 && !value.reasonDetail.trim()) {
-      this.toast.error(this.translate.instant('students.lifecycle.closure.validation.otherReasonDetail'));
+      this.toast.error(
+        this.translate.instant('students.lifecycle.closure.validation.otherReasonDetail'),
+      );
       return;
     }
     if (value.closureDate < this.today()) {
-      this.toast.error(this.translate.instant('students.lifecycle.closure.validation.closureDatePast'));
+      this.toast.error(
+        this.translate.instant('students.lifecycle.closure.validation.closureDatePast'),
+      );
       return;
     }
     const request: CreateEnrollmentClosureRequest = {
@@ -214,14 +237,21 @@ export class StudentClosurePanelComponent implements OnInit {
     const key = `${item.closureId}:${check.type}`;
     this.reviewingKey.set(key);
     this.api
-      .reviewClosureCheck(this.studentId(), item.closureId, check.type as EnrollmentClosureCheckType, {
-        status,
-        detail: detail.trim(),
-      })
+      .reviewClosureCheck(
+        this.studentId(),
+        item.closureId,
+        check.type as EnrollmentClosureCheckType,
+        {
+          status,
+          detail: detail.trim(),
+        },
+      )
       .subscribe({
         next: () => {
           this.reviewingKey.set(null);
-          this.toast.success(this.translate.instant('students.lifecycle.closure.feedback.checkUpdated'));
+          this.toast.success(
+            this.translate.instant('students.lifecycle.closure.feedback.checkUpdated'),
+          );
           this.changed.emit();
         },
         error: (error: HttpErrorResponse) => {
@@ -234,7 +264,9 @@ export class StudentClosurePanelComponent implements OnInit {
   complete(item: EnrollmentClosure): void {
     if (!this.canComplete() || item.status !== 'ReadyToClose' || this.completingId()) {
       if (!this.canComplete()) {
-        this.toast.error(this.translate.instant('students.lifecycle.closure.validation.closePermissions'));
+        this.toast.error(
+          this.translate.instant('students.lifecycle.closure.validation.closePermissions'),
+        );
       }
       return;
     }
@@ -279,30 +311,38 @@ export class StudentClosurePanelComponent implements OnInit {
     }
     const value = this.archiveForm.getRawValue();
     if (Number(value.retentionScope) === 0) {
-      this.toast.error(this.translate.instant('students.lifecycle.closure.validation.retentionScopeRequired'));
+      this.toast.error(
+        this.translate.instant('students.lifecycle.closure.validation.retentionScopeRequired'),
+      );
       return;
     }
     if (value.retainUntil <= this.today()) {
-      this.toast.error(this.translate.instant('students.lifecycle.closure.validation.retainFuture'));
+      this.toast.error(
+        this.translate.instant('students.lifecycle.closure.validation.retainFuture'),
+      );
       return;
     }
     this.saving.set(true);
-    this.api.archiveStudent(this.studentId(), closureId, {
-      retainUntil: value.retainUntil,
-      retentionLegalBasis: value.retentionLegalBasis.trim(),
-      retentionScope: Number(value.retentionScope),
-    }).subscribe({
-      next: () => {
-        this.saving.set(false);
-        this.archiveId.set(null);
-        this.toast.success(this.translate.instant('students.lifecycle.closure.feedback.archived'));
-        this.changed.emit();
-      },
-      error: (error: HttpErrorResponse) => {
-        this.saving.set(false);
-        for (const message of this.errors.getMessages(error)) this.toast.error(message);
-      },
-    });
+    this.api
+      .archiveStudent(this.studentId(), closureId, {
+        retainUntil: value.retainUntil,
+        retentionLegalBasis: value.retentionLegalBasis.trim(),
+        retentionScope: Number(value.retentionScope),
+      })
+      .subscribe({
+        next: () => {
+          this.saving.set(false);
+          this.archiveId.set(null);
+          this.toast.success(
+            this.translate.instant('students.lifecycle.closure.feedback.archived'),
+          );
+          this.changed.emit();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.saving.set(false);
+          for (const message of this.errors.getMessages(error)) this.toast.error(message);
+        },
+      });
   }
 
   openReopen(item: EnrollmentClosure): void {
@@ -316,25 +356,31 @@ export class StudentClosurePanelComponent implements OnInit {
     if (!closureId || this.reopenForm.invalid || this.saving()) {
       this.reopenForm.markAllAsTouched();
       if (this.reopenForm.controls.justification.hasError('minlength')) {
-        this.toast.error(this.translate.instant('students.lifecycle.closure.validation.reopenJustification'));
+        this.toast.error(
+          this.translate.instant('students.lifecycle.closure.validation.reopenJustification'),
+        );
       }
       return;
     }
     this.saving.set(true);
-    this.api.reopenEnrollment(this.studentId(), closureId, {
-      justification: this.reopenForm.controls.justification.value.trim(),
-    }).subscribe({
-      next: () => {
-        this.saving.set(false);
-        this.reopenId.set(null);
-        this.toast.success(this.translate.instant('students.lifecycle.closure.feedback.reopened'));
-        this.changed.emit();
-      },
-      error: (error: HttpErrorResponse) => {
-        this.saving.set(false);
-        for (const message of this.errors.getMessages(error)) this.toast.error(message);
-      },
-    });
+    this.api
+      .reopenEnrollment(this.studentId(), closureId, {
+        justification: this.reopenForm.controls.justification.value.trim(),
+      })
+      .subscribe({
+        next: () => {
+          this.saving.set(false);
+          this.reopenId.set(null);
+          this.toast.success(
+            this.translate.instant('students.lifecycle.closure.feedback.reopened'),
+          );
+          this.changed.emit();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.saving.set(false);
+          for (const message of this.errors.getMessages(error)) this.toast.error(message);
+        },
+      });
   }
 
   checkStatusValue(status: string): EnrollmentClosureCheckStatus {
@@ -354,7 +400,8 @@ export class StudentClosurePanelComponent implements OnInit {
   }
 
   variant(status: string): DriveOsBadgeVariant {
-    if (['ReadyToClose', 'Closed', 'Archived', 'Resolved', 'NotApplicable'].includes(status)) return 'success';
+    if (['ReadyToClose', 'Closed', 'Archived', 'Resolved', 'NotApplicable'].includes(status))
+      return 'success';
     if (['Blocking', 'Cancelled'].includes(status)) return 'danger';
     if (['Draft', 'Pending'].includes(status)) return 'warning';
     if (status === 'Reopened') return 'info';

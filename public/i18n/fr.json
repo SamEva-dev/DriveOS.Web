@@ -22,7 +22,10 @@
       "clear": "Effacer",
       "approve": "Approuver",
       "reject": "Rejeter",
-      "edit": "Modifier"
+      "edit": "Modifier",
+      "back": "Retour",
+      "viewAll": "Tout voir",
+      "delete": "Delete"
     },
     "filters": {
       "all": "Tous"
@@ -33,7 +36,30 @@
     },
     "comingSoon": "Ce module sera développé dans un prochain sprint.",
     "loading": "Chargement en cours",
-    "soon": "Bientôt"
+    "soon": "Bientôt",
+    "create": "Créer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "add": "Ajouter",
+    "name": "Nom",
+    "accessDenied": "Access denied",
+    "all": "All",
+    "apply": "Apply",
+    "back": "Retour",
+    "close": "Close",
+    "error": "Error",
+    "next": "Suivant",
+    "no": "Non",
+    "none": "Aucun",
+    "notDefined": "Non défini",
+    "notRequired": "Not requis",
+    "notSpecified": "Not specified",
+    "pending": "En attente",
+    "previous": "Précédent",
+    "reset": "Reset",
+    "select": "Select",
+    "verified": "Verified",
+    "yes": "Oui"
   },
   "navigation": {
     "dashboard": "Tableau de bord",
@@ -743,6 +769,69 @@
           "effectivePeriod": {
             "overlaps": "La période d'effet chevauche une version déjà publiée."
           }
+        }
+      }
+    },
+    "schedulingCapacity": {
+      "booking": {
+        "id": {
+          "invalid": "Identifiant de réservation invalide."
+        },
+        "organization": {
+          "invalid": "Organisation invalide."
+        },
+        "branch": {
+          "invalid": "Agence invalide."
+        },
+        "type": {
+          "invalid": "Type de réservation invalide."
+        },
+        "period": {
+          "invalid": "La période de réservation est invalide."
+        },
+        "title": {
+          "invalid": "Le titre de la réservation est invalide."
+        },
+        "modification": {
+          "notAllowed": "Cette réservation ne peut plus être modifiée."
+        },
+        "resource": {
+          "invalid": "La ressource demandée est invalide.",
+          "duplicate": "La ressource est déjà associée à cette réservation.",
+          "conflict": "Une ou plusieurs ressources ne sont pas disponibles pour cette réservation."
+        },
+        "participant": {
+          "invalid": "Le participant à la réservation est invalide.",
+          "duplicate": "Le participant est déjà associé à cette réservation."
+        },
+        "resources": {
+          "required": "Au moins une ressource est nécessaire avant la réservation."
+        },
+        "conflictCheck": {
+          "required": "Un contrôle de conflits à jour est requis avant la réservation."
+        },
+        "reservation": {
+          "notAllowed": "Cette réservation ne peut pas être réservée dans son état actuel."
+        },
+        "confirmation": {
+          "notAllowed": "Seule une réservation réservée peut être confirmée."
+        },
+        "cancellation": {
+          "notAllowed": "Cette réservation ne peut pas être annulée avec ce motif."
+        },
+        "notFound": "Réservation introuvable.",
+        "calendarResourceNotFound": "Une ou plusieurs ressources de calendrier sont introuvables.",
+        "studentNotFound": "Un ou plusieurs élèves sont introuvables ou archivés.",
+        "participantCalendarResourceRequired": "Chaque élève ou enseignant participant doit être ajouté comme ressource calendrier de la réservation.",
+        "resourceBranchMismatch": "Une ressource appartient à une autre agence que celle de la réservation.",
+        "studentParticipantRequired": "Une séance pédagogique doit contenir au moins un élève.",
+        "instructorParticipantRequired": "Une séance pédagogique doit contenir au moins un enseignant."
+      }
+    },
+    "students": {
+      "checklist": {
+        "derivedStatus": {
+          "manualChangeForbidden": "Ce prérequis est piloté automatiquement par sa donnée métier. Effectuez l’action depuis l’écran source ou accordez une dérogation autorisée."
         }
       }
     }
@@ -2909,7 +2998,8 @@
       "mobility": "Mobilité",
       "lifecycle": "Cycle de vie",
       "finance": "Finance",
-      "pedagogy": "Pédagogie"
+      "pedagogy": "Pédagogie",
+      "contracts": "Contrats"
     },
     "overview": {
       "enrollment": "Inscription active",
@@ -3269,7 +3359,7 @@
         "responsible": "Responsable :",
         "reminders": "{{count}} relance(s)",
         "itemsTitle": "Éléments de la checklist",
-        "itemsDescription": "Pilotez les prérequis nécessaires avant l’activation de l’inscription.",
+        "itemsDescription": "Les prérequis se mettent à jour depuis leurs écrans métier. Utilisez les actions proposées pour compléter le dossier.",
         "activationBlockedTitle": "Activation actuellement impossible",
         "activationBlockedDescription": "Tous les éléments bloquants doivent être terminés ou faire l’objet d’une dérogation autorisée avant activation.",
         "actions": {
@@ -3298,7 +3388,18 @@
           "assigned": "Responsable affecté.",
           "reminded": "Relance enregistrée.",
           "activated": "Inscription activée."
-        }
+        },
+        "statuses": {
+          "NotStarted": "Non commencé",
+          "InProgress": "En cours",
+          "WaitingExternal": "En attente externe",
+          "Completed": "Terminé",
+          "Waived": "Dérogation accordée",
+          "Rejected": "Rejeté",
+          "Blocked": "Bloqué",
+          "Expired": "Expiré"
+        },
+        "automatic": "Mis à jour automatiquement"
       },
       "documents": {
         "download": "Télécharger",
@@ -3373,7 +3474,14 @@
         "Financial": "Financier",
         "Medical": "Médical",
         "Training": "Formation",
-        "Other": "Autre"
+        "Other": "Autre",
+        "Documents": "Documents",
+        "Contract": "Contrat",
+        "Finance": "Finance",
+        "Pedagogy": "Pédagogie",
+        "UserAccount": "Compte utilisateur",
+        "Guardians": "Représentants légaux",
+        "SchedulingAuthorization": "Autorisation de planification"
       },
       "noActiveDescription": "Aucune inscription active n’est rattachée à ce dossier élève."
     },
@@ -4144,6 +4252,52 @@
         "relationshipMissing": "Aucune relation active avec l’organisation cible. Une invitation partenaire est nécessaire.",
         "countryRuleMismatch": "Le pays demandé ne correspond pas au pays configuré pour l’organisation cible."
       }
+    },
+    "checklist": {
+      "identity": "Identité vérifiée",
+      "identityDocument": "Pièce d’identité valide",
+      "contract": "Contrat de formation signé",
+      "initialPayment": "Conditions financières initiales validées",
+      "initialAssessment": "Évaluation initiale réalisée",
+      "learningPath": "Parcours pédagogique configuré",
+      "studentAccount": "Compte élève activé"
+    },
+    "checklistHelp": {
+      "IDENTITY": {
+        "description": "Confirme que les informations d’identité de l’élève ont été contrôlées depuis son profil.",
+        "impact": "Requis avant l’activation administrative du dossier et la contractualisation.",
+        "action": "Vérifier dans le profil"
+      },
+      "IDENTITY_DOCUMENT": {
+        "description": "Vérifie qu’une pièce d’identité valide et approuvée est présente dans le dossier administratif.",
+        "impact": "Sert à justifier l’identité de l’élève et à sécuriser les démarches administratives.",
+        "action": "Voir les documents"
+      },
+      "CONTRACT": {
+        "description": "Confirme qu’un contrat de formation applicable à l’élève a été signé.",
+        "impact": "Formalise les engagements de l’élève et de l’établissement avant le démarrage du parcours.",
+        "action": "Voir les contrats"
+      },
+      "INITIAL_PAYMENT": {
+        "description": "Confirme qu’un premier paiement a été reçu ou qu’un financement a été validé.",
+        "impact": "Sécurise la prise en charge financière avant l’activation de la formation.",
+        "action": "Voir la finance"
+      },
+      "INITIAL_ASSESSMENT": {
+        "description": "Confirme que l’évaluation initiale a été réalisée afin d’estimer les besoins de formation.",
+        "impact": "Sert à construire un parcours et un volume de formation adaptés au niveau de l’élève.",
+        "action": "Voir la pédagogie"
+      },
+      "LEARNING_PATH": {
+        "description": "Confirme qu’un parcours pédagogique est configuré avec un référentiel et des objectifs de progression.",
+        "impact": "Sera utilisé pendant les séances, les évaluations et le suivi du livret pédagogique.",
+        "action": "Voir le parcours"
+      },
+      "STUDENT_ACCOUNT": {
+        "description": "Confirme que l’élève dispose d’un compte lui permettant d’accéder à son espace personnel.",
+        "impact": "Donne accès au planning, aux documents, aux paiements et au suivi selon les droits accordés.",
+        "action": "Voir le profil"
+      }
     }
   },
   "shared": {
@@ -4439,6 +4593,1855 @@
       "common": {
         "yes": "Oui",
         "no": "Non"
+      }
+    }
+  },
+  "contracts": {
+    "training": {
+      "eyebrow": "CONTRATS DE FORMATION",
+      "title": "Contrats de formation",
+      "description": "Gérez le contrat de formation, ses signatures, avenants et documents associés.",
+      "empty": {
+        "title": "Aucun contrat de formation",
+        "description": "Aucun contrat de formation n’est encore disponible pour cet élève."
+      },
+      "contractNumber": "Numéro de contrat",
+      "offerVersion": "Offre source · version {{version}}",
+      "trainingCode": "Code formation",
+      "practicalHours": "Heures pratiques",
+      "startDate": "Date de début",
+      "endDate": "Date de fin",
+      "parties": "Parties",
+      "versions": "Versions",
+      "terms": "Conditions contractuelles",
+      "services": "Services inclus",
+      "paymentSchedule": "Échéancier",
+      "bookingRules": "Règles de réservation",
+      "cancellation": "Conditions d’annulation",
+      "generation": {
+        "action": "Générer le contrat",
+        "generating": "Génération…",
+        "generated": "Document contractuel généré",
+        "success": "Contrat généré avec succès."
+      },
+      "signature": {
+        "title": "Signature",
+        "description": "Pilotez le processus de signature et conservez les preuves associées.",
+        "send": "Envoyer pour signature",
+        "sent": "Contrat envoyé pour signature.",
+        "awaiting": "En attente de signature",
+        "signed": "Signé",
+        "inProgress": "Signature en cours",
+        "notReady": "Le contrat doit être généré avant l’envoi en signature.",
+        "processTitle": "Processus de signature",
+        "processDescription": "Suivi du processus et des signataires requis.",
+        "signatory": "Signataire",
+        "provider": "Prestataire",
+        "providerReference": "Référence prestataire",
+        "method": "Méthode",
+        "authentication": "Authentification",
+        "requestedAt": "Demandée le",
+        "signedAt": "Signée le",
+        "receivedAt": "Reçue le",
+        "certificate": "Certificat",
+        "version": "Version",
+        "evidenceTitle": "Preuve de signature",
+        "recordEvidenceTitle": "Enregistrer une preuve de signature",
+        "recordEvidenceDescription": "Enregistrez les informations de preuve reçues du prestataire de signature.",
+        "recordEvidence": "Enregistrer la preuve",
+        "evidenceRecorded": "Preuve de signature enregistrée."
+      },
+      "activation": {
+        "title": "Activation",
+        "description": "Activez le contrat une fois toutes les conditions de signature satisfaites.",
+        "action": "Activer le contrat",
+        "activating": "Activation…",
+        "active": "Contrat actif",
+        "activatedAt": "Activé le",
+        "success": "Contrat activé avec succès."
+      },
+      "suspension": {
+        "title": "Suspension",
+        "description": "Suspendez temporairement le contrat en conservant sa traçabilité.",
+        "action": "Suspendre",
+        "reason": "Motif",
+        "effectiveDate": "Date d’effet",
+        "expectedResumeDate": "Reprise prévue",
+        "suspended": "Contrat suspendu",
+        "success": "Contrat suspendu avec succès."
+      },
+      "termination": {
+        "title": "Résiliation",
+        "description": "Mettez fin au contrat et conservez le motif ainsi que la date d’effet.",
+        "action": "Résilier le contrat",
+        "reason": "Motif",
+        "effectiveDate": "Date d’effet",
+        "recordedAt": "Enregistrée le",
+        "terminated": "Contrat résilié",
+        "warning": "Cette action met fin au contrat de formation.",
+        "success": "Résiliation enregistrée."
+      },
+      "completion": {
+        "title": "Clôture du contrat",
+        "description": "Marquez le contrat comme terminé lorsque les obligations contractuelles sont réalisées.",
+        "action": "Marquer comme terminé",
+        "effectiveDate": "Date de fin effective",
+        "note": "Note de clôture",
+        "recordedAt": "Enregistrée le",
+        "completed": "Contrat terminé",
+        "success": "Contrat marqué comme terminé."
+      },
+      "expiration": {
+        "action": "Marquer comme expiré",
+        "description": "Enregistrez l’expiration du contrat lorsque sa période de validité est échue.",
+        "effectiveDate": "Date d’expiration",
+        "recordedAt": "Enregistrée le",
+        "expired": "Contrat expiré",
+        "success": "Expiration enregistrée."
+      },
+      "amendments": {
+        "title": "Avenants",
+        "description": "Créez et appliquez des avenants versionnés sans modifier le contrat signé.",
+        "empty": "Aucun avenant.",
+        "reason": "Motif",
+        "effectiveDate": "Date d’effet",
+        "amount": "Montant total",
+        "currency": "Devise",
+        "practicalHours": "Heures pratiques",
+        "services": "Services",
+        "payment": "Conditions de paiement",
+        "booking": "Règles de réservation",
+        "cancellation": "Conditions d’annulation",
+        "examTerms": "Conditions d’examen",
+        "studentObligations": "Obligations de l’élève",
+        "providerObligations": "Obligations de l’établissement",
+        "dataTerms": "Traitement des données",
+        "notRetroactive": "Les modifications ne s’appliquent pas rétroactivement.",
+        "save": "Créer l’avenant",
+        "created": "Avenant créé.",
+        "baseVersion": "Version de base",
+        "signedAt": "Signé le",
+        "signedProof": "Enregistrer la signature",
+        "recordProof": "Enregistrer la preuve",
+        "signedDocumentReference": "Référence du document signé",
+        "sha256": "Empreinte SHA-256",
+        "signed": "Signature de l’avenant enregistrée.",
+        "apply": "Appliquer",
+        "applied": "Avenant appliqué.",
+        "cancel": "Annuler",
+        "cancelReason": "Annulation manuelle depuis DriveOS",
+        "cancelled": "Avenant annulé."
+      },
+      "signatories": {
+        "title": "Signataires",
+        "description": "Définissez les personnes ou organisations devant signer le contrat.",
+        "empty": "Aucun signataire configuré.",
+        "add": "Ajouter un signataire",
+        "edit": "Modifier",
+        "delete": "Supprimer",
+        "kind": "Type",
+        "name": "Nom",
+        "organizationId": "Organisation",
+        "order": "Ordre de signature",
+        "required": "Obligatoire",
+        "optional": "Facultatif",
+        "authorityReference": "Référence d’habilitation",
+        "verify": "Vérifier l’habilitation",
+        "rejectAuthority": "Rejeter l’habilitation",
+        "authorityRejectedDefault": "Habilitation du signataire rejetée.",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "saved": "Signataires mis à jour."
+      },
+      "documents": {
+        "title": "Documents",
+        "description": "Gérez les annexes et versions documentaires rattachées au contrat.",
+        "empty": "Aucun document associé.",
+        "file": "Fichier",
+        "titleField": "Titre",
+        "type": "Type de document",
+        "visibility": "Visibilité",
+        "retainUntil": "Conserver jusqu’au",
+        "legalBasis": "Base légale de conservation",
+        "upload": "Ajouter le document",
+        "uploaded": "Document ajouté.",
+        "newVersion": "Nouvelle version",
+        "versionAdded": "Nouvelle version ajoutée.",
+        "archive": "Archiver",
+        "archived": "Document archivé."
+      },
+      "history": {
+        "title": "Historique",
+        "description": "Historique des changements et actions contractuelles.",
+        "empty": "Aucun événement contractuel enregistré.",
+        "actor": "Auteur"
+      },
+      "summary": {
+        "eyebrow": "CONTRAT DE FORMATION",
+        "title": "Synthèse du contrat",
+        "contractCount": "{{count}} contrat(s)",
+        "noContract": "Aucun contrat",
+        "noContractDescription": "Aucun contrat de formation n’est associé à cette inscription.",
+        "open": "Ouvrir les contrats",
+        "amount": "Montant",
+        "period": "Période",
+        "version": "Version",
+        "signatures": "Signatures",
+        "requiredSigned": "{{signed}} / {{required}} requise(s)",
+        "loadError": "Impossible de charger la synthèse du contrat.",
+        "alerts": {
+          "missing": "Contrat de formation manquant",
+          "draft": "Contrat encore en brouillon",
+          "generated": "Contrat généré, signature à lancer",
+          "signature": "Signature du contrat en attente",
+          "activation": "Contrat signé à activer",
+          "suspended": "Contrat suspendu"
+        },
+        "statuses": {
+          "Draft": "Brouillon",
+          "Generated": "Généré",
+          "SentForSignature": "Envoyé pour signature",
+          "PartiallySigned": "Partiellement signé",
+          "Signed": "Signé",
+          "Active": "Actif",
+          "Amended": "Modifié par avenant",
+          "Suspended": "Suspendu",
+          "Terminated": "Résilié",
+          "Completed": "Terminé",
+          "Cancelled": "Annulé",
+          "Expired": "Expiré"
+        }
+      }
+    }
+  },
+  "scheduling": {
+    "title": "Planning",
+    "tabs": {
+      "dashboard": "Tableau de bord",
+      "calendar": "Calendrier",
+      "slotSearch": "Recherche de créneau",
+      "availability": "Disponibilités",
+      "recurrence": "Récurrences",
+      "conflicts": "Conflits",
+      "replacements": "Remplacements",
+      "waitingList": "Liste d’attente",
+      "travel": "Déplacements",
+      "resources": "Ressources",
+      "capacity": "Capacité",
+      "navigation": "Navigation"
+    },
+    "dashboard": {
+      "kicker": "PLANIFICATION",
+      "title": "Tableau de bord du planning",
+      "description": "Supervisez les réservations, conflits, ressources et capacités opérationnelles.",
+      "loading": "Chargement du tableau de bord du planning…",
+      "partialError": {
+        "title": "Certaines données n’ont pas pu être chargées",
+        "description": "Le tableau de bord reste utilisable, mais certaines informations sont temporairement indisponibles."
+      },
+      "quickActions": {
+        "open": "Actions rapides",
+        "title": "Actions rapides",
+        "description": "Créez une réservation, recherchez un créneau ou gérez la liste d’attente.",
+        "slotSearch": {
+          "title": "Rechercher un créneau",
+          "description": "Trouvez les meilleurs créneaux selon les disponibilités et les ressources."
+        },
+        "booking": {
+          "title": "Créer une réservation",
+          "description": "Planifiez une nouvelle séance avec les participants et ressources nécessaires."
+        },
+        "waitingList": {
+          "title": "Gérer la liste d’attente",
+          "description": "Traitez les demandes en attente et proposez des créneaux disponibles."
+        }
+      },
+      "kpis": {
+        "today": "Aujourd’hui",
+        "bookings": "réservations",
+        "critical": "critiques",
+        "openConflicts": "conflits ouverts",
+        "waitingList": "demandes en attente",
+        "unavailableResources": "ressources indisponibles",
+        "saturation7d": "saturation à 7 jours"
+      },
+      "today": {
+        "title": "Planning du jour",
+        "description": "Séances et réservations prévues aujourd’hui.",
+        "openCalendar": "Ouvrir le calendrier",
+        "resources": "ressources",
+        "participants": "participants",
+        "empty": "Aucune réservation aujourd’hui",
+        "emptyDescription": "Aucune séance ou réservation n’est planifiée pour aujourd’hui."
+      },
+      "capacity": {
+        "title": "Capacité opérationnelle",
+        "horizon": "Prévision sur les 7 prochains jours",
+        "open": "Ouvrir les prévisions de capacité",
+        "net": "Capacité nette restante",
+        "demand": "Demande estimée",
+        "unavailable": "Les données de capacité sont momentanément indisponibles."
+      },
+      "alerts": {
+        "title": "Alertes et conflits",
+        "none": "Aucune alerte opérationnelle en cours."
+      },
+      "resources": {
+        "title": "Ressources indisponibles",
+        "description": "Ressources actuellement restreintes, indisponibles ou archivées."
+      }
+    },
+    "bookings": {
+      "status": {
+        "1": "Brouillon",
+        "2": "Réservée",
+        "3": "Confirmée",
+        "4": "Annulée",
+        "5": "Provisoire"
+      },
+      "type": {
+        "1": "Leçon pratique",
+        "2": "Cours théorique",
+        "3": "Évaluation",
+        "4": "Examen",
+        "5": "Rendez-vous",
+        "6": "Autre",
+        "PracticalLesson": "Leçon pratique",
+        "TheoryLesson": "Cours théorique",
+        "Assessment": "Évaluation",
+        "Exam": "Examen",
+        "Meeting": "Rendez-vous",
+        "Other": "Autre"
+      }
+    },
+    "conflicts": {
+      "priority": {
+        "1": "Faible",
+        "2": "Normale",
+        "3": "Élevée",
+        "4": "Critique",
+        "Low": "Faible",
+        "Medium": "Moyenne",
+        "High": "Élevée",
+        "Critical": "Critique",
+        "low": "Faible",
+        "medium": "Moyenne",
+        "high": "Élevée",
+        "critical": "Critique"
+      },
+      "InstructorOverlap": "Chevauchement enseignant",
+      "StudentOverlap": "Chevauchement élève",
+      "VehicleOverlap": "Chevauchement véhicule",
+      "RoomOverlap": "Chevauchement salle",
+      "TravelTimeConflict": "Temps de trajet insuffisant",
+      "QualificationConflict": "Qualification incompatible",
+      "WorkingTimeViolation": "Temps de travail non conforme",
+      "DocumentRestriction": "Restriction documentaire",
+      "FinancialRestriction": "Restriction financière",
+      "MaintenanceConflict": "Conflit de maintenance",
+      "LocationConflict": "Conflit de lieu",
+      "CapacityConflict": "Capacité insuffisante",
+      "ResourceUnavailable": "Ressource indisponible",
+      "AdministrativeBlock": "Blocage administratif",
+      "CreditInsufficient": "Crédit insuffisant",
+      "Other": "Autre",
+      "action": {
+        "Reschedule": "Replanifier",
+        "ReassignInstructor": "Réaffecter l’enseignant",
+        "ReassignVehicle": "Réaffecter le véhicule",
+        "ChangeLocation": "Changer le lieu",
+        "AdjustMargin": "Ajuster la marge",
+        "CancelBooking": "Annuler la réservation",
+        "AcceptRiskWithReason": "Accepter le risque avec justification",
+        "RequestDecision": "Demander une décision",
+        "Other": "Autre"
+      }
+    },
+    "resources": {
+      "status": {
+        "Active": "Active",
+        "Restricted": "Restreinte",
+        "Unavailable": "Indisponible",
+        "Archived": "Archivée"
+      }
+    },
+    "attendance": {
+      "actions": {
+        "backToBooking": "Retour au réservation",
+        "correct": "Corriger",
+        "override": "Forcer",
+        "reschedule": "Replanifier",
+        "save": "Enregistrer"
+      },
+      "audit": {
+        "text": "Texte"
+      },
+      "boundary": {
+        "text": "Texte",
+        "title": "Limites"
+      },
+      "correction": {
+        "auditText": "Audit texte",
+        "confirm": "Confirmer",
+        "existingText": "Existing texte",
+        "existingTitle": "Existing titre",
+        "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+        "title": "Correction",
+        "warningText": "Attention texte",
+        "warningTitle": "Attention titre"
+      },
+      "evidence": {
+        "text": "Texte",
+        "title": "Justificatif"
+      },
+      "eyebrow": "PRÉSENCE",
+      "fields": {
+        "arrival": "Arrivée",
+        "delayMinutes": "Retard minutes",
+        "departure": "Départ",
+        "evidence": "Justificatif",
+        "evidencePlaceholder": "Sélectionnez ou saisissez justificatif",
+        "followUp": "Suivi up",
+        "reason": "Motif",
+        "status": "Statut"
+      },
+      "history": {
+        "actor": "Acteur",
+        "current": "Actuel",
+        "emptyText": "Aucun résultat texte",
+        "emptyTitle": "Aucun résultat titre",
+        "help": "Aide",
+        "override": "Forcer",
+        "overrideReason": "Forcer motif",
+        "title": "Historique"
+      },
+      "override": {
+        "confirm": "Confirmer",
+        "reason": "Motif",
+        "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+        "title": "Forcer",
+        "warningText": "Attention texte",
+        "warningTitle": "Attention titre"
+      },
+      "quick": {
+        "help": "Aide",
+        "title": "Quick"
+      },
+      "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+      "summary": {
+        "charge": "Facturation",
+        "credit": "Crédit",
+        "decisions": "Décisions",
+        "instructor": "Enseignant",
+        "people": "Personnes",
+        "student": "Élève"
+      },
+      "title": "Présence",
+      "validation": {
+        "bookingRequired": "Réservation requis"
+      },
+      "tabs": {
+        "quick": "Saisie rapide",
+        "history": "Historique"
+      }
+    },
+    "availability": {
+      "actions": {
+        "activate": "Activer",
+        "addRange": "Ajouter une plage",
+        "archive": "Archiver",
+        "exception": "Exception",
+        "newPlan": "Nouveau plan",
+        "preferences": "Préférences"
+      },
+      "capacity": "Capacité",
+      "emptyResources": "Aucun résultat ressources",
+      "exceptionTypes": {
+        "Available": "Available",
+        "Breakdown": "Breakdown",
+        "Cleaning": "Cleaning",
+        "Closure": "Closure",
+        "Inspection": "Inspection",
+        "Maintenance": "Maintenance",
+        "PartnerRestriction": "Partner restriction",
+        "Rental": "Rental",
+        "Transfer": "Transfer",
+        "Unavailable": "Indisponible"
+      },
+      "exceptions": {
+        "none": "Aucun",
+        "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+        "title": "Exceptions"
+      },
+      "fields": {
+        "date": "Date",
+        "day": "Jour",
+        "effectiveFrom": "Effectif du",
+        "effectiveTo": "Effectif au",
+        "end": "Fin",
+        "exceptionType": "Exception type",
+        "priority": "Priorité",
+        "reason": "Motif",
+        "serviceArea": "Service zone",
+        "source": "Source",
+        "start": "Début",
+        "trainingCategory": "Formation catégorie",
+        "type": "Type"
+      },
+      "impact": {
+        "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+        "title": "Impact"
+      },
+      "kicker": "DISPONIBILITÉS",
+      "messages": {
+        "exceptionAdded": "Exception ajouté",
+        "exceptionRemoved": "Exception supprimé",
+        "planActivated": "Plan activé",
+        "planArchived": "Plan archivé",
+        "planCreated": "Plan créé",
+        "preferencesSaved": "Préférences enregistré",
+        "ruleAdded": "Règle ajouté",
+        "ruleRemoved": "Règle supprimé"
+      },
+      "noPlan": "Aucun plan",
+      "plan": {
+        "exceptions": "Exceptions",
+        "period": "Période",
+        "rules": "Règles",
+        "status": "Statut",
+        "title": "Plan"
+      },
+      "preferences": {
+        "distance": "Distance",
+        "frequency": "Fréquence",
+        "geo": "Localisation",
+        "geoHelp": "Informations complémentaires sur localisation.",
+        "instructor": "Enseignant",
+        "intensive": "Intensif",
+        "intensiveHelp": "Informations complémentaires sur intensif.",
+        "locationPrivacy": "Localisation confidentialité",
+        "meetingPoint": "Rendez-vous point",
+        "noInstructorPreference": "Aucun enseignant preference",
+        "notice": "Préavis",
+        "title": "Préférences"
+      },
+      "priority": {
+        "instructor": "Enseignant",
+        "resource": "Ressource",
+        "student": "Élève",
+        "title": "Priorité"
+      },
+      "resourceLabel": "Ressource",
+      "ruleNeedsDraft": "Règle needs brouillon",
+      "ruleTypes": {
+        "Available": "Available",
+        "OnCall": "On call",
+        "PartnerAvailability": "Partner disponibilités",
+        "Preferred": "Preferred"
+      },
+      "sources": {
+        "Absence": "Absence",
+        "Contract": "Contract",
+        "HrSchedule": "Hr schedule",
+        "Mission": "Mission",
+        "OrganizationRule": "Organization règle",
+        "SelfDeclared": "Self declared",
+        "StudentDeclared": "Élève declared"
+      },
+      "subtitle": "Gérez les plans de disponibilité, règles récurrentes et exceptions.",
+      "tabs": {
+        "instructors": "Enseignants",
+        "resources": "Ressources",
+        "students": "Élèves"
+      },
+      "title": "Disponibilités",
+      "weekdays": {
+        "friday": "Vendredi",
+        "monday": "Lundi",
+        "saturday": "Samedi",
+        "sunday": "Dimanche",
+        "thursday": "Jeudi",
+        "tuesday": "Mardi",
+        "wednesday": "Mercredi"
+      },
+      "weekly": {
+        "none": "Aucun",
+        "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+        "title": "Hebdomadaire"
+      }
+    },
+    "bookingCreate": {
+      "actions": {
+        "confirm": "Confirmer",
+        "confirmNotify": "Confirmer notifier",
+        "hold": "Réserver temporairement",
+        "reserve": "Réserver",
+        "saveDraft": "Enregistrer brouillon",
+        "searchSlot": "Recherche créneau"
+      },
+      "confirmation": {
+        "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+        "title": "Confirmation"
+      },
+      "conflicts": {
+        "none": "Aucun",
+        "title": "Conflits"
+      },
+      "dateDuration": {
+        "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+        "title": "Date durée"
+      },
+      "external": {
+        "financeDescription": "Finance description",
+        "financeTitle": "Finance titre"
+      },
+      "fields": {
+        "branch": "Agence",
+        "date": "Date",
+        "duration": "Durée",
+        "instructor": "Enseignant",
+        "meetingPoint": "Rendez-vous point",
+        "notify": "Notifier",
+        "notifyHelp": "Informations complémentaires sur notifier.",
+        "objective": "Objectif",
+        "room": "Salle",
+        "startTime": "Début heure",
+        "student": "Élève",
+        "title": "Champs",
+        "trainingCategory": "Formation catégorie",
+        "type": "Type",
+        "vehicle": "Véhicule"
+      },
+      "finance": {
+        "creditPending": "Crédit en attente",
+        "creditTitle": "Crédit titre",
+        "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+        "pricePending": "Prix en attente",
+        "priceTitle": "Prix titre",
+        "title": "Finance"
+      },
+      "instructor": {
+        "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+        "title": "Enseignant"
+      },
+      "location": {
+        "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+        "title": "Localisation"
+      },
+      "objectives": {
+        "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+        "title": "Objectifs"
+      },
+      "placeholders": {
+        "branch": "Agence",
+        "instructor": "Enseignant",
+        "meetingPoint": "Rendez-vous point",
+        "objective": "Objectif",
+        "room": "Salle",
+        "student": "Élève",
+        "trainingCategory": "Formation catégorie",
+        "vehicle": "Véhicule"
+      },
+      "progress": "Progression",
+      "resource": {
+        "capacityDescription": "Capacité description",
+        "capacityTitle": "Capacité titre",
+        "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+        "title": "Ressource"
+      },
+      "slotSearch": {
+        "noResult": "Aucun résultat",
+        "results": "Résultats"
+      },
+      "studentType": {
+        "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+        "title": "Élève type"
+      },
+      "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+      "success": {
+        "confirmed": "Confirmé",
+        "confirmedNotify": "Confirmé notifier",
+        "draft": "Brouillon",
+        "held": "Held",
+        "reserved": "Reserved"
+      },
+      "summary": {
+        "defaultLocation": "Default localisation",
+        "instructor": "Enseignant",
+        "location": "Localisation",
+        "period": "Période",
+        "student": "Élève"
+      },
+      "title": "Réservation créer",
+      "trainingCategoryHelp": "Informations complémentaires sur formation catégorie.",
+      "validation": {
+        "incomplete": "Incomplete",
+        "searchRequirements": "Recherche exigences"
+      },
+      "steps": {
+        "studentType": "Élève type",
+        "dateDuration": "Date durée",
+        "instructor": "Enseignant",
+        "resource": "Ressource",
+        "location": "Localisation",
+        "objectives": "Objectifs",
+        "confirmation": "Confirmation"
+      }
+    },
+    "calendar": {
+      "actions": {
+        "attendance": "Présence",
+        "cancel": "Annuler",
+        "confirm": "Confirmer",
+        "replaceInstructor": "Remplacer l’enseignant",
+        "replaceVehicle": "Remplacer le véhicule",
+        "reschedule": "Replanifier",
+        "travel": "Déplacements"
+      },
+      "branch": "Agence",
+      "context": {
+        "tabs": {
+          "global": "Global",
+          "instructors": "Enseignants",
+          "vehicles": "Véhicules",
+          "students": "Élèves"
+        },
+        "global": {
+          "title": "Planning global",
+          "subtitle": "Visualisez l’ensemble des réservations, ressources et séances de l’organisation."
+        },
+        "instructors": {
+          "title": "Planning des enseignants",
+          "subtitle": "Consultez le planning et la charge d’un enseignant.",
+          "selectorLabel": "Enseignant",
+          "scopeNote": "Les indicateurs et réservations sont limités à l’enseignant sélectionné."
+        },
+        "vehicles": {
+          "title": "Planning des véhicules",
+          "subtitle": "Consultez l’utilisation et la disponibilité d’un véhicule.",
+          "selectorLabel": "Véhicule",
+          "scopeNote": "Les indicateurs et réservations sont limités au véhicule sélectionné."
+        },
+        "students": {
+          "title": "Planning des élèves",
+          "subtitle": "Consultez le parcours planifié et les prochaines séances d’un élève.",
+          "selectorLabel": "Élève",
+          "scopeNote": "Les indicateurs et réservations sont limités à l’élève sélectionné."
+        },
+        "branchReference": "Agence :",
+        "metrics": {
+          "plannedHours": "Heures planifiées",
+          "currentWindow": "Sur la période affichée",
+          "sessions": "Séances",
+          "upcoming": "À venir",
+          "cancelled": "Annulées",
+          "resourceState": "État de la ressource",
+          "noOperationalAlert": "Aucune alerte opérationnelle"
+        }
+      },
+      "create": "Créer une réservation",
+      "details": {
+        "end": "Fin",
+        "participants": "Participants",
+        "participantsCount": "Nombre de participants",
+        "resources": "Ressources",
+        "start": "Début",
+        "status": "Statut",
+        "subtitle": "Consultez les informations et actions disponibles pour cette réservation.",
+        "title": "Détails de la réservation",
+        "type": "Type"
+      },
+      "empty": "Aucune réservation sur cette période.",
+      "eyebrow": "CALENDRIER",
+      "filters": "Filtres",
+      "filtersDrawer": {
+        "subtitle": "Affinez les réservations affichées dans le calendrier.",
+        "title": "Filtres du calendrier"
+      },
+      "noBookingForResource": "Aucune réservation pour cette ressource.",
+      "resource": "Ressource",
+      "search": "Recherche",
+      "status": "Statut",
+      "title": "Calendrier",
+      "today": "Aujourd’hui",
+      "views": {
+        "day": "Jour",
+        "week": "Semaine",
+        "month": "Mois",
+        "agenda": "Agenda",
+        "resources": "Ressources"
+      },
+      "weekdays": {
+        "0": "Lun.",
+        "1": "Mar.",
+        "2": "Mer.",
+        "3": "Jeu.",
+        "4": "Ven.",
+        "5": "Sam.",
+        "6": "Dim."
+      }
+    },
+    "cancel": {
+      "actions": {
+        "confirm": "Confirmer",
+        "evaluate": "Évaluer",
+        "keep": "Keep",
+        "override": "Forcer"
+      },
+      "audit": {
+        "text": "Texte",
+        "title": "Audit"
+      },
+      "back": "Retour",
+      "completed": {
+        "text": "Texte",
+        "title": "Completed"
+      },
+      "confirmation": {
+        "booking": "Réservation",
+        "help": "Aide",
+        "title": "Confirmation"
+      },
+      "notification": {
+        "help": "Aide",
+        "title": "Notification"
+      },
+      "override": {
+        "appliedTitle": "Applied titre",
+        "confirm": "Confirmer",
+        "reason": "Motif",
+        "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+        "title": "Forcer",
+        "warningText": "Attention texte",
+        "warningTitle": "Attention titre"
+      },
+      "policy": {
+        "credit": "Crédit",
+        "fee": "Fee",
+        "help": "Aide",
+        "manualReviewText": "Manuelle vérifier texte",
+        "manualReviewTitle": "Manuelle vérifier titre",
+        "notice": "Préavis",
+        "previewRequiredText": "Preview requis texte",
+        "previewRequiredTitle": "Preview requis titre",
+        "replacementText": "Remplacement texte",
+        "replacementTitle": "Remplacement titre",
+        "title": "Politique",
+        "version": "Version"
+      },
+      "reason": {
+        "code": "Code",
+        "details": "Details",
+        "detailsPlaceholder": "Sélectionnez ou saisissez details",
+        "help": "Aide",
+        "initiator": "Initiator",
+        "title": "Motif"
+      },
+      "steps": {
+        "confirmation": "Confirmation",
+        "notifications": "Notifications",
+        "policy": "Politique",
+        "reason": "Motif"
+      },
+      "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+      "summary": {
+        "bookingId": "Réservation id",
+        "credit": "Crédit",
+        "creditUnits": "Crédit units",
+        "session": "Séance"
+      },
+      "title": "Annuler",
+      "validation": {
+        "bookingRequired": "Réservation requis"
+      }
+    },
+    "capacity": {
+      "actions": {
+        "refresh": "Refresh",
+        "simulate": "Simulate"
+      },
+      "assumptions": {
+        "activeAvailability": "Active disponibilités",
+        "activeHoldsIncluded": "Active réservations temporaires included",
+        "demandSource": "Demand source",
+        "deterministic": "Deterministic",
+        "geographyAggregated": "Geography aggregated",
+        "leadTime": "Lead heure",
+        "noAi": "Aucun ai",
+        "preferencesExcluded": "Préférences excluded",
+        "priorityResolution": "Priorité resolution",
+        "resourceHours": "Ressource hours"
+      },
+      "branch": {
+        "title": "Agence"
+      },
+      "charts": {
+        "demandVsCapacity": "Demand vs capacité"
+      },
+      "confidence": {
+        "high": "High",
+        "low": "Low",
+        "medium": "Medium"
+      },
+      "empty": {
+        "notEnoughData": "Not enough data",
+        "title": "Aucun résultat"
+      },
+      "filters": {
+        "allBranches": "All agences",
+        "branch": "Agence"
+      },
+      "heatmap": {
+        "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+        "title": "Heatmap",
+        "waiting": "Attente"
+      },
+      "horizons": {
+        "days30": "Days30",
+        "days7": "Days7",
+        "days90": "Days90",
+        "months12": "Months12",
+        "months6": "Months6"
+      },
+      "kicker": "CAPACITÉ",
+      "kpi": {
+        "committed": "Committed",
+        "committedVsNet": "Committed vs net",
+        "estimatedNeed": "Estimée need",
+        "instructorNeed": "Enseignant need",
+        "netAvailable": "Net available",
+        "netCapacity": "Net capacité",
+        "resourceHours": "Ressource hours",
+        "saturation": "Saturation",
+        "theoretical": "Theoretical",
+        "uncoveredDemand": "Uncovered demand",
+        "vehicleNeed": "Véhicule need",
+        "waitingRequests": "Attente requests"
+      },
+      "labels": {
+        "committedShort": "Committed short",
+        "freeShort": "Free short"
+      },
+      "leadTime": {
+        "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+        "title": "Lead heure",
+        "unavailable": "Indisponible"
+      },
+      "legend": {
+        "estimatedDemand": "Estimée demand",
+        "netCapacity": "Net capacité"
+      },
+      "methodology": {
+        "assumption": "Assumption",
+        "assumptionText": "Assumption texte",
+        "assumptions": "Assumptions",
+        "distinctions": "Distinctions",
+        "forecast": "Forecast",
+        "forecastText": "Forecast texte",
+        "observed": "Observed",
+        "observedText": "Observed texte",
+        "uncertainty": "Uncertainty",
+        "uncertaintyText": "Uncertainty texte"
+      },
+      "resourceType": {
+        "title": "Ressource type"
+      },
+      "resourceTypes": {
+        "branch": "Agence",
+        "equipment": "Equipment",
+        "examVehicle": "Exam véhicule",
+        "instructor": "Enseignant",
+        "other": "Autre",
+        "partnerResource": "Partner ressource",
+        "room": "Salle",
+        "simulator": "Simulator",
+        "student": "Élève",
+        "vehicle": "Véhicule"
+      },
+      "resources": {
+        "critical": "Critical",
+        "criticalHint": "Critical hint",
+        "noCritical": "Aucun critical",
+        "noUnderused": "Aucun underused",
+        "underused": "Underused",
+        "underusedHint": "Underused hint"
+      },
+      "scenario": {
+        "addedCapacity": "Ajouté capacité",
+        "assumption": "Assumption",
+        "assumptionPlaceholder": "Sélectionnez ou saisissez assumption",
+        "cardHint": "Card hint",
+        "drawerDescription": "Drawer description",
+        "drawerTitle": "Drawer titre",
+        "hoursPerWeek": "Hours per semaine",
+        "improvement": "Improvement",
+        "neverAppliedAutomatically": "Never applied automatically",
+        "quantity": "Quantity",
+        "result": "Résultat",
+        "simulationOnly": "Simulation only",
+        "type": "Type",
+        "types": {
+          "addVehicle": "Ajouter véhicule",
+          "extendHours": "Extend hours",
+          "freelancers": "Freelancers",
+          "openBranch": "Ouvrir agence",
+          "partner": "Partner",
+          "recruitInstructor": "Recruit enseignant"
+        }
+      },
+      "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+      "tabs": {
+        "methodology": "Methodology",
+        "overview": "Vue d’ensemble",
+        "resources": "Ressources",
+        "scenarios": "Scenarios"
+      },
+      "title": "Capacité"
+    },
+    "conflictInbox": {
+      "actions": {
+        "openBooking": "Ouvrir la réservation",
+        "override": "Accorder une dérogation",
+        "reanalyze": "Réanalyser",
+        "resolve": "Résoudre",
+        "open": "Ouvrir",
+        "review": "Examiner",
+        "ignore": "Ignorer",
+        "escalate": "Escalader"
+      },
+      "bookingFallback": "Réservation concernée",
+      "description": "Gérez les conflits de planification, leurs priorités et les décisions de résolution.",
+      "detail": {
+        "booking": "Réservation",
+        "conflictingBooking": "Réservation en conflit",
+        "solutions": "Solutions proposées",
+        "title": "Détail du conflit"
+      },
+      "empty": {
+        "title": "Aucun conflit à afficher"
+      },
+      "filters": {
+        "allPriorities": "Toutes les priorités",
+        "allTypes": "Tous les types",
+        "clear": "Effacer",
+        "search": "Rechercher"
+      },
+      "kicker": "CENTRE DE CONFLITS",
+      "messages": {
+        "overridden": "Dérogation enregistrée",
+        "refreshed": "Liste actualisée",
+        "resolved": "Conflit résolu"
+      },
+      "metrics": {
+        "active": "Actifs",
+        "critical": "Critiques",
+        "overrides": "Dérogations"
+      },
+      "override": {
+        "auditTitle": "Traçabilité de la dérogation",
+        "confirm": "Confirmer la dérogation",
+        "expires": "Expiration",
+        "reason": "Motif",
+        "risk": "Risque accepté",
+        "title": "Accorder une dérogation",
+        "warning": "Cette action contourne temporairement un conflit et sera auditée."
+      },
+      "overrideExpired": "Dérogation expirée",
+      "resolve": {
+        "action": "Action de résolution",
+        "confirm": "Confirmer la résolution",
+        "reason": "Motif",
+        "reasonPlaceholder": "Sélectionnez ou saisissez un motif",
+        "title": "Résoudre le conflit",
+        "warning": "Vérifiez les impacts avant de confirmer la résolution."
+      },
+      "title": "Centre de gestion des conflits",
+      "tabs": {
+        "open": "Ouverts",
+        "resolved": "Résolus",
+        "all": "Tous",
+        "active": "Actifs",
+        "critical": "Critiques",
+        "overrides": "Dérogations",
+        "history": "Historique"
+      },
+      "status": {
+        "Open": "Ouvert",
+        "InReview": "En cours d’analyse",
+        "Resolved": "Résolu",
+        "Ignored": "Ignoré",
+        "Escalated": "Escaladé",
+        "ResolutionRequested": "Résolution demandée",
+        "Overridden": "Dérogation active",
+        "Obsolete": "Obsolète"
+      }
+    },
+    "instructorReplacement": {
+      "actions": {
+        "calendar": "Calendrier",
+        "choose": "Choisir",
+        "chooseAndPreview": "Choisir et prévisualiser",
+        "confirmAndNotify": "Confirmer et notifier",
+        "details": "Détails",
+        "findReplacement": "Rechercher un remplaçant",
+        "loadSessions": "Charger les séances",
+        "reviewConfirmation": "Vérifier la confirmation"
+      },
+      "confirmation": {
+        "atomicText": "Le remplacement sera appliqué comme une opération cohérente sur l’ensemble des séances sélectionnées.",
+        "atomicTitle": "Application atomique",
+        "notApplied": "Le remplacement n’a pas été appliqué.",
+        "subtitle": "Vérifiez le remplaçant, les séances et les impacts avant validation.",
+        "title": "Confirmation"
+      },
+      "empty": {
+        "noCandidate": "Aucun remplaçant compatible",
+        "noSessions": "Aucune séance concernée",
+        "selectInstructor": "Sélectionnez l’enseignant à remplacer"
+      },
+      "errors": {
+        "title": "Impossible de préparer le remplacement"
+      },
+      "factors": {
+        "availability": "Disponibilités"
+      },
+      "fields": {
+        "accessExpiry": "Expiration de l’accès",
+        "from": "Du",
+        "mode": "Mode",
+        "previousInstructor": "Enseignant à remplacer",
+        "reason": "Motif",
+        "reasonPlaceholder": "Sélectionnez ou saisissez un motif",
+        "replacementInstructor": "Enseignant remplaçant",
+        "to": "Au"
+      },
+      "impacts": {
+        "blockedText": "Au moins une contrainte bloquante empêche la confirmation.",
+        "blockedTitle": "Remplacement bloqué",
+        "blockers": "Contraintes bloquantes",
+        "externalReviews": "Vérifications externes",
+        "readyText": "Les contrôles nécessaires permettent de poursuivre la confirmation.",
+        "readyTitle": "Prêt à confirmer"
+      },
+      "kicker": "REMPLACEMENT D’ENSEIGNANT",
+      "permissionDenied": {
+        "text": "Vous ne disposez pas des droits nécessaires pour effectuer ce remplacement.",
+        "title": "Permission insuffisante"
+      },
+      "reality": {
+        "text": "Les suggestions s’appuient sur les séances et disponibilités actuellement connues. Vérifiez les contraintes avant confirmation.",
+        "title": "Données opérationnelles"
+      },
+      "sessions": {
+        "categoryMissing": "Catégorie de formation non renseignée",
+        "subtitle": "Séances concernées par le périmètre sélectionné.",
+        "title": "Séances concernées"
+      },
+      "steps": {
+        "confirmation": "Confirmation",
+        "impacts": "Impacts",
+        "scope": "Périmètre",
+        "suggestions": "Suggestions"
+      },
+      "subtitle": "Réaffectez les séances d’un enseignant indisponible en contrôlant la continuité pédagogique et les impacts opérationnels.",
+      "success": {
+        "text": "Les séances sélectionnées ont été réaffectées et les acteurs concernés peuvent être notifiés.",
+        "title": "Remplacement confirmé"
+      },
+      "suggestions": {
+        "availability": "Disponibilité",
+        "candidate": "Candidat",
+        "compatibleSessions": "Séances compatibles",
+        "continuity": "Continuité pédagogique",
+        "drawerSubtitle": "Détails et critères de compatibilité du remplaçant.",
+        "qualified": "Habilité",
+        "score": "Score de compatibilité",
+        "subtitle": "Sélectionnez le remplaçant le plus adapté aux séances concernées.",
+        "title": "Suggestions de remplacement",
+        "why": "Pourquoi ce candidat ?"
+      },
+      "summary": {
+        "categories": "Catégories",
+        "sessions": "Séances",
+        "students": "Élèves",
+        "title": "Récapitulatif",
+        "vehicles": "Véhicules"
+      },
+      "title": "Remplacement d’enseignant",
+      "modes": {
+        "automatic": "Automatique",
+        "manual": "Manuel",
+        "singleSession": "Une séance",
+        "selectedSessions": "Séances sélectionnées",
+        "dateRange": "Période définie",
+        "allFutureSessions": "Toutes les séances futures",
+        "temporaryAssignment": "Affectation temporaire",
+        "permanentReassignment": "Réaffectation permanente"
+      }
+    },
+    "kicker": "PLANNING",
+    "recurrence": {
+      "actions": {
+        "cancelOccurrence": "Annuler occurrence",
+        "cancelSeries": "Annuler series",
+        "editFuture": "Edit future",
+        "newSeries": "Nouveau series",
+        "regenerate": "Regenerate",
+        "rescheduleOccurrence": "Replanifier occurrence"
+      },
+      "byCount": "By count",
+      "cancelWarning": "Annuler attention",
+      "conflict": "Conflit",
+      "empty": {
+        "title": "Aucun résultat"
+      },
+      "fields": {
+        "applyFrom": "Apply du",
+        "count": "Count",
+        "duration": "Durée",
+        "end": "Fin",
+        "endDate": "Fin date",
+        "frequency": "Fréquence",
+        "interval": "Interval",
+        "period": "Période",
+        "policy": "Politique",
+        "reason": "Motif",
+        "start": "Début",
+        "startDate": "Début date",
+        "target": "Cible",
+        "time": "Heure",
+        "title": "Champs",
+        "weekdays": "Weekdays"
+      },
+      "frequency": {
+        "Daily": "Daily",
+        "Monthly": "Monthly",
+        "Weekly": "Hebdomadaire",
+        "Custom": "Personnalisée",
+        "daily": "Quotidienne",
+        "weekly": "Hebdomadaire",
+        "monthly": "Mensuelle",
+        "custom": "Personnalisée"
+      },
+      "kicker": "RÉCURRENCE",
+      "messages": {
+        "created": "Créé",
+        "futureUpdated": "Future updated",
+        "generated": "Generated",
+        "occurrenceCancelled": "Occurrence annulé",
+        "occurrenceRescheduled": "Occurrence rescheduled",
+        "seriesCancelled": "Series annulé"
+      },
+      "metrics": {
+        "confirmable": "Confirmable",
+        "conflicts": "Conflits",
+        "exceptions": "Exceptions",
+        "total": "Total"
+      },
+      "occurrences": {
+        "help": "Aide",
+        "title": "Occurrences"
+      },
+      "policy": {
+        "BestAvailableResources": "Best available ressources",
+        "FixedResources": "Fixed ressources",
+        "Strict": "Stricte",
+        "Flexible": "Flexible",
+        "BestEffort": "Au mieux",
+        "strict": "Stricte",
+        "flexible": "Flexible",
+        "bestEffort": "Au mieux"
+      },
+      "resources": {
+        "dynamic": "Dynamic",
+        "select": "Select",
+        "title": "Ressources"
+      },
+      "rule": {
+        "title": "Règle"
+      },
+      "seriesList": "Series liste",
+      "status": {
+        "active": "Active",
+        "cancelled": "Annulé"
+      },
+      "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+      "target": {
+        "Availability": "Disponibilités",
+        "Booking": "Réservation",
+        "Maintenance": "Maintenance",
+        "Meeting": "Rendez-vous",
+        "PartnerMission": "Partner mission",
+        "Student": "Élève",
+        "Instructor": "Enseignant",
+        "Vehicle": "Véhicule",
+        "Room": "Salle",
+        "Resource": "Ressource",
+        "student": "Élève",
+        "instructor": "Enseignant",
+        "vehicle": "Véhicule",
+        "room": "Salle",
+        "resource": "Ressource"
+      },
+      "title": "Récurrence",
+      "weekdays": {
+        "friday": "Vendredi",
+        "monday": "Lundi",
+        "saturday": "Samedi",
+        "sunday": "Dimanche",
+        "thursday": "Jeudi",
+        "tuesday": "Mardi",
+        "wednesday": "Mercredi"
+      },
+      "occurrenceStatus": {
+        "Planned": "Planifiée",
+        "Created": "Créée",
+        "Skipped": "Ignorée",
+        "Conflict": "Conflit",
+        "Cancelled": "Annulé",
+        "Failed": "Échec"
+      }
+    },
+    "replacements": {
+      "tabs": {
+        "instructors": "Enseignants",
+        "navigation": "Navigation",
+        "vehicles": "Véhicules"
+      }
+    },
+    "reschedule": {
+      "actions": {
+        "confirmAndNotify": "Confirmer and notifier",
+        "preview": "Preview",
+        "recheck": "Recheck",
+        "searchAutomatically": "Recherche automatically"
+      },
+      "blocked": "Bloqué",
+      "blockedText": "Bloqué texte",
+      "changes": {
+        "none": "Aucun",
+        "title": "Modifications"
+      },
+      "confirmation": {
+        "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+        "title": "Confirmation"
+      },
+      "history": {
+        "title": "Historique"
+      },
+      "impacts": {
+        "conflicts": "Conflits",
+        "empty": "Aucun résultat",
+        "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+        "title": "Impacts"
+      },
+      "kicker": "REPLANIFIER",
+      "messages": {
+        "alreadyApplied": "Already applied",
+        "success": "Succès"
+      },
+      "newSlot": "Nouveau créneau",
+      "notFound": "Not found",
+      "notifications": {
+        "disabledText": "Disabled texte",
+        "disabledTitle": "Disabled titre",
+        "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+        "targetedText": "Targeted texte",
+        "targetedTitle": "Targeted titre",
+        "title": "Notifications"
+      },
+      "previousSlot": "Précédent créneau",
+      "ready": "Prêt",
+      "readyText": "Prêt texte",
+      "reason": {
+        "label": "Libellé",
+        "placeholder": "Placeholder",
+        "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+        "title": "Motif"
+      },
+      "resources": {
+        "currentSelection": "Actuel selection",
+        "instructor": "Enseignant",
+        "instructorHelp": "Informations complémentaires sur enseignant.",
+        "keep": "Keep",
+        "noRoom": "Aucun salle",
+        "room": "Salle",
+        "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+        "title": "Ressources",
+        "vehicle": "Véhicule",
+        "vehicleHelp": "Informations complémentaires sur véhicule."
+      },
+      "search": {
+        "action": "Action",
+        "duration": "Durée",
+        "empty": "Aucun résultat",
+        "from": "Du",
+        "max": "Max",
+        "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+        "title": "Recherche",
+        "to": "Au",
+        "warningTitle": "Attention titre"
+      },
+      "slot": {
+        "branch": "Agence",
+        "end": "Fin",
+        "noBranch": "Aucun agence",
+        "start": "Début",
+        "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+        "title": "Créneau"
+      },
+      "steps": {
+        "confirmation": "Confirmation",
+        "impacts": "Impacts",
+        "notifications": "Notifications",
+        "reason": "Motif",
+        "resources": "Ressources",
+        "slot": "Créneau"
+      },
+      "summary": {
+        "title": "Récapitulatif"
+      },
+      "title": "Replanifier",
+      "validation": {
+        "bookingRequired": "Réservation requis",
+        "required": "Requis",
+        "search": "Recherche"
+      }
+    },
+    "slotSearch": {
+      "actions": {
+        "choose": "Choisir",
+        "criteria": "Définir les critères",
+        "search": "Rechercher"
+      },
+      "badges": {
+        "continuity": "Continuité",
+        "instructorLoad": "Enseignant load",
+        "qualified": "Qualified"
+      },
+      "card": {
+        "instructor": "Enseignant",
+        "room": "Salle",
+        "vehicle": "Véhicule"
+      },
+      "criteria": {
+        "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+        "title": "Critères"
+      },
+      "description": "Trouvez les meilleurs créneaux selon les contraintes de l’élève, de l’enseignant et des ressources.",
+      "explain": {
+        "external": "Externe",
+        "positive": "Positive",
+        "title": "Explain"
+      },
+      "fields": {
+        "branch": "Agence",
+        "category": "Catégorie",
+        "duration": "Durée",
+        "from": "Du",
+        "maxSuggestions": "Max suggestions",
+        "preferContinuity": "Prefer continuité",
+        "preferredInstructor": "Preferred enseignant",
+        "preferredVehicle": "Preferred véhicule",
+        "requireRoom": "Require salle",
+        "requireVehicle": "Require véhicule",
+        "step": "Step",
+        "student": "Élève",
+        "to": "Au",
+        "type": "Type"
+      },
+      "finalValidation": "Final validation",
+      "initial": {
+        "description": "Renseignez les critères pour lancer la recherche de créneaux disponibles.",
+        "title": "Définissez vos critères"
+      },
+      "kicker": "RECHERCHE DE CRÉNEAU",
+      "placeholders": {
+        "student": "Élève"
+      },
+      "results": {
+        "empty": "Aucun résultat",
+        "meta": "Meta",
+        "title": "Résultats"
+      },
+      "score": "Score",
+      "searching": "Recherche en cours",
+      "summary": {
+        "category": "Catégorie",
+        "continuity": "Continuité pédagogique",
+        "period": "Période",
+        "session": "Séance",
+        "student": "Élève"
+      },
+      "title": "Recherche de créneau",
+      "validation": {
+        "criteria": "Critères"
+      }
+    },
+    "travel": {
+      "actions": {
+        "evaluate": "Évaluer",
+        "evaluating": "Évaluation en cours",
+        "useCurrentPosition": "Use actuel position"
+      },
+      "context": {
+        "next": "Suivant",
+        "noMeetingPoint": "Aucun rendez-vous point",
+        "noPrevious": "Aucun précédent",
+        "previous": "Précédent"
+      },
+      "drawer": {
+        "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+        "title": "Drawer"
+      },
+      "empty": {
+        "title": "Aucun résultat"
+      },
+      "form": {
+        "address": "Address",
+        "buffer": "Marge",
+        "destination": "Destination",
+        "distance": "Distance",
+        "estimatedDuration": "Estimée durée",
+        "label": "Libellé",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "manualRoutingHint": "Manuelle routing hint",
+        "mode": "Mode",
+        "nextActualStart": "Suivant réel début",
+        "nextPlannedStart": "Suivant planifié début",
+        "origin": "Origine",
+        "previousActualEnd": "Précédent réel fin",
+        "previousPlannedEnd": "Précédent planifié fin",
+        "traffic": "Trafic",
+        "transportMode": "Transport mode"
+      },
+      "geolocationUnavailable": "Géolocalisation indisponible",
+      "kicker": "DÉPLACEMENTS",
+      "locationMode": {
+        "approximate": "Approximative",
+        "manual": "Manuelle",
+        "mission": "Mission",
+        "oneTime": "One heure"
+      },
+      "privacy": {
+        "manual": {
+          "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+          "title": "Manuelle"
+        },
+        "precise": {
+          "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+          "title": "Précise"
+        },
+        "retention": {
+          "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+          "title": "Conservation"
+        },
+        "tracking": {
+          "description": "Gérez les informations de planification et les contraintes opérationnelles.",
+          "title": "Suivi"
+        }
+      },
+      "result": {
+        "available": "Available",
+        "buffer": "Marge",
+        "conflict": "Conflit",
+        "deadline": "Échéance",
+        "departure": "Départ",
+        "distance": "Distance",
+        "feasible": "Faisable",
+        "margin": "Marge",
+        "noPersistence": "Aucun persistance",
+        "required": "Requis",
+        "route": "Itinéraire"
+      },
+      "routeSource": {
+        "manual": "Manuelle",
+        "provider": "Fournisseur"
+      },
+      "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+      "tabs": {
+        "analysis": "Analyse",
+        "privacy": "Confidentialité"
+      },
+      "timeSource": {
+        "actual": "Réel",
+        "planned": "Planifié"
+      },
+      "title": "Déplacements",
+      "traffic": {
+        "custom": "Custom"
+      },
+      "transport": {
+        "cycling": "Vélo",
+        "driving": "Voiture",
+        "other": "Autre",
+        "publicTransport": "Transports en commun transport",
+        "walking": "Marche"
+      }
+    },
+    "vehicleReplacement": {
+      "actions": {
+        "choose": "Choisir",
+        "confirmAndNotify": "Confirmer et notifier",
+        "findReplacement": "Rechercher un véhicule de remplacement",
+        "reviewConfirmation": "Vérifier la confirmation"
+      },
+      "blocking": {
+        "authoritativeDataUnavailable": "Données de référence indisponibles",
+        "generic": "Contrainte bloquante",
+        "previousResourceMissing": "Véhicule d’origine introuvable",
+        "replacementResourceMissing": "Véhicule de remplacement introuvable",
+        "schedulingConflict": "Conflit de planning"
+      },
+      "candidate": {
+        "externalReview": "Vérification externe requise",
+        "externalReviewText": "Certaines informations doivent être vérifiées avant confirmation.",
+        "factors": "Critères de compatibilité",
+        "subtitle": "Détails du véhicule proposé et des contrôles associés."
+      },
+      "checks": {
+        "insurance": "Assurance",
+        "location": "Localisation",
+        "maintenance": "Maintenance",
+        "ownership": "Propriété",
+        "technical": "Technique"
+      },
+      "confirmation": {
+        "atomicText": "Le remplacement sera appliqué de manière cohérente sur les séances sélectionnées.",
+        "atomicTitle": "Application atomique",
+        "title": "Confirmation"
+      },
+      "external": {
+        "compatibility": "Compatibilité",
+        "generic": "Vérification externe",
+        "insurance": "Assurance",
+        "location": "Localisation",
+        "maintenance": "Maintenance",
+        "ownership": "Propriété"
+      },
+      "eyebrow": "REMPLACEMENT DE VÉHICULE",
+      "factors": {
+        "availability": "Disponibilités",
+        "branchMatching": "Agence matching",
+        "other": "Autre"
+      },
+      "fields": {
+        "adaptations": "Adaptations requises",
+        "adaptationsPlaceholder": "Sélectionnez ou saisissez les adaptations",
+        "dualControl": "Double commande",
+        "dualControlHelp": "Indiquez si la double commande est obligatoire.",
+        "energy": "Énergie",
+        "energyPlaceholder": "Sélectionnez une énergie",
+        "from": "Du",
+        "mode": "Mode",
+        "reason": "Motif",
+        "replacementVehicle": "Véhicule de remplacement",
+        "to": "Au",
+        "transmission": "Transmission",
+        "unavailableVehicle": "Véhicule indisponible"
+      },
+      "impacts": {
+        "blocked": "Bloqué",
+        "blockedText": "Une ou plusieurs contraintes empêchent la confirmation.",
+        "ready": "Prêt",
+        "readyText": "Les contrôles permettent de poursuivre.",
+        "title": "Impacts"
+      },
+      "multiCategory": {
+        "text": "Vérifiez que le véhicule de remplacement est compatible avec toutes les catégories de formation sélectionnées.",
+        "title": "Plusieurs catégories concernées"
+      },
+      "noPermission": "Vous ne disposez pas des droits nécessaires pour remplacer un véhicule.",
+      "requirements": {
+        "help": "Définissez les caractéristiques obligatoires du véhicule de remplacement.",
+        "title": "Exigences"
+      },
+      "scope": {
+        "help": "Définissez les séances et la période concernées par le remplacement.",
+        "title": "Périmètre"
+      },
+      "sessions": {
+        "detected": "Séances détectées",
+        "empty": "Aucune séance concernée",
+        "title": "Séances"
+      },
+      "subtitle": "Réaffectez les séances vers un véhicule compatible en contrôlant conformité, disponibilité et impacts.",
+      "success": {
+        "text": "Les séances sélectionnées ont été réaffectées au véhicule de remplacement.",
+        "title": "Remplacement confirmé"
+      },
+      "suggestions": {
+        "compatible": "Compatible",
+        "title": "Suggestions"
+      },
+      "summary": {
+        "instructors": "Enseignants",
+        "sessions": "Séances",
+        "students": "Élèves",
+        "title": "Récapitulatif"
+      },
+      "tabs": {
+        "instructors": "Enseignants",
+        "vehicles": "Véhicules"
+      },
+      "title": "Remplacement de véhicule",
+      "transmission": {
+        "automatic": "Automatique",
+        "manual": "Manuelle"
+      },
+      "steps": {
+        "scope": "Périmètre",
+        "requirements": "Exigences",
+        "suggestions": "Suggestions",
+        "confirmation": "Confirmation"
+      },
+      "modes": {
+        "automatic": "Automatique",
+        "manual": "Manuel",
+        "singleSession": "Une séance",
+        "selectedSessions": "Séances sélectionnées",
+        "dateRange": "Période définie",
+        "allFutureSessions": "Toutes les séances futures",
+        "temporaryAssignment": "Affectation temporaire",
+        "permanentReassignment": "Réaffectation permanente"
+      }
+    },
+    "waitingList": {
+      "actions": {
+        "accept": "Accepter",
+        "add": "Ajouter",
+        "cancel": "Annuler",
+        "createBooking": "Créer réservation",
+        "decline": "Refuser",
+        "findSlot": "Rechercher créneau",
+        "hold": "Réserver temporairement",
+        "openBooking": "Ouvrir réservation",
+        "preferences": "Préférences",
+        "propose": "Propose"
+      },
+      "anyInstructor": "Indifférent enseignant",
+      "cancel": {
+        "confirm": "Confirmer",
+        "title": "Annuler",
+        "warning": "Attention"
+      },
+      "create": {
+        "confirm": "Confirmer",
+        "help": "Aide",
+        "title": "Créer"
+      },
+      "detail": {
+        "noProposals": "Aucun propositions",
+        "priorityExplanation": "Priorité explanation",
+        "proposals": "Propositions",
+        "request": "Request",
+        "title": "Detail"
+      },
+      "drawerDescription": "Drawer description",
+      "empty": {
+        "title": "Aucun résultat"
+      },
+      "expires": "Expires",
+      "fields": {
+        "branch": "Agence",
+        "duration": "Durée",
+        "examAt": "Exam at",
+        "expiresAt": "Expires at",
+        "from": "Du",
+        "instructor": "Enseignant",
+        "interruptionDays": "Interruption days",
+        "manualAdjustment": "Manuelle adjustment",
+        "manualReason": "Manuelle motif",
+        "period": "Période",
+        "priority": "Priorité",
+        "reason": "Motif",
+        "service": "Service",
+        "status": "Statut",
+        "student": "Élève",
+        "to": "Au",
+        "trainingCategory": "Formation catégorie",
+        "urgency": "Urgency"
+      },
+      "kicker": "ATTENTE LISTE",
+      "kpi": {
+        "holds": "Réservations temporaires",
+        "proposals": "Propositions",
+        "urgent": "Urgent",
+        "waiting": "Attente"
+      },
+      "messages": {
+        "accepted": "Accepted",
+        "bookingCreatedNotFulfilled": "Réservation créé not fulfilled",
+        "cancelled": "Annulé",
+        "created": "Créé",
+        "declined": "Declined",
+        "fulfilled": "Fulfilled",
+        "held": "Held",
+        "preferencesUpdated": "Préférences updated",
+        "proposed": "Proposed"
+      },
+      "preferences": {
+        "title": "Préférences"
+      },
+      "priority": {
+        "help": "Aide",
+        "title": "Priorité",
+        "Low": "Faible",
+        "Normal": "Normale",
+        "High": "Élevée",
+        "Urgent": "Urgente",
+        "Critical": "Critique",
+        "low": "Faible",
+        "normal": "Normale",
+        "high": "Élevée",
+        "urgent": "Urgente",
+        "critical": "Critique"
+      },
+      "priorityFactors": {
+        "commercialPriority": "Commercial priorité",
+        "limitedAvailability": "Limited disponibilités",
+        "noFutureSession": "Aucun future séance",
+        "regulatoryPriority": "Réglementaire priorité",
+        "schoolCancellation": "Auto-école annulation"
+      },
+      "searchPlaceholder": "Sélectionnez ou saisissez recherche",
+      "slotSearch": {
+        "empty": "Aucun résultat",
+        "help": "Aide",
+        "score": "Score",
+        "title": "Créneau recherche",
+        "trainingCategoryPlaceholder": "Sélectionnez ou saisissez formation catégorie"
+      },
+      "subtitle": "Gérez cette partie du planning et ses paramètres opérationnels.",
+      "tabs": {
+        "history": "Historique",
+        "holds": "Réservations temporaires",
+        "proposals": "Propositions",
+        "waiting": "Attente"
+      },
+      "title": "Attente liste",
+      "validation": {
+        "required": "Requis",
+        "slotNoLongerAvailable": "Créneau aucun longer available"
+      },
+      "status": {
+        "Waiting": "En attente",
+        "Proposed": "Proposé",
+        "Held": "Réservé temporairement",
+        "Accepted": "Accepté",
+        "Declined": "Refusé",
+        "Fulfilled": "Satisfait",
+        "Cancelled": "Annulé",
+        "Expired": "Expiré"
+      },
+      "proposalStatus": {
+        "Proposed": "Proposé",
+        "Held": "Réservé temporairement",
+        "Accepted": "Accepté",
+        "Declined": "Refusé",
+        "Expired": "Expiré",
+        "Cancelled": "Annulé"
       }
     }
   }

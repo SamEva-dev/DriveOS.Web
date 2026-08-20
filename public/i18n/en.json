@@ -22,7 +22,10 @@
       "clear": "Clear",
       "approve": "Approve",
       "reject": "Reject",
-      "edit": "Edit"
+      "edit": "Edit",
+      "back": "Back",
+      "viewAll": "View all",
+      "delete": "Delete"
     },
     "filters": {
       "all": "All"
@@ -33,7 +36,30 @@
     },
     "comingSoon": "This module will be developed in a future sprint.",
     "loading": "Loading",
-    "soon": "Soon"
+    "soon": "Soon",
+    "create": "Create",
+    "save": "Save",
+    "cancel": "Cancel",
+    "add": "Add",
+    "name": "Name",
+    "accessDenied": "Access Denied",
+    "all": "All",
+    "apply": "Apply",
+    "back": "Back",
+    "close": "Close",
+    "error": "Error",
+    "next": "Next",
+    "no": "No",
+    "none": "None",
+    "notDefined": "Not defined",
+    "notRequired": "Not Required",
+    "notSpecified": "Not Specified",
+    "pending": "Pending",
+    "previous": "Previous",
+    "reset": "Reset",
+    "select": "Select",
+    "verified": "Verified",
+    "yes": "Yes"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -743,6 +769,69 @@
           "effectivePeriod": {
             "overlaps": "The effective period overlaps an already published version."
           }
+        }
+      }
+    },
+    "schedulingCapacity": {
+      "booking": {
+        "id": {
+          "invalid": "Invalid booking identifier."
+        },
+        "organization": {
+          "invalid": "Invalid organization."
+        },
+        "branch": {
+          "invalid": "Invalid branch."
+        },
+        "type": {
+          "invalid": "Invalid booking type."
+        },
+        "period": {
+          "invalid": "The booking period is invalid."
+        },
+        "title": {
+          "invalid": "The booking title is invalid."
+        },
+        "modification": {
+          "notAllowed": "This booking can no longer be modified."
+        },
+        "resource": {
+          "invalid": "The requested resource is invalid.",
+          "duplicate": "The resource is already attached to this booking.",
+          "conflict": "One or more resources are not available for this booking."
+        },
+        "participant": {
+          "invalid": "The booking participant is invalid.",
+          "duplicate": "The participant is already attached to this booking."
+        },
+        "resources": {
+          "required": "At least one resource is required before reserving."
+        },
+        "conflictCheck": {
+          "required": "A current conflict check is required before reserving."
+        },
+        "reservation": {
+          "notAllowed": "This booking cannot be reserved in its current state."
+        },
+        "confirmation": {
+          "notAllowed": "Only a reserved booking can be confirmed."
+        },
+        "cancellation": {
+          "notAllowed": "This booking cannot be cancelled with the supplied reason."
+        },
+        "notFound": "Booking not found.",
+        "calendarResourceNotFound": "One or more calendar resources could not be found.",
+        "studentNotFound": "One or more students could not be found or are archived.",
+        "participantCalendarResourceRequired": "Each student or instructor participant must also be included as a calendar resource in the booking.",
+        "resourceBranchMismatch": "A resource belongs to a different branch than the booking.",
+        "studentParticipantRequired": "A training booking must contain at least one student.",
+        "instructorParticipantRequired": "A training booking must contain at least one instructor."
+      }
+    },
+    "students": {
+      "checklist": {
+        "derivedStatus": {
+          "manualChangeForbidden": "This prerequisite is managed automatically from its source business data. Complete the action from the source screen or grant an authorized waiver."
         }
       }
     }
@@ -2915,7 +3004,8 @@
       "mobility": "Mobility",
       "lifecycle": "Lifecycle",
       "finance": "Finance",
-      "pedagogy": "Pedagogy"
+      "pedagogy": "Pedagogy",
+      "contracts": "Contracts"
     },
     "overview": {
       "enrollment": "Active enrollment",
@@ -3275,7 +3365,7 @@
         "responsible": "Owner:",
         "reminders": "{{count}} reminder(s)",
         "itemsTitle": "Checklist items",
-        "itemsDescription": "Manage the prerequisites required before enrollment activation.",
+        "itemsDescription": "Prerequisites are updated from their source business screens. Use the suggested actions to complete the record.",
         "activationBlockedTitle": "Activation is currently unavailable",
         "activationBlockedDescription": "All blocking items must be completed or covered by an authorized waiver before activation.",
         "actions": {
@@ -3304,7 +3394,18 @@
           "assigned": "Owner assigned.",
           "reminded": "Reminder recorded.",
           "activated": "Enrollment activated."
-        }
+        },
+        "statuses": {
+          "NotStarted": "Not started",
+          "InProgress": "In progress",
+          "WaitingExternal": "Waiting for external action",
+          "Completed": "Completed",
+          "Waived": "Waived",
+          "Rejected": "Rejected",
+          "Blocked": "Blocked",
+          "Expired": "Expired"
+        },
+        "automatic": "Updated automatically"
       },
       "documents": {
         "download": "Download",
@@ -3379,7 +3480,14 @@
         "Financial": "Financial",
         "Medical": "Medical",
         "Training": "Training",
-        "Other": "Other"
+        "Other": "Other",
+        "Documents": "Documents",
+        "Contract": "Contract",
+        "Finance": "Finance",
+        "Pedagogy": "Pedagogy",
+        "UserAccount": "User account",
+        "Guardians": "Legal guardians",
+        "SchedulingAuthorization": "Scheduling authorization"
       },
       "noActiveDescription": "No active enrollment is currently linked to this student record."
     },
@@ -4150,6 +4258,52 @@
         "relationshipMissing": "There is no active relationship with the target organization. A partner invitation is required.",
         "countryRuleMismatch": "The requested country does not match the country configured for the target organization."
       }
+    },
+    "checklist": {
+      "identity": "Identity verified",
+      "identityDocument": "Valid identity document",
+      "contract": "Training contract signed",
+      "initialPayment": "Initial financial conditions validated",
+      "initialAssessment": "Initial assessment completed",
+      "learningPath": "Learning path configured",
+      "studentAccount": "Student account activated"
+    },
+    "checklistHelp": {
+      "IDENTITY": {
+        "description": "Confirms that the student’s identity information has been verified from the profile.",
+        "impact": "Required before administrative activation of the record and contracting.",
+        "action": "Verify in profile"
+      },
+      "IDENTITY_DOCUMENT": {
+        "description": "Checks that a valid and approved identity document is present in the administrative record.",
+        "impact": "Supports identity evidence and secures administrative procedures.",
+        "action": "View documents"
+      },
+      "CONTRACT": {
+        "description": "Confirms that an applicable training contract for the student has been signed.",
+        "impact": "Formalizes the commitments of the student and the school before training starts.",
+        "action": "View contracts"
+      },
+      "INITIAL_PAYMENT": {
+        "description": "Confirms that an initial payment has been received or that funding has been approved.",
+        "impact": "Secures the financial coverage required before training activation.",
+        "action": "View finance"
+      },
+      "INITIAL_ASSESSMENT": {
+        "description": "Confirms that the initial assessment has been completed to estimate training needs.",
+        "impact": "Used to build a training path and volume adapted to the student’s level.",
+        "action": "View pedagogy"
+      },
+      "LEARNING_PATH": {
+        "description": "Confirms that a learning path is configured with a curriculum and progression objectives.",
+        "impact": "Used during sessions, assessments and pedagogical progress tracking.",
+        "action": "View learning path"
+      },
+      "STUDENT_ACCOUNT": {
+        "description": "Confirms that the student has an account to access the personal portal.",
+        "impact": "Provides access to schedule, documents, payments and progress according to granted rights.",
+        "action": "View profile"
+      }
     }
   },
   "shared": {
@@ -4445,6 +4599,1855 @@
       "common": {
         "yes": "Yes",
         "no": "No"
+      }
+    }
+  },
+  "contracts": {
+    "training": {
+      "eyebrow": "TRAINING CONTRACTS",
+      "title": "Training contracts",
+      "description": "Manage the training contract, signatures, amendments and related documents.",
+      "empty": {
+        "title": "No training contract",
+        "description": "No training contract is available for this student yet."
+      },
+      "contractNumber": "Contract number",
+      "offerVersion": "Source offer · version {{version}}",
+      "trainingCode": "Training code",
+      "practicalHours": "Practical hours",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "parties": "Parties",
+      "versions": "Versions",
+      "terms": "Contract terms",
+      "services": "Included services",
+      "paymentSchedule": "Payment schedule",
+      "bookingRules": "Booking rules",
+      "cancellation": "Cancellation terms",
+      "generation": {
+        "action": "Generate contract",
+        "generating": "Generating…",
+        "generated": "Contract document generated",
+        "success": "Contract generated successfully."
+      },
+      "signature": {
+        "title": "Title",
+        "description": "Description",
+        "send": "Send for signature",
+        "sent": "Contract sent for signature.",
+        "awaiting": "Awaiting signature",
+        "signed": "Signed",
+        "inProgress": "In progress",
+        "notReady": "The contract must be generated first.",
+        "processTitle": "Signature process",
+        "processDescription": "Track the signing process and required signatories.",
+        "signatory": "Signatory",
+        "provider": "Provider",
+        "providerReference": "Provider reference",
+        "method": "Method",
+        "authentication": "Authentication",
+        "requestedAt": "Requested at",
+        "signedAt": "Signed at",
+        "receivedAt": "Received at",
+        "certificate": "Certificate",
+        "version": "Version",
+        "evidenceTitle": "Signature evidence",
+        "recordEvidenceTitle": "Record signature evidence",
+        "recordEvidenceDescription": "Record the evidence information received from the signature provider.",
+        "recordEvidence": "Record evidence",
+        "evidenceRecorded": "Signature evidence recorded."
+      },
+      "activation": {
+        "title": "Activation",
+        "description": "Activate the contract once all signature conditions are satisfied.",
+        "action": "Activate contract",
+        "activating": "Activating…",
+        "active": "Active contract",
+        "activatedAt": "Activated at",
+        "success": "Contract activated successfully."
+      },
+      "suspension": {
+        "title": "Suspension",
+        "description": "Temporarily suspend the contract while preserving its audit trail.",
+        "action": "Suspend",
+        "reason": "Reason",
+        "effectiveDate": "Effective date",
+        "expectedResumeDate": "Expected resume date",
+        "suspended": "Contract suspended",
+        "success": "Contract suspended successfully."
+      },
+      "termination": {
+        "title": "Termination",
+        "description": "End the contract and preserve the reason and effective date.",
+        "action": "Terminate contract",
+        "reason": "Reason",
+        "effectiveDate": "Effective date",
+        "recordedAt": "Recorded at",
+        "terminated": "Contract terminated",
+        "warning": "This action terminates the training contract.",
+        "success": "Termination recorded."
+      },
+      "completion": {
+        "title": "Contract completion",
+        "description": "Mark the contract completed once contractual obligations are fulfilled.",
+        "action": "Mark completed",
+        "effectiveDate": "Effective completion date",
+        "note": "Completion note",
+        "recordedAt": "Recorded at",
+        "completed": "Contract completed",
+        "success": "Contract marked completed."
+      },
+      "expiration": {
+        "action": "Mark expired",
+        "description": "Record contract expiration when its validity period has ended.",
+        "effectiveDate": "Effective date",
+        "recordedAt": "Recorded at",
+        "expired": "Contract expired",
+        "success": "Expiration recorded."
+      },
+      "amendments": {
+        "title": "Amendments",
+        "description": "Create and apply versioned amendments without modifying the signed contract.",
+        "empty": "No amendments.",
+        "reason": "Reason",
+        "effectiveDate": "Effective date",
+        "amount": "Total amount",
+        "currency": "Currency",
+        "practicalHours": "Practical hours",
+        "services": "Included services",
+        "payment": "Payment terms",
+        "booking": "Booking rules",
+        "cancellation": "Cancellation terms",
+        "examTerms": "Exam terms",
+        "studentObligations": "Student obligations",
+        "providerObligations": "Provider obligations",
+        "dataTerms": "Data processing terms",
+        "notRetroactive": "Changes do not apply retroactively.",
+        "save": "Create amendment",
+        "created": "Amendment created.",
+        "baseVersion": "Base version",
+        "signedAt": "Signed at",
+        "signedProof": "Record signature",
+        "recordProof": "Record evidence",
+        "signedDocumentReference": "Signed document reference",
+        "sha256": "SHA-256 hash",
+        "signed": "Signed",
+        "apply": "Apply",
+        "applied": "Amendment applied.",
+        "cancel": "Cancel",
+        "cancelReason": "Manual cancellation from DriveOS",
+        "cancelled": "Cancelled."
+      },
+      "signatories": {
+        "title": "Signatories",
+        "description": "Define the people or organizations that must sign the contract.",
+        "empty": "No signatory configured.",
+        "add": "Add signatory",
+        "edit": "Edit",
+        "delete": "Delete",
+        "kind": "Type",
+        "name": "Name",
+        "organizationId": "Organization",
+        "order": "Signing order",
+        "required": "Required",
+        "optional": "Optional",
+        "authorityReference": "Authority reference",
+        "verify": "Verify authority",
+        "rejectAuthority": "Reject authority",
+        "authorityRejectedDefault": "Signatory authority rejected.",
+        "save": "Save",
+        "cancel": "Cancel",
+        "saved": "Saved."
+      },
+      "documents": {
+        "title": "Documents",
+        "description": "Manage annexes and document versions linked to the contract.",
+        "empty": "No related document.",
+        "file": "File",
+        "titleField": "Title",
+        "type": "Document type",
+        "visibility": "Visibility",
+        "retainUntil": "Retain until",
+        "legalBasis": "Retention legal basis",
+        "upload": "Upload document",
+        "uploaded": "Document uploaded.",
+        "newVersion": "New version",
+        "versionAdded": "New version added.",
+        "archive": "Archive",
+        "archived": "Document archived."
+      },
+      "history": {
+        "title": "History",
+        "description": "History of contractual changes and actions.",
+        "empty": "No contractual event recorded.",
+        "actor": "Actor"
+      },
+      "summary": {
+        "eyebrow": "TRAINING CONTRACT",
+        "title": "Contract summary",
+        "contractCount": "{{count}} contract(s)",
+        "noContract": "No contract",
+        "noContractDescription": "No training contract is linked to this enrollment.",
+        "open": "Open contracts",
+        "amount": "Total amount",
+        "period": "Period",
+        "version": "Version",
+        "signatures": "Signatures",
+        "requiredSigned": "{{signed}} / {{required}} required",
+        "loadError": "Unable to load contract summary.",
+        "alerts": {
+          "missing": "Training contract missing",
+          "draft": "Contract is still a draft",
+          "generated": "Contract generated, signature must be started",
+          "signature": "Contract signature pending",
+          "activation": "Signed contract must be activated",
+          "suspended": "Contract suspended"
+        },
+        "statuses": {
+          "Draft": "Draft",
+          "Generated": "Generated",
+          "SentForSignature": "Sent for signature",
+          "PartiallySigned": "Partially signed",
+          "Signed": "Signed",
+          "Active": "Active",
+          "Amended": "Amended",
+          "Suspended": "Suspended",
+          "Terminated": "Terminated",
+          "Completed": "Completed",
+          "Cancelled": "Cancelled",
+          "Expired": "Expired"
+        }
+      }
+    }
+  },
+  "scheduling": {
+    "title": "Scheduling",
+    "tabs": {
+      "dashboard": "Dashboard",
+      "calendar": "Calendar",
+      "slotSearch": "Slot search",
+      "availability": "Availability",
+      "recurrence": "Recurrence",
+      "conflicts": "Conflicts",
+      "replacements": "Replacements",
+      "waitingList": "Waiting list",
+      "travel": "Travel",
+      "resources": "Resources",
+      "capacity": "Capacity",
+      "navigation": "Navigation"
+    },
+    "dashboard": {
+      "kicker": "SCHEDULING",
+      "title": "Scheduling dashboard",
+      "description": "Monitor bookings, conflicts, resources and operational capacity.",
+      "loading": "Loading scheduling dashboard…",
+      "partialError": {
+        "title": "Some data could not be loaded",
+        "description": "The dashboard remains usable, but some information is temporarily unavailable."
+      },
+      "quickActions": {
+        "open": "Quick actions",
+        "title": "Quick actions",
+        "description": "Create a booking, search for a slot or manage the waiting list.",
+        "slotSearch": {
+          "title": "Search for a slot",
+          "description": "Find the best slots based on availability and resources."
+        },
+        "booking": {
+          "title": "Create a booking",
+          "description": "Schedule a new session with the required participants and resources."
+        },
+        "waitingList": {
+          "title": "Manage waiting list",
+          "description": "Process waiting requests and propose available slots."
+        }
+      },
+      "kpis": {
+        "today": "Today",
+        "bookings": "bookings",
+        "critical": "critical",
+        "openConflicts": "open conflicts",
+        "waitingList": "waiting requests",
+        "unavailableResources": "unavailable resources",
+        "saturation7d": "7-day saturation"
+      },
+      "today": {
+        "title": "Today’s schedule",
+        "description": "Sessions and bookings scheduled for today.",
+        "openCalendar": "Open calendar",
+        "resources": "resources",
+        "participants": "participants",
+        "empty": "No bookings today",
+        "emptyDescription": "No session or booking is scheduled for today."
+      },
+      "capacity": {
+        "title": "Operational capacity",
+        "horizon": "Forecast for the next 7 days",
+        "open": "Open capacity forecast",
+        "net": "Remaining net capacity",
+        "demand": "Estimated demand",
+        "unavailable": "Capacity data is temporarily unavailable."
+      },
+      "alerts": {
+        "title": "Alerts and conflicts",
+        "none": "No active operational alerts."
+      },
+      "resources": {
+        "title": "Unavailable resources",
+        "description": "Resources currently restricted, unavailable or archived."
+      }
+    },
+    "bookings": {
+      "status": {
+        "1": "Draft",
+        "2": "Reserved",
+        "3": "Confirmed",
+        "4": "Cancelled",
+        "5": "Tentative"
+      },
+      "type": {
+        "1": "Practical lesson",
+        "2": "Theory lesson",
+        "3": "Assessment",
+        "4": "Exam",
+        "5": "Meeting",
+        "6": "Other",
+        "PracticalLesson": "Practical lesson",
+        "TheoryLesson": "Theory lesson",
+        "Assessment": "Assessment",
+        "Exam": "Exam",
+        "Meeting": "Meeting",
+        "Other": "Other"
+      }
+    },
+    "conflicts": {
+      "priority": {
+        "1": "Low",
+        "2": "Normal",
+        "3": "High",
+        "4": "Critical",
+        "Low": "Low",
+        "Medium": "Medium",
+        "High": "High",
+        "Critical": "Critical",
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+      },
+      "InstructorOverlap": "Instructor overlap",
+      "StudentOverlap": "Student overlap",
+      "VehicleOverlap": "Vehicle overlap",
+      "RoomOverlap": "Room overlap",
+      "TravelTimeConflict": "Insufficient travel time",
+      "QualificationConflict": "Qualification conflict",
+      "WorkingTimeViolation": "Working time violation",
+      "DocumentRestriction": "Document restriction",
+      "FinancialRestriction": "Financial restriction",
+      "MaintenanceConflict": "Maintenance conflict",
+      "LocationConflict": "Location conflict",
+      "CapacityConflict": "Capacity conflict",
+      "ResourceUnavailable": "Resource unavailable",
+      "AdministrativeBlock": "Administrative block",
+      "CreditInsufficient": "Insufficient credit",
+      "Other": "Other",
+      "action": {
+        "Reschedule": "Reschedule",
+        "ReassignInstructor": "Reassign instructor",
+        "ReassignVehicle": "Reassign vehicle",
+        "ChangeLocation": "Change location",
+        "AdjustMargin": "Adjust margin",
+        "CancelBooking": "Cancel booking",
+        "AcceptRiskWithReason": "Accept risk with justification",
+        "RequestDecision": "Request decision",
+        "Other": "Other"
+      }
+    },
+    "resources": {
+      "status": {
+        "Active": "Active",
+        "Restricted": "Restricted",
+        "Unavailable": "Unavailable",
+        "Archived": "Archived"
+      }
+    },
+    "attendance": {
+      "actions": {
+        "backToBooking": "Back To Booking",
+        "correct": "Correct",
+        "override": "Override",
+        "reschedule": "Reschedule",
+        "save": "Save"
+      },
+      "audit": {
+        "text": "Text"
+      },
+      "boundary": {
+        "text": "Text",
+        "title": "Boundary"
+      },
+      "correction": {
+        "auditText": "Audit Text",
+        "confirm": "Confirm",
+        "existingText": "Existing Text",
+        "existingTitle": "Existing Title",
+        "subtitle": "Manage this scheduling area and its operational settings.",
+        "title": "Correction",
+        "warningText": "Warning Text",
+        "warningTitle": "Warning Title"
+      },
+      "evidence": {
+        "text": "Text",
+        "title": "Evidence"
+      },
+      "eyebrow": "ATTENDANCE",
+      "fields": {
+        "arrival": "Arrival",
+        "delayMinutes": "Delay Minutes",
+        "departure": "Departure",
+        "evidence": "Evidence",
+        "evidencePlaceholder": "Select or enter evidence",
+        "followUp": "Follow Up",
+        "reason": "Reason",
+        "status": "Status"
+      },
+      "history": {
+        "actor": "Actor",
+        "current": "Current",
+        "emptyText": "Empty Text",
+        "emptyTitle": "Empty Title",
+        "help": "Help",
+        "override": "Override",
+        "overrideReason": "Override Reason",
+        "title": "History"
+      },
+      "override": {
+        "confirm": "Confirm",
+        "reason": "Reason",
+        "subtitle": "Manage this scheduling area and its operational settings.",
+        "title": "Override",
+        "warningText": "Warning Text",
+        "warningTitle": "Warning Title"
+      },
+      "quick": {
+        "help": "Help",
+        "title": "Quick"
+      },
+      "subtitle": "Manage this scheduling area and its operational settings.",
+      "summary": {
+        "charge": "Charge",
+        "credit": "Credit",
+        "decisions": "Decisions",
+        "instructor": "Instructor",
+        "people": "People",
+        "student": "Student"
+      },
+      "title": "Attendance",
+      "validation": {
+        "bookingRequired": "Booking Required"
+      },
+      "tabs": {
+        "quick": "Quick",
+        "history": "History"
+      }
+    },
+    "availability": {
+      "actions": {
+        "activate": "Activate",
+        "addRange": "Add range",
+        "archive": "Archive",
+        "exception": "Exception",
+        "newPlan": "New plan",
+        "preferences": "Preferences"
+      },
+      "capacity": "Capacity",
+      "emptyResources": "Empty Resources",
+      "exceptionTypes": {
+        "Available": "Available",
+        "Breakdown": "Breakdown",
+        "Cleaning": "Cleaning",
+        "Closure": "Closure",
+        "Inspection": "Inspection",
+        "Maintenance": "Maintenance",
+        "PartnerRestriction": "Partner Restriction",
+        "Rental": "Rental",
+        "Transfer": "Transfer",
+        "Unavailable": "Unavailable"
+      },
+      "exceptions": {
+        "none": "None",
+        "subtitle": "Manage this scheduling area and its operational settings.",
+        "title": "Exceptions"
+      },
+      "fields": {
+        "date": "Date",
+        "day": "Day",
+        "effectiveFrom": "Effective From",
+        "effectiveTo": "Effective To",
+        "end": "End",
+        "exceptionType": "Exception Type",
+        "priority": "Priority",
+        "reason": "Reason",
+        "serviceArea": "Service Area",
+        "source": "Source",
+        "start": "Start",
+        "trainingCategory": "Training Category",
+        "type": "Type"
+      },
+      "impact": {
+        "description": "Manage scheduling information and operational constraints.",
+        "title": "Impact"
+      },
+      "kicker": "AVAILABILITY",
+      "messages": {
+        "exceptionAdded": "Exception Added",
+        "exceptionRemoved": "Exception Removed",
+        "planActivated": "Plan Activated",
+        "planArchived": "Plan Archived",
+        "planCreated": "Plan Created",
+        "preferencesSaved": "Preferences Saved",
+        "ruleAdded": "Rule Added",
+        "ruleRemoved": "Rule Removed"
+      },
+      "noPlan": "No Plan",
+      "plan": {
+        "exceptions": "Exceptions",
+        "period": "Period",
+        "rules": "Rules",
+        "status": "Status",
+        "title": "Plan"
+      },
+      "preferences": {
+        "distance": "Distance",
+        "frequency": "Frequency",
+        "geo": "Geo",
+        "geoHelp": "Additional information about geo.",
+        "instructor": "Instructor",
+        "intensive": "Intensive",
+        "intensiveHelp": "Additional information about intensive.",
+        "locationPrivacy": "Location Privacy",
+        "meetingPoint": "Meeting Point",
+        "noInstructorPreference": "No Instructor Preference",
+        "notice": "Notice",
+        "title": "Preferences"
+      },
+      "priority": {
+        "instructor": "Instructor",
+        "resource": "Resource",
+        "student": "Student",
+        "title": "Priority"
+      },
+      "resourceLabel": "Resource",
+      "ruleNeedsDraft": "Rule Needs Draft",
+      "ruleTypes": {
+        "Available": "Available",
+        "OnCall": "On Call",
+        "PartnerAvailability": "Partner Availability",
+        "Preferred": "Preferred"
+      },
+      "sources": {
+        "Absence": "Absence",
+        "Contract": "Contract",
+        "HrSchedule": "Hr Schedule",
+        "Mission": "Mission",
+        "OrganizationRule": "Organization Rule",
+        "SelfDeclared": "Self Declared",
+        "StudentDeclared": "Student Declared"
+      },
+      "subtitle": "Manage availability plans, recurring rules and exceptions.",
+      "tabs": {
+        "instructors": "Instructors",
+        "resources": "Resources",
+        "students": "Students"
+      },
+      "title": "Availability",
+      "weekdays": {
+        "friday": "Friday",
+        "monday": "Monday",
+        "saturday": "Saturday",
+        "sunday": "Sunday",
+        "thursday": "Thursday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday"
+      },
+      "weekly": {
+        "none": "None",
+        "subtitle": "Manage this scheduling area and its operational settings.",
+        "title": "Weekly"
+      }
+    },
+    "bookingCreate": {
+      "actions": {
+        "confirm": "Confirm",
+        "confirmNotify": "Confirm Notify",
+        "hold": "Hold",
+        "reserve": "Reserve",
+        "saveDraft": "Save Draft",
+        "searchSlot": "Search Slot"
+      },
+      "confirmation": {
+        "description": "Manage scheduling information and operational constraints.",
+        "title": "Confirmation"
+      },
+      "conflicts": {
+        "none": "None",
+        "title": "Conflicts"
+      },
+      "dateDuration": {
+        "description": "Manage scheduling information and operational constraints.",
+        "title": "Date duration"
+      },
+      "external": {
+        "financeDescription": "Finance Description",
+        "financeTitle": "Finance Title"
+      },
+      "fields": {
+        "branch": "Branch",
+        "date": "Date",
+        "duration": "Duration",
+        "instructor": "Instructor",
+        "meetingPoint": "Meeting Point",
+        "notify": "Notify",
+        "notifyHelp": "Additional information about notify.",
+        "objective": "Objective",
+        "room": "Room",
+        "startTime": "Start Time",
+        "student": "Student",
+        "title": "Fields",
+        "trainingCategory": "Training Category",
+        "type": "Type",
+        "vehicle": "Vehicle"
+      },
+      "finance": {
+        "creditPending": "Credit Pending",
+        "creditTitle": "Credit Title",
+        "description": "Manage scheduling information and operational constraints.",
+        "pricePending": "Price Pending",
+        "priceTitle": "Price Title",
+        "title": "Finance"
+      },
+      "instructor": {
+        "description": "Manage scheduling information and operational constraints.",
+        "title": "Instructor"
+      },
+      "location": {
+        "description": "Manage scheduling information and operational constraints.",
+        "title": "Location"
+      },
+      "objectives": {
+        "description": "Manage scheduling information and operational constraints.",
+        "title": "Objectives"
+      },
+      "placeholders": {
+        "branch": "Branch",
+        "instructor": "Instructor",
+        "meetingPoint": "Meeting Point",
+        "objective": "Objective",
+        "room": "Room",
+        "student": "Student",
+        "trainingCategory": "Training Category",
+        "vehicle": "Vehicle"
+      },
+      "progress": "Progress",
+      "resource": {
+        "capacityDescription": "Capacity Description",
+        "capacityTitle": "Capacity Title",
+        "description": "Manage scheduling information and operational constraints.",
+        "title": "Resource"
+      },
+      "slotSearch": {
+        "noResult": "No Result",
+        "results": "Results"
+      },
+      "studentType": {
+        "description": "Manage scheduling information and operational constraints.",
+        "title": "Student type"
+      },
+      "subtitle": "Manage this scheduling area and its operational settings.",
+      "success": {
+        "confirmed": "Confirmed",
+        "confirmedNotify": "Confirmed Notify",
+        "draft": "Draft",
+        "held": "Held",
+        "reserved": "Reserved"
+      },
+      "summary": {
+        "defaultLocation": "Default Location",
+        "instructor": "Instructor",
+        "location": "Location",
+        "period": "Period",
+        "student": "Student"
+      },
+      "title": "Booking create",
+      "trainingCategoryHelp": "Additional information about training category.",
+      "validation": {
+        "incomplete": "Incomplete",
+        "searchRequirements": "Search Requirements"
+      },
+      "steps": {
+        "studentType": "Student type",
+        "dateDuration": "Date duration",
+        "instructor": "Instructor",
+        "resource": "Resource",
+        "location": "Location",
+        "objectives": "Objectives",
+        "confirmation": "Confirmation"
+      }
+    },
+    "calendar": {
+      "actions": {
+        "attendance": "Attendance",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "replaceInstructor": "Replace instructor",
+        "replaceVehicle": "Replace vehicle",
+        "reschedule": "Reschedule",
+        "travel": "Travel"
+      },
+      "branch": "Branch",
+      "context": {
+        "tabs": {
+          "global": "Global",
+          "instructors": "Instructors",
+          "vehicles": "Vehicles",
+          "students": "Students"
+        },
+        "global": {
+          "title": "Global schedule",
+          "subtitle": "View all bookings, resources, and sessions across the organization."
+        },
+        "instructors": {
+          "title": "Instructor schedule",
+          "subtitle": "View an instructor’s schedule and workload.",
+          "selectorLabel": "Instructor",
+          "scopeNote": "Metrics and bookings are limited to the selected instructor."
+        },
+        "vehicles": {
+          "title": "Vehicle schedule",
+          "subtitle": "View vehicle usage and availability.",
+          "selectorLabel": "Vehicle",
+          "scopeNote": "Metrics and bookings are limited to the selected vehicle."
+        },
+        "students": {
+          "title": "Student schedule",
+          "subtitle": "View a student’s planned journey and upcoming sessions.",
+          "selectorLabel": "Student",
+          "scopeNote": "Metrics and bookings are limited to the selected student."
+        },
+        "branchReference": "Branch:",
+        "metrics": {
+          "plannedHours": "Planned hours",
+          "currentWindow": "For the displayed period",
+          "sessions": "Sessions",
+          "upcoming": "Upcoming",
+          "cancelled": "Cancelled",
+          "resourceState": "Resource status",
+          "noOperationalAlert": "No operational alert"
+        }
+      },
+      "create": "Create booking",
+      "details": {
+        "end": "End",
+        "participants": "Participants",
+        "participantsCount": "Participant count",
+        "resources": "Resources",
+        "start": "Start",
+        "status": "Status",
+        "subtitle": "View booking details and available actions.",
+        "title": "Booking details",
+        "type": "Type"
+      },
+      "empty": "No bookings for this period.",
+      "eyebrow": "CALENDAR",
+      "filters": "Filters",
+      "filtersDrawer": {
+        "subtitle": "Refine the bookings displayed in the calendar.",
+        "title": "Calendar filters"
+      },
+      "noBookingForResource": "No booking for this resource.",
+      "resource": "Resource",
+      "search": "Search",
+      "status": "Status",
+      "title": "Calendar",
+      "today": "Today",
+      "views": {
+        "day": "Day",
+        "week": "Week",
+        "month": "Month",
+        "agenda": "Agenda",
+        "resources": "Resources"
+      },
+      "weekdays": {
+        "0": "Mon",
+        "1": "Tue",
+        "2": "Wed",
+        "3": "Thu",
+        "4": "Fri",
+        "5": "Sat",
+        "6": "Sun"
+      }
+    },
+    "cancel": {
+      "actions": {
+        "confirm": "Confirm",
+        "evaluate": "Evaluate",
+        "keep": "Keep",
+        "override": "Override"
+      },
+      "audit": {
+        "text": "Text",
+        "title": "Audit"
+      },
+      "back": "Back",
+      "completed": {
+        "text": "Text",
+        "title": "Completed"
+      },
+      "confirmation": {
+        "booking": "Booking",
+        "help": "Help",
+        "title": "Confirmation"
+      },
+      "notification": {
+        "help": "Help",
+        "title": "Notification"
+      },
+      "override": {
+        "appliedTitle": "Applied Title",
+        "confirm": "Confirm",
+        "reason": "Reason",
+        "subtitle": "Manage this scheduling area and its operational settings.",
+        "title": "Override",
+        "warningText": "Warning Text",
+        "warningTitle": "Warning Title"
+      },
+      "policy": {
+        "credit": "Credit",
+        "fee": "Fee",
+        "help": "Help",
+        "manualReviewText": "Manual Review Text",
+        "manualReviewTitle": "Manual Review Title",
+        "notice": "Notice",
+        "previewRequiredText": "Preview Required Text",
+        "previewRequiredTitle": "Preview Required Title",
+        "replacementText": "Replacement Text",
+        "replacementTitle": "Replacement Title",
+        "title": "Policy",
+        "version": "Version"
+      },
+      "reason": {
+        "code": "Code",
+        "details": "Details",
+        "detailsPlaceholder": "Select or enter details",
+        "help": "Help",
+        "initiator": "Initiator",
+        "title": "Reason"
+      },
+      "steps": {
+        "confirmation": "Confirmation",
+        "notifications": "Notifications",
+        "policy": "Policy",
+        "reason": "Reason"
+      },
+      "subtitle": "Manage this scheduling area and its operational settings.",
+      "summary": {
+        "bookingId": "Booking ID",
+        "credit": "Credit",
+        "creditUnits": "Credit Units",
+        "session": "Session"
+      },
+      "title": "Cancel",
+      "validation": {
+        "bookingRequired": "Booking Required"
+      }
+    },
+    "capacity": {
+      "actions": {
+        "refresh": "Refresh",
+        "simulate": "Simulate"
+      },
+      "assumptions": {
+        "activeAvailability": "Active Availability",
+        "activeHoldsIncluded": "Active Holds Included",
+        "demandSource": "Demand Source",
+        "deterministic": "Deterministic",
+        "geographyAggregated": "Geography Aggregated",
+        "leadTime": "Lead Time",
+        "noAi": "No Ai",
+        "preferencesExcluded": "Preferences Excluded",
+        "priorityResolution": "Priority Resolution",
+        "resourceHours": "Resource Hours"
+      },
+      "branch": {
+        "title": "Branch"
+      },
+      "charts": {
+        "demandVsCapacity": "Demand Vs Capacity"
+      },
+      "confidence": {
+        "high": "High",
+        "low": "Low",
+        "medium": "Medium"
+      },
+      "empty": {
+        "notEnoughData": "Not Enough Data",
+        "title": "Empty"
+      },
+      "filters": {
+        "allBranches": "All Branches",
+        "branch": "Branch"
+      },
+      "heatmap": {
+        "subtitle": "Manage this scheduling area and its operational settings.",
+        "title": "Heatmap",
+        "waiting": "Waiting"
+      },
+      "horizons": {
+        "days30": "Days30",
+        "days7": "Days7",
+        "days90": "Days90",
+        "months12": "Months12",
+        "months6": "Months6"
+      },
+      "kicker": "CAPACITY",
+      "kpi": {
+        "committed": "Committed",
+        "committedVsNet": "Committed Vs Net",
+        "estimatedNeed": "Estimated Need",
+        "instructorNeed": "Instructor Need",
+        "netAvailable": "Net Available",
+        "netCapacity": "Net Capacity",
+        "resourceHours": "Resource Hours",
+        "saturation": "Saturation",
+        "theoretical": "Theoretical",
+        "uncoveredDemand": "Uncovered Demand",
+        "vehicleNeed": "Vehicle Need",
+        "waitingRequests": "Waiting Requests"
+      },
+      "labels": {
+        "committedShort": "Committed Short",
+        "freeShort": "Free Short"
+      },
+      "leadTime": {
+        "description": "Manage scheduling information and operational constraints.",
+        "title": "Lead time",
+        "unavailable": "Unavailable"
+      },
+      "legend": {
+        "estimatedDemand": "Estimated Demand",
+        "netCapacity": "Net Capacity"
+      },
+      "methodology": {
+        "assumption": "Assumption",
+        "assumptionText": "Assumption Text",
+        "assumptions": "Assumptions",
+        "distinctions": "Distinctions",
+        "forecast": "Forecast",
+        "forecastText": "Forecast Text",
+        "observed": "Observed",
+        "observedText": "Observed Text",
+        "uncertainty": "Uncertainty",
+        "uncertaintyText": "Uncertainty Text"
+      },
+      "resourceType": {
+        "title": "Resource type"
+      },
+      "resourceTypes": {
+        "branch": "Branch",
+        "equipment": "Equipment",
+        "examVehicle": "Exam Vehicle",
+        "instructor": "Instructor",
+        "other": "Other",
+        "partnerResource": "Partner Resource",
+        "room": "Room",
+        "simulator": "Simulator",
+        "student": "Student",
+        "vehicle": "Vehicle"
+      },
+      "resources": {
+        "critical": "Critical",
+        "criticalHint": "Critical Hint",
+        "noCritical": "No Critical",
+        "noUnderused": "No Underused",
+        "underused": "Underused",
+        "underusedHint": "Underused Hint"
+      },
+      "scenario": {
+        "addedCapacity": "Added Capacity",
+        "assumption": "Assumption",
+        "assumptionPlaceholder": "Select or enter assumption",
+        "cardHint": "Card Hint",
+        "drawerDescription": "Drawer Description",
+        "drawerTitle": "Drawer Title",
+        "hoursPerWeek": "Hours Per Week",
+        "improvement": "Improvement",
+        "neverAppliedAutomatically": "Never Applied Automatically",
+        "quantity": "Quantity",
+        "result": "Result",
+        "simulationOnly": "Simulation Only",
+        "type": "Type",
+        "types": {
+          "addVehicle": "Add Vehicle",
+          "extendHours": "Extend Hours",
+          "freelancers": "Freelancers",
+          "openBranch": "Open Branch",
+          "partner": "Partner",
+          "recruitInstructor": "Recruit Instructor"
+        }
+      },
+      "subtitle": "Manage this scheduling area and its operational settings.",
+      "tabs": {
+        "methodology": "Methodology",
+        "overview": "Overview",
+        "resources": "Resources",
+        "scenarios": "Scenarios"
+      },
+      "title": "Capacity"
+    },
+    "conflictInbox": {
+      "actions": {
+        "openBooking": "Open booking",
+        "override": "Grant override",
+        "reanalyze": "Reanalyze",
+        "resolve": "Resolve",
+        "open": "Open",
+        "review": "Review",
+        "ignore": "Ignore",
+        "escalate": "Escalate"
+      },
+      "bookingFallback": "Related booking",
+      "description": "Manage scheduling conflicts, priorities, and resolution decisions.",
+      "detail": {
+        "booking": "Booking",
+        "conflictingBooking": "Conflicting booking",
+        "solutions": "Suggested solutions",
+        "title": "Conflict details"
+      },
+      "empty": {
+        "title": "No conflicts to display"
+      },
+      "filters": {
+        "allPriorities": "All priorities",
+        "allTypes": "All types",
+        "clear": "Clear",
+        "search": "Search"
+      },
+      "kicker": "CONFLICT CENTER",
+      "messages": {
+        "overridden": "Override recorded",
+        "refreshed": "List refreshed",
+        "resolved": "Conflict resolved"
+      },
+      "metrics": {
+        "active": "Active",
+        "critical": "Critical",
+        "overrides": "Overrides"
+      },
+      "override": {
+        "auditTitle": "Override audit trail",
+        "confirm": "Confirm override",
+        "expires": "Expires",
+        "reason": "Reason",
+        "risk": "Accepted risk",
+        "title": "Grant override",
+        "warning": "This action temporarily bypasses a conflict and will be audited."
+      },
+      "overrideExpired": "Override expired",
+      "resolve": {
+        "action": "Resolution action",
+        "confirm": "Confirm resolution",
+        "reason": "Reason",
+        "reasonPlaceholder": "Select or enter a reason",
+        "title": "Resolve conflict",
+        "warning": "Review the impacts before confirming the resolution."
+      },
+      "title": "Conflict center",
+      "tabs": {
+        "open": "Open",
+        "resolved": "Resolved",
+        "all": "All",
+        "active": "Active",
+        "critical": "Critical",
+        "overrides": "Overrides",
+        "history": "History"
+      },
+      "status": {
+        "Open": "Open",
+        "InReview": "In review",
+        "Resolved": "Resolved",
+        "Ignored": "Ignored",
+        "Escalated": "Escalated",
+        "ResolutionRequested": "Resolution requested",
+        "Overridden": "Override active",
+        "Obsolete": "Obsolete"
+      }
+    },
+    "instructorReplacement": {
+      "actions": {
+        "calendar": "Calendar",
+        "choose": "Choose",
+        "chooseAndPreview": "Choose and preview",
+        "confirmAndNotify": "Confirm and notify",
+        "details": "Details",
+        "findReplacement": "Find replacement",
+        "loadSessions": "Load sessions",
+        "reviewConfirmation": "Review confirmation"
+      },
+      "confirmation": {
+        "atomicText": "The replacement will be applied consistently across all selected sessions.",
+        "atomicTitle": "Atomic application",
+        "notApplied": "The replacement was not applied.",
+        "subtitle": "Review the replacement, sessions, and impacts before confirmation.",
+        "title": "Confirmation"
+      },
+      "empty": {
+        "noCandidate": "No compatible replacement",
+        "noSessions": "No affected sessions",
+        "selectInstructor": "Select the instructor to replace"
+      },
+      "errors": {
+        "title": "Unable to prepare replacement"
+      },
+      "factors": {
+        "availability": "Availability"
+      },
+      "fields": {
+        "accessExpiry": "Access expiry",
+        "from": "From",
+        "mode": "Mode",
+        "previousInstructor": "Instructor to replace",
+        "reason": "Reason",
+        "reasonPlaceholder": "Select or enter a reason",
+        "replacementInstructor": "Replacement instructor",
+        "to": "To"
+      },
+      "impacts": {
+        "blockedText": "At least one blocking constraint prevents confirmation.",
+        "blockedTitle": "Replacement blocked",
+        "blockers": "Blocking constraints",
+        "externalReviews": "External checks",
+        "readyText": "Required checks allow confirmation to proceed.",
+        "readyTitle": "Ready to confirm"
+      },
+      "kicker": "INSTRUCTOR REPLACEMENT",
+      "permissionDenied": {
+        "text": "You do not have permission to perform this replacement.",
+        "title": "Insufficient permission"
+      },
+      "reality": {
+        "text": "Suggestions are based on currently known sessions and availability. Review constraints before confirmation.",
+        "title": "Operational data"
+      },
+      "sessions": {
+        "categoryMissing": "Training category missing",
+        "subtitle": "Sessions matching the selected scope.",
+        "title": "Affected sessions"
+      },
+      "steps": {
+        "confirmation": "Confirmation",
+        "impacts": "Impacts",
+        "scope": "Scope",
+        "suggestions": "Suggestions"
+      },
+      "subtitle": "Reassign sessions from an unavailable instructor while preserving pedagogical continuity and operational constraints.",
+      "success": {
+        "text": "Selected sessions were reassigned and relevant parties can be notified.",
+        "title": "Replacement confirmed"
+      },
+      "suggestions": {
+        "availability": "Availability",
+        "candidate": "Candidate",
+        "compatibleSessions": "Compatible sessions",
+        "continuity": "Pedagogical continuity",
+        "drawerSubtitle": "Replacement compatibility details and criteria.",
+        "qualified": "Qualified",
+        "score": "Compatibility score",
+        "subtitle": "Select the best replacement for the affected sessions.",
+        "title": "Replacement suggestions",
+        "why": "Why this candidate?"
+      },
+      "summary": {
+        "categories": "Categories",
+        "sessions": "Sessions",
+        "students": "Students",
+        "title": "Summary",
+        "vehicles": "Vehicles"
+      },
+      "title": "Instructor replacement",
+      "modes": {
+        "automatic": "Automatic",
+        "manual": "Manual",
+        "singleSession": "Single session",
+        "selectedSessions": "Selected sessions",
+        "dateRange": "Date range",
+        "allFutureSessions": "All future sessions",
+        "temporaryAssignment": "Temporary assignment",
+        "permanentReassignment": "Permanent reassignment"
+      }
+    },
+    "kicker": "SCHEDULING",
+    "recurrence": {
+      "actions": {
+        "cancelOccurrence": "Cancel Occurrence",
+        "cancelSeries": "Cancel Series",
+        "editFuture": "Edit Future",
+        "newSeries": "New Series",
+        "regenerate": "Regenerate",
+        "rescheduleOccurrence": "Reschedule Occurrence"
+      },
+      "byCount": "By Count",
+      "cancelWarning": "Cancel Warning",
+      "conflict": "Conflict",
+      "empty": {
+        "title": "Empty"
+      },
+      "fields": {
+        "applyFrom": "Apply From",
+        "count": "Count",
+        "duration": "Duration",
+        "end": "End",
+        "endDate": "End Date",
+        "frequency": "Frequency",
+        "interval": "Interval",
+        "period": "Period",
+        "policy": "Policy",
+        "reason": "Reason",
+        "start": "Start",
+        "startDate": "Start Date",
+        "target": "Target",
+        "time": "Time",
+        "title": "Fields",
+        "weekdays": "Weekdays"
+      },
+      "frequency": {
+        "Daily": "Daily",
+        "Monthly": "Monthly",
+        "Weekly": "Weekly",
+        "Custom": "Custom",
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "custom": "Custom"
+      },
+      "kicker": "RECURRENCE",
+      "messages": {
+        "created": "Created",
+        "futureUpdated": "Future Updated",
+        "generated": "Generated",
+        "occurrenceCancelled": "Occurrence Cancelled",
+        "occurrenceRescheduled": "Occurrence Rescheduled",
+        "seriesCancelled": "Series Cancelled"
+      },
+      "metrics": {
+        "confirmable": "Confirmable",
+        "conflicts": "Conflicts",
+        "exceptions": "Exceptions",
+        "total": "Total"
+      },
+      "occurrences": {
+        "help": "Help",
+        "title": "Occurrences"
+      },
+      "policy": {
+        "BestAvailableResources": "Best Available Resources",
+        "FixedResources": "Fixed Resources",
+        "Strict": "Strict",
+        "Flexible": "Flexible",
+        "BestEffort": "Best effort",
+        "strict": "Strict",
+        "flexible": "Flexible",
+        "bestEffort": "Best effort"
+      },
+      "resources": {
+        "dynamic": "Dynamic",
+        "select": "Select",
+        "title": "Resources"
+      },
+      "rule": {
+        "title": "Rule"
+      },
+      "seriesList": "Series List",
+      "status": {
+        "active": "Active",
+        "cancelled": "Cancelled"
+      },
+      "subtitle": "Manage this scheduling area and its operational settings.",
+      "target": {
+        "Availability": "Availability",
+        "Booking": "Booking",
+        "Maintenance": "Maintenance",
+        "Meeting": "Meeting",
+        "PartnerMission": "Partner Mission",
+        "Student": "Student",
+        "Instructor": "Instructor",
+        "Vehicle": "Vehicle",
+        "Room": "Room",
+        "Resource": "Resource",
+        "student": "Student",
+        "instructor": "Instructor",
+        "vehicle": "Vehicle",
+        "room": "Room",
+        "resource": "Resource"
+      },
+      "title": "Recurrence",
+      "weekdays": {
+        "friday": "Friday",
+        "monday": "Monday",
+        "saturday": "Saturday",
+        "sunday": "Sunday",
+        "thursday": "Thursday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday"
+      },
+      "occurrenceStatus": {
+        "Planned": "Planned",
+        "Created": "Created",
+        "Skipped": "Skipped",
+        "Conflict": "Conflict",
+        "Cancelled": "Cancelled",
+        "Failed": "Failed"
+      }
+    },
+    "replacements": {
+      "tabs": {
+        "instructors": "Instructors",
+        "navigation": "Navigation",
+        "vehicles": "Vehicles"
+      }
+    },
+    "reschedule": {
+      "actions": {
+        "confirmAndNotify": "Confirm And Notify",
+        "preview": "Preview",
+        "recheck": "Recheck",
+        "searchAutomatically": "Search Automatically"
+      },
+      "blocked": "Blocked",
+      "blockedText": "Blocked Text",
+      "changes": {
+        "none": "None",
+        "title": "Changes"
+      },
+      "confirmation": {
+        "subtitle": "Manage this scheduling area and its operational settings.",
+        "title": "Confirmation"
+      },
+      "history": {
+        "title": "History"
+      },
+      "impacts": {
+        "conflicts": "Conflicts",
+        "empty": "Empty",
+        "subtitle": "Manage this scheduling area and its operational settings.",
+        "title": "Impacts"
+      },
+      "kicker": "RESCHEDULE",
+      "messages": {
+        "alreadyApplied": "Already Applied",
+        "success": "Success"
+      },
+      "newSlot": "New Slot",
+      "notFound": "Not Found",
+      "notifications": {
+        "disabledText": "Disabled Text",
+        "disabledTitle": "Disabled Title",
+        "subtitle": "Manage this scheduling area and its operational settings.",
+        "targetedText": "Targeted Text",
+        "targetedTitle": "Targeted Title",
+        "title": "Notifications"
+      },
+      "previousSlot": "Previous Slot",
+      "ready": "Ready",
+      "readyText": "Ready Text",
+      "reason": {
+        "label": "Label",
+        "placeholder": "Placeholder",
+        "subtitle": "Manage this scheduling area and its operational settings.",
+        "title": "Reason"
+      },
+      "resources": {
+        "currentSelection": "Current Selection",
+        "instructor": "Instructor",
+        "instructorHelp": "Additional information about instructor.",
+        "keep": "Keep",
+        "noRoom": "No Room",
+        "room": "Room",
+        "subtitle": "Manage this scheduling area and its operational settings.",
+        "title": "Resources",
+        "vehicle": "Vehicle",
+        "vehicleHelp": "Additional information about vehicle."
+      },
+      "search": {
+        "action": "Action",
+        "duration": "Duration",
+        "empty": "Empty",
+        "from": "From",
+        "max": "Max",
+        "subtitle": "Manage this scheduling area and its operational settings.",
+        "title": "Search",
+        "to": "To",
+        "warningTitle": "Warning Title"
+      },
+      "slot": {
+        "branch": "Branch",
+        "end": "End",
+        "noBranch": "No Branch",
+        "start": "Start",
+        "subtitle": "Manage this scheduling area and its operational settings.",
+        "title": "Slot"
+      },
+      "steps": {
+        "confirmation": "Confirmation",
+        "impacts": "Impacts",
+        "notifications": "Notifications",
+        "reason": "Reason",
+        "resources": "Resources",
+        "slot": "Slot"
+      },
+      "summary": {
+        "title": "Summary"
+      },
+      "title": "Reschedule",
+      "validation": {
+        "bookingRequired": "Booking Required",
+        "required": "Required",
+        "search": "Search"
+      }
+    },
+    "slotSearch": {
+      "actions": {
+        "choose": "Choose",
+        "criteria": "Set criteria",
+        "search": "Search"
+      },
+      "badges": {
+        "continuity": "Continuity",
+        "instructorLoad": "Instructor Load",
+        "qualified": "Qualified"
+      },
+      "card": {
+        "instructor": "Instructor",
+        "room": "Room",
+        "vehicle": "Vehicle"
+      },
+      "criteria": {
+        "description": "Manage scheduling information and operational constraints.",
+        "title": "Criteria"
+      },
+      "description": "Find the best slots based on student, instructor and resource constraints.",
+      "explain": {
+        "external": "External",
+        "positive": "Positive",
+        "title": "Explain"
+      },
+      "fields": {
+        "branch": "Branch",
+        "category": "Category",
+        "duration": "Duration",
+        "from": "From",
+        "maxSuggestions": "Max Suggestions",
+        "preferContinuity": "Prefer Continuity",
+        "preferredInstructor": "Preferred Instructor",
+        "preferredVehicle": "Preferred Vehicle",
+        "requireRoom": "Require Room",
+        "requireVehicle": "Require Vehicle",
+        "step": "Step",
+        "student": "Student",
+        "to": "To",
+        "type": "Type"
+      },
+      "finalValidation": "Final Validation",
+      "initial": {
+        "description": "Enter the criteria to search for available slots.",
+        "title": "Set your criteria"
+      },
+      "kicker": "SLOT SEARCH",
+      "placeholders": {
+        "student": "Student"
+      },
+      "results": {
+        "empty": "Empty",
+        "meta": "Meta",
+        "title": "Results"
+      },
+      "score": "Score",
+      "searching": "Searching",
+      "summary": {
+        "category": "Category",
+        "continuity": "Learning continuity",
+        "period": "Period",
+        "session": "Session",
+        "student": "Student"
+      },
+      "title": "Slot search",
+      "validation": {
+        "criteria": "Criteria"
+      }
+    },
+    "travel": {
+      "actions": {
+        "evaluate": "Evaluate",
+        "evaluating": "Evaluating",
+        "useCurrentPosition": "Use Current Position"
+      },
+      "context": {
+        "next": "Next",
+        "noMeetingPoint": "No Meeting Point",
+        "noPrevious": "No Previous",
+        "previous": "Previous"
+      },
+      "drawer": {
+        "subtitle": "Manage this scheduling area and its operational settings.",
+        "title": "Drawer"
+      },
+      "empty": {
+        "title": "Empty"
+      },
+      "form": {
+        "address": "Address",
+        "buffer": "Buffer",
+        "destination": "Destination",
+        "distance": "Distance",
+        "estimatedDuration": "Estimated Duration",
+        "label": "Label",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "manualRoutingHint": "Manual Routing Hint",
+        "mode": "Mode",
+        "nextActualStart": "Next Actual Start",
+        "nextPlannedStart": "Next Planned Start",
+        "origin": "Origin",
+        "previousActualEnd": "Previous Actual End",
+        "previousPlannedEnd": "Previous Planned End",
+        "traffic": "Traffic",
+        "transportMode": "Transport Mode"
+      },
+      "geolocationUnavailable": "Geolocation Unavailable",
+      "kicker": "TRAVEL",
+      "locationMode": {
+        "approximate": "Approximate",
+        "manual": "Manual",
+        "mission": "Mission",
+        "oneTime": "One Time"
+      },
+      "privacy": {
+        "manual": {
+          "description": "Manage scheduling information and operational constraints.",
+          "title": "Manual"
+        },
+        "precise": {
+          "description": "Manage scheduling information and operational constraints.",
+          "title": "Precise"
+        },
+        "retention": {
+          "description": "Manage scheduling information and operational constraints.",
+          "title": "Retention"
+        },
+        "tracking": {
+          "description": "Manage scheduling information and operational constraints.",
+          "title": "Tracking"
+        }
+      },
+      "result": {
+        "available": "Available",
+        "buffer": "Buffer",
+        "conflict": "Conflict",
+        "deadline": "Deadline",
+        "departure": "Departure",
+        "distance": "Distance",
+        "feasible": "Feasible",
+        "margin": "Margin",
+        "noPersistence": "No Persistence",
+        "required": "Required",
+        "route": "Route"
+      },
+      "routeSource": {
+        "manual": "Manual",
+        "provider": "Provider"
+      },
+      "subtitle": "Manage this scheduling area and its operational settings.",
+      "tabs": {
+        "analysis": "Analysis",
+        "privacy": "Privacy"
+      },
+      "timeSource": {
+        "actual": "Actual",
+        "planned": "Planned"
+      },
+      "title": "Travel",
+      "traffic": {
+        "custom": "Custom"
+      },
+      "transport": {
+        "cycling": "Cycling",
+        "driving": "Driving",
+        "other": "Other",
+        "publicTransport": "Public Transport",
+        "walking": "Walking"
+      }
+    },
+    "vehicleReplacement": {
+      "actions": {
+        "choose": "Choose",
+        "confirmAndNotify": "Confirm and notify",
+        "findReplacement": "Find replacement vehicle",
+        "reviewConfirmation": "Review confirmation"
+      },
+      "blocking": {
+        "authoritativeDataUnavailable": "Authoritative data unavailable",
+        "generic": "Blocking constraint",
+        "previousResourceMissing": "Original vehicle not found",
+        "replacementResourceMissing": "Replacement vehicle not found",
+        "schedulingConflict": "Scheduling conflict"
+      },
+      "candidate": {
+        "externalReview": "External review required",
+        "externalReviewText": "Some information must be checked before confirmation.",
+        "factors": "Compatibility factors",
+        "subtitle": "Proposed vehicle details and related checks."
+      },
+      "checks": {
+        "insurance": "Insurance",
+        "location": "Location",
+        "maintenance": "Maintenance",
+        "ownership": "Ownership",
+        "technical": "Technical"
+      },
+      "confirmation": {
+        "atomicText": "The replacement will be applied consistently to the selected sessions.",
+        "atomicTitle": "Atomic application",
+        "title": "Confirmation"
+      },
+      "external": {
+        "compatibility": "Compatibility",
+        "generic": "External check",
+        "insurance": "Insurance",
+        "location": "Location",
+        "maintenance": "Maintenance",
+        "ownership": "Ownership"
+      },
+      "eyebrow": "VEHICLE REPLACEMENT",
+      "factors": {
+        "availability": "Availability",
+        "branchMatching": "Branch Matching",
+        "other": "Other"
+      },
+      "fields": {
+        "adaptations": "Required adaptations",
+        "adaptationsPlaceholder": "Select or enter adaptations",
+        "dualControl": "Dual controls",
+        "dualControlHelp": "Specify whether dual controls are required.",
+        "energy": "Energy",
+        "energyPlaceholder": "Select energy",
+        "from": "From",
+        "mode": "Mode",
+        "reason": "Reason",
+        "replacementVehicle": "Replacement vehicle",
+        "to": "To",
+        "transmission": "Transmission",
+        "unavailableVehicle": "Unavailable vehicle"
+      },
+      "impacts": {
+        "blocked": "Blocked",
+        "blockedText": "One or more constraints prevent confirmation.",
+        "ready": "Ready",
+        "readyText": "Checks allow the process to continue.",
+        "title": "Impacts"
+      },
+      "multiCategory": {
+        "text": "Verify that the replacement vehicle is compatible with every selected training category.",
+        "title": "Multiple categories involved"
+      },
+      "noPermission": "You do not have permission to replace a vehicle.",
+      "requirements": {
+        "help": "Define mandatory replacement vehicle characteristics.",
+        "title": "Requirements"
+      },
+      "scope": {
+        "help": "Define the sessions and period affected by the replacement.",
+        "title": "Scope"
+      },
+      "sessions": {
+        "detected": "Detected sessions",
+        "empty": "No affected sessions",
+        "title": "Sessions"
+      },
+      "subtitle": "Reassign sessions to a compatible vehicle while checking compliance, availability, and impacts.",
+      "success": {
+        "text": "Selected sessions were reassigned to the replacement vehicle.",
+        "title": "Replacement confirmed"
+      },
+      "suggestions": {
+        "compatible": "Compatible",
+        "title": "Suggestions"
+      },
+      "summary": {
+        "instructors": "Instructors",
+        "sessions": "Sessions",
+        "students": "Students",
+        "title": "Summary"
+      },
+      "tabs": {
+        "instructors": "Instructors",
+        "vehicles": "Vehicles"
+      },
+      "title": "Vehicle replacement",
+      "transmission": {
+        "automatic": "Automatic",
+        "manual": "Manual"
+      },
+      "steps": {
+        "scope": "Scope",
+        "requirements": "Requirements",
+        "suggestions": "Suggestions",
+        "confirmation": "Confirmation"
+      },
+      "modes": {
+        "automatic": "Automatic",
+        "manual": "Manual",
+        "singleSession": "Single session",
+        "selectedSessions": "Selected sessions",
+        "dateRange": "Date range",
+        "allFutureSessions": "All future sessions",
+        "temporaryAssignment": "Temporary assignment",
+        "permanentReassignment": "Permanent reassignment"
+      }
+    },
+    "waitingList": {
+      "actions": {
+        "accept": "Accept",
+        "add": "Add",
+        "cancel": "Cancel",
+        "createBooking": "Create Booking",
+        "decline": "Decline",
+        "findSlot": "Find Slot",
+        "hold": "Hold",
+        "openBooking": "Open Booking",
+        "preferences": "Preferences",
+        "propose": "Propose"
+      },
+      "anyInstructor": "Any Instructor",
+      "cancel": {
+        "confirm": "Confirm",
+        "title": "Cancel",
+        "warning": "Warning"
+      },
+      "create": {
+        "confirm": "Confirm",
+        "help": "Help",
+        "title": "Create"
+      },
+      "detail": {
+        "noProposals": "No Proposals",
+        "priorityExplanation": "Priority Explanation",
+        "proposals": "Proposals",
+        "request": "Request",
+        "title": "Detail"
+      },
+      "drawerDescription": "Drawer Description",
+      "empty": {
+        "title": "Empty"
+      },
+      "expires": "Expires",
+      "fields": {
+        "branch": "Branch",
+        "duration": "Duration",
+        "examAt": "Exam At",
+        "expiresAt": "Expires At",
+        "from": "From",
+        "instructor": "Instructor",
+        "interruptionDays": "Interruption Days",
+        "manualAdjustment": "Manual Adjustment",
+        "manualReason": "Manual Reason",
+        "period": "Period",
+        "priority": "Priority",
+        "reason": "Reason",
+        "service": "Service",
+        "status": "Status",
+        "student": "Student",
+        "to": "To",
+        "trainingCategory": "Training Category",
+        "urgency": "Urgency"
+      },
+      "kicker": "WAITING LIST",
+      "kpi": {
+        "holds": "Holds",
+        "proposals": "Proposals",
+        "urgent": "Urgent",
+        "waiting": "Waiting"
+      },
+      "messages": {
+        "accepted": "Accepted",
+        "bookingCreatedNotFulfilled": "Booking Created Not Fulfilled",
+        "cancelled": "Cancelled",
+        "created": "Created",
+        "declined": "Declined",
+        "fulfilled": "Fulfilled",
+        "held": "Held",
+        "preferencesUpdated": "Preferences Updated",
+        "proposed": "Proposed"
+      },
+      "preferences": {
+        "title": "Preferences"
+      },
+      "priority": {
+        "help": "Help",
+        "title": "Priority",
+        "Low": "Low",
+        "Normal": "Normal",
+        "High": "High",
+        "Urgent": "Urgent",
+        "Critical": "Critical",
+        "low": "Low",
+        "normal": "Normal",
+        "high": "High",
+        "urgent": "Urgent",
+        "critical": "Critical"
+      },
+      "priorityFactors": {
+        "commercialPriority": "Commercial Priority",
+        "limitedAvailability": "Limited Availability",
+        "noFutureSession": "No Future Session",
+        "regulatoryPriority": "Regulatory Priority",
+        "schoolCancellation": "School Cancellation"
+      },
+      "searchPlaceholder": "Select or enter search",
+      "slotSearch": {
+        "empty": "Empty",
+        "help": "Help",
+        "score": "Score",
+        "title": "Slot search",
+        "trainingCategoryPlaceholder": "Select or enter training category"
+      },
+      "subtitle": "Manage this scheduling area and its operational settings.",
+      "tabs": {
+        "history": "History",
+        "holds": "Holds",
+        "proposals": "Proposals",
+        "waiting": "Waiting"
+      },
+      "title": "Waiting list",
+      "validation": {
+        "required": "Required",
+        "slotNoLongerAvailable": "Slot No Longer Available"
+      },
+      "status": {
+        "Waiting": "Waiting",
+        "Proposed": "Proposed",
+        "Held": "Held",
+        "Accepted": "Accepted",
+        "Declined": "Declined",
+        "Fulfilled": "Fulfilled",
+        "Cancelled": "Cancelled",
+        "Expired": "Expired"
+      },
+      "proposalStatus": {
+        "Proposed": "Proposed",
+        "Held": "Held",
+        "Accepted": "Accepted",
+        "Declined": "Declined",
+        "Expired": "Expired",
+        "Cancelled": "Cancelled"
       }
     }
   }

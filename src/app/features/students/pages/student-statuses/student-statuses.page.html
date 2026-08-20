@@ -5,7 +5,10 @@
       <p class="text-sm text-slate-500">{{ 'students.statuses.description' | translate }}</p>
     </div>
     @if (canApplyBlock()) {
-      <drive-os-button icon="ph ph-lock" (pressed)="openApply()">
+      <drive-os-button
+        icon="ph ph-lock"
+        (pressed)="openApply()"
+      >
         {{ 'students.statuses.actionsUi.applyBlock' | translate }}
       </drive-os-button>
     }
@@ -13,90 +16,185 @@
 
   @if (action()?.type === 'apply') {
     <drive-os-card class="mt-5 block">
-      <form class="space-y-5" [formGroup]="applyForm" (ngSubmit)="applyBlock()">
+      <form
+        class="space-y-5"
+        [formGroup]="applyForm"
+        (ngSubmit)="applyBlock()"
+      >
         <div class="flex items-start justify-between gap-4">
           <div>
             <h3 class="font-extrabold">{{ 'students.statuses.apply.title' | translate }}</h3>
-            <p class="mt-1 text-sm text-slate-500">{{ 'students.statuses.apply.description' | translate }}</p>
+            <p class="mt-1 text-sm text-slate-500">
+              {{ 'students.statuses.apply.description' | translate }}
+            </p>
           </div>
-          <drive-os-button variant="ghost" icon="ph ph-x" (pressed)="cancelAction()">
+          <drive-os-button
+            variant="ghost"
+            icon="ph ph-x"
+            (pressed)="cancelAction()"
+          >
             {{ 'common.cancel' | translate }}
           </drive-os-button>
         </div>
 
         <div class="grid gap-4 md:grid-cols-2">
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.statuses.fields.blockType' | translate }}</span>
-            <input driveOsInput formControlName="blockType" />
+            <span class="text-sm font-semibold">
+              {{ 'students.statuses.fields.blockType' | translate }}
+            </span>
+            <input
+              driveOsInput
+              formControlName="blockType"
+            />
           </label>
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.statuses.fields.sourceDomain' | translate }}</span>
-            <input driveOsInput formControlName="sourceDomain" />
+            <span class="text-sm font-semibold">
+              {{ 'students.statuses.fields.sourceDomain' | translate }}
+            </span>
+            <input
+              driveOsInput
+              formControlName="sourceDomain"
+            />
           </label>
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.statuses.fields.severity' | translate }}</span>
-            <select driveOsInput formControlName="severity">
-              <option [ngValue]="1">{{ 'students.statuses.severities.information' | translate }}</option>
-              <option [ngValue]="2">{{ 'students.statuses.severities.warning' | translate }}</option>
-              <option [ngValue]="3">{{ 'students.statuses.severities.blocking' | translate }}</option>
-              <option [ngValue]="4">{{ 'students.statuses.severities.critical' | translate }}</option>
+            <span class="text-sm font-semibold">
+              {{ 'students.statuses.fields.severity' | translate }}
+            </span>
+            <select
+              driveOsInput
+              formControlName="severity"
+            >
+              <option [ngValue]="1">
+                {{ 'students.statuses.severities.information' | translate }}
+              </option>
+              <option [ngValue]="2">
+                {{ 'students.statuses.severities.warning' | translate }}
+              </option>
+              <option [ngValue]="3">
+                {{ 'students.statuses.severities.blocking' | translate }}
+              </option>
+              <option [ngValue]="4">
+                {{ 'students.statuses.severities.critical' | translate }}
+              </option>
             </select>
           </label>
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.statuses.fields.expectedResolution' | translate }}</span>
-            <input driveOsInput formControlName="expectedResolution" />
+            <span class="text-sm font-semibold">
+              {{ 'students.statuses.fields.expectedResolution' | translate }}
+            </span>
+            <input
+              driveOsInput
+              formControlName="expectedResolution"
+            />
           </label>
         </div>
 
         <label class="block space-y-1.5">
-          <span class="text-sm font-semibold">{{ 'students.statuses.fields.reason' | translate }}</span>
-          <textarea driveOsInput rows="3" formControlName="reason"></textarea>
+          <span class="text-sm font-semibold">
+            {{ 'students.statuses.fields.reason' | translate }}
+          </span>
+          <textarea
+            driveOsInput
+            rows="3"
+            formControlName="reason"
+          ></textarea>
         </label>
 
         <fieldset formGroupName="blockingActions">
-          <legend class="text-sm font-semibold">{{ 'students.statuses.fields.blockingActions' | translate }}</legend>
-          <p class="mt-1 text-xs text-slate-500">{{ 'students.statuses.apply.actionsHelp' | translate }}</p>
+          <legend class="text-sm font-semibold">
+            {{ 'students.statuses.fields.blockingActions' | translate }}
+          </legend>
+          <p class="mt-1 text-xs text-slate-500">
+            {{ 'students.statuses.apply.actionsHelp' | translate }}
+          </p>
           <div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-            <label class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm">
-              <input type="checkbox" formControlName="schedule" />
+            <label
+              class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm"
+            >
+              <input
+                type="checkbox"
+                formControlName="schedule"
+              />
               {{ 'students.statuses.actions.Schedule' | translate }}
             </label>
-            <label class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm">
-              <input type="checkbox" formControlName="startLesson" />
+            <label
+              class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm"
+            >
+              <input
+                type="checkbox"
+                formControlName="startLesson"
+              />
               {{ 'students.statuses.actions.StartLesson' | translate }}
             </label>
-            <label class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm">
-              <input type="checkbox" formControlName="sign" />
+            <label
+              class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm"
+            >
+              <input
+                type="checkbox"
+                formControlName="sign"
+              />
               {{ 'students.statuses.actions.Sign' | translate }}
             </label>
-            <label class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm">
-              <input type="checkbox" formControlName="presentExam" />
+            <label
+              class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm"
+            >
+              <input
+                type="checkbox"
+                formControlName="presentExam"
+              />
               {{ 'students.statuses.actions.PresentExam' | translate }}
             </label>
-            <label class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm">
-              <input type="checkbox" formControlName="transfer" />
+            <label
+              class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm"
+            >
+              <input
+                type="checkbox"
+                formControlName="transfer"
+              />
               {{ 'students.statuses.actions.Transfer' | translate }}
             </label>
-            <label class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm">
-              <input type="checkbox" formControlName="refund" />
+            <label
+              class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm"
+            >
+              <input
+                type="checkbox"
+                formControlName="refund"
+              />
               {{ 'students.statuses.actions.Refund' | translate }}
             </label>
-            <label class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm">
-              <input type="checkbox" formControlName="close" />
+            <label
+              class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm"
+            >
+              <input
+                type="checkbox"
+                formControlName="close"
+              />
               {{ 'students.statuses.actions.Close' | translate }}
             </label>
-            <label class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm">
-              <input type="checkbox" formControlName="portalAccess" />
+            <label
+              class="flex items-center gap-2 rounded-xl border border-[var(--driveos-border)] p-3 text-sm"
+            >
+              <input
+                type="checkbox"
+                formControlName="portalAccess"
+              />
               {{ 'students.statuses.actions.PortalAccess' | translate }}
             </label>
           </div>
         </fieldset>
 
         <div class="flex justify-end gap-2">
-          <drive-os-button variant="outline" (pressed)="cancelAction()">
+          <drive-os-button
+            variant="outline"
+            (pressed)="cancelAction()"
+          >
             {{ 'common.cancel' | translate }}
           </drive-os-button>
-          <drive-os-button type="submit" icon="ph ph-lock" [loading]="saving()">
+          <drive-os-button
+            type="submit"
+            icon="ph ph-lock"
+            [loading]="saving()"
+          >
             {{ 'students.statuses.actionsUi.confirmApply' | translate }}
           </drive-os-button>
         </div>
@@ -106,7 +204,11 @@
 
   @if (action()?.type === 'release') {
     <drive-os-card class="mt-5 block">
-      <form class="space-y-4" [formGroup]="releaseForm" (ngSubmit)="releaseBlock()">
+      <form
+        class="space-y-4"
+        [formGroup]="releaseForm"
+        (ngSubmit)="releaseBlock()"
+      >
         <div>
           <h3 class="font-extrabold">{{ 'students.statuses.release.title' | translate }}</h3>
           <p class="mt-1 text-sm text-slate-500">
@@ -116,24 +218,56 @@
         </div>
         <div class="grid gap-4 md:grid-cols-2">
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.statuses.fields.resolutionType' | translate }}</span>
-            <select driveOsInput formControlName="resolutionType">
-              <option [ngValue]="1">{{ 'students.statuses.resolutions.humanValidation' | translate }}</option>
-              <option [ngValue]="2">{{ 'students.statuses.resolutions.automaticEvent' | translate }}</option>
-              <option [ngValue]="3">{{ 'students.statuses.resolutions.temporaryOverride' | translate }}</option>
-              <option [ngValue]="4">{{ 'students.statuses.resolutions.payment' | translate }}</option>
-              <option [ngValue]="5">{{ 'students.statuses.resolutions.document' | translate }}</option>
-              <option [ngValue]="6">{{ 'students.statuses.resolutions.pedagogicalDecision' | translate }}</option>
+            <span class="text-sm font-semibold">
+              {{ 'students.statuses.fields.resolutionType' | translate }}
+            </span>
+            <select
+              driveOsInput
+              formControlName="resolutionType"
+            >
+              <option [ngValue]="1">
+                {{ 'students.statuses.resolutions.humanValidation' | translate }}
+              </option>
+              <option [ngValue]="2">
+                {{ 'students.statuses.resolutions.automaticEvent' | translate }}
+              </option>
+              <option [ngValue]="3">
+                {{ 'students.statuses.resolutions.temporaryOverride' | translate }}
+              </option>
+              <option [ngValue]="4">
+                {{ 'students.statuses.resolutions.payment' | translate }}
+              </option>
+              <option [ngValue]="5">
+                {{ 'students.statuses.resolutions.document' | translate }}
+              </option>
+              <option [ngValue]="6">
+                {{ 'students.statuses.resolutions.pedagogicalDecision' | translate }}
+              </option>
             </select>
           </label>
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.statuses.fields.reason' | translate }}</span>
-            <textarea driveOsInput rows="3" formControlName="reason"></textarea>
+            <span class="text-sm font-semibold">
+              {{ 'students.statuses.fields.reason' | translate }}
+            </span>
+            <textarea
+              driveOsInput
+              rows="3"
+              formControlName="reason"
+            ></textarea>
           </label>
         </div>
         <div class="flex justify-end gap-2">
-          <drive-os-button variant="outline" (pressed)="cancelAction()">{{ 'common.cancel' | translate }}</drive-os-button>
-          <drive-os-button type="submit" icon="ph ph-lock-open" [loading]="saving()">
+          <drive-os-button
+            variant="outline"
+            (pressed)="cancelAction()"
+          >
+            {{ 'common.cancel' | translate }}
+          </drive-os-button>
+          <drive-os-button
+            type="submit"
+            icon="ph ph-lock-open"
+            [loading]="saving()"
+          >
             {{ 'students.statuses.actionsUi.confirmRelease' | translate }}
           </drive-os-button>
         </div>
@@ -143,7 +277,11 @@
 
   @if (action()?.type === 'override') {
     <drive-os-card class="mt-5 block">
-      <form class="space-y-4" [formGroup]="overrideForm" (ngSubmit)="overrideBlock()">
+      <form
+        class="space-y-4"
+        [formGroup]="overrideForm"
+        (ngSubmit)="overrideBlock()"
+      >
         <div>
           <h3 class="font-extrabold">{{ 'students.statuses.override.title' | translate }}</h3>
           <p class="mt-1 text-sm text-slate-500">
@@ -159,17 +297,38 @@
         />
         <div class="grid gap-4 md:grid-cols-2">
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.statuses.fields.overrideUntil' | translate }}</span>
-            <input driveOsInput type="datetime-local" formControlName="untilLocal" />
+            <span class="text-sm font-semibold">
+              {{ 'students.statuses.fields.overrideUntil' | translate }}
+            </span>
+            <input
+              driveOsInput
+              type="datetime-local"
+              formControlName="untilLocal"
+            />
           </label>
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.statuses.fields.reason' | translate }}</span>
-            <textarea driveOsInput rows="3" formControlName="reason"></textarea>
+            <span class="text-sm font-semibold">
+              {{ 'students.statuses.fields.reason' | translate }}
+            </span>
+            <textarea
+              driveOsInput
+              rows="3"
+              formControlName="reason"
+            ></textarea>
           </label>
         </div>
         <div class="flex justify-end gap-2">
-          <drive-os-button variant="outline" (pressed)="cancelAction()">{{ 'common.cancel' | translate }}</drive-os-button>
-          <drive-os-button type="submit" icon="ph ph-clock" [loading]="saving()">
+          <drive-os-button
+            variant="outline"
+            (pressed)="cancelAction()"
+          >
+            {{ 'common.cancel' | translate }}
+          </drive-os-button>
+          <drive-os-button
+            type="submit"
+            icon="ph ph-clock"
+            [loading]="saving()"
+          >
             {{ 'students.statuses.actionsUi.confirmOverride' | translate }}
           </drive-os-button>
         </div>
@@ -179,7 +338,10 @@
 
   @if (loading()) {
     <div class="grid min-h-64 place-items-center">
-      <drive-os-spinner size="lg" [label]="'common.loading' | translate" />
+      <drive-os-spinner
+        size="lg"
+        [label]="'common.loading' | translate"
+      />
     </div>
   } @else if (error()) {
     <drive-os-state-banner
@@ -197,7 +359,10 @@
         [title]="'students.statuses.blockedActions' | translate"
       >
         <div class="mt-2 flex flex-wrap gap-2">
-          @for (blockedAction of blockingActions(value.currentlyBlockedActions); track blockedAction) {
+          @for (
+            blockedAction of blockingActions(value.currentlyBlockedActions);
+            track blockedAction
+          ) {
             <drive-os-badge variant="danger">
               {{ 'students.statuses.actions.' + blockedAction | translate }}
             </drive-os-badge>
@@ -210,13 +375,23 @@
       <h3 class="font-extrabold">{{ 'students.statuses.board' | translate }}</h3>
       <div class="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         @for (domain of domains(); track domain.code) {
-          <article class="flex items-center gap-3 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4">
+          <article
+            class="flex items-center gap-3 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"
+          >
             <span class="grid size-10 place-items-center rounded-xl bg-blue-100 text-blue-800">
-              <i class="ph" [class]="'ph ' + domain.icon"></i>
+              <i
+                class="ph"
+                [class]="'ph ' + domain.icon"
+              ></i>
             </span>
             <div class="min-w-0 flex-1">
-              <p class="text-xs uppercase text-slate-500">{{ 'students.statuses.domains.' + domain.code | translate }}</p>
-              <drive-os-badge class="mt-1 inline-block" [variant]="variant(domain.status)">
+              <p class="text-xs uppercase text-slate-500">
+                {{ 'students.statuses.domains.' + domain.code | translate }}
+              </p>
+              <drive-os-badge
+                class="mt-1 inline-block"
+                [variant]="variant(domain.status)"
+              >
                 {{ domain.status }}
               </drive-os-badge>
             </div>
@@ -228,21 +403,31 @@
     <section class="mt-7">
       <div class="flex items-center justify-between">
         <h3 class="font-extrabold">{{ 'students.statuses.activeBlocks' | translate }}</h3>
-        <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-800">{{ activeBlocks().length }}</span>
+        <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-800">
+          {{ activeBlocks().length }}
+        </span>
       </div>
       <div class="mt-3 grid gap-4">
         @for (block of activeBlocks(); track block.id) {
-          <article class="overflow-hidden rounded-xl border border-red-200 bg-[var(--driveos-surface-card)]">
+          <article
+            class="overflow-hidden rounded-xl border border-red-200 bg-[var(--driveos-surface-card)]"
+          >
             <div class="flex flex-wrap items-start gap-3 border-b border-red-100 bg-red-50 p-4">
-              <span class="grid size-11 place-items-center rounded-xl bg-red-100 text-xl text-red-700">
+              <span
+                class="grid size-11 place-items-center rounded-xl bg-red-100 text-xl text-red-700"
+              >
                 <i class="ph-duotone ph-lock"></i>
               </span>
               <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-center gap-2">
                   <h4 class="font-extrabold">{{ block.blockType }}</h4>
-                  <drive-os-badge [variant]="severityVariant(block.severity)">{{ block.severity }}</drive-os-badge>
+                  <drive-os-badge [variant]="severityVariant(block.severity)">
+                    {{ block.severity }}
+                  </drive-os-badge>
                   @if (block.status === 'Overridden') {
-                    <drive-os-badge variant="warning">{{ 'students.statuses.overridden' | translate }}</drive-os-badge>
+                    <drive-os-badge variant="warning">
+                      {{ 'students.statuses.overridden' | translate }}
+                    </drive-os-badge>
                   }
                 </div>
                 <p class="mt-1 text-sm text-slate-600">{{ block.reason }}</p>
@@ -251,38 +436,63 @@
             </div>
             <div class="grid gap-4 p-4 lg:grid-cols-3">
               <div>
-                <p class="text-xs uppercase text-slate-500">{{ 'students.statuses.source' | translate }}</p>
+                <p class="text-xs uppercase text-slate-500">
+                  {{ 'students.statuses.source' | translate }}
+                </p>
                 <strong class="text-sm">{{ block.sourceDomain }}</strong>
               </div>
               <div>
-                <p class="text-xs uppercase text-slate-500">{{ 'students.statuses.expectedResolution' | translate }}</p>
+                <p class="text-xs uppercase text-slate-500">
+                  {{ 'students.statuses.expectedResolution' | translate }}
+                </p>
                 <strong class="text-sm">{{ block.expectedResolution || '—' }}</strong>
               </div>
               <div>
-                <p class="text-xs uppercase text-slate-500">{{ 'students.statuses.actionsBlocked' | translate }}</p>
+                <p class="text-xs uppercase text-slate-500">
+                  {{ 'students.statuses.actionsBlocked' | translate }}
+                </p>
                 <div class="mt-1 flex flex-wrap gap-1">
-                  @for (blockedAction of blockingActions(block.blockingActions); track blockedAction) {
-                    <span class="rounded bg-slate-100 px-2 py-1 text-xs">{{ 'students.statuses.actions.' + blockedAction | translate }}</span>
+                  @for (
+                    blockedAction of blockingActions(block.blockingActions);
+                    track blockedAction
+                  ) {
+                    <span class="rounded bg-slate-100 px-2 py-1 text-xs">
+                      {{ 'students.statuses.actions.' + blockedAction | translate }}
+                    </span>
                   }
                 </div>
               </div>
             </div>
             @if (block.overrideUntilUtc) {
-              <div class="border-t border-orange-100 bg-orange-50 px-4 py-3 text-sm text-orange-900">
+              <div
+                class="border-t border-orange-100 bg-orange-50 px-4 py-3 text-sm text-orange-900"
+              >
                 <i class="ph ph-clock mr-2"></i>
                 {{ 'students.statuses.overrideUntil' | translate }}
                 {{ block.overrideUntilUtc | date: 'short' }} · {{ block.overrideReason }}
               </div>
             }
             @if (canReleaseBlock() || canOverrideBlock()) {
-              <div class="flex flex-wrap justify-end gap-2 border-t border-[var(--driveos-border)] p-4">
+              <div
+                class="flex flex-wrap justify-end gap-2 border-t border-[var(--driveos-border)] p-4"
+              >
                 @if (canOverrideBlock() && block.status === 'Active') {
-                  <drive-os-button variant="outline" size="sm" icon="ph ph-clock" (pressed)="openOverride(block)">
+                  <drive-os-button
+                    variant="outline"
+                    size="sm"
+                    icon="ph ph-clock"
+                    (pressed)="openOverride(block)"
+                  >
                     {{ 'students.statuses.actionsUi.override' | translate }}
                   </drive-os-button>
                 }
                 @if (canReleaseBlock()) {
-                  <drive-os-button variant="secondary" size="sm" icon="ph ph-lock-open" (pressed)="openRelease(block)">
+                  <drive-os-button
+                    variant="secondary"
+                    size="sm"
+                    icon="ph ph-lock-open"
+                    (pressed)="openRelease(block)"
+                  >
                     {{ 'students.statuses.actionsUi.release' | translate }}
                   </drive-os-button>
                 }
@@ -300,18 +510,24 @@
     </section>
 
     @if (history().length) {
-      <section class="mt-7 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+      <section
+        class="mt-7 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
         <h3 class="font-extrabold">{{ 'students.statuses.history' | translate }}</h3>
         <div class="mt-4 divide-y divide-slate-200">
           @for (block of history(); track block.id) {
             <div class="flex flex-wrap items-center gap-3 py-3">
-              <span class="grid size-9 place-items-center rounded-full bg-slate-100"><i class="ph ph-check"></i></span>
+              <span class="grid size-9 place-items-center rounded-full bg-slate-100">
+                <i class="ph ph-check"></i>
+              </span>
               <div class="min-w-0 flex-1">
                 <strong class="text-sm">{{ block.blockType }}</strong>
                 <p class="text-xs text-slate-500">{{ block.resolutionReason || block.reason }}</p>
               </div>
               <drive-os-badge [variant]="variant(block.status)">{{ block.status }}</drive-os-badge>
-              <time class="text-xs text-slate-500">{{ block.resolvedAtUtc || block.appliedAtUtc | date: 'short' }}</time>
+              <time class="text-xs text-slate-500">
+                {{ block.resolvedAtUtc || block.appliedAtUtc | date: 'short' }}
+              </time>
             </div>
           }
         </div>

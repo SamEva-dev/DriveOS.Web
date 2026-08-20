@@ -63,15 +63,27 @@
             <div class="min-w-0">
               <div class="flex flex-wrap items-center gap-2">
                 <strong>{{ item.labelKey | translate }}</strong>
-                <drive-os-badge [variant]="statusVariant(item.status)">{{ item.status }}</drive-os-badge>
+                <drive-os-badge [variant]="statusVariant(item.status)">{{ 'students.enrollment.checklist.statuses.' + item.status | translate }}</drive-os-badge>
                 @if (item.isBlocking) {
                   <drive-os-badge variant="danger">{{ 'students.enrollment.checklist.blocking' | translate }}</drive-os-badge>
                 }
+                @if (item.isDerived) {
+                  <span
+                    class="inline-flex size-6 items-center justify-center rounded-full text-slate-400"
+                    [attr.title]="item.impactKey | translate"
+                    [attr.aria-label]="item.impactKey | translate">
+                    <i class="ph ph-info"></i>
+                  </span>
+                }
               </div>
+              <p class="mt-1 max-w-4xl text-sm leading-5 text-slate-600">
+                {{ item.descriptionKey | translate }}
+              </p>
               <p class="mt-1 text-xs text-slate-500">
                 {{ 'students.enrollment.categories.' + item.category | translate }}
                 @if (item.dueAtUtc) { · {{ 'students.enrollment.checklist.due' | translate }} {{ item.dueAtUtc | date: 'shortDate' }} }
                 @if (item.responsibleUserId) { · {{ 'students.enrollment.checklist.responsible' | translate }} {{ item.responsibleUserId }} }
+                @if (item.isDerived) { · {{ 'students.enrollment.checklist.automatic' | translate }} }
               </p>
               @if (item.decisionReason) { <p class="mt-2 text-sm text-slate-600">{{ item.decisionReason }}</p> }
               @if (item.reminderCount > 0) {
@@ -85,9 +97,15 @@
 
           @if (canUpdate()) {
             <div class="flex flex-wrap gap-2 xl:justify-end">
-              <drive-os-button variant="outline" size="sm" icon="ph ph-pencil-simple" (pressed)="openStatus(item)">
-                {{ 'students.enrollment.checklist.actions.status' | translate }}
-              </drive-os-button>
+              @if (item.isDerived) {
+                <drive-os-button variant="outline" size="sm" icon="ph ph-arrow-square-out" (pressed)="openSource(item)">
+                  {{ item.actionLabelKey | translate }}
+                </drive-os-button>
+              } @else {
+                <drive-os-button variant="outline" size="sm" icon="ph ph-pencil-simple" (pressed)="openStatus(item)">
+                  {{ 'students.enrollment.checklist.actions.status' | translate }}
+                </drive-os-button>
+              }
               <drive-os-button variant="outline" size="sm" icon="ph ph-user-plus" (pressed)="openAssign(item)">
                 {{ 'students.enrollment.checklist.actions.assign' | translate }}
               </drive-os-button>
@@ -118,7 +136,7 @@
           <label class="grid gap-2 text-sm font-semibold">
             {{ 'students.enrollment.checklist.fields.status' | translate }}
             <select dosInput formControlName="status">
-              @for (status of statuses; track status) { <option [value]="status">{{ status }}</option> }
+              @for (status of statuses; track status) { <option [value]="status">{{ 'students.enrollment.checklist.statuses.' + status | translate }}</option> }
             </select>
           </label>
           <label class="grid gap-2 text-sm font-semibold md:col-span-2">

@@ -14,7 +14,10 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
 import { ApiErrorService } from '../../../../core/errors/api-error.service';
-import { DriveOsBadgeComponent, DriveOsBadgeVariant } from '../../../../shared/ui/badge/driveos-badge.component';
+import {
+  DriveOsBadgeComponent,
+  DriveOsBadgeVariant,
+} from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsButtonComponent } from '../../../../shared/ui/button/driveos-button.component';
 import { DriveOsCardComponent } from '../../../../shared/ui/card/driveos-card.component';
 import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/driveos-empty-state.component';
@@ -99,7 +102,10 @@ export class StudentAdministrationPanelComponent {
     policySource: ['', [Validators.required, Validators.maxLength(100)]],
   });
   readonly decisionForm = this.fb.nonNullable.group({
-    status: ['Validated' as 'Submitted' | 'Validated' | 'Rejected' | 'Expired', Validators.required],
+    status: [
+      'Validated' as 'Submitted' | 'Validated' | 'Rejected' | 'Expired',
+      Validators.required,
+    ],
     reason: ['', Validators.maxLength(500)],
   });
   readonly blockForm = this.fb.nonNullable.group({
@@ -169,7 +175,9 @@ export class StudentAdministrationPanelComponent {
         this.synchronizing.set(false);
         this.toast.success(
           this.translate.instant('students.profile.administration.feedback.synchronized'),
-          this.translate.instant('students.profile.administration.feedback.synchronizedCount', { count }),
+          this.translate.instant('students.profile.administration.feedback.synchronizedCount', {
+            count,
+          }),
         );
         this.refreshed.emit();
       },
@@ -201,13 +209,18 @@ export class StudentAdministrationPanelComponent {
     const operation =
       current.type === 'create-requirement'
         ? this.api.createAdministrationRequirement(this.studentId(), request)
-        : this.api.updateAdministrationRequirement(this.studentId(), current.requirement.id, request);
+        : this.api.updateAdministrationRequirement(
+            this.studentId(),
+            current.requirement.id,
+            request,
+          );
     this.run(operation, 'students.profile.administration.feedback.requirementSaved');
   }
 
   decideRequirement(): void {
     const current = this.action();
-    if (current?.type !== 'decide-requirement' || this.decisionForm.invalid || this.saving()) return;
+    if (current?.type !== 'decide-requirement' || this.decisionForm.invalid || this.saving())
+      return;
     const value = this.decisionForm.getRawValue();
     if (value.status === 'Rejected' && !value.reason.trim()) {
       this.decisionForm.controls.reason.setErrors({ required: true });

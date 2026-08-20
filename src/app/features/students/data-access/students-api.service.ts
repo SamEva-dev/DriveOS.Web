@@ -109,10 +109,7 @@ export class StudentsApiService {
     studentId: string,
     request: VerifyStudentIdentityRequest,
   ): Observable<StudentIdentity> {
-    return this.http.post<StudentIdentity>(
-      `${this.baseUrl}/${studentId}/identity/verify`,
-      request,
-    );
+    return this.http.post<StudentIdentity>(`${this.baseUrl}/${studentId}/identity/verify`, request);
   }
 
   getAdministration(studentId: string): Observable<StudentAdministration> {
@@ -123,7 +120,10 @@ export class StudentsApiService {
     studentId: string,
     request: ConfigureAdministrationRequirementRequest,
   ): Observable<string> {
-    return this.http.post<string>(`${this.baseUrl}/${studentId}/administration/requirements`, request);
+    return this.http.post<string>(
+      `${this.baseUrl}/${studentId}/administration/requirements`,
+      request,
+    );
   }
 
   updateAdministrationRequirement(
@@ -203,40 +203,73 @@ export class StudentsApiService {
     return this.http.post<string>(`${this.baseUrl}/${studentId}/guardians`, request);
   }
 
-  updateGuardian(studentId: string, relationshipId: string, request: UpdateGuardianRequest): Observable<void> {
+  updateGuardian(
+    studentId: string,
+    relationshipId: string,
+    request: UpdateGuardianRequest,
+  ): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/${studentId}/guardians/${relationshipId}`, request);
   }
 
   inviteGuardian(studentId: string, relationshipId: string): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${studentId}/guardians/${relationshipId}/invite`, {});
+    return this.http.post<void>(
+      `${this.baseUrl}/${studentId}/guardians/${relationshipId}/invite`,
+      {},
+    );
   }
 
-  revokeGuardian(studentId: string, relationshipId: string, request: { reason: string }): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${studentId}/guardians/${relationshipId}/revoke`, request);
+  revokeGuardian(
+    studentId: string,
+    relationshipId: string,
+    request: { reason: string },
+  ): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}/${studentId}/guardians/${relationshipId}/revoke`,
+      request,
+    );
   }
 
   getRelationships(studentId: string): Observable<StudentRelationships> {
     return this.http.get<StudentRelationships>(`${this.baseUrl}/${studentId}/relationships`);
   }
 
-  createRelationship(studentId: string, request: CreateStudentRelationshipRequest): Observable<string> {
+  createRelationship(
+    studentId: string,
+    request: CreateStudentRelationshipRequest,
+  ): Observable<string> {
     return this.http.post<string>(`${this.baseUrl}/${studentId}/relationships`, request);
   }
 
-  updateRelationship(studentId: string, relationshipId: string, request: UpdateStudentRelationshipRequest): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/${studentId}/relationships/${relationshipId}`, request);
+  updateRelationship(
+    studentId: string,
+    relationshipId: string,
+    request: UpdateStudentRelationshipRequest,
+  ): Observable<void> {
+    return this.http.put<void>(
+      `${this.baseUrl}/${studentId}/relationships/${relationshipId}`,
+      request,
+    );
   }
 
   inviteRelationship(studentId: string, relationshipId: string): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${studentId}/relationships/${relationshipId}/invite`, {});
+    return this.http.post<void>(
+      `${this.baseUrl}/${studentId}/relationships/${relationshipId}/invite`,
+      {},
+    );
   }
 
   suspendRelationship(studentId: string, relationshipId: string, reason: string): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${studentId}/relationships/${relationshipId}/suspend`, { reason });
+    return this.http.post<void>(
+      `${this.baseUrl}/${studentId}/relationships/${relationshipId}/suspend`,
+      { reason },
+    );
   }
 
   revokeRelationship(studentId: string, relationshipId: string, reason: string): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${studentId}/relationships/${relationshipId}/revoke`, { reason });
+    return this.http.post<void>(
+      `${this.baseUrl}/${studentId}/relationships/${relationshipId}/revoke`,
+      { reason },
+    );
   }
 
   getEnrollmentChecklist(
@@ -250,7 +283,9 @@ export class StudentsApiService {
   }
 
   synchronizeEnrollmentChecklist(studentId: string, enrollmentId: string): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${studentId}/enrollment-checklist/synchronize`, { enrollmentId });
+    return this.http.post<void>(`${this.baseUrl}/${studentId}/enrollment-checklist/synchronize`, {
+      enrollmentId,
+    });
   }
 
   changeEnrollmentChecklistItemStatus(
@@ -277,7 +312,11 @@ export class StudentsApiService {
     );
   }
 
-  remindEnrollmentChecklistItem(studentId: string, enrollmentId: string, itemId: string): Observable<void> {
+  remindEnrollmentChecklistItem(
+    studentId: string,
+    enrollmentId: string,
+    itemId: string,
+  ): Observable<void> {
     return this.http.post<void>(
       `${this.baseUrl}/${studentId}/enrollment-checklist/${enrollmentId}/items/${itemId}/remind`,
       {},
@@ -303,19 +342,33 @@ export class StudentsApiService {
   uploadDocument(studentId: string, documentId: string, file: File): Observable<string> {
     const body = new FormData();
     body.append('file', file, file.name);
-    return this.http.post<string>(`${this.baseUrl}/${studentId}/documents/${documentId}/versions`, body);
+    return this.http.post<string>(
+      `${this.baseUrl}/${studentId}/documents/${documentId}/versions`,
+      body,
+    );
   }
 
-  validateDocument(studentId: string, documentId: string, request: ValidateStudentDocumentRequest): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${studentId}/documents/${documentId}/validation`, request);
+  validateDocument(
+    studentId: string,
+    documentId: string,
+    request: ValidateStudentDocumentRequest,
+  ): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}/${studentId}/documents/${documentId}/validation`,
+      request,
+    );
   }
 
   shareDocument(studentId: string, documentId: string, visibility: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${studentId}/documents/${documentId}/share`, { visibility });
+    return this.http.post<void>(`${this.baseUrl}/${studentId}/documents/${documentId}/share`, {
+      visibility,
+    });
   }
 
   archiveDocument(studentId: string, documentId: string, reason: string): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${studentId}/documents/${documentId}/archive`, { reason });
+    return this.http.post<void>(`${this.baseUrl}/${studentId}/documents/${documentId}/archive`, {
+      reason,
+    });
   }
 
   downloadDocument(studentId: string, documentId: string): Observable<Blob> {
@@ -332,7 +385,10 @@ export class StudentsApiService {
     return this.http.post<string>(`${this.baseUrl}/${studentId}/branches/assignments`, request);
   }
 
-  analyzePrimaryBranchChange(studentId: string, targetBranchId: string): Observable<PrimaryBranchChangeAnalysis> {
+  analyzePrimaryBranchChange(
+    studentId: string,
+    targetBranchId: string,
+  ): Observable<PrimaryBranchChangeAnalysis> {
     return this.http.post<PrimaryBranchChangeAnalysis>(
       `${this.baseUrl}/${studentId}/branches/primary-change/analysis`,
       { targetBranchId },
@@ -343,7 +399,11 @@ export class StudentsApiService {
     return this.http.post<void>(`${this.baseUrl}/${studentId}/branches/primary-change`, request);
   }
 
-  endStudentBranchAssignment(studentId: string, assignmentId: string, reason: string): Observable<void> {
+  endStudentBranchAssignment(
+    studentId: string,
+    assignmentId: string,
+    reason: string,
+  ): Observable<void> {
     return this.http.post<void>(
       `${this.baseUrl}/${studentId}/branches/assignments/${assignmentId}/end`,
       { reason },
@@ -378,7 +438,10 @@ export class StudentsApiService {
     studentId: string,
     request: ReplacePrimaryInstructorRequest,
   ): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${studentId}/instructors/primary/replace`, request);
+    return this.http.post<void>(
+      `${this.baseUrl}/${studentId}/instructors/primary/replace`,
+      request,
+    );
   }
 
   endStudentInstructorAssignment(
@@ -515,7 +578,6 @@ export class StudentsApiService {
       `${this.baseUrl}/${studentId}/suspension`,
     );
   }
-
 
   suspendEnrollment(studentId: string, request: SuspendEnrollmentRequest): Observable<string> {
     return this.http.post<string>(`${this.baseUrl}/${studentId}/suspension`, request);

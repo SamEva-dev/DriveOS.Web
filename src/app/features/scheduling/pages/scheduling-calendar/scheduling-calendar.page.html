@@ -1,0 +1,622 @@
+<section class="space-y-5 pb-8">
+  <header
+    class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-4 shadow-sm sm:p-5"
+  >
+    <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-[.18em] text-blue-700">
+          {{ 'scheduling.calendar.eyebrow' | translate }}
+        </p>
+        <h1 class="mt-1 text-2xl font-bold text-[var(--driveos-text-primary)]">
+          {{ contextTitleKey() | translate }}
+        </h1>
+        <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+          {{ contextSubtitleKey() | translate }}
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <drive-os-button
+          variant="outline"
+          icon="funnel"
+          (pressed)="filtersOpen.set(true)"
+        >
+          {{ 'scheduling.calendar.filters' | translate }}
+          @if (activeFilterCount()) {
+            <span class="rounded-full bg-blue-700 px-2 py-0.5 text-xs text-white">
+              {{ activeFilterCount() }}
+            </span>
+          }
+        </drive-os-button>
+        @if (canCreate()) {
+          <drive-os-button
+            icon="plus"
+            (pressed)="openCreateBooking()"
+          >
+            {{ 'scheduling.calendar.create' | translate }}
+          </drive-os-button>
+        }
+      </div>
+    </div>
+
+    <div class="mt-5 border-t border-[var(--driveos-border)] pt-4">
+      <div class="flex gap-1 overflow-x-auto rounded-xl bg-[var(--driveos-surface-muted)] p-1">
+        @for (
+          item of [
+            { key: 'global', icon: 'ph ph-globe-hemisphere-west' },
+            { key: 'instructors', icon: 'ph ph-chalkboard-teacher' },
+            { key: 'vehicles', icon: 'ph ph-car-profile' },
+            { key: 'students', icon: 'ph ph-student' },
+          ];
+          track item.key
+        ) {
+          <button
+            class="flex min-h-10 shrink-0 items-center gap-2 rounded-lg px-3.5 text-sm font-bold transition"
+            [class.bg-white]="dimension() === item.key"
+            [class.text-blue-800]="dimension() === item.key"
+            [class.shadow-sm]="dimension() === item.key"
+            (click)="setDimension($any(item.key))"
+          >
+            <i [class]="item.icon"></i>
+            {{ 'scheduling.calendar.context.tabs.' + item.key | translate }}
+          </button>
+        }
+      </div>
+
+      @if (dimension() !== 'global') {
+        <div class="mt-4 grid gap-3 lg:grid-cols-[minmax(260px,360px)_1fr] lg:items-end">
+          <label class="block">
+            <span
+              class="text-xs font-bold uppercase tracking-[.12em] text-[var(--driveos-text-secondary)]"
+            >
+              {{ 'scheduling.calendar.context.' + dimension() + '.selectorLabel' | translate }}
+            </span>
+            <select
+              class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-2.5 text-sm font-semibold"
+              [value]="selectedContextResourceId() ?? ''"
+              (change)="selectContextResource($any($event.target).value)"
+            >
+              @for (resource of contextResources(); track resource.id) {
+                <option [value]="resource.id">{{ resource.displayName }}</option>
+              }
+            </select>
+          </label>
+
+          @if (selectedContextResource(); as resource) {
+            <div
+              class="flex min-w-0 flex-wrap items-center gap-2 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-muted)] px-3 py-2.5"
+            >
+              <span
+                class="grid size-9 shrink-0 place-items-center rounded-xl bg-blue-800 text-white"
+              >
+                <i [class]="contextIcon()"></i>
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="truncate text-sm font-black text-[var(--driveos-text-primary)]">
+                  {{ resource.displayName }}
+                </div>
+                <div
+                  class="mt-0.5 flex flex-wrap gap-x-3 text-xs text-[var(--driveos-text-secondary)]"
+                >
+                  <span>{{ resourceTypeKey(resource.resourceType) | translate }}</span>
+                  @if (resource.branchId) {
+                    <span>
+                      {{ 'scheduling.calendar.context.branchReference' | translate }}
+                      {{ resource.branchId }}
+                    </span>
+                  }
+                  <span>{{ resourceStatusKey(resource.status) | translate }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="mt-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-center gap-2">
+        <button
+          class="size-9 rounded-xl border border-[var(--driveos-border)] hover:bg-[var(--driveos-surface-hover)]"
+          (click)="previous()"
+          [attr.aria-label]="'common.previous' | translate"
+        >
+          <i class="ph ph-caret-left"></i>
+        </button>
+        <button
+          class="h-9 rounded-xl border border-[var(--driveos-border)] px-3 text-sm font-semibold hover:bg-[var(--driveos-surface-hover)]"
+          (click)="today()"
+        >
+          {{ 'scheduling.calendar.today' | translate }}
+        </button>
+        <button
+          class="size-9 rounded-xl border border-[var(--driveos-border)] hover:bg-[var(--driveos-surface-hover)]"
+          (click)="next()"
+          [attr.aria-label]="'common.next' | translate"
+        >
+          <i class="ph ph-caret-right"></i>
+        </button>
+        <div class="ml-2 min-w-44 text-sm font-bold text-[var(--driveos-text-primary)]">
+          {{ anchorDate() | date: 'MMMM yyyy' }}
+        </div>
+      </div>
+      <div class="flex overflow-x-auto rounded-xl bg-[var(--driveos-surface-muted)] p-1">
+        @for (mode of ['day', 'week', 'month', 'agenda', 'resources']; track mode) {
+          <button
+            class="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold transition"
+            [class.bg-white]="view() === mode"
+            [class.text-blue-800]="view() === mode"
+            [class.shadow-sm]="view() === mode"
+            (click)="setView($any(mode))"
+          >
+            {{ 'scheduling.calendar.views.' + mode | translate }}
+          </button>
+        }
+      </div>
+    </div>
+  </header>
+
+  @if (dimension() !== 'global') {
+    @if (selectedContextResource(); as resource) {
+      <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-4 shadow-sm"
+        >
+          <div class="flex items-center justify-between gap-3">
+            <span
+              class="text-xs font-bold uppercase tracking-[.12em] text-[var(--driveos-text-secondary)]"
+            >
+              {{ 'scheduling.calendar.context.metrics.plannedHours' | translate }}
+            </span>
+            <i class="ph ph-clock text-lg text-blue-700"></i>
+          </div>
+          <div class="mt-2 text-2xl font-black text-[var(--driveos-text-primary)]">
+            {{ scheduledHours() }} h
+          </div>
+          <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+            {{ 'scheduling.calendar.context.metrics.currentWindow' | translate }}
+          </p>
+        </article>
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-4 shadow-sm"
+        >
+          <div class="flex items-center justify-between gap-3">
+            <span
+              class="text-xs font-bold uppercase tracking-[.12em] text-[var(--driveos-text-secondary)]"
+            >
+              {{ 'scheduling.calendar.context.metrics.sessions' | translate }}
+            </span>
+            <i class="ph ph-calendar-check text-lg text-blue-700"></i>
+          </div>
+          <div class="mt-2 text-2xl font-black text-[var(--driveos-text-primary)]">
+            {{ contextBookings().length }}
+          </div>
+          <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+            {{ upcomingContextBookings().length }}
+            {{ 'scheduling.calendar.context.metrics.upcoming' | translate }}
+          </p>
+        </article>
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-4 shadow-sm"
+        >
+          <div class="flex items-center justify-between gap-3">
+            <span
+              class="text-xs font-bold uppercase tracking-[.12em] text-[var(--driveos-text-secondary)]"
+            >
+              {{ 'scheduling.calendar.context.metrics.cancelled' | translate }}
+            </span>
+            <i class="ph ph-x-circle text-lg text-orange-600"></i>
+          </div>
+          <div class="mt-2 text-2xl font-black text-[var(--driveos-text-primary)]">
+            {{ contextCancelledCount() }}
+          </div>
+          <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+            {{ 'scheduling.calendar.context.metrics.currentWindow' | translate }}
+          </p>
+        </article>
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-4 shadow-sm"
+        >
+          <div class="flex items-center justify-between gap-3">
+            <span
+              class="text-xs font-bold uppercase tracking-[.12em] text-[var(--driveos-text-secondary)]"
+            >
+              {{ 'scheduling.calendar.context.metrics.resourceState' | translate }}
+            </span>
+            <i
+              class="ph ph-warning-diamond text-lg"
+              [class.text-rose-600]="contextAlertCount()"
+              [class.text-emerald-600]="!contextAlertCount()"
+            ></i>
+          </div>
+          <div class="mt-2 text-lg font-black text-[var(--driveos-text-primary)]">
+            {{ resourceStatusKey(resource.status) | translate }}
+          </div>
+          <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+            @if (resource.unavailabilityReason) {
+              {{ resource.unavailabilityReason }}
+            } @else if (resource.restrictionReason) {
+              {{ resource.restrictionReason }}
+            } @else {
+              {{ 'scheduling.calendar.context.metrics.noOperationalAlert' | translate }}
+            }
+          </p>
+        </article>
+      </section>
+
+      @if (dimension() === 'instructors') {
+        <drive-os-state-banner
+          tone="info"
+          [title]="'scheduling.calendar.context.instructors.scopeNote' | translate"
+        />
+      } @else if (dimension() === 'vehicles') {
+        <drive-os-state-banner
+          tone="info"
+          [title]="'scheduling.calendar.context.vehicles.scopeNote' | translate"
+        />
+      } @else if (dimension() === 'students') {
+        <drive-os-state-banner
+          tone="info"
+          [title]="'scheduling.calendar.context.students.scopeNote' | translate"
+        />
+      }
+    }
+  }
+
+  @for (error of errors(); track error) {
+    <drive-os-state-banner
+      tone="danger"
+      [title]="error"
+    />
+  }
+
+  @if (loading()) {
+    <div class="flex min-h-96 items-center justify-center"><drive-os-spinner /></div>
+  } @else if (!contextBookings().length) {
+    <drive-os-empty-state
+      icon="calendar-x"
+      [title]="'scheduling.calendar.empty' | translate"
+    />
+  } @else {
+    @if (view() === 'agenda') {
+      <div class="space-y-3">
+        @for (day of visibleDays(); track day.iso) {
+          @if (bookingsForDay(day).length) {
+            <section
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-4"
+            >
+              <h2 class="mb-3 text-sm font-bold text-[var(--driveos-text-primary)]">
+                {{ day.date | date: 'EEEE d MMMM' }}
+              </h2>
+              <div class="space-y-2">
+                @for (booking of bookingsForDay(day); track booking.id) {
+                  <button
+                    class="flex w-full items-start gap-4 rounded-xl border border-[var(--driveos-border)] p-3 text-left transition hover:border-blue-300 hover:bg-blue-50/40 dark:hover:bg-blue-950/20"
+                    (click)="openBooking(booking)"
+                  >
+                    <div class="w-16 shrink-0 text-sm font-bold">
+                      {{ booking.startAtUtc | date: 'HH:mm' }}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="font-semibold">{{ booking.title }}</div>
+                      <div class="mt-1 truncate text-xs text-[var(--driveos-text-secondary)]">
+                        {{ bookingResourceNames(booking) }}
+                      </div>
+                    </div>
+                    <span
+                      class="rounded-full px-2 py-1 text-xs font-semibold"
+                      [class]="statusClass(booking.status)"
+                    >
+                      {{ bookingStatusKey(booking.status) | translate }}
+                    </span>
+                  </button>
+                }
+              </div>
+            </section>
+          }
+        }
+      </div>
+    } @else if (view() === 'resources') {
+      <div class="space-y-3">
+        @for (
+          resource of dimension() === 'global' ? resources() : contextResources();
+          track resource.id
+        ) {
+          <section
+            class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-4"
+          >
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <h2 class="font-bold">{{ resource.displayName }}</h2>
+                <p class="text-xs text-[var(--driveos-text-secondary)]">
+                  {{ resourceTypeKey(resource.resourceType) | translate }}
+                </p>
+              </div>
+              <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
+                {{ bookingsForResource(resource.id).length }}
+              </span>
+            </div>
+            <div class="mt-3 flex gap-2 overflow-x-auto pb-1">
+              @for (booking of bookingsForResource(resource.id); track booking.id) {
+                <button
+                  class="min-w-52 rounded-xl border border-[var(--driveos-border)] p-3 text-left hover:border-blue-300 hover:bg-blue-50/40"
+                  (click)="openBooking(booking)"
+                >
+                  <div class="text-xs font-bold">
+                    {{ booking.startAtUtc | date: 'dd/MM · HH:mm' }}
+                  </div>
+                  <div class="mt-1 truncate text-sm font-semibold">{{ booking.title }}</div>
+                  <div class="mt-1 text-[11px] text-[var(--driveos-text-secondary)]">
+                    {{ bookingStatusKey(booking.status) | translate }}
+                  </div>
+                </button>
+              } @empty {
+                <span class="text-sm text-[var(--driveos-text-secondary)]">
+                  {{ 'scheduling.calendar.noBookingForResource' | translate }}
+                </span>
+              }
+            </div>
+          </section>
+        }
+      </div>
+    } @else {
+      <div
+        class="overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] shadow-sm"
+      >
+        <div
+          class="grid"
+          [style.grid-template-columns]="
+            'repeat(' + (view() === 'month' ? 7 : visibleDays().length) + ', minmax(0,1fr))'
+          "
+        >
+          @for (
+            day of view() === 'month' ? visibleDays().slice(0, 7) : visibleDays();
+            track day.iso
+          ) {
+            <div class="border-b border-r border-[var(--driveos-border)] px-2 py-3 text-center">
+              <div class="text-[11px] font-semibold uppercase text-[var(--driveos-text-secondary)]">
+                {{ day.shortKey | translate }}
+              </div>
+              <div
+                class="mx-auto mt-1 flex size-8 items-center justify-center rounded-full text-sm font-bold"
+                [class.bg-blue-800]="isToday(day)"
+                [class.text-white]="isToday(day)"
+              >
+                {{ day.dayNumber }}
+              </div>
+            </div>
+          }
+        </div>
+        <div
+          class="grid"
+          [style.grid-template-columns]="
+            'repeat(' + (view() === 'month' ? 7 : visibleDays().length) + ', minmax(0,1fr))'
+          "
+        >
+          @for (day of visibleDays(); track day.iso) {
+            <div
+              class="min-h-36 border-b border-r border-[var(--driveos-border)] p-2"
+              [class.bg-blue-50/40]="isToday(day)"
+            >
+              @if (view() === 'month') {
+                <div class="mb-2 text-xs font-bold text-[var(--driveos-text-secondary)]">
+                  {{ day.dayNumber }}
+                </div>
+              }
+              <div class="space-y-1.5">
+                @for (booking of bookingsForDay(day); track booking.id) {
+                  <button
+                    class="w-full rounded-lg border-l-4 p-2 text-left text-xs shadow-sm transition hover:-translate-y-px hover:shadow-md"
+                    [class]="statusClass(booking.status)"
+                    (click)="openBooking(booking)"
+                  >
+                    <div class="font-bold">
+                      {{ booking.startAtUtc | date: 'HH:mm' }} · {{ booking.title }}
+                    </div>
+                    @if (view() !== 'month') {
+                      <div class="mt-1 line-clamp-2 text-[11px] text-slate-600">
+                        {{ bookingResourceNames(booking) }}
+                      </div>
+                    }
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+</section>
+
+<drive-os-drawer
+  [open]="detailsOpen()"
+  size="lg"
+  [title]="selectedBooking()?.title ?? ('scheduling.calendar.details.title' | translate)"
+  [description]="'scheduling.calendar.details.subtitle' | translate"
+  (closeRequested)="closeDetails()"
+>
+  @if (selectedBooking(); as booking) {
+    <div class="space-y-6 p-6">
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div class="rounded-xl bg-[var(--driveos-surface-muted)] p-3">
+          <div class="text-xs text-[var(--driveos-text-secondary)]">
+            {{ 'scheduling.calendar.details.start' | translate }}
+          </div>
+          <div class="mt-1 font-bold">{{ booking.startAtUtc | date: 'dd/MM HH:mm' }}</div>
+        </div>
+        <div class="rounded-xl bg-[var(--driveos-surface-muted)] p-3">
+          <div class="text-xs text-[var(--driveos-text-secondary)]">
+            {{ 'scheduling.calendar.details.end' | translate }}
+          </div>
+          <div class="mt-1 font-bold">{{ booking.endAtUtc | date: 'dd/MM HH:mm' }}</div>
+        </div>
+        <div class="rounded-xl bg-[var(--driveos-surface-muted)] p-3">
+          <div class="text-xs text-[var(--driveos-text-secondary)]">
+            {{ 'scheduling.calendar.details.status' | translate }}
+          </div>
+          <div class="mt-1 font-bold">{{ bookingStatusKey(booking.status) | translate }}</div>
+        </div>
+        <div class="rounded-xl bg-[var(--driveos-surface-muted)] p-3">
+          <div class="text-xs text-[var(--driveos-text-secondary)]">
+            {{ 'scheduling.calendar.details.type' | translate }}
+          </div>
+          <div class="mt-1 font-bold">{{ bookingTypeKey(booking.bookingType) | translate }}</div>
+        </div>
+      </div>
+      <section>
+        <h3 class="text-sm font-bold">{{ 'scheduling.calendar.details.resources' | translate }}</h3>
+        <div class="mt-2 space-y-2">
+          @for (resource of booking.resources; track resource.id) {
+            <div
+              class="flex items-center justify-between rounded-xl border border-[var(--driveos-border)] p-3"
+            >
+              <span>{{ resourceName(resource.calendarResourceId) }}</span>
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                × {{ resource.quantity }}
+              </span>
+            </div>
+          }
+        </div>
+      </section>
+      <section>
+        <h3 class="text-sm font-bold">
+          {{ 'scheduling.calendar.details.participants' | translate }}
+        </h3>
+        <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+          {{ booking.participants.length }}
+          {{ 'scheduling.calendar.details.participantsCount' | translate }}
+        </p>
+      </section>
+    </div>
+    <div
+      driveOsDrawerFooter
+      class="flex flex-wrap justify-end gap-2"
+    >
+      @if (canTakeAttendance(booking)) {
+        <drive-os-button
+          variant="outline"
+          (pressed)="openAttendance(booking)"
+        >
+          {{ 'scheduling.calendar.actions.attendance' | translate }}
+        </drive-os-button>
+      }
+      @if (canReplaceInstructor()) {
+        <drive-os-button
+          variant="outline"
+          (pressed)="openInstructorReplacement(booking)"
+        >
+          {{ 'scheduling.calendar.actions.replaceInstructor' | translate }}
+        </drive-os-button>
+      }
+      @if (canReplaceVehicle()) {
+        <drive-os-button
+          variant="outline"
+          (pressed)="openVehicleReplacement(booking)"
+        >
+          {{ 'scheduling.calendar.actions.replaceVehicle' | translate }}
+        </drive-os-button>
+      }
+      @if (canTravel()) {
+        <drive-os-button
+          variant="outline"
+          (pressed)="openTravel(booking)"
+        >
+          {{ 'scheduling.calendar.actions.travel' | translate }}
+        </drive-os-button>
+      }
+      @if (canCancel()) {
+        <drive-os-button
+          variant="danger"
+          (pressed)="openCancel(booking)"
+        >
+          {{ 'scheduling.calendar.actions.cancel' | translate }}
+        </drive-os-button>
+      }
+      @if (canReschedule()) {
+        <drive-os-button
+          variant="outline"
+          (pressed)="openReschedule(booking)"
+        >
+          {{ 'scheduling.calendar.actions.reschedule' | translate }}
+        </drive-os-button>
+      }
+      @if (canConfirm() && booking.status === 2) {
+        <drive-os-button>{{ 'scheduling.calendar.actions.confirm' | translate }}</drive-os-button>
+      }
+    </div>
+  }
+</drive-os-drawer>
+
+<drive-os-drawer
+  [open]="filtersOpen()"
+  size="sm"
+  [title]="'scheduling.calendar.filtersDrawer.title' | translate"
+  [description]="'scheduling.calendar.filtersDrawer.subtitle' | translate"
+  (closeRequested)="closeFilters()"
+>
+  <div class="space-y-5 p-6">
+    <label class="block">
+      <span class="text-sm font-semibold">{{ 'scheduling.calendar.search' | translate }}</span>
+      <input
+        class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+        [value]="query()"
+        (input)="onQuery($any($event.target).value)"
+      />
+    </label>
+    <label class="block">
+      <span class="text-sm font-semibold">{{ 'scheduling.calendar.status' | translate }}</span>
+      <select
+        class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-2.5"
+        (change)="onStatusChange($any($event.target).value)"
+      >
+        <option value="">{{ 'common.all' | translate }}</option>
+        @for (status of [1, 2, 3, 4, 5]; track status) {
+          <option [value]="status">{{ bookingStatusKey(status) | translate }}</option>
+        }
+      </select>
+    </label>
+    <label class="block">
+      <span class="text-sm font-semibold">{{ 'scheduling.calendar.branch' | translate }}</span>
+      <select
+        class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-2.5"
+        (change)="onBranchChange($any($event.target).value)"
+      >
+        <option value="">{{ 'common.all' | translate }}</option>
+        @for (branch of branches(); track branch) {
+          <option [value]="branch">{{ branch }}</option>
+        }
+      </select>
+    </label>
+    <label class="block">
+      <span class="text-sm font-semibold">{{ 'scheduling.calendar.resource' | translate }}</span>
+      <select
+        class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-2.5"
+        (change)="onResourceChange($any($event.target).value)"
+      >
+        <option value="">{{ 'common.all' | translate }}</option>
+        @for (resource of resources(); track resource.id) {
+          <option [value]="resource.id">{{ resource.displayName }}</option>
+        }
+      </select>
+    </label>
+  </div>
+  <div
+    driveOsDrawerFooter
+    class="flex justify-between gap-2"
+  >
+    <drive-os-button
+      variant="ghost"
+      (pressed)="clearFilters()"
+    >
+      {{ 'common.reset' | translate }}
+    </drive-os-button>
+    <drive-os-button (pressed)="closeFilters()">{{ 'common.apply' | translate }}</drive-os-button>
+  </div>
+</drive-os-drawer>
+
+<driveos-booking-create-drawer
+  [open]="createBookingOpen()"
+  [resources]="resources()"
+  (closeRequested)="closeCreateBooking()"
+  (bookingCreated)="onBookingCreated()"
+/>

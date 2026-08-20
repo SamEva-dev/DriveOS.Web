@@ -254,39 +254,33 @@ export class OfferCreatePage {
       validUntil: this.dateInDays(30),
     });
     this.addLine('InitialAssessment');
-    this.lines
-      .at(0)
-      .patchValue({
-        description: this.translate.instant('crm.offers.defaults.assessment'),
-        mandatory: true,
-      });
+    this.lines.at(0).patchValue({
+      description: this.translate.instant('crm.offers.defaults.assessment'),
+      mandatory: true,
+    });
     const hours = Number(content?.['practicalHoursMin'] ?? 0);
     if (hours > 0) {
       this.addLine('PracticalLesson');
-      this.lines
-        .at(1)
-        .patchValue({
-          description: this.translate.instant('crm.offers.defaults.practical'),
-          quantity: hours,
-          unit: 'hour',
-          mandatory: true,
-        });
+      this.lines.at(1).patchValue({
+        description: this.translate.instant('crm.offers.defaults.practical'),
+        quantity: hours,
+        unit: 'hour',
+        mandatory: true,
+      });
     }
   }
 
   private lineValues(): CommercialOfferLineDraft[] {
-    return this.lines
-      .getRawValue()
-      .map((line: any) => ({
-        ...line,
-        serviceId: line.serviceId.trim() || null,
-        description: line.description.trim(),
-        quantity: Number(line.quantity),
-        unitPrice: Number(line.unitPrice),
-        discountAmount: Number(line.discountAmount),
-        taxRate: Number(line.taxRate),
-        manualOverrideReason: line.manualOverrideReason.trim() || null,
-      }));
+    return this.lines.getRawValue().map((line: any) => ({
+      ...line,
+      serviceId: line.serviceId.trim() || null,
+      description: line.description.trim(),
+      quantity: Number(line.quantity),
+      unitPrice: Number(line.unitPrice),
+      discountAmount: Number(line.discountAmount),
+      taxRate: Number(line.taxRate),
+      manualOverrideReason: line.manualOverrideReason.trim() || null,
+    }));
   }
   private manualReasonsValid(): boolean {
     return this.lineValues().every(

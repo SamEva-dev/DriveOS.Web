@@ -7,14 +7,24 @@ import { StudentFinancialOverview } from '../../models/student-financial-overvie
 import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/driveos-empty-state.component';
 import { DriveOsSpinnerComponent } from '../../../../shared/ui/spinner/driveos-spinner.component';
 import { DriveOsStateBannerComponent } from '../../../../shared/ui/state-banner/driveos-state-banner.component';
-import { DriveOsStatusBadgeComponent, DriveOsStatusTone } from '../../../../shared/ui/status-badge/driveos-status-badge.component';
+import {
+  DriveOsStatusBadgeComponent,
+  DriveOsStatusTone,
+} from '../../../../shared/ui/status-badge/driveos-status-badge.component';
 
 type FinanceSection = 'overview' | 'invoices' | 'payments' | 'funding' | 'credits' | 'adjustments';
 
 @Component({
   selector: 'driveos-student-finance-page',
   standalone: true,
-  imports: [DatePipe, TranslatePipe, DriveOsEmptyStateComponent, DriveOsSpinnerComponent, DriveOsStateBannerComponent, DriveOsStatusBadgeComponent],
+  imports: [
+    DatePipe,
+    TranslatePipe,
+    DriveOsEmptyStateComponent,
+    DriveOsSpinnerComponent,
+    DriveOsStateBannerComponent,
+    DriveOsStatusBadgeComponent,
+  ],
   templateUrl: './student-finance.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -26,31 +36,59 @@ export class StudentFinancePage {
   readonly loading = signal(true);
   readonly error = signal(false);
   readonly section = signal<FinanceSection>('overview');
-  readonly sections: readonly FinanceSection[] = ['overview', 'invoices', 'payments', 'funding', 'credits', 'adjustments'];
+  readonly sections: readonly FinanceSection[] = [
+    'overview',
+    'invoices',
+    'payments',
+    'funding',
+    'credits',
+    'adjustments',
+  ];
   readonly alertCount = computed(() => {
     const a = this.data()?.alerts;
-    return a ? a.overdueInvoiceCount + a.overdueInstallmentCount + a.failedPaymentCount + a.pendingFundingDecisionCount + a.pendingRefundCount : 0;
+    return a
+      ? a.overdueInvoiceCount +
+          a.overdueInstallmentCount +
+          a.failedPaymentCount +
+          a.pendingFundingDecisionCount +
+          a.pendingRefundCount
+      : 0;
   });
 
-  constructor() { this.load(); }
+  constructor() {
+    this.load();
+  }
 
   load(): void {
-    this.loading.set(true); this.error.set(false);
+    this.loading.set(true);
+    this.error.set(false);
     this.api.getStudentFinancialOverview(this.studentId).subscribe({
-      next: (value) => { this.data.set(value); this.loading.set(false); },
-      error: () => { this.error.set(true); this.loading.set(false); },
+      next: (value) => {
+        this.data.set(value);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.error.set(true);
+        this.loading.set(false);
+      },
     });
   }
 
   money(value: number, currency?: string): string {
-    return new Intl.NumberFormat(undefined, { style: 'currency', currency: currency || this.data()?.currency || 'EUR' }).format(value ?? 0);
+    return new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: currency || this.data()?.currency || 'EUR',
+    }).format(value ?? 0);
   }
 
   statusTone(status: string): DriveOsStatusTone {
     const value = status.toLowerCase();
     if (['paid', 'approved', 'active', 'completed', 'issued'].includes(value)) return 'success';
     if (['overdue', 'failed', 'rejected', 'cancelled'].includes(value)) return 'danger';
-    if (['pending', 'processing', 'partiallypaid', 'partiallyapproved', 'requested'].includes(value)) return 'warning';
+    if (
+      ['pending', 'processing', 'partiallypaid', 'partiallyapproved', 'requested'].includes(value)
+    )
+      return 'warning';
     return 'neutral';
   }
 }

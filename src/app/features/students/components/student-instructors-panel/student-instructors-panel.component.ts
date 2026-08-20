@@ -1,12 +1,23 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
 import { ApiErrorService } from '../../../../core/errors/api-error.service';
-import { DriveOsBadgeComponent, DriveOsBadgeVariant } from '../../../../shared/ui/badge/driveos-badge.component';
+import {
+  DriveOsBadgeComponent,
+  DriveOsBadgeVariant,
+} from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsButtonComponent } from '../../../../shared/ui/button/driveos-button.component';
 import { DriveOsCardComponent } from '../../../../shared/ui/card/driveos-card.component';
 import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/driveos-empty-state.component';
@@ -69,10 +80,14 @@ export class StudentInstructorsPanelComponent {
   readonly canAssign = computed(() => this.hasPermission(STUDENT_PERMISSIONS.instructorsAssign));
   readonly canReplace = computed(() => this.hasPermission(STUDENT_PERMISSIONS.instructorsReplace));
   readonly activeAssignments = computed(() =>
-    this.instructors().assignments.filter((item) => item.status === 'Active' || item.status === 'Planned'),
+    this.instructors().assignments.filter(
+      (item) => item.status === 'Active' || item.status === 'Planned',
+    ),
   );
   readonly pastAssignments = computed(() =>
-    this.instructors().assignments.filter((item) => item.status !== 'Active' && item.status !== 'Planned'),
+    this.instructors().assignments.filter(
+      (item) => item.status !== 'Active' && item.status !== 'Planned',
+    ),
   );
 
   readonly searchForm = this.fb.nonNullable.group({
@@ -172,11 +187,17 @@ export class StudentInstructorsPanelComponent {
     const action = this.action();
     const category = suggestion.trainingCategory || this.searchForm.getRawValue().trainingCategory;
     if (action?.type === 'replacePrimary') {
-      this.replaceForm.patchValue({ instructorId: suggestion.instructorId, trainingCategory: category });
+      this.replaceForm.patchValue({
+        instructorId: suggestion.instructorId,
+        trainingCategory: category,
+      });
       return;
     }
     if (action?.type !== 'assign') this.openAssign();
-    this.assignForm.patchValue({ instructorId: suggestion.instructorId, trainingCategory: category });
+    this.assignForm.patchValue({
+      instructorId: suggestion.instructorId,
+      trainingCategory: category,
+    });
   }
 
   assign(): void {
@@ -239,7 +260,10 @@ export class StudentInstructorsPanelComponent {
   }
 
   instructorLabel(instructorId: string): string {
-    return this.suggestions().find((item) => item.instructorId === instructorId)?.displayName || instructorId;
+    return (
+      this.suggestions().find((item) => item.instructorId === instructorId)?.displayName ||
+      instructorId
+    );
   }
 
   statusVariant(status: string): DriveOsBadgeVariant {
@@ -257,16 +281,43 @@ export class StudentInstructorsPanelComponent {
   }
 
   availabilityLabel(status: string | number): string {
-    const normalized = typeof status === 'number'
-      ? ({ 1: 'available', 2: 'unavailable', 3: 'notEvaluated', 4: 'warning' } as Record<number, string>)[status]
-      : status.charAt(0).toLowerCase() + status.slice(1);
-    return this.translate.instant(`students.assignments.instructors.availability.${normalized || 'notEvaluated'}`);
+    const normalized =
+      typeof status === 'number'
+        ? (
+            { 1: 'available', 2: 'unavailable', 3: 'notEvaluated', 4: 'warning' } as Record<
+              number,
+              string
+            >
+          )[status]
+        : status.charAt(0).toLowerCase() + status.slice(1);
+    return this.translate.instant(
+      `students.assignments.instructors.availability.${normalized || 'notEvaluated'}`,
+    );
   }
 
   assignmentTypeLabel(type: string | number): string {
-    const key = typeof type === 'number'
-      ? ({ 1: 'primary', 2: 'secondary', 3: 'temporaryReplacement', 4: 'specialist', 5: 'examAccompanist', 6: 'partner' } as Record<number, string>)[type]
-      : ({ PrimaryInstructor: 'primary', SecondaryInstructor: 'secondary', TemporaryReplacement: 'temporaryReplacement', SpecialistInstructor: 'specialist', ExamAccompanist: 'examAccompanist', PartnerInstructor: 'partner' } as Record<string, string>)[type];
+    const key =
+      typeof type === 'number'
+        ? (
+            {
+              1: 'primary',
+              2: 'secondary',
+              3: 'temporaryReplacement',
+              4: 'specialist',
+              5: 'examAccompanist',
+              6: 'partner',
+            } as Record<number, string>
+          )[type]
+        : (
+            {
+              PrimaryInstructor: 'primary',
+              SecondaryInstructor: 'secondary',
+              TemporaryReplacement: 'temporaryReplacement',
+              SpecialistInstructor: 'specialist',
+              ExamAccompanist: 'examAccompanist',
+              PartnerInstructor: 'partner',
+            } as Record<string, string>
+          )[type];
     return this.translate.instant(`students.assignments.instructors.types.${key || 'secondary'}`);
   }
 
@@ -274,8 +325,21 @@ export class StudentInstructorsPanelComponent {
     const numeric = typeof scope === 'number' ? scope : Number(scope);
     const key = Number.isFinite(numeric)
       ? String(numeric)
-      : ({ StudentRead: '1', SessionsRead: '2', PedagogyRead: '4', Theory: '8', Practical: '16', Simulator: '32', Exam: '64', All: '127' } as Record<string, string>)[String(scope)];
-    return key ? this.translate.instant(`students.assignments.instructors.scopes.${key}`) : String(scope);
+      : (
+          {
+            StudentRead: '1',
+            SessionsRead: '2',
+            PedagogyRead: '4',
+            Theory: '8',
+            Practical: '16',
+            Simulator: '32',
+            Exam: '64',
+            All: '127',
+          } as Record<string, string>
+        )[String(scope)];
+    return key
+      ? this.translate.instant(`students.assignments.instructors.scopes.${key}`)
+      : String(scope);
   }
 
   private run(operation: Observable<unknown>, feedbackKey: string): void {

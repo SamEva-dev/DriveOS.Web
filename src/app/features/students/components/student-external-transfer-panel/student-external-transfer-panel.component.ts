@@ -1,11 +1,22 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
 import { ApiErrorService } from '../../../../core/errors/api-error.service';
-import { DriveOsBadgeComponent, DriveOsBadgeVariant } from '../../../../shared/ui/badge/driveos-badge.component';
+import {
+  DriveOsBadgeComponent,
+  DriveOsBadgeVariant,
+} from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsButtonComponent } from '../../../../shared/ui/button/driveos-button.component';
 import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/driveos-empty-state.component';
 import { DriveOsInputDirective } from '../../../../shared/ui/input/driveos-input.directive';
@@ -15,7 +26,10 @@ import { StudentsApiService } from '../../data-access/students-api.service';
 import { STUDENT_PERMISSIONS } from '../../domain/student-permissions';
 import { ExternalTransfer, ExternalTransferPreconditions } from '../../models/student.models';
 
-interface ScopeOption { value: number; labelKey: string; }
+interface ScopeOption {
+  value: number;
+  labelKey: string;
+}
 
 @Component({
   selector: 'driveos-student-external-transfer-panel',
@@ -82,7 +96,10 @@ export class StudentExternalTransferPanelComponent {
     temporaryUntil: [''],
     countryCode: ['FR', [Validators.required, Validators.minLength(2), Validators.maxLength(2)]],
     reason: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(1000)]],
-    responsibilities: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(2000)]],
+    responsibilities: [
+      '',
+      [Validators.required, Validators.minLength(3), Validators.maxLength(2000)],
+    ],
   });
   readonly consentForm = this.fb.nonNullable.group({
     evidenceReference: ['', [Validators.required, Validators.maxLength(500)]],
@@ -113,121 +130,216 @@ export class StudentExternalTransferPanelComponent {
   openCreate(): void {
     this.selectedScope.set(2047);
     this.createForm.reset({
-      targetOrganizationId: '', type: 1, effectiveOn: this.today(), temporaryUntil: '',
-      countryCode: 'FR', reason: '', responsibilities: '',
+      targetOrganizationId: '',
+      type: 1,
+      effectiveOn: this.today(),
+      temporaryUntil: '',
+      countryCode: 'FR',
+      reason: '',
+      responsibilities: '',
     });
     this.editorOpen.set(true);
   }
-  cancelCreate(): void { this.editorOpen.set(false); }
+  cancelCreate(): void {
+    this.editorOpen.set(false);
+  }
   toggleScope(value: number): void {
     const current = this.selectedScope();
     this.selectedScope.set((current & value) === value ? current & ~value : current | value);
   }
-  scopeSelected(value: number): boolean { return (this.selectedScope() & value) === value; }
+  scopeSelected(value: number): boolean {
+    return (this.selectedScope() & value) === value;
+  }
 
   create(): void {
     if (this.createForm.invalid || this.saving() || this.selectedScope() === 0) {
-      this.createForm.markAllAsTouched(); return;
+      this.createForm.markAllAsTouched();
+      return;
     }
     const value = this.createForm.getRawValue();
     const type = Number(value.type);
     if (type === 3 && !value.temporaryUntil) {
-      this.createForm.controls.temporaryUntil.setErrors({ required: true }); return;
+      this.createForm.controls.temporaryUntil.setErrors({ required: true });
+      return;
     }
     this.saving.set(true);
-    this.api.createExternalTransfer(this.studentId(), {
-      targetOrganizationId: value.targetOrganizationId.trim(),
-      type,
-      dataScope: this.selectedScope(),
-      effectiveOn: value.effectiveOn,
-      temporaryUntil: type === 3 ? value.temporaryUntil || null : null,
-      countryCode: value.countryCode.trim().toUpperCase(),
-      reason: value.reason.trim(),
-      responsibilities: value.responsibilities.trim(),
-    }).subscribe({
-      next: () => { this.saving.set(false); this.editorOpen.set(false); this.success('created'); },
-      error: (e: HttpErrorResponse) => this.fail(e),
-    });
+    this.api
+      .createExternalTransfer(this.studentId(), {
+        targetOrganizationId: value.targetOrganizationId.trim(),
+        type,
+        dataScope: this.selectedScope(),
+        effectiveOn: value.effectiveOn,
+        temporaryUntil: type === 3 ? value.temporaryUntil || null : null,
+        countryCode: value.countryCode.trim().toUpperCase(),
+        reason: value.reason.trim(),
+        responsibilities: value.responsibilities.trim(),
+      })
+      .subscribe({
+        next: () => {
+          this.saving.set(false);
+          this.editorOpen.set(false);
+          this.success('created');
+        },
+        error: (e: HttpErrorResponse) => this.fail(e),
+      });
   }
 
   openConsent(transfer: ExternalTransfer): void {
-    this.actionTransferId.set(transfer.transferId); this.action.set('consent');
+    this.actionTransferId.set(transfer.transferId);
+    this.action.set('consent');
     this.consentForm.reset({ evidenceReference: '' });
   }
   verifyConsent(transfer: ExternalTransfer): void {
-    if (this.consentForm.invalid || this.saving()) { this.consentForm.markAllAsTouched(); return; }
+    if (this.consentForm.invalid || this.saving()) {
+      this.consentForm.markAllAsTouched();
+      return;
+    }
     this.saving.set(true);
-    this.api.verifyExternalTransferConsent(this.studentId(), transfer.transferId, this.consentForm.getRawValue().evidenceReference.trim())
-      .subscribe({ next: () => { this.saving.set(false); this.closeAction(); this.success('consentVerified'); }, error: (e) => this.fail(e) });
+    this.api
+      .verifyExternalTransferConsent(
+        this.studentId(),
+        transfer.transferId,
+        this.consentForm.getRawValue().evidenceReference.trim(),
+      )
+      .subscribe({
+        next: () => {
+          this.saving.set(false);
+          this.closeAction();
+          this.success('consentVerified');
+        },
+        error: (e) => this.fail(e),
+      });
   }
 
   openFinance(transfer: ExternalTransfer): void {
-    this.actionTransferId.set(transfer.transferId); this.action.set('finance');
+    this.actionTransferId.set(transfer.transferId);
+    this.action.set('finance');
     this.financeForm.reset({ status: 2, resolution: '' });
   }
   reviewFinance(transfer: ExternalTransfer): void {
     if (this.financeForm.invalid || this.saving()) return;
     const value = this.financeForm.getRawValue();
     if ([3, 4].includes(Number(value.status)) && !value.resolution.trim()) {
-      this.financeForm.controls.resolution.setErrors({ required: true }); return;
+      this.financeForm.controls.resolution.setErrors({ required: true });
+      return;
     }
     this.saving.set(true);
-    this.api.reviewExternalTransferFinance(this.studentId(), transfer.transferId, {
-      status: Number(value.status), resolution: value.resolution.trim() || null,
-    }).subscribe({ next: () => { this.saving.set(false); this.closeAction(); this.success('financeReviewed'); }, error: (e) => this.fail(e) });
+    this.api
+      .reviewExternalTransferFinance(this.studentId(), transfer.transferId, {
+        status: Number(value.status),
+        resolution: value.resolution.trim() || null,
+      })
+      .subscribe({
+        next: () => {
+          this.saving.set(false);
+          this.closeAction();
+          this.success('financeReviewed');
+        },
+        error: (e) => this.fail(e),
+      });
   }
 
   submit(transfer: ExternalTransfer, requestInvitationIfMissing: boolean): void {
     if (this.saving()) return;
     this.saving.set(true);
-    this.api.submitExternalTransfer(this.studentId(), transfer.transferId, requestInvitationIfMissing).subscribe({
-      next: (result) => {
-        this.preconditions.update((current) => ({ ...current, [transfer.transferId]: result }));
-        this.saving.set(false); this.success('submitted');
-      },
-      error: (e) => this.fail(e),
-    });
+    this.api
+      .submitExternalTransfer(this.studentId(), transfer.transferId, requestInvitationIfMissing)
+      .subscribe({
+        next: (result) => {
+          this.preconditions.update((current) => ({ ...current, [transfer.transferId]: result }));
+          this.saving.set(false);
+          this.success('submitted');
+        },
+        error: (e) => this.fail(e),
+      });
   }
 
   openDecision(transfer: ExternalTransfer): void {
-    this.actionTransferId.set(transfer.transferId); this.action.set('decision');
+    this.actionTransferId.set(transfer.transferId);
+    this.action.set('decision');
     this.decisionForm.reset({ accept: true, reason: '' });
   }
   decide(transfer: ExternalTransfer): void {
-    if (this.decisionForm.invalid || this.saving()) { this.decisionForm.markAllAsTouched(); return; }
-    const value = this.decisionForm.getRawValue(); this.saving.set(true);
-    this.api.decideExternalTransfer(this.studentId(), transfer.transferId, value.accept, value.reason.trim())
-      .subscribe({ next: () => { this.saving.set(false); this.closeAction(); this.success(value.accept ? 'accepted' : 'rejected'); }, error: (e) => this.fail(e) });
+    if (this.decisionForm.invalid || this.saving()) {
+      this.decisionForm.markAllAsTouched();
+      return;
+    }
+    const value = this.decisionForm.getRawValue();
+    this.saving.set(true);
+    this.api
+      .decideExternalTransfer(
+        this.studentId(),
+        transfer.transferId,
+        value.accept,
+        value.reason.trim(),
+      )
+      .subscribe({
+        next: () => {
+          this.saving.set(false);
+          this.closeAction();
+          this.success(value.accept ? 'accepted' : 'rejected');
+        },
+        error: (e) => this.fail(e),
+      });
   }
 
   complete(transfer: ExternalTransfer): void {
     if (this.saving()) return;
     this.saving.set(true);
     this.api.completeExternalTransfer(this.studentId(), transfer.transferId).subscribe({
-      next: () => { this.saving.set(false); this.success('completed'); }, error: (e) => this.fail(e),
+      next: () => {
+        this.saving.set(false);
+        this.success('completed');
+      },
+      error: (e) => this.fail(e),
     });
   }
 
-  closeAction(): void { this.actionTransferId.set(null); this.action.set(null); }
+  closeAction(): void {
+    this.actionTransferId.set(null);
+    this.action.set(null);
+  }
   isAction(transfer: ExternalTransfer, action: 'consent' | 'finance' | 'decision'): boolean {
     return this.actionTransferId() === transfer.transferId && this.action() === action;
   }
   canSubmit(transfer: ExternalTransfer): boolean {
-    return this.canCreate() && transfer.status === 'ConsentPending' && transfer.consentStatus === 'Verified' && ['Cleared', 'Resolved'].includes(transfer.financialStatus);
+    return (
+      this.canCreate() &&
+      transfer.status === 'ConsentPending' &&
+      transfer.consentStatus === 'Verified' &&
+      ['Cleared', 'Resolved'].includes(transfer.financialStatus)
+    );
   }
   canCompleteTransfer(transfer: ExternalTransfer): boolean {
     return this.canComplete() && ['Accepted', 'Scheduled', 'InProgress'].includes(transfer.status);
   }
   statusVariant(status: string): DriveOsBadgeVariant {
-    if (['Completed', 'Accepted', 'Active', 'Verified', 'Cleared', 'Resolved'].includes(status)) return 'success';
-    if (['Rejected', 'Cancelled', 'Failed', 'Expired', 'Missing', 'Withdrawn'].includes(status)) return 'danger';
-    if (['ConsentPending', 'TargetReview', 'Scheduled', 'Pending', 'ResolutionRequired', 'InvitationRequested'].includes(status)) return 'warning';
+    if (['Completed', 'Accepted', 'Active', 'Verified', 'Cleared', 'Resolved'].includes(status))
+      return 'success';
+    if (['Rejected', 'Cancelled', 'Failed', 'Expired', 'Missing', 'Withdrawn'].includes(status))
+      return 'danger';
+    if (
+      [
+        'ConsentPending',
+        'TargetReview',
+        'Scheduled',
+        'Pending',
+        'ResolutionRequired',
+        'InvitationRequested',
+      ].includes(status)
+    )
+      return 'warning';
     return 'neutral';
   }
-  private today(): string { return new Date().toISOString().slice(0, 10); }
+  private today(): string {
+    return new Date().toISOString().slice(0, 10);
+  }
   private success(key: string): void {
     this.toast.success(this.translate.instant(`students.mobility.external.feedback.${key}`));
     this.refreshed.emit();
   }
-  private fail(error: HttpErrorResponse): void { this.saving.set(false); for (const message of this.errors.getMessages(error)) this.toast.error(message); }
+  private fail(error: HttpErrorResponse): void {
+    this.saving.set(false);
+    for (const message of this.errors.getMessages(error)) this.toast.error(message);
+  }
 }

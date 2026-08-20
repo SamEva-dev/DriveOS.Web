@@ -5,9 +5,7 @@ import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
-import {
-  DriveOsBadgeComponent,
-} from '../../../../shared/ui/badge/driveos-badge.component';
+import { DriveOsBadgeComponent } from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/driveos-empty-state.component';
 import { StudentEnrollmentChecklistPanelComponent } from '../../components/student-enrollment-checklist-panel/student-enrollment-checklist-panel.component';
 import { StudentDocumentsPanelComponent } from '../../components/student-documents-panel/student-documents-panel.component';
@@ -91,7 +89,8 @@ export class StudentEnrollmentPage {
   constructor() {
     const requested = this.selected();
     const first = this.visibleTabs()[0];
-    if (!this.visibleTabs().some((tab) => tab.id === requested) && first) this.selected.set(first.id);
+    if (!this.visibleTabs().some((tab) => tab.id === requested) && first)
+      this.selected.set(first.id);
     this.load();
   }
   load(): void {

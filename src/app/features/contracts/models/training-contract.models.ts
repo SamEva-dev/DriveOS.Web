@@ -21,7 +21,6 @@ export interface TrainingContractParty {
   legalReference: string | null;
 }
 
-
 export interface TrainingContractSignatory {
   id: string;
   kind: string;
@@ -47,7 +46,6 @@ export interface SaveTrainingContractSignatoryRequest {
   isRequired: boolean;
   authorityReference: string | null;
 }
-
 
 export interface SignatureEvidence {
   id: string;
@@ -137,7 +135,6 @@ export interface TrainingContractVersion {
   createdByUserId: string | null;
   createdAtUtc: string;
 }
-
 
 export interface ContractAmendment {
   id: string;
@@ -248,9 +245,22 @@ export interface TerminateTrainingContractResponse {
   terminatedAtUtc: string;
 }
 
-export interface CompleteTrainingContractRequest { note: string; effectiveDate: string; }
-export interface CompleteTrainingContractResponse { contractId: string; status: string; effectiveDate: string; completedAtUtc: string; }
-export interface ExpireTrainingContractResponse { contractId: string; status: string; effectiveDate: string; expiredAtUtc: string; }
+export interface CompleteTrainingContractRequest {
+  note: string;
+  effectiveDate: string;
+}
+export interface CompleteTrainingContractResponse {
+  contractId: string;
+  status: string;
+  effectiveDate: string;
+  completedAtUtc: string;
+}
+export interface ExpireTrainingContractResponse {
+  contractId: string;
+  status: string;
+  effectiveDate: string;
+  expiredAtUtc: string;
+}
 
 export interface ActivateTrainingContractResponse {
   contractId: string;
@@ -273,8 +283,33 @@ export interface SendTrainingContractForSignatureResponse {
   requestedAtUtc: string;
 }
 
-export interface ContractDocumentVersion { id: string; versionNumber: number; fileName: string; contentType: string; size: number; sha256: string; uploadedByUserId: string; uploadedAtUtc: string; }
-export interface ContractDocument { id: string; contractId: string; contractVersionNumber: number; documentType: string; title: string; visibility: string; retainUntil: string | null; retentionLegalBasis: string | null; status: string; currentVersionNumber: number; createdAtUtc: string; createdByUserId: string | null; archivedAtUtc: string | null; archivedByUserId: string | null; versions: readonly ContractDocumentVersion[]; }
+export interface ContractDocumentVersion {
+  id: string;
+  versionNumber: number;
+  fileName: string;
+  contentType: string;
+  size: number;
+  sha256: string;
+  uploadedByUserId: string;
+  uploadedAtUtc: string;
+}
+export interface ContractDocument {
+  id: string;
+  contractId: string;
+  contractVersionNumber: number;
+  documentType: string;
+  title: string;
+  visibility: string;
+  retainUntil: string | null;
+  retentionLegalBasis: string | null;
+  status: string;
+  currentVersionNumber: number;
+  createdAtUtc: string;
+  createdByUserId: string | null;
+  archivedAtUtc: string | null;
+  archivedByUserId: string | null;
+  versions: readonly ContractDocumentVersion[];
+}
 
 export interface PagedResult<T> {
   items: readonly T[];

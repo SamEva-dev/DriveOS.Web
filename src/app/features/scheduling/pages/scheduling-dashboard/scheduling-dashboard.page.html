@@ -1,0 +1,449 @@
+<section class="driveos-page mx-auto max-w-[1600px]">
+  <div class="driveos-page-header gap-4">
+    <div>
+      <p class="driveos-kicker">{{ 'scheduling.dashboard.kicker' | translate }}</p>
+      <h2 class="driveos-page-title">{{ 'scheduling.dashboard.title' | translate }}</h2>
+      <p class="driveos-page-subtitle">{{ 'scheduling.dashboard.description' | translate }}</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <drive-os-button
+        variant="outline"
+        icon="ph ph-arrows-clockwise"
+        [loading]="loading()"
+        (pressed)="load()"
+      >
+        {{ 'common.actions.refresh' | translate }}
+      </drive-os-button>
+      @if (canCreateBooking() || canSearchSlots() || canManageWaitingList()) {
+        <drive-os-button
+          icon="ph ph-plus"
+          (pressed)="openQuickActions()"
+        >
+          {{ 'scheduling.dashboard.quickActions.open' | translate }}
+        </drive-os-button>
+      }
+    </div>
+  </div>
+
+  @if (translatedErrors().length) {
+    <drive-os-state-banner
+      class="mt-5 block"
+      tone="warning"
+      icon="ph ph-warning-circle"
+      [title]="'scheduling.dashboard.partialError.title' | translate"
+      [description]="'scheduling.dashboard.partialError.description' | translate"
+    >
+      <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
+        @for (message of translatedErrors(); track message) {
+          <li>{{ message }}</li>
+        }
+      </ul>
+    </drive-os-state-banner>
+  }
+
+  @if (loading() && !data()) {
+    <div class="grid min-h-[28rem] place-items-center">
+      <drive-os-spinner
+        size="lg"
+        [label]="'scheduling.dashboard.loading' | translate"
+      />
+    </div>
+  } @else if (data(); as dashboard) {
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <article
+        class="rounded-2xl border border-blue-200 bg-blue-50/80 p-5 dark:border-blue-900 dark:bg-blue-950/25"
+      >
+        <div class="flex items-start justify-between gap-3">
+          <span class="grid size-10 place-items-center rounded-xl bg-blue-800 text-white">
+            <i class="ph ph-calendar-check text-xl"></i>
+          </span>
+          <span class="text-xs font-bold text-blue-700 dark:text-blue-300">
+            {{ 'scheduling.dashboard.kpis.today' | translate }}
+          </span>
+        </div>
+        <strong class="mt-5 block text-3xl font-black text-blue-950 dark:text-blue-100">
+          {{ todayBookings().length }}
+        </strong>
+        <p class="mt-1 text-sm text-blue-800/75 dark:text-blue-200/75">
+          {{ 'scheduling.dashboard.kpis.bookings' | translate }}
+        </p>
+      </article>
+
+      <article
+        class="rounded-2xl border border-red-200 bg-red-50/80 p-5 dark:border-red-900 dark:bg-red-950/25"
+      >
+        <div class="flex items-start justify-between gap-3">
+          <span class="grid size-10 place-items-center rounded-xl bg-red-600 text-white">
+            <i class="ph ph-warning-diamond text-xl"></i>
+          </span>
+          @if (criticalConflicts().length) {
+            <span
+              class="rounded-full bg-red-600 px-2 py-1 text-[0.68rem] font-black uppercase tracking-wide text-white"
+            >
+              {{ criticalConflicts().length }}
+              {{ 'scheduling.dashboard.kpis.critical' | translate }}
+            </span>
+          }
+        </div>
+        <strong class="mt-5 block text-3xl font-black text-red-950 dark:text-red-100">
+          {{ activeConflicts().length }}
+        </strong>
+        <p class="mt-1 text-sm text-red-800/75 dark:text-red-200/75">
+          {{ 'scheduling.dashboard.kpis.openConflicts' | translate }}
+        </p>
+      </article>
+
+      <article
+        class="rounded-2xl border border-orange-200 bg-orange-50/80 p-5 dark:border-orange-900 dark:bg-orange-950/25"
+      >
+        <span class="grid size-10 place-items-center rounded-xl bg-orange-500 text-white">
+          <i class="ph ph-list-checks text-xl"></i>
+        </span>
+        <strong class="mt-5 block text-3xl font-black text-orange-950 dark:text-orange-100">
+          {{ activeWaitingList().length }}
+        </strong>
+        <p class="mt-1 text-sm text-orange-800/75 dark:text-orange-200/75">
+          {{ 'scheduling.dashboard.kpis.waitingList' | translate }}
+        </p>
+      </article>
+
+      <article
+        class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900"
+      >
+        <span
+          class="grid size-10 place-items-center rounded-xl bg-slate-900 text-white dark:bg-slate-700"
+        >
+          <i class="ph ph-wrench text-xl"></i>
+        </span>
+        <strong class="mt-5 block text-3xl font-black text-slate-950 dark:text-white">
+          {{ unavailableResources().length }}
+        </strong>
+        <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+          {{ 'scheduling.dashboard.kpis.unavailableResources' | translate }}
+        </p>
+      </article>
+
+      <article
+        class="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-5 dark:border-emerald-900 dark:bg-emerald-950/25"
+      >
+        <span class="grid size-10 place-items-center rounded-xl bg-emerald-600 text-white">
+          <i class="ph ph-gauge text-xl"></i>
+        </span>
+        <strong class="mt-5 block text-3xl font-black text-emerald-950 dark:text-emerald-100">
+          @if (saturation() !== null) {
+            {{ saturation() | number: '1.0-1' }}%
+          } @else {
+            —
+          }
+        </strong>
+        <p class="mt-1 text-sm text-emerald-800/75 dark:text-emerald-200/75">
+          {{ 'scheduling.dashboard.kpis.saturation7d' | translate }}
+        </p>
+      </article>
+    </div>
+
+    <div class="mt-6 grid gap-5 2xl:grid-cols-[minmax(0,1.55fr)_minmax(22rem,0.8fr)]">
+      <section
+        class="overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"
+      >
+        <header
+          class="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--driveos-border)] px-5 py-4"
+        >
+          <div>
+            <h3 class="text-lg font-black text-[var(--driveos-text-primary)]">
+              {{ 'scheduling.dashboard.today.title' | translate }}
+            </h3>
+            <p class="text-sm text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.dashboard.today.description' | translate }}
+            </p>
+          </div>
+          <a
+            routerLink="/planning/calendar"
+            class="text-sm font-bold text-blue-800 hover:underline dark:text-blue-300"
+          >
+            {{ 'scheduling.dashboard.today.openCalendar' | translate }}
+          </a>
+        </header>
+        @if (todayBookings().length) {
+          <div class="divide-y divide-[var(--driveos-border)]">
+            @for (booking of todayBookings(); track booking.id) {
+              <article
+                class="grid gap-3 px-5 py-4 transition hover:bg-[var(--driveos-surface-hover)] sm:grid-cols-[5.2rem_minmax(0,1fr)_auto] sm:items-center"
+              >
+                <div>
+                  <strong class="block text-base font-black text-blue-800 dark:text-blue-300">
+                    {{ booking.startAtUtc | date: 'HH:mm' }}
+                  </strong>
+                  <span class="text-xs text-[var(--driveos-text-tertiary)]">
+                    {{ booking.endAtUtc | date: 'HH:mm' }}
+                  </span>
+                </div>
+                <div class="min-w-0">
+                  <p class="truncate font-bold text-[var(--driveos-text-primary)]">
+                    {{ booking.title }}
+                  </p>
+                  <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                    {{ booking.resources.length }}
+                    {{ 'scheduling.dashboard.today.resources' | translate }} ·
+                    {{ booking.participants.length }}
+                    {{ 'scheduling.dashboard.today.participants' | translate }}
+                  </p>
+                </div>
+                <span
+                  class="w-fit rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                >
+                  {{ bookingStatusKey(booking.status) | translate }}
+                </span>
+              </article>
+            }
+          </div>
+        } @else {
+          <drive-os-empty-state
+            class="block p-6"
+            icon="ph-duotone ph-calendar-check"
+            [title]="'scheduling.dashboard.today.empty' | translate"
+            [description]="'scheduling.dashboard.today.emptyDescription' | translate"
+          />
+        }
+      </section>
+
+      <div class="grid content-start gap-5">
+        <section
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm"
+        >
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h3 class="font-black text-[var(--driveos-text-primary)]">
+                {{ 'scheduling.dashboard.capacity.title' | translate }}
+              </h3>
+              <p class="text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.dashboard.capacity.horizon' | translate }}
+              </p>
+            </div>
+            <a
+              routerLink="/planning/capacity"
+              class="grid size-9 place-items-center rounded-xl border border-[var(--driveos-border)] text-[var(--driveos-text-secondary)] hover:bg-[var(--driveos-surface-hover)]"
+              [attr.aria-label]="'scheduling.dashboard.capacity.open' | translate"
+            >
+              <i class="ph ph-arrow-up-right"></i>
+            </a>
+          </div>
+          @if (dashboard.capacity; as capacity) {
+            <div class="mt-5">
+              <div class="mb-2 flex items-end justify-between gap-4">
+                <strong class="text-3xl font-black text-[var(--driveos-text-primary)]">
+                  {{ capacity.summary.saturationRatePercent | number: '1.0-1' }}%
+                </strong>
+                <span class="text-xs font-bold text-[var(--driveos-text-secondary)]">
+                  {{ capacity.summary.committedHours | number: '1.0-1' }}h /
+                  {{ capacity.summary.netAvailableHours | number: '1.0-1' }}h
+                </span>
+              </div>
+              <div class="h-2.5 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                <div
+                  class="h-full rounded-full bg-blue-800"
+                  [style.width.%]="
+                    capacity.summary.saturationRatePercent > 100
+                      ? 100
+                      : capacity.summary.saturationRatePercent
+                  "
+                ></div>
+              </div>
+              <div class="mt-5 grid grid-cols-2 gap-3">
+                <div class="rounded-xl bg-[var(--driveos-surface-subtle)] p-3">
+                  <span class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ 'scheduling.dashboard.capacity.net' | translate }}
+                  </span>
+                  <strong class="mt-1 block">
+                    {{ capacity.summary.netCapacityHours | number: '1.0-1' }} h
+                  </strong>
+                </div>
+                <div class="rounded-xl bg-[var(--driveos-surface-subtle)] p-3">
+                  <span class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ 'scheduling.dashboard.capacity.demand' | translate }}
+                  </span>
+                  <strong class="mt-1 block">
+                    {{ capacity.summary.estimatedDemandHours | number: '1.0-1' }} h
+                  </strong>
+                </div>
+              </div>
+            </div>
+          } @else {
+            <p class="mt-5 text-sm text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.dashboard.capacity.unavailable' | translate }}
+            </p>
+          }
+        </section>
+
+        <section
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm"
+        >
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="font-black text-[var(--driveos-text-primary)]">
+              {{ 'scheduling.dashboard.alerts.title' | translate }}
+            </h3>
+            <a
+              routerLink="/planning/conflicts"
+              class="text-sm font-bold text-blue-800 hover:underline dark:text-blue-300"
+            >
+              {{ 'common.actions.viewAll' | translate }}
+            </a>
+          </div>
+          <div class="mt-4 space-y-3">
+            @for (conflict of activeConflicts().slice(0, 4); track conflict.id) {
+              <article
+                class="flex gap-3 rounded-xl border border-red-100 bg-red-50/60 p-3 dark:border-red-950 dark:bg-red-950/20"
+              >
+                <i class="ph ph-warning-circle mt-0.5 text-lg text-red-600"></i>
+                <div class="min-w-0">
+                  <p class="font-bold text-red-950 dark:text-red-100">
+                    {{ conflict.causeKey | translate }}
+                  </p>
+                  <p class="mt-1 text-xs text-red-800/70 dark:text-red-200/70">
+                    {{ conflictPriorityKey(conflict.priority) | translate }} ·
+                    {{ conflict.detectedAtUtc | date: 'short' }}
+                  </p>
+                </div>
+              </article>
+            } @empty {
+              <div
+                class="flex items-center gap-3 rounded-xl bg-emerald-50 p-4 text-emerald-900 dark:bg-emerald-950/20 dark:text-emerald-100"
+              >
+                <i class="ph ph-check-circle text-xl"></i>
+                <span class="text-sm font-bold">
+                  {{ 'scheduling.dashboard.alerts.none' | translate }}
+                </span>
+              </div>
+            }
+          </div>
+        </section>
+      </div>
+    </div>
+
+    @if (unavailableResources().length) {
+      <section
+        class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm"
+      >
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h3 class="font-black text-[var(--driveos-text-primary)]">
+              {{ 'scheduling.dashboard.resources.title' | translate }}
+            </h3>
+            <p class="text-sm text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.dashboard.resources.description' | translate }}
+            </p>
+          </div>
+          <a
+            routerLink="/planning/resources"
+            class="text-sm font-bold text-blue-800 hover:underline dark:text-blue-300"
+          >
+            {{ 'common.actions.viewAll' | translate }}
+          </a>
+        </div>
+        <div class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          @for (resource of unavailableResources().slice(0, 6); track resource.id) {
+            <article
+              class="flex items-center gap-3 rounded-xl border border-[var(--driveos-border)] p-3"
+            >
+              <span
+                class="grid size-10 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              >
+                <i class="ph ph-cube"></i>
+              </span>
+              <div class="min-w-0 flex-1">
+                <p class="truncate font-bold">{{ resource.displayName }}</p>
+                <p class="truncate text-xs text-[var(--driveos-text-secondary)]">
+                  {{
+                    resource.unavailabilityReason ||
+                      resource.restrictionReason ||
+                      (resourceStatusKey(resource.status) | translate)
+                  }}
+                </p>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    }
+  }
+
+  <drive-os-drawer
+    [open]="quickActionsOpen()"
+    size="md"
+    [title]="'scheduling.dashboard.quickActions.title' | translate"
+    [description]="'scheduling.dashboard.quickActions.description' | translate"
+    [ariaLabel]="'scheduling.dashboard.quickActions.title' | translate"
+    (closeRequested)="closeQuickActions()"
+  >
+    <div class="space-y-3 p-6">
+      @if (canSearchSlots()) {
+        <a
+          routerLink="/planning/slot-search"
+          (click)="closeQuickActions()"
+          class="group flex items-start gap-4 rounded-2xl border border-blue-200 bg-blue-50/60 p-4 transition hover:border-blue-400 hover:bg-blue-50 dark:border-blue-900 dark:bg-blue-950/20"
+        >
+          <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-blue-800 text-white">
+            <i class="ph ph-magnifying-glass text-xl"></i>
+          </span>
+          <span class="min-w-0 flex-1">
+            <strong class="block text-blue-950 dark:text-blue-100">
+              {{ 'scheduling.dashboard.quickActions.slotSearch.title' | translate }}
+            </strong>
+            <small class="mt-1 block leading-5 text-blue-800/75 dark:text-blue-200/75">
+              {{ 'scheduling.dashboard.quickActions.slotSearch.description' | translate }}
+            </small>
+          </span>
+          <i class="ph ph-caret-right mt-3 text-blue-700 transition group-hover:translate-x-1"></i>
+        </a>
+      }
+      @if (canCreateBooking()) {
+        <a
+          routerLink="/planning/bookings/new"
+          (click)="closeQuickActions()"
+          class="group flex items-start gap-4 rounded-2xl border border-orange-200 bg-orange-50/60 p-4 transition hover:border-orange-400 hover:bg-orange-50 dark:border-orange-900 dark:bg-orange-950/20"
+        >
+          <span
+            class="grid size-11 shrink-0 place-items-center rounded-xl bg-orange-500 text-white"
+          >
+            <i class="ph ph-calendar-plus text-xl"></i>
+          </span>
+          <span class="min-w-0 flex-1">
+            <strong class="block text-orange-950 dark:text-orange-100">
+              {{ 'scheduling.dashboard.quickActions.booking.title' | translate }}
+            </strong>
+            <small class="mt-1 block leading-5 text-orange-800/75 dark:text-orange-200/75">
+              {{ 'scheduling.dashboard.quickActions.booking.description' | translate }}
+            </small>
+          </span>
+          <i
+            class="ph ph-caret-right mt-3 text-orange-700 transition group-hover:translate-x-1"
+          ></i>
+        </a>
+      }
+      @if (canManageWaitingList()) {
+        <a
+          routerLink="/planning/waiting-list"
+          (click)="closeQuickActions()"
+          class="group flex items-start gap-4 rounded-2xl border border-[var(--driveos-border)] p-4 transition hover:bg-[var(--driveos-surface-hover)]"
+        >
+          <span
+            class="grid size-11 shrink-0 place-items-center rounded-xl bg-slate-900 text-white dark:bg-slate-700"
+          >
+            <i class="ph ph-list-plus text-xl"></i>
+          </span>
+          <span class="min-w-0 flex-1">
+            <strong class="block">
+              {{ 'scheduling.dashboard.quickActions.waitingList.title' | translate }}
+            </strong>
+            <small class="mt-1 block leading-5 text-[var(--driveos-text-secondary)]">
+              {{ 'scheduling.dashboard.quickActions.waitingList.description' | translate }}
+            </small>
+          </span>
+          <i
+            class="ph ph-caret-right mt-3 text-[var(--driveos-text-secondary)] transition group-hover:translate-x-1"
+          ></i>
+        </a>
+      }
+    </div>
+  </drive-os-drawer>
+</section>

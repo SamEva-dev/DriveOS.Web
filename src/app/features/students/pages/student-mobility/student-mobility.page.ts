@@ -71,7 +71,8 @@ export class StudentMobilityPage {
   constructor() {
     const requested = this.selected();
     const first = this.visibleTabs()[0];
-    if (!this.visibleTabs().some((tab) => tab.id === requested) && first) this.selected.set(first.id);
+    if (!this.visibleTabs().some((tab) => tab.id === requested) && first)
+      this.selected.set(first.id);
     this.load();
   }
   load(): void {

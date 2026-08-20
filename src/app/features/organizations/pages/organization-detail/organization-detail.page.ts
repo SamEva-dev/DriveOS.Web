@@ -18,7 +18,10 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 
 import { OrganizationActivationReadinessApiService } from '../../organization-activation-readiness/data-access/organization-activation-readiness-api.service';
-import { OrganizationActivationReadiness, OrganizationActivationRequirement } from '../../organization-activation-readiness/models/organization-activation-readiness.model';
+import {
+  OrganizationActivationReadiness,
+  OrganizationActivationRequirement,
+} from '../../organization-activation-readiness/models/organization-activation-readiness.model';
 
 import { ApiErrorService } from '../../../../core/errors/api-error.service';
 
@@ -124,7 +127,12 @@ export class OrganizationDetailPage {
     const organization = this.organization();
     const readiness = this.activationReadiness();
 
-    if (!organization || organization.status !== 'PendingActivation' || !readiness || readiness.isReady) {
+    if (
+      !organization ||
+      organization.status !== 'PendingActivation' ||
+      !readiness ||
+      readiness.isReady
+    ) {
       return null;
     }
 
@@ -138,7 +146,9 @@ export class OrganizationDetailPage {
       return 0;
     }
 
-    const completed = readiness.requirements.filter((requirement) => requirement.isSatisfied).length;
+    const completed = readiness.requirements.filter(
+      (requirement) => requirement.isSatisfied,
+    ).length;
     return Math.round((completed / readiness.requirements.length) * 100);
   });
 
@@ -187,9 +197,7 @@ export class OrganizationDetailPage {
   );
 
   readonly settingsLink = computed(() =>
-    this.organizationId
-      ? ['/organizations', this.organizationId, 'settings']
-      : ['/organizations'],
+    this.organizationId ? ['/organizations', this.organizationId, 'settings'] : ['/organizations'],
   );
 
   readonly canReadSequences = computed(() =>
@@ -225,7 +233,6 @@ export class OrganizationDetailPage {
       ? ['/organizations', this.organizationId, 'legal-profile']
       : ['/organizations'],
   );
-
 
   activationRequirementLink(requirement: OrganizationActivationRequirement): readonly string[] {
     if (!this.organizationId) {

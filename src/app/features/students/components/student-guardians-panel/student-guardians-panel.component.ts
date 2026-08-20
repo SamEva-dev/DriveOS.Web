@@ -1,5 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -22,7 +30,10 @@ type GuardianAction =
   | { type: 'revoke'; guardian: StudentGuardian }
   | null;
 
-interface PermissionOption { value: number; labelKey: string }
+interface PermissionOption {
+  value: number;
+  labelKey: string;
+}
 
 @Component({
   selector: 'driveos-student-guardians-panel',
@@ -61,7 +72,13 @@ export class StudentGuardiansPanelComponent {
   readonly canInvite = computed(() => this.hasPermission(STUDENT_PERMISSIONS.guardiansInvite));
   readonly canRevoke = computed(() => this.hasPermission(STUDENT_PERMISSIONS.guardiansRevoke));
 
-  readonly relationshipTypes = ['Parent', 'LegalGuardian', 'FosterParent', 'AuthorizedRepresentative', 'Other'] as const;
+  readonly relationshipTypes = [
+    'Parent',
+    'LegalGuardian',
+    'FosterParent',
+    'AuthorizedRepresentative',
+    'Other',
+  ] as const;
   readonly authorityStatuses = ['Unknown', 'Full', 'Shared', 'Restricted', 'None'] as const;
   readonly permissionOptions: readonly PermissionOption[] = [
     { value: 1, labelKey: 'students.profile.guardians.permissions.profileRead' },
@@ -101,9 +118,19 @@ export class StudentGuardiansPanelComponent {
 
   openCreate(): void {
     this.guardianForm.reset({
-      guardianPersonId: '', firstName: '', lastName: '', email: '', phone: '', relationshipType: 'Parent',
-      legalBasis: '', parentalAuthorityStatus: 'Unknown', effectiveFrom: new Date().toISOString().slice(0, 10),
-      effectiveTo: '', financialRights: false, signatureRights: false, notificationPreferences: 'Email',
+      guardianPersonId: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      relationshipType: 'Parent',
+      legalBasis: '',
+      parentalAuthorityStatus: 'Unknown',
+      effectiveFrom: new Date().toISOString().slice(0, 10),
+      effectiveTo: '',
+      financialRights: false,
+      signatureRights: false,
+      notificationPreferences: 'Email',
     });
     this.selectedPermissions.set(0);
     this.guardianForm.controls.guardianPersonId.enable();
@@ -131,7 +158,14 @@ export class StudentGuardiansPanelComponent {
       notificationPreferences: guardian.notificationPreferences,
     });
     this.selectedPermissions.set(guardian.permissions);
-    for (const control of [this.guardianForm.controls.guardianPersonId, this.guardianForm.controls.firstName, this.guardianForm.controls.lastName, this.guardianForm.controls.email, this.guardianForm.controls.phone]) control.disable();
+    for (const control of [
+      this.guardianForm.controls.guardianPersonId,
+      this.guardianForm.controls.firstName,
+      this.guardianForm.controls.lastName,
+      this.guardianForm.controls.email,
+      this.guardianForm.controls.phone,
+    ])
+      control.disable();
     this.action.set({ type: 'edit', guardian });
   }
 
@@ -140,18 +174,27 @@ export class StudentGuardiansPanelComponent {
     this.action.set({ type: 'revoke', guardian });
   }
 
-  cancel(): void { this.action.set(null); }
+  cancel(): void {
+    this.action.set(null);
+  }
 
   togglePermission(value: number): void {
     const current = this.selectedPermissions();
     this.selectedPermissions.set((current & value) === value ? current & ~value : current | value);
   }
 
-  hasGuardianPermission(mask: number, value: number): boolean { return (mask & value) === value; }
+  hasGuardianPermission(mask: number, value: number): boolean {
+    return (mask & value) === value;
+  }
 
   save(): void {
     const current = this.action();
-    if (!current || (current.type !== 'create' && current.type !== 'edit') || this.guardianForm.invalid || this.saving()) {
+    if (
+      !current ||
+      (current.type !== 'create' && current.type !== 'edit') ||
+      this.guardianForm.invalid ||
+      this.saving()
+    ) {
       this.guardianForm.markAllAsTouched();
       return;
     }
@@ -171,13 +214,23 @@ export class StudentGuardiansPanelComponent {
       signatureRights: value.signatureRights,
       notificationPreferences: value.notificationPreferences.trim(),
     };
-    const operation = current.type === 'create'
-      ? this.api.createGuardian(this.studentId(), {
-          guardianPersonId: value.guardianPersonId.trim(), firstName: value.firstName.trim(), lastName: value.lastName.trim(),
-          email: value.email.trim() || null, phone: value.phone.trim() || null, ...common,
-        })
-      : this.api.updateGuardian(this.studentId(), current.guardian.id, common);
-    this.run(operation, current.type === 'create' ? 'students.profile.guardians.feedback.created' : 'students.profile.guardians.feedback.updated');
+    const operation =
+      current.type === 'create'
+        ? this.api.createGuardian(this.studentId(), {
+            guardianPersonId: value.guardianPersonId.trim(),
+            firstName: value.firstName.trim(),
+            lastName: value.lastName.trim(),
+            email: value.email.trim() || null,
+            phone: value.phone.trim() || null,
+            ...common,
+          })
+        : this.api.updateGuardian(this.studentId(), current.guardian.id, common);
+    this.run(
+      operation,
+      current.type === 'create'
+        ? 'students.profile.guardians.feedback.created'
+        : 'students.profile.guardians.feedback.updated',
+    );
   }
 
   invite(guardian: StudentGuardian): void {
@@ -189,14 +242,23 @@ export class StudentGuardiansPanelComponent {
         this.toast.success(this.translate.instant('students.profile.guardians.feedback.invited'));
         this.refreshed.emit();
       },
-      error: (error: HttpErrorResponse) => { this.invitingId.set(null); this.showError(error); },
+      error: (error: HttpErrorResponse) => {
+        this.invitingId.set(null);
+        this.showError(error);
+      },
     });
   }
 
   revoke(): void {
     const current = this.action();
-    if (current?.type !== 'revoke' || this.revokeForm.invalid || this.saving()) { this.revokeForm.markAllAsTouched(); return; }
-    this.run(this.api.revokeGuardian(this.studentId(), current.guardian.id, this.revokeForm.getRawValue()), 'students.profile.guardians.feedback.revoked');
+    if (current?.type !== 'revoke' || this.revokeForm.invalid || this.saving()) {
+      this.revokeForm.markAllAsTouched();
+      return;
+    }
+    this.run(
+      this.api.revokeGuardian(this.studentId(), current.guardian.id, this.revokeForm.getRawValue()),
+      'students.profile.guardians.feedback.revoked',
+    );
   }
 
   private run(operation: Observable<unknown>, messageKey: string): void {
@@ -208,7 +270,10 @@ export class StudentGuardiansPanelComponent {
         this.toast.success(this.translate.instant(messageKey));
         this.refreshed.emit();
       },
-      error: (error: HttpErrorResponse) => { this.saving.set(false); this.showError(error); },
+      error: (error: HttpErrorResponse) => {
+        this.saving.set(false);
+        this.showError(error);
+      },
     });
   }
 

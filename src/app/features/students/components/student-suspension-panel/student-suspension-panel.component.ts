@@ -1,11 +1,22 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
 import { ApiErrorService } from '../../../../core/errors/api-error.service';
-import { DriveOsBadgeComponent, DriveOsBadgeVariant } from '../../../../shared/ui/badge/driveos-badge.component';
+import {
+  DriveOsBadgeComponent,
+  DriveOsBadgeVariant,
+} from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsButtonComponent } from '../../../../shared/ui/button/driveos-button.component';
 import { DriveOsCardComponent } from '../../../../shared/ui/card/driveos-card.component';
 import { DriveOsInputDirective } from '../../../../shared/ui/input/driveos-input.directive';
@@ -53,7 +64,9 @@ export class StudentSuspensionPanelComponent {
   readonly editing = signal(false);
   readonly saving = signal(false);
 
-  readonly canSuspend = computed(() => this.authorization.hasPermission(STUDENT_PERMISSIONS.suspend));
+  readonly canSuspend = computed(() =>
+    this.authorization.hasPermission(STUDENT_PERMISSIONS.suspend),
+  );
   readonly canSuspendFinancial = computed(() =>
     this.authorization.hasPermission(STUDENT_PERMISSIONS.suspendFinancial),
   );
@@ -66,10 +79,20 @@ export class StudentSuspensionPanelComponent {
 
   readonly scopeOptions: readonly ScopeOption[] = [
     { control: 'scheduling', value: 2, code: 'scheduling' },
-    { control: 'training', value: 4, code: 'training', permission: STUDENT_PERMISSIONS.suspendPedagogical },
+    {
+      control: 'training',
+      value: 4,
+      code: 'training',
+      permission: STUDENT_PERMISSIONS.suspendPedagogical,
+    },
     { control: 'exam', value: 8, code: 'exam', permission: STUDENT_PERMISSIONS.suspendPedagogical },
     { control: 'portal', value: 16, code: 'portal' },
-    { control: 'finance', value: 32, code: 'finance', permission: STUDENT_PERMISSIONS.suspendFinancial },
+    {
+      control: 'finance',
+      value: 32,
+      code: 'finance',
+      permission: STUDENT_PERMISSIONS.suspendFinancial,
+    },
   ];
 
   readonly form = this.fb.nonNullable.group({
@@ -128,27 +151,39 @@ export class StudentSuspensionPanelComponent {
     const scope = value.fullEnrollment ? 63 : this.calculateScope(value.scopes);
 
     if (scope === 0) {
-      this.toast.error(this.translate.instant('students.lifecycle.suspension.validation.scopeRequired'));
+      this.toast.error(
+        this.translate.instant('students.lifecycle.suspension.validation.scopeRequired'),
+      );
       return;
     }
     if (value.fullEnrollment && (!this.canSuspendFinancial() || !this.canSuspendPedagogical())) {
-      this.toast.error(this.translate.instant('students.lifecycle.suspension.validation.fullPermission'));
+      this.toast.error(
+        this.translate.instant('students.lifecycle.suspension.validation.fullPermission'),
+      );
       return;
     }
     if ((scope & 32) !== 0 && !this.canSuspendFinancial()) {
-      this.toast.error(this.translate.instant('students.lifecycle.suspension.validation.financialPermission'));
+      this.toast.error(
+        this.translate.instant('students.lifecycle.suspension.validation.financialPermission'),
+      );
       return;
     }
     if ((scope & (4 | 8)) !== 0 && !this.canSuspendPedagogical()) {
-      this.toast.error(this.translate.instant('students.lifecycle.suspension.validation.pedagogicalPermission'));
+      this.toast.error(
+        this.translate.instant('students.lifecycle.suspension.validation.pedagogicalPermission'),
+      );
       return;
     }
     if (value.expectedEndDate <= value.startDate) {
-      this.toast.error(this.translate.instant('students.lifecycle.suspension.validation.endAfterStart'));
+      this.toast.error(
+        this.translate.instant('students.lifecycle.suspension.validation.endAfterStart'),
+      );
       return;
     }
     if (value.reviewDate < value.startDate || value.reviewDate > value.expectedEndDate) {
-      this.toast.error(this.translate.instant('students.lifecycle.suspension.validation.reviewRange'));
+      this.toast.error(
+        this.translate.instant('students.lifecycle.suspension.validation.reviewRange'),
+      );
       return;
     }
 
@@ -170,7 +205,9 @@ export class StudentSuspensionPanelComponent {
       next: () => {
         this.saving.set(false);
         this.editing.set(false);
-        this.toast.success(this.translate.instant('students.lifecycle.suspension.feedback.created'));
+        this.toast.success(
+          this.translate.instant('students.lifecycle.suspension.feedback.created'),
+        );
         this.created.emit();
       },
       error: (error: HttpErrorResponse) => {
@@ -195,7 +232,9 @@ export class StudentSuspensionPanelComponent {
     }
     return this.scopeOptions
       .filter((option) => (numeric & option.value) !== 0)
-      .map((option) => this.translate.instant(`students.lifecycle.suspension.scopes.${option.code}`))
+      .map((option) =>
+        this.translate.instant(`students.lifecycle.suspension.scopes.${option.code}`),
+      )
       .join(', ');
   }
 

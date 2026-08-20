@@ -2,14 +2,26 @@
   <drive-os-card>
     <div class="flex flex-wrap items-start justify-between gap-4">
       <div>
-        <p class="text-xs font-bold uppercase tracking-wider text-blue-700">{{ 'students.enrollment.documents.kicker' | translate }}</p>
-        <h3 class="mt-1 text-lg font-extrabold">{{ 'students.enrollment.documents.title' | translate }}</h3>
-        <p class="mt-1 text-sm text-slate-500">{{ 'students.enrollment.documents.description' | translate }}</p>
+        <p class="text-xs font-bold uppercase tracking-wider text-blue-700">
+          {{ 'students.enrollment.documents.kicker' | translate }}
+        </p>
+        <h3 class="mt-1 text-lg font-extrabold">
+          {{ 'students.enrollment.documents.title' | translate }}
+        </h3>
+        <p class="mt-1 text-sm text-slate-500">
+          {{ 'students.enrollment.documents.description' | translate }}
+        </p>
       </div>
       <div class="flex flex-wrap items-center gap-2">
-        <drive-os-badge variant="neutral">{{ documents().items.length }} {{ 'students.enrollment.documents.count' | translate }}</drive-os-badge>
+        <drive-os-badge variant="neutral">
+          {{ documents().items.length }} {{ 'students.enrollment.documents.count' | translate }}
+        </drive-os-badge>
         @if (canRequest()) {
-          <drive-os-button size="sm" icon="ph ph-file-plus" (pressed)="openRequest()">
+          <drive-os-button
+            size="sm"
+            icon="ph ph-file-plus"
+            (pressed)="openRequest()"
+          >
             {{ 'students.enrollment.documents.actions.request' | translate }}
           </drive-os-button>
         }
@@ -22,69 +34,117 @@
       @for (document of documents().items; track document.id) {
         <article class="grid gap-4 py-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
           <div class="flex min-w-0 gap-3">
-            <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-blue-100 text-xl text-blue-800 dark:bg-blue-950 dark:text-blue-200">
+            <span
+              class="grid size-11 shrink-0 place-items-center rounded-xl bg-blue-100 text-xl text-blue-800 dark:bg-blue-950 dark:text-blue-200"
+            >
               <i class="ph-duotone ph-file-text"></i>
             </span>
             <div class="min-w-0">
               <div class="flex flex-wrap items-center gap-2">
                 <strong class="break-words">{{ document.documentType }}</strong>
-                <drive-os-badge [variant]="statusVariant(document.status)">{{ document.status }}</drive-os-badge>
+                <drive-os-badge [variant]="statusVariant(document.status)">
+                  {{ document.status }}
+                </drive-os-badge>
               </div>
               <p class="mt-1 text-xs text-slate-500">
                 {{ 'students.enrollment.categories.' + document.category | translate }}
-                · {{ 'students.enrollment.documents.version' | translate }} {{ document.currentVersion }}
-                @if (document.uploadedAtUtc) { · {{ document.uploadedAtUtc | date: 'short' }} }
+                · {{ 'students.enrollment.documents.version' | translate }}
+                {{ document.currentVersion }}
+                @if (document.uploadedAtUtc) {
+                  · {{ document.uploadedAtUtc | date: 'short' }}
+                }
               </p>
               <p class="mt-1 text-xs text-slate-500">
-                {{ 'students.enrollment.documents.visibilityLabel' | translate }} : {{ document.visibility }}
+                {{ 'students.enrollment.documents.visibilityLabel' | translate }} :
+                {{ document.visibility }}
               </p>
               @if (document.expiresOn) {
                 <p class="mt-1 text-xs text-orange-700">
-                  {{ 'students.enrollment.documents.expires' | translate }} {{ document.expiresOn | date: 'mediumDate' }}
+                  {{ 'students.enrollment.documents.expires' | translate }}
+                  {{ document.expiresOn | date: 'mediumDate' }}
                 </p>
               }
               @if (document.decisionReason) {
-                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ document.decisionReason }}</p>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                  {{ document.decisionReason }}
+                </p>
               }
             </div>
           </div>
 
           <div class="flex flex-wrap gap-2 xl:justify-end">
             @if (canDownload() && document.currentVersion > 0) {
-              <drive-os-button variant="outline" size="sm" icon="ph ph-download-simple"
-                [loading]="downloadInProgress() === document.id" (pressed)="download(document)">
+              <drive-os-button
+                variant="outline"
+                size="sm"
+                icon="ph ph-download-simple"
+                [loading]="downloadInProgress() === document.id"
+                (pressed)="download(document)"
+              >
                 {{ 'students.enrollment.documents.download' | translate }}
               </drive-os-button>
             }
             @if (canUploadDocument(document)) {
-              <drive-os-button variant="outline" size="sm" icon="ph ph-upload-simple" (pressed)="openUpload(document)">
-                {{ (document.currentVersion > 0 ? 'students.enrollment.documents.actions.replace' : 'students.enrollment.documents.actions.upload') | translate }}
+              <drive-os-button
+                variant="outline"
+                size="sm"
+                icon="ph ph-upload-simple"
+                (pressed)="openUpload(document)"
+              >
+                {{
+                  (document.currentVersion > 0
+                    ? 'students.enrollment.documents.actions.replace'
+                    : 'students.enrollment.documents.actions.upload'
+                  ) | translate
+                }}
               </drive-os-button>
             }
             @if (canValidateDocument(document)) {
-              <drive-os-button variant="outline" size="sm" icon="ph ph-check" (pressed)="openValidation(document, true)">
+              <drive-os-button
+                variant="outline"
+                size="sm"
+                icon="ph ph-check"
+                (pressed)="openValidation(document, true)"
+              >
                 {{ 'students.enrollment.documents.actions.approve' | translate }}
               </drive-os-button>
-              <drive-os-button variant="danger" size="sm" icon="ph ph-x" (pressed)="openValidation(document, false)">
+              <drive-os-button
+                variant="danger"
+                size="sm"
+                icon="ph ph-x"
+                (pressed)="openValidation(document, false)"
+              >
                 {{ 'students.enrollment.documents.actions.reject' | translate }}
               </drive-os-button>
             }
             @if (canShare() && document.status !== 'Archived') {
-              <drive-os-button variant="outline" size="sm" icon="ph ph-share-network" (pressed)="openShare(document)">
+              <drive-os-button
+                variant="outline"
+                size="sm"
+                icon="ph ph-share-network"
+                (pressed)="openShare(document)"
+              >
                 {{ 'students.enrollment.documents.actions.share' | translate }}
               </drive-os-button>
             }
             @if (canValidate() && document.status !== 'Archived') {
-              <drive-os-button variant="ghost" size="sm" icon="ph ph-archive" (pressed)="openArchive(document)">
+              <drive-os-button
+                variant="ghost"
+                size="sm"
+                icon="ph ph-archive"
+                (pressed)="openArchive(document)"
+              >
                 {{ 'students.enrollment.documents.actions.archive' | translate }}
               </drive-os-button>
             }
           </div>
         </article>
       } @empty {
-        <drive-os-empty-state icon="ph-duotone ph-files"
+        <drive-os-empty-state
+          icon="ph-duotone ph-files"
           [title]="'students.enrollment.documents.empty' | translate"
-          [description]="'students.enrollment.documents.emptyDescription' | translate" />
+          [description]="'students.enrollment.documents.emptyDescription' | translate"
+        />
       }
     </div>
   </drive-os-card>
@@ -94,69 +154,156 @@
       @if (current.type === 'request') {
         <div class="flex items-start justify-between gap-4">
           <div>
-            <h3 class="font-extrabold">{{ 'students.enrollment.documents.forms.requestTitle' | translate }}</h3>
-            <p class="text-sm text-slate-500">{{ 'students.enrollment.documents.forms.requestDescription' | translate }}</p>
+            <h3 class="font-extrabold">
+              {{ 'students.enrollment.documents.forms.requestTitle' | translate }}
+            </h3>
+            <p class="text-sm text-slate-500">
+              {{ 'students.enrollment.documents.forms.requestDescription' | translate }}
+            </p>
           </div>
-          <drive-os-button variant="ghost" size="sm" icon="ph ph-x" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
+          <drive-os-button
+            variant="ghost"
+            size="sm"
+            icon="ph ph-x"
+            (pressed)="cancel()"
+          >
+            {{ 'common.cancel' | translate }}
+          </drive-os-button>
         </div>
-        <form class="mt-5 grid gap-4 md:grid-cols-2" [formGroup]="requestForm" (ngSubmit)="requestDocument()">
+        <form
+          class="mt-5 grid gap-4 md:grid-cols-2"
+          [formGroup]="requestForm"
+          (ngSubmit)="requestDocument()"
+        >
           <label class="grid gap-2 text-sm font-semibold">
             {{ 'students.enrollment.documents.fields.documentType' | translate }}
-            <input dosInput formControlName="documentType" autocomplete="off" />
+            <input
+              dosInput
+              formControlName="documentType"
+              autocomplete="off"
+            />
           </label>
           <label class="grid gap-2 text-sm font-semibold">
             {{ 'students.enrollment.documents.fields.category' | translate }}
-            <select dosInput formControlName="category">
-              @for (category of categories; track category) { <option [value]="category">{{ 'students.enrollment.categories.' + category | translate }}</option> }
+            <select
+              dosInput
+              formControlName="category"
+            >
+              @for (category of categories; track category) {
+                <option [value]="category">
+                  {{ 'students.enrollment.categories.' + category | translate }}
+                </option>
+              }
             </select>
           </label>
           <label class="grid gap-2 text-sm font-semibold">
             {{ 'students.enrollment.documents.fields.expiresOn' | translate }}
-            <input dosInput type="date" formControlName="expiresOn" />
+            <input
+              dosInput
+              type="date"
+              formControlName="expiresOn"
+            />
           </label>
           <fieldset class="grid gap-2 md:col-span-2">
-            <legend class="text-sm font-semibold">{{ 'students.enrollment.documents.fields.visibility' | translate }}</legend>
+            <legend class="text-sm font-semibold">
+              {{ 'students.enrollment.documents.fields.visibility' | translate }}
+            </legend>
             <div class="flex flex-wrap gap-2">
               @for (option of visibilityOptions; track option.value) {
-                <button type="button" class="rounded-full border px-3 py-2 text-sm font-semibold transition"
-                  [class.border-blue-800]="visibilitySelected(option.value)" [class.bg-blue-50]="visibilitySelected(option.value)"
-                  [class.text-blue-800]="visibilitySelected(option.value)" (click)="toggleVisibility(option.value)">
+                <button
+                  type="button"
+                  class="rounded-full border px-3 py-2 text-sm font-semibold transition"
+                  [class.border-blue-800]="visibilitySelected(option.value)"
+                  [class.bg-blue-50]="visibilitySelected(option.value)"
+                  [class.text-blue-800]="visibilitySelected(option.value)"
+                  (click)="toggleVisibility(option.value)"
+                >
                   {{ option.labelKey | translate }}
                 </button>
               }
             </div>
           </fieldset>
           @if (selectedVisibility() === 0) {
-            <drive-os-state-banner class="md:col-span-2" tone="warning" icon="ph ph-warning"
-              [title]="'students.enrollment.documents.visibilityRequired' | translate" />
+            <drive-os-state-banner
+              class="md:col-span-2"
+              tone="warning"
+              icon="ph ph-warning"
+              [title]="'students.enrollment.documents.visibilityRequired' | translate"
+            />
           }
           <div class="flex justify-end gap-2 md:col-span-2">
-            <drive-os-button variant="outline" type="button" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
-            <drive-os-button type="submit" [loading]="saving()">{{ 'students.enrollment.documents.actions.createRequest' | translate }}</drive-os-button>
+            <drive-os-button
+              variant="outline"
+              type="button"
+              (pressed)="cancel()"
+            >
+              {{ 'common.cancel' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              type="submit"
+              [loading]="saving()"
+            >
+              {{ 'students.enrollment.documents.actions.createRequest' | translate }}
+            </drive-os-button>
           </div>
         </form>
       } @else if (current.type === 'upload') {
         <div class="flex items-start justify-between gap-4">
           <div>
-            <h3 class="font-extrabold">{{ (current.document.currentVersion > 0 ? 'students.enrollment.documents.forms.replaceTitle' : 'students.enrollment.documents.forms.uploadTitle') | translate }}</h3>
+            <h3 class="font-extrabold">
+              {{
+                (current.document.currentVersion > 0
+                  ? 'students.enrollment.documents.forms.replaceTitle'
+                  : 'students.enrollment.documents.forms.uploadTitle'
+                ) | translate
+              }}
+            </h3>
             <p class="text-sm text-slate-500">{{ current.document.documentType }}</p>
           </div>
-          <drive-os-button variant="ghost" size="sm" icon="ph ph-x" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
+          <drive-os-button
+            variant="ghost"
+            size="sm"
+            icon="ph ph-x"
+            (pressed)="cancel()"
+          >
+            {{ 'common.cancel' | translate }}
+          </drive-os-button>
         </div>
         <div class="mt-5 grid gap-4">
           @if (current.document.currentVersion > 0) {
-            <drive-os-state-banner tone="info" icon="ph ph-info"
+            <drive-os-state-banner
+              tone="info"
+              icon="ph ph-info"
               [title]="'students.enrollment.documents.forms.versioningTitle' | translate"
-              [description]="'students.enrollment.documents.forms.versioningDescription' | translate" />
+              [description]="
+                'students.enrollment.documents.forms.versioningDescription' | translate
+              "
+            />
           }
           <label class="grid gap-2 text-sm font-semibold">
             {{ 'students.enrollment.documents.fields.file' | translate }}
-            <input class="block w-full rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 py-2 text-sm" type="file" (change)="chooseFile($event)" />
+            <input
+              class="block w-full rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 py-2 text-sm"
+              type="file"
+              (change)="chooseFile($event)"
+            />
           </label>
-          @if (selectedFile(); as file) { <p class="text-sm text-slate-500">{{ file.name }} · {{ file.size }} octets</p> }
+          @if (selectedFile(); as file) {
+            <p class="text-sm text-slate-500">{{ file.name }} · {{ file.size }} octets</p>
+          }
           <div class="flex justify-end gap-2">
-            <drive-os-button variant="outline" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
-            <drive-os-button icon="ph ph-upload-simple" [disabled]="!selectedFile()" [loading]="saving()" (pressed)="upload()">
+            <drive-os-button
+              variant="outline"
+              (pressed)="cancel()"
+            >
+              {{ 'common.cancel' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              icon="ph ph-upload-simple"
+              [disabled]="!selectedFile()"
+              [loading]="saving()"
+              (pressed)="upload()"
+            >
               {{ 'students.enrollment.documents.actions.confirmUpload' | translate }}
             </drive-os-button>
           </div>
@@ -164,60 +311,144 @@
       } @else if (current.type === 'validate') {
         <div class="flex items-start justify-between gap-4">
           <div>
-            <h3 class="font-extrabold">{{ (current.approve ? 'students.enrollment.documents.forms.approveTitle' : 'students.enrollment.documents.forms.rejectTitle') | translate }}</h3>
+            <h3 class="font-extrabold">
+              {{
+                (current.approve
+                  ? 'students.enrollment.documents.forms.approveTitle'
+                  : 'students.enrollment.documents.forms.rejectTitle'
+                ) | translate
+              }}
+            </h3>
             <p class="text-sm text-slate-500">{{ current.document.documentType }}</p>
           </div>
-          <drive-os-button variant="ghost" size="sm" icon="ph ph-x" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
+          <drive-os-button
+            variant="ghost"
+            size="sm"
+            icon="ph ph-x"
+            (pressed)="cancel()"
+          >
+            {{ 'common.cancel' | translate }}
+          </drive-os-button>
         </div>
-        <form class="mt-5 grid gap-4" [formGroup]="validationForm" (ngSubmit)="validate()">
+        <form
+          class="mt-5 grid gap-4"
+          [formGroup]="validationForm"
+          (ngSubmit)="validate()"
+        >
           <label class="grid gap-2 text-sm font-semibold">
             {{ 'students.enrollment.documents.fields.reason' | translate }}
-            <textarea dosInput rows="4" formControlName="reason"></textarea>
+            <textarea
+              dosInput
+              rows="4"
+              formControlName="reason"
+            ></textarea>
           </label>
           <div class="flex justify-end gap-2">
-            <drive-os-button variant="outline" type="button" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
-            <drive-os-button type="submit" [variant]="current.approve ? 'primary' : 'danger'" [loading]="saving()">
-              {{ (current.approve ? 'students.enrollment.documents.actions.confirmApprove' : 'students.enrollment.documents.actions.confirmReject') | translate }}
+            <drive-os-button
+              variant="outline"
+              type="button"
+              (pressed)="cancel()"
+            >
+              {{ 'common.cancel' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              type="submit"
+              [variant]="current.approve ? 'primary' : 'danger'"
+              [loading]="saving()"
+            >
+              {{
+                (current.approve
+                  ? 'students.enrollment.documents.actions.confirmApprove'
+                  : 'students.enrollment.documents.actions.confirmReject'
+                ) | translate
+              }}
             </drive-os-button>
           </div>
         </form>
       } @else if (current.type === 'share') {
         <div class="flex items-start justify-between gap-4">
           <div>
-            <h3 class="font-extrabold">{{ 'students.enrollment.documents.forms.shareTitle' | translate }}</h3>
+            <h3 class="font-extrabold">
+              {{ 'students.enrollment.documents.forms.shareTitle' | translate }}
+            </h3>
             <p class="text-sm text-slate-500">{{ current.document.documentType }}</p>
           </div>
-          <drive-os-button variant="ghost" size="sm" icon="ph ph-x" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
+          <drive-os-button
+            variant="ghost"
+            size="sm"
+            icon="ph ph-x"
+            (pressed)="cancel()"
+          >
+            {{ 'common.cancel' | translate }}
+          </drive-os-button>
         </div>
         <div class="mt-5 grid gap-4">
           <div class="flex flex-wrap gap-2">
             @for (option of visibilityOptions; track option.value) {
-              <button type="button" class="rounded-full border px-3 py-2 text-sm font-semibold transition"
-                [class.border-blue-800]="visibilitySelected(option.value)" [class.bg-blue-50]="visibilitySelected(option.value)"
-                [class.text-blue-800]="visibilitySelected(option.value)" (click)="toggleVisibility(option.value)">
+              <button
+                type="button"
+                class="rounded-full border px-3 py-2 text-sm font-semibold transition"
+                [class.border-blue-800]="visibilitySelected(option.value)"
+                [class.bg-blue-50]="visibilitySelected(option.value)"
+                [class.text-blue-800]="visibilitySelected(option.value)"
+                (click)="toggleVisibility(option.value)"
+              >
                 {{ option.labelKey | translate }}
               </button>
             }
           </div>
           <div class="flex justify-end gap-2">
-            <drive-os-button variant="outline" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
-            <drive-os-button icon="ph ph-share-network" [disabled]="selectedVisibility() === 0" [loading]="saving()" (pressed)="share()">
+            <drive-os-button
+              variant="outline"
+              (pressed)="cancel()"
+            >
+              {{ 'common.cancel' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              icon="ph ph-share-network"
+              [disabled]="selectedVisibility() === 0"
+              [loading]="saving()"
+              (pressed)="share()"
+            >
               {{ 'students.enrollment.documents.actions.confirmShare' | translate }}
             </drive-os-button>
           </div>
         </div>
       } @else if (current.type === 'archive') {
-        <drive-os-state-banner tone="warning" icon="ph ph-archive"
+        <drive-os-state-banner
+          tone="warning"
+          icon="ph ph-archive"
           [title]="'students.enrollment.documents.forms.archiveTitle' | translate"
-          [description]="'students.enrollment.documents.forms.archiveDescription' | translate" />
-        <form class="mt-5 grid gap-4" [formGroup]="archiveForm" (ngSubmit)="archive()">
+          [description]="'students.enrollment.documents.forms.archiveDescription' | translate"
+        />
+        <form
+          class="mt-5 grid gap-4"
+          [formGroup]="archiveForm"
+          (ngSubmit)="archive()"
+        >
           <label class="grid gap-2 text-sm font-semibold">
             {{ 'students.enrollment.documents.fields.reason' | translate }}
-            <textarea dosInput rows="4" formControlName="reason"></textarea>
+            <textarea
+              dosInput
+              rows="4"
+              formControlName="reason"
+            ></textarea>
           </label>
           <div class="flex justify-end gap-2">
-            <drive-os-button variant="outline" type="button" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
-            <drive-os-button variant="danger" type="submit" [loading]="saving()">{{ 'students.enrollment.documents.actions.confirmArchive' | translate }}</drive-os-button>
+            <drive-os-button
+              variant="outline"
+              type="button"
+              (pressed)="cancel()"
+            >
+              {{ 'common.cancel' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              variant="danger"
+              type="submit"
+              [loading]="saving()"
+            >
+              {{ 'students.enrollment.documents.actions.confirmArchive' | translate }}
+            </drive-os-button>
           </div>
         </form>
       }

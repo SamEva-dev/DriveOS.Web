@@ -1,62 +1,428 @@
 <section class="mx-auto flex w-full max-w-[1600px] flex-col gap-5 p-4 lg:p-6">
   <header class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-    <div><p class="text-xs font-bold uppercase tracking-[.14em] text-[var(--driveos-primary-800)]">{{ 'pedagogy.label' | translate }}</p><h1 class="text-2xl font-extrabold text-[var(--driveos-text-primary)]">{{ 'pedagogy.curricula.title' | translate }}</h1><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'pedagogy.curricula.subtitle' | translate }}</p></div>
-    @if (busy()) { <span class="inline-flex items-center gap-2 text-sm text-[var(--driveos-text-secondary)]"><i class="ph ph-circle-notch animate-spin"></i>{{ 'common.loading' | translate }}</span> }
+    <div>
+      <p class="text-xs font-bold uppercase tracking-[.14em] text-[var(--driveos-primary-800)]">
+        {{ 'pedagogy.label' | translate }}
+      </p>
+      <h1 class="text-2xl font-extrabold text-[var(--driveos-text-primary)]">
+        {{ 'pedagogy.curricula.title' | translate }}
+      </h1>
+      <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+        {{ 'pedagogy.curricula.subtitle' | translate }}
+      </p>
+    </div>
+    @if (busy()) {
+      <span class="inline-flex items-center gap-2 text-sm text-[var(--driveos-text-secondary)]">
+        <i class="ph ph-circle-notch animate-spin"></i>
+        {{ 'common.loading' | translate }}
+      </span>
+    }
   </header>
 
-  @if (error()) { <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ error()! | translate }}</div> }
+  @if (error()) {
+    <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      {{ error()! | translate }}
+    </div>
+  }
 
   <div class="grid gap-5 xl:grid-cols-[300px_minmax(0,1fr)]">
-    <aside class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-3 shadow-sm">
-      <div class="mb-3 flex items-center justify-between"><h2 class="font-bold">{{ 'pedagogy.curricula.list' | translate }}</h2><span class="rounded-full bg-[var(--driveos-surface-subtle)] px-2 py-1 text-xs">{{ items().length }}</span></div>
+    <aside
+      class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-3 shadow-sm"
+    >
+      <div class="mb-3 flex items-center justify-between">
+        <h2 class="font-bold">{{ 'pedagogy.curricula.list' | translate }}</h2>
+        <span class="rounded-full bg-[var(--driveos-surface-subtle)] px-2 py-1 text-xs">
+          {{ items().length }}
+        </span>
+      </div>
       <div class="space-y-2">
         @for (item of items(); track item.id) {
-          <button type="button" class="w-full rounded-xl border px-3 py-3 text-left transition hover:bg-[var(--driveos-surface-hover)]" [class.border-[var(--driveos-primary-800)]]="selected()?.id===item.id" [class.border-[var(--driveos-border)]]="selected()?.id!==item.id" (click)="select(item.id)">
-            <div class="flex items-center justify-between gap-2"><strong class="text-sm">{{ item.name }}</strong><span class="text-xs font-bold">V{{ item.latestVersionNumber }}</span></div>
-            <div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">{{ item.countryCode }} · {{ item.licenseCategoryCode }} · {{ item.status }}</div>
+          <button
+            type="button"
+            class="w-full rounded-xl border px-3 py-3 text-left transition hover:bg-[var(--driveos-surface-hover)]"
+            [class.border-[var(--driveos-primary-800)]]="selected()?.id === item.id"
+            [class.border-[var(--driveos-border)]]="selected()?.id !== item.id"
+            (click)="select(item.id)"
+          >
+            <div class="flex items-center justify-between gap-2">
+              <strong class="text-sm">{{ item.name }}</strong>
+              <span class="text-xs font-bold">V{{ item.latestVersionNumber }}</span>
+            </div>
+            <div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+              {{ item.countryCode }} · {{ item.licenseCategoryCode }} · {{ item.status }}
+            </div>
           </button>
-        } @empty { <p class="rounded-xl bg-[var(--driveos-surface-subtle)] p-4 text-sm text-[var(--driveos-text-secondary)]">{{ 'pedagogy.curricula.empty' | translate }}</p> }
+        } @empty {
+          <p
+            class="rounded-xl bg-[var(--driveos-surface-subtle)] p-4 text-sm text-[var(--driveos-text-secondary)]"
+          >
+            {{ 'pedagogy.curricula.empty' | translate }}
+          </p>
+        }
       </div>
     </aside>
 
-    <main class="min-w-0 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm">
-      <nav class="flex gap-1 overflow-x-auto border-b border-[var(--driveos-border)] px-3 pt-3" [attr.aria-label]="'pedagogy.curricula.tabs.label' | translate">
-        @for (t of ['overview','modules','competencies','versions','publication']; track t) {
-          <button type="button" class="whitespace-nowrap rounded-t-lg px-4 py-2.5 text-sm font-bold" [class.bg-[var(--driveos-surface-subtle)]]="tab()===t" [class.text-[var(--driveos-primary-800)]]="tab()===t" (click)="setTab($any(t))">{{ ('pedagogy.curricula.tabs.'+t) | translate }}</button>
+    <main
+      class="min-w-0 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"
+    >
+      <nav
+        class="flex gap-1 overflow-x-auto border-b border-[var(--driveos-border)] px-3 pt-3"
+        [attr.aria-label]="'pedagogy.curricula.tabs.label' | translate"
+      >
+        @for (t of ['overview', 'modules', 'competencies', 'versions', 'publication']; track t) {
+          <button
+            type="button"
+            class="whitespace-nowrap rounded-t-lg px-4 py-2.5 text-sm font-bold"
+            [class.bg-[var(--driveos-surface-subtle)]]="tab() === t"
+            [class.text-[var(--driveos-primary-800)]]="tab() === t"
+            (click)="setTab($any(t))"
+          >
+            {{ 'pedagogy.curricula.tabs.' + t | translate }}
+          </button>
         }
       </nav>
 
       <div class="p-4 lg:p-5">
-        @if (tab()==='overview') {
+        @if (tab() === 'overview') {
           <div class="grid gap-5 lg:grid-cols-2">
             @if (selected(); as c) {
-              <div class="rounded-xl border border-[var(--driveos-border)] p-4"><h3 class="font-bold">{{ c.name }}</h3><dl class="mt-4 grid grid-cols-2 gap-3 text-sm"><div><dt class="text-[var(--driveos-text-secondary)]">Code</dt><dd class="font-semibold">{{ c.code }}</dd></div><div><dt class="text-[var(--driveos-text-secondary)]">{{ 'pedagogy.curricula.scope' | translate }}</dt><dd class="font-semibold">{{ c.countryCode }} / {{ c.licenseCategoryCode }}</dd></div><div><dt class="text-[var(--driveos-text-secondary)]">Status</dt><dd class="font-semibold">{{ c.status }}</dd></div><div><dt class="text-[var(--driveos-text-secondary)]">Versions</dt><dd class="font-semibold">{{ c.versions.length }}</dd></div></dl></div>
+              <div class="rounded-xl border border-[var(--driveos-border)] p-4">
+                <h3 class="font-bold">{{ c.name }}</h3>
+                <dl class="mt-4 grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <dt class="text-[var(--driveos-text-secondary)]">Code</dt>
+                    <dd class="font-semibold">{{ c.code }}</dd>
+                  </div>
+                  <div>
+                    <dt class="text-[var(--driveos-text-secondary)]">
+                      {{ 'pedagogy.curricula.scope' | translate }}
+                    </dt>
+                    <dd class="font-semibold">{{ c.countryCode }} / {{ c.licenseCategoryCode }}</dd>
+                  </div>
+                  <div>
+                    <dt class="text-[var(--driveos-text-secondary)]">Status</dt>
+                    <dd class="font-semibold">{{ c.status }}</dd>
+                  </div>
+                  <div>
+                    <dt class="text-[var(--driveos-text-secondary)]">Versions</dt>
+                    <dd class="font-semibold">{{ c.versions.length }}</dd>
+                  </div>
+                </dl>
+              </div>
             }
             @if (canManage()) {
-              <form class="space-y-3 rounded-xl border border-[var(--driveos-border)] p-4" [formGroup]="curriculumForm" (ngSubmit)="createCurriculum()"><h3 class="font-bold">{{ 'pedagogy.curricula.create' | translate }}</h3><div class="grid gap-3 sm:grid-cols-2"><input dosInput formControlName="code" placeholder="FR-B"><input dosInput formControlName="name" [placeholder]="'common.name' | translate"><input dosInput formControlName="countryCode" placeholder="FR"><input dosInput formControlName="licenseCategoryCode" placeholder="B"></div><textarea dosInput class="min-h-20" formControlName="description"></textarea><button class="inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--driveos-accent-500)] px-4 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50" [disabled]="busy()||curriculumForm.invalid">{{ 'common.create' | translate }}</button></form>
-              <form class="space-y-3 rounded-xl border border-[var(--driveos-border)] p-4" [formGroup]="categoryForm" (ngSubmit)="createCategory()"><h3 class="font-bold">{{ 'pedagogy.curricula.category.create' | translate }}</h3><div class="grid gap-3 sm:grid-cols-3"><input dosInput formControlName="countryCode" placeholder="FR"><input dosInput formControlName="code" placeholder="B"><input dosInput formControlName="name"></div><button class="inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--driveos-accent-500)] px-4 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50" [disabled]="busy()||categoryForm.invalid">{{ 'pedagogy.curricula.category.createActivate' | translate }}</button></form>
+              <form
+                class="space-y-3 rounded-xl border border-[var(--driveos-border)] p-4"
+                [formGroup]="curriculumForm"
+                (ngSubmit)="createCurriculum()"
+              >
+                <h3 class="font-bold">{{ 'pedagogy.curricula.create' | translate }}</h3>
+                <div class="grid gap-3 sm:grid-cols-2">
+                  <input
+                    dosInput
+                    formControlName="code"
+                    placeholder="FR-B"
+                  />
+                  <input
+                    dosInput
+                    formControlName="name"
+                    [placeholder]="'common.name' | translate"
+                  />
+                  <input
+                    dosInput
+                    formControlName="countryCode"
+                    placeholder="FR"
+                  />
+                  <input
+                    dosInput
+                    formControlName="licenseCategoryCode"
+                    placeholder="B"
+                  />
+                </div>
+                <textarea
+                  dosInput
+                  class="min-h-20"
+                  formControlName="description"
+                ></textarea>
+                <button
+                  class="inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--driveos-accent-500)] px-4 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  [disabled]="busy() || curriculumForm.invalid"
+                >
+                  {{ 'common.create' | translate }}
+                </button>
+              </form>
+              <form
+                class="space-y-3 rounded-xl border border-[var(--driveos-border)] p-4"
+                [formGroup]="categoryForm"
+                (ngSubmit)="createCategory()"
+              >
+                <h3 class="font-bold">{{ 'pedagogy.curricula.category.create' | translate }}</h3>
+                <div class="grid gap-3 sm:grid-cols-3">
+                  <input
+                    dosInput
+                    formControlName="countryCode"
+                    placeholder="FR"
+                  />
+                  <input
+                    dosInput
+                    formControlName="code"
+                    placeholder="B"
+                  />
+                  <input
+                    dosInput
+                    formControlName="name"
+                  />
+                </div>
+                <button
+                  class="inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--driveos-accent-500)] px-4 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  [disabled]="busy() || categoryForm.invalid"
+                >
+                  {{ 'pedagogy.curricula.category.createActivate' | translate }}
+                </button>
+              </form>
             }
           </div>
         }
 
-        @if (tab()==='modules') {
-          @if (selected(); as c) { @if (draftVersion(); as v) {
-            <div class="grid gap-5 lg:grid-cols-[1fr_360px]"><div class="space-y-3">@for (m of v.modules; track m.id) {<article class="rounded-xl border border-[var(--driveos-border)] p-4"><div class="flex justify-between"><div><strong>{{ m.order }}. {{ m.name }}</strong><p class="text-xs text-[var(--driveos-text-secondary)]">{{ m.code }}</p></div><span class="text-xs">{{ m.competencies.length }} {{ 'pedagogy.curricula.competencies.label' | translate }}</span></div></article>} @empty {<p class="text-sm text-[var(--driveos-text-secondary)]">{{ 'pedagogy.curricula.modules.empty' | translate }}</p>}</div>
-            @if(canManage()){<form class="space-y-3 rounded-xl bg-[var(--driveos-surface-subtle)] p-4" [formGroup]="moduleForm" (ngSubmit)="addModule()"><h3 class="font-bold">{{ 'pedagogy.curricula.modules.add' | translate }}</h3><input dosInput formControlName="code" placeholder="M1"><input dosInput formControlName="name"><textarea dosInput class="min-h-20" formControlName="description"></textarea><input dosInput type="number" min="1" formControlName="order"><button class="inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--driveos-accent-500)] px-4 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50" [disabled]="moduleForm.invalid||busy()">{{ 'common.add' | translate }}</button></form>}</div>
-          } @else {<p>{{ 'pedagogy.curricula.noDraftVersion' | translate }}</p>} }
+        @if (tab() === 'modules') {
+          @if (selected(); as c) {
+            @if (draftVersion(); as v) {
+              <div class="grid gap-5 lg:grid-cols-[1fr_360px]">
+                <div class="space-y-3">
+                  @for (m of v.modules; track m.id) {
+                    <article class="rounded-xl border border-[var(--driveos-border)] p-4">
+                      <div class="flex justify-between">
+                        <div>
+                          <strong>{{ m.order }}. {{ m.name }}</strong>
+                          <p class="text-xs text-[var(--driveos-text-secondary)]">{{ m.code }}</p>
+                        </div>
+                        <span class="text-xs">
+                          {{ m.competencies.length }}
+                          {{ 'pedagogy.curricula.competencies.label' | translate }}
+                        </span>
+                      </div>
+                    </article>
+                  } @empty {
+                    <p class="text-sm text-[var(--driveos-text-secondary)]">
+                      {{ 'pedagogy.curricula.modules.empty' | translate }}
+                    </p>
+                  }
+                </div>
+                @if (canManage()) {
+                  <form
+                    class="space-y-3 rounded-xl bg-[var(--driveos-surface-subtle)] p-4"
+                    [formGroup]="moduleForm"
+                    (ngSubmit)="addModule()"
+                  >
+                    <h3 class="font-bold">{{ 'pedagogy.curricula.modules.add' | translate }}</h3>
+                    <input
+                      dosInput
+                      formControlName="code"
+                      placeholder="M1"
+                    />
+                    <input
+                      dosInput
+                      formControlName="name"
+                    />
+                    <textarea
+                      dosInput
+                      class="min-h-20"
+                      formControlName="description"
+                    ></textarea>
+                    <input
+                      dosInput
+                      type="number"
+                      min="1"
+                      formControlName="order"
+                    />
+                    <button
+                      class="inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--driveos-accent-500)] px-4 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                      [disabled]="moduleForm.invalid || busy()"
+                    >
+                      {{ 'common.add' | translate }}
+                    </button>
+                  </form>
+                }
+              </div>
+            } @else {
+              <p>{{ 'pedagogy.curricula.noDraftVersion' | translate }}</p>
+            }
+          }
         }
 
-        @if (tab()==='competencies') {
-          @if (draftVersion(); as v) {<div class="grid gap-5 lg:grid-cols-[1fr_380px]"><div class="space-y-4">@for(m of v.modules;track m.id){<section><h3 class="mb-2 font-bold">{{m.name}}</h3><div class="space-y-2">@for(c of m.competencies;track c.id){<article class="rounded-xl border border-[var(--driveos-border)] p-3"><div class="flex gap-3"><span class="font-bold">{{c.order}}</span><div><strong>{{c.name}}</strong><p class="text-xs text-[var(--driveos-text-secondary)]">{{c.code}} · {{c.learningObjective}}</p></div></div></article>} @empty {<p class="text-sm text-[var(--driveos-text-secondary)]">{{ 'pedagogy.curricula.competencies.empty' | translate }}</p>}</div></section>}</div>
-          @if(canManage()){<form class="space-y-3 rounded-xl bg-[var(--driveos-surface-subtle)] p-4" [formGroup]="competencyForm" (ngSubmit)="addCompetency()"><h3 class="font-bold">{{ 'pedagogy.curricula.competencies.add' | translate }}</h3><select dosInput formControlName="moduleId"><option value="">—</option>@for(m of v.modules;track m.id){<option [value]="m.id">{{m.name}}</option>}</select><input dosInput formControlName="code" placeholder="C1"><input dosInput formControlName="name"><textarea dosInput class="min-h-20" formControlName="learningObjective"></textarea><input dosInput type="number" min="1" formControlName="order"><label class="flex gap-2 text-sm"><input type="checkbox" formControlName="isRequired">{{ 'pedagogy.curricula.competencies.required' | translate }}</label><button class="inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--driveos-accent-500)] px-4 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50" [disabled]="competencyForm.invalid||busy()">{{ 'common.add' | translate }}</button></form>}</div>} @else {<p>{{ 'pedagogy.curricula.noDraftVersion' | translate }}</p>}
+        @if (tab() === 'competencies') {
+          @if (draftVersion(); as v) {
+            <div class="grid gap-5 lg:grid-cols-[1fr_380px]">
+              <div class="space-y-4">
+                @for (m of v.modules; track m.id) {
+                  <section>
+                    <h3 class="mb-2 font-bold">{{ m.name }}</h3>
+                    <div class="space-y-2">
+                      @for (c of m.competencies; track c.id) {
+                        <article class="rounded-xl border border-[var(--driveos-border)] p-3">
+                          <div class="flex gap-3">
+                            <span class="font-bold">{{ c.order }}</span>
+                            <div>
+                              <strong>{{ c.name }}</strong>
+                              <p class="text-xs text-[var(--driveos-text-secondary)]">
+                                {{ c.code }} · {{ c.learningObjective }}
+                              </p>
+                            </div>
+                          </div>
+                        </article>
+                      } @empty {
+                        <p class="text-sm text-[var(--driveos-text-secondary)]">
+                          {{ 'pedagogy.curricula.competencies.empty' | translate }}
+                        </p>
+                      }
+                    </div>
+                  </section>
+                }
+              </div>
+              @if (canManage()) {
+                <form
+                  class="space-y-3 rounded-xl bg-[var(--driveos-surface-subtle)] p-4"
+                  [formGroup]="competencyForm"
+                  (ngSubmit)="addCompetency()"
+                >
+                  <h3 class="font-bold">{{ 'pedagogy.curricula.competencies.add' | translate }}</h3>
+                  <select
+                    dosInput
+                    formControlName="moduleId"
+                  >
+                    <option value="">—</option>
+                    @for (m of v.modules; track m.id) {
+                      <option [value]="m.id">{{ m.name }}</option>
+                    }
+                  </select>
+                  <input
+                    dosInput
+                    formControlName="code"
+                    placeholder="C1"
+                  />
+                  <input
+                    dosInput
+                    formControlName="name"
+                  />
+                  <textarea
+                    dosInput
+                    class="min-h-20"
+                    formControlName="learningObjective"
+                  ></textarea>
+                  <input
+                    dosInput
+                    type="number"
+                    min="1"
+                    formControlName="order"
+                  />
+                  <label class="flex gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      formControlName="isRequired"
+                    />
+                    {{ 'pedagogy.curricula.competencies.required' | translate }}
+                  </label>
+                  <button
+                    class="inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--driveos-accent-500)] px-4 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                    [disabled]="competencyForm.invalid || busy()"
+                  >
+                    {{ 'common.add' | translate }}
+                  </button>
+                </form>
+              }
+            </div>
+          } @else {
+            <p>{{ 'pedagogy.curricula.noDraftVersion' | translate }}</p>
+          }
         }
 
-        @if (tab()==='versions') {
-          <div class="grid gap-5 lg:grid-cols-[1fr_360px]">@if(selected();as c){<div class="space-y-2">@for(v of c.versions;track v.id){<article class="rounded-xl border border-[var(--driveos-border)] p-4"><div class="flex items-center justify-between"><strong>V{{v.versionNumber}}</strong><span class="rounded-full bg-[var(--driveos-surface-subtle)] px-2 py-1 text-xs font-bold">{{v.status}}</span></div><p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{v.effectiveFrom}} → {{v.effectiveTo || '∞'}}</p><p class="mt-1 text-sm">{{v.changeSummary}}</p></article>}</div>@if(canManage()){<form class="space-y-3 rounded-xl bg-[var(--driveos-surface-subtle)] p-4" [formGroup]="versionForm" (ngSubmit)="createVersion()"><h3 class="font-bold">{{ 'pedagogy.curricula.versions.create' | translate }}</h3><input dosInput type="date" formControlName="effectiveFrom"><input dosInput type="date" formControlName="effectiveTo"><textarea dosInput class="min-h-20" formControlName="changeSummary"></textarea><button class="inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--driveos-accent-500)] px-4 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50" [disabled]="versionForm.invalid||busy()">{{ 'common.create' | translate }}</button></form>}}</div>
+        @if (tab() === 'versions') {
+          <div class="grid gap-5 lg:grid-cols-[1fr_360px]">
+            @if (selected(); as c) {
+              <div class="space-y-2">
+                @for (v of c.versions; track v.id) {
+                  <article class="rounded-xl border border-[var(--driveos-border)] p-4">
+                    <div class="flex items-center justify-between">
+                      <strong>V{{ v.versionNumber }}</strong>
+                      <span
+                        class="rounded-full bg-[var(--driveos-surface-subtle)] px-2 py-1 text-xs font-bold"
+                      >
+                        {{ v.status }}
+                      </span>
+                    </div>
+                    <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+                      {{ v.effectiveFrom }} → {{ v.effectiveTo || '∞' }}
+                    </p>
+                    <p class="mt-1 text-sm">{{ v.changeSummary }}</p>
+                  </article>
+                }
+              </div>
+              @if (canManage()) {
+                <form
+                  class="space-y-3 rounded-xl bg-[var(--driveos-surface-subtle)] p-4"
+                  [formGroup]="versionForm"
+                  (ngSubmit)="createVersion()"
+                >
+                  <h3 class="font-bold">{{ 'pedagogy.curricula.versions.create' | translate }}</h3>
+                  <input
+                    dosInput
+                    type="date"
+                    formControlName="effectiveFrom"
+                  />
+                  <input
+                    dosInput
+                    type="date"
+                    formControlName="effectiveTo"
+                  />
+                  <textarea
+                    dosInput
+                    class="min-h-20"
+                    formControlName="changeSummary"
+                  ></textarea>
+                  <button
+                    class="inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--driveos-accent-500)] px-4 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                    [disabled]="versionForm.invalid || busy()"
+                  >
+                    {{ 'common.create' | translate }}
+                  </button>
+                </form>
+              }
+            }
+          </div>
         }
 
-        @if (tab()==='publication') {
-          @if(draftVersion();as v){<div class="max-w-2xl rounded-2xl border border-[var(--driveos-border)] p-5"><h3 class="text-lg font-bold">{{ 'pedagogy.curricula.publication.title' | translate }} V{{v.versionNumber}}</h3><p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{ 'pedagogy.curricula.publication.warning' | translate }}</p><ul class="mt-4 space-y-2 text-sm"><li>✓ {{v.modules.length}} {{ 'pedagogy.curricula.modules.label' | translate }}</li><li>✓ {{v.modules.length ? v.modules[0].competencies.length : 0}}+ {{ 'pedagogy.curricula.competencies.label' | translate }}</li><li>✓ {{v.effectiveFrom}}</li></ul>@if(canPublish()){<button class="mt-5 inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--driveos-accent-500)] px-4 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50" [disabled]="busy()" (click)="publish()">{{ 'pedagogy.curricula.publication.action' | translate }}</button>}</div>} @else {<p>{{ 'pedagogy.curricula.publication.noDraft' | translate }}</p>}
+        @if (tab() === 'publication') {
+          @if (draftVersion(); as v) {
+            <div class="max-w-2xl rounded-2xl border border-[var(--driveos-border)] p-5">
+              <h3 class="text-lg font-bold">
+                {{ 'pedagogy.curricula.publication.title' | translate }} V{{ v.versionNumber }}
+              </h3>
+              <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'pedagogy.curricula.publication.warning' | translate }}
+              </p>
+              <ul class="mt-4 space-y-2 text-sm">
+                <li>
+                  ✓ {{ v.modules.length }} {{ 'pedagogy.curricula.modules.label' | translate }}
+                </li>
+                <li>
+                  ✓ {{ v.modules.length ? v.modules[0].competencies.length : 0 }}+
+                  {{ 'pedagogy.curricula.competencies.label' | translate }}
+                </li>
+                <li>✓ {{ v.effectiveFrom }}</li>
+              </ul>
+              @if (canPublish()) {
+                <button
+                  class="mt-5 inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--driveos-accent-500)] px-4 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  [disabled]="busy()"
+                  (click)="publish()"
+                >
+                  {{ 'pedagogy.curricula.publication.action' | translate }}
+                </button>
+              }
+            </div>
+          } @else {
+            <p>{{ 'pedagogy.curricula.publication.noDraft' | translate }}</p>
+          }
         }
       </div>
     </main>

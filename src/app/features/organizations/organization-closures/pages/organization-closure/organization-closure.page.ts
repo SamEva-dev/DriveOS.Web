@@ -17,12 +17,10 @@ export class OrganizationClosurePage {
   readonly loading = signal(false);
   load(): void {
     this.loading.set(true);
-    this.api
-      .list(this.organizationId)
-      .subscribe({
-        next: (x) => this.closures.set(x),
-        complete: () => this.loading.set(false),
-        error: () => this.loading.set(false),
-      });
+    this.api.list(this.organizationId).subscribe({
+      next: (x) => this.closures.set(x),
+      complete: () => this.loading.set(false),
+      error: () => this.loading.set(false),
+    });
   }
 }

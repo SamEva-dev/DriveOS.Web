@@ -2,7 +2,9 @@
   <div class="flex flex-wrap items-start justify-between gap-3">
     <div>
       <h3 class="font-extrabold">{{ 'students.lifecycle.reactivation.title' | translate }}</h3>
-      <p class="mt-1 text-sm text-slate-500">{{ 'students.lifecycle.reactivation.description' | translate }}</p>
+      <p class="mt-1 text-sm text-slate-500">
+        {{ 'students.lifecycle.reactivation.description' | translate }}
+      </p>
     </div>
     @if (canReactivate() && !editing()) {
       <drive-os-button
@@ -33,16 +35,29 @@
 
   @if (editing()) {
     <drive-os-card>
-      <form class="space-y-5" [formGroup]="form" (ngSubmit)="submit()">
+      <form
+        class="space-y-5"
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+      >
         <div>
-          <h4 class="font-extrabold">{{ 'students.lifecycle.reactivation.form.title' | translate }}</h4>
-          <p class="mt-1 text-sm text-slate-500">{{ 'students.lifecycle.reactivation.form.description' | translate }}</p>
+          <h4 class="font-extrabold">
+            {{ 'students.lifecycle.reactivation.form.title' | translate }}
+          </h4>
+          <p class="mt-1 text-sm text-slate-500">
+            {{ 'students.lifecycle.reactivation.form.description' | translate }}
+          </p>
         </div>
 
         <div class="grid gap-4 md:grid-cols-3">
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.lifecycle.reactivation.fields.suspension' | translate }}</span>
-            <select driveOsInput formControlName="suspensionId">
+            <span class="text-sm font-semibold">
+              {{ 'students.lifecycle.reactivation.fields.suspension' | translate }}
+            </span>
+            <select
+              driveOsInput
+              formControlName="suspensionId"
+            >
               @for (suspension of activeSuspensions(); track suspension.suspensionId) {
                 <option [value]="suspension.suspensionId">
                   {{ suspension.reason }} · {{ suspension.startDate | date: 'mediumDate' }}
@@ -51,45 +66,95 @@
             </select>
           </label>
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.lifecycle.reactivation.fields.mode' | translate }}</span>
-            <select driveOsInput formControlName="mode">
-              @for (mode of [1,2,3,4]; track mode) {
-                <option [ngValue]="mode">{{ 'students.lifecycle.reactivation.modes.' + mode | translate }}</option>
+            <span class="text-sm font-semibold">
+              {{ 'students.lifecycle.reactivation.fields.mode' | translate }}
+            </span>
+            <select
+              driveOsInput
+              formControlName="mode"
+            >
+              @for (mode of [1, 2, 3, 4]; track mode) {
+                <option [ngValue]="mode">
+                  {{ 'students.lifecycle.reactivation.modes.' + mode | translate }}
+                </option>
               }
             </select>
           </label>
           <label class="space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.lifecycle.reactivation.fields.resumeDate' | translate }}</span>
-            <input driveOsInput type="date" formControlName="resumeDate" />
+            <span class="text-sm font-semibold">
+              {{ 'students.lifecycle.reactivation.fields.resumeDate' | translate }}
+            </span>
+            <input
+              driveOsInput
+              type="date"
+              formControlName="resumeDate"
+            />
           </label>
         </div>
 
         @if (form.controls.mode.value === 3) {
           <label class="block space-y-1.5">
-            <span class="text-sm font-semibold">{{ 'students.lifecycle.reactivation.fields.conditions' | translate }}</span>
-            <textarea driveOsInput rows="3" formControlName="conditions"></textarea>
+            <span class="text-sm font-semibold">
+              {{ 'students.lifecycle.reactivation.fields.conditions' | translate }}
+            </span>
+            <textarea
+              driveOsInput
+              rows="3"
+              formControlName="conditions"
+            ></textarea>
           </label>
         }
 
-        <label class="flex items-start gap-3 rounded-xl border border-[var(--driveos-border)] p-4 text-sm">
-          <input type="checkbox" formControlName="pedagogyReviewRequested" [disabled]="!canRequestPedagogyReview()" />
+        <label
+          class="flex items-start gap-3 rounded-xl border border-[var(--driveos-border)] p-4 text-sm"
+        >
+          <input
+            type="checkbox"
+            formControlName="pedagogyReviewRequested"
+            [disabled]="!canRequestPedagogyReview()"
+          />
           <span>
-            <strong class="block">{{ 'students.lifecycle.reactivation.fields.pedagogyReview' | translate }}</strong>
-            <small class="text-slate-500">{{ 'students.lifecycle.reactivation.pedagogyReviewHelp' | translate }}</small>
+            <strong class="block">
+              {{ 'students.lifecycle.reactivation.fields.pedagogyReview' | translate }}
+            </strong>
+            <small class="text-slate-500">
+              {{ 'students.lifecycle.reactivation.pedagogyReviewHelp' | translate }}
+            </small>
           </span>
         </label>
 
-        <fieldset class="rounded-xl border border-[var(--driveos-border)] p-4" formArrayName="checks">
-          <legend class="px-2 text-sm font-extrabold">{{ 'students.lifecycle.reactivation.checks.title' | translate }}</legend>
-          <p class="mb-4 text-sm text-slate-500">{{ 'students.lifecycle.reactivation.checks.description' | translate }}</p>
+        <fieldset
+          class="rounded-xl border border-[var(--driveos-border)] p-4"
+          formArrayName="checks"
+        >
+          <legend class="px-2 text-sm font-extrabold">
+            {{ 'students.lifecycle.reactivation.checks.title' | translate }}
+          </legend>
+          <p class="mb-4 text-sm text-slate-500">
+            {{ 'students.lifecycle.reactivation.checks.description' | translate }}
+          </p>
           <div class="grid gap-3 lg:grid-cols-2">
             @for (control of checks.controls; track $index; let index = $index) {
-              <div class="rounded-xl border border-[var(--driveos-border)] p-4" [formGroupName]="index">
+              <div
+                class="rounded-xl border border-[var(--driveos-border)] p-4"
+                [formGroupName]="index"
+              >
                 <div class="flex items-center justify-between gap-3">
-                  <strong class="text-sm">{{ 'students.lifecycle.reactivation.checkTypes.' + checkDefinitions[index].type | translate }}</strong>
-                  <select driveOsInput class="max-w-40" formControlName="status">
-                    @for (status of [1,2,3,4]; track status) {
-                      <option [ngValue]="status">{{ 'students.lifecycle.reactivation.checkStatuses.' + status | translate }}</option>
+                  <strong class="text-sm">
+                    {{
+                      'students.lifecycle.reactivation.checkTypes.' + checkDefinitions[index].type
+                        | translate
+                    }}
+                  </strong>
+                  <select
+                    driveOsInput
+                    class="max-w-40"
+                    formControlName="status"
+                  >
+                    @for (status of [1, 2, 3, 4]; track status) {
+                      <option [ngValue]="status">
+                        {{ 'students.lifecycle.reactivation.checkStatuses.' + status | translate }}
+                      </option>
                     }
                   </select>
                 </div>
@@ -115,8 +180,17 @@
         }
 
         <div class="flex justify-end gap-2">
-          <drive-os-button variant="outline" (pressed)="cancel()">{{ 'common.cancel' | translate }}</drive-os-button>
-          <drive-os-button type="submit" icon="ph ph-play-circle" [loading]="saving()">
+          <drive-os-button
+            variant="outline"
+            (pressed)="cancel()"
+          >
+            {{ 'common.cancel' | translate }}
+          </drive-os-button>
+          <drive-os-button
+            type="submit"
+            icon="ph ph-play-circle"
+            [loading]="saving()"
+          >
             {{ 'students.lifecycle.reactivation.actions.confirm' | translate }}
           </drive-os-button>
         </div>
@@ -125,9 +199,13 @@
   }
 
   @for (item of items(); track item.reactivationId) {
-    <article class="overflow-hidden rounded-xl border border-emerald-200 bg-[var(--driveos-surface-card)]">
+    <article
+      class="overflow-hidden rounded-xl border border-emerald-200 bg-[var(--driveos-surface-card)]"
+    >
       <header class="flex flex-wrap items-center gap-3 bg-emerald-50 p-4">
-        <span class="grid size-11 place-items-center rounded-xl bg-emerald-100 text-xl text-emerald-700">
+        <span
+          class="grid size-11 place-items-center rounded-xl bg-emerald-100 text-xl text-emerald-700"
+        >
           <i class="ph-duotone ph-play-circle"></i>
         </span>
         <div class="min-w-0 flex-1">
@@ -139,22 +217,29 @@
 
       <div class="grid gap-4 p-4 md:grid-cols-3">
         <div>
-          <p class="text-xs uppercase text-slate-500">{{ 'students.lifecycle.reactivation.fields.suspension' | translate }}</p>
+          <p class="text-xs uppercase text-slate-500">
+            {{ 'students.lifecycle.reactivation.fields.suspension' | translate }}
+          </p>
           <strong class="text-sm">{{ item.suspensionId }}</strong>
         </div>
         <div>
-          <p class="text-xs uppercase text-slate-500">{{ 'students.lifecycle.reactivation.fields.resumeDate' | translate }}</p>
+          <p class="text-xs uppercase text-slate-500">
+            {{ 'students.lifecycle.reactivation.fields.resumeDate' | translate }}
+          </p>
           <strong class="text-sm">{{ item.resumeDate | date: 'mediumDate' }}</strong>
         </div>
         <div>
-          <p class="text-xs uppercase text-slate-500">{{ 'students.lifecycle.reactivation.fields.appliedAt' | translate }}</p>
+          <p class="text-xs uppercase text-slate-500">
+            {{ 'students.lifecycle.reactivation.fields.appliedAt' | translate }}
+          </p>
           <strong class="text-sm">{{ (item.appliedAtUtc | date: 'short') || '—' }}</strong>
         </div>
       </div>
 
       @if (item.conditions) {
         <p class="mx-4 rounded-lg bg-slate-50 p-3 text-sm">
-          <strong>{{ 'students.lifecycle.conditions' | translate }} :</strong> {{ item.conditions }}
+          <strong>{{ 'students.lifecycle.conditions' | translate }} :</strong>
+          {{ item.conditions }}
         </p>
       }
 
@@ -171,10 +256,16 @@
         @for (check of item.checks; track check.type) {
           <div class="rounded-xl border border-[var(--driveos-border)] p-3">
             <div class="flex flex-wrap items-center gap-2">
-              <strong class="min-w-0 flex-1 text-sm">{{ 'students.lifecycle.reactivation.checkTypes.' + check.type | translate }}</strong>
+              <strong class="min-w-0 flex-1 text-sm">
+                {{ 'students.lifecycle.reactivation.checkTypes.' + check.type | translate }}
+              </strong>
               <drive-os-badge [variant]="variant(check.status)">{{ check.status }}</drive-os-badge>
             </div>
-            @if (canReactivate() && item.status !== 'Applied' && item.status !== 'NewEnrollmentRequired') {
+            @if (
+              canReactivate() &&
+              item.status !== 'Applied' &&
+              item.status !== 'NewEnrollmentRequired'
+            ) {
               <input
                 #reviewDetail
                 driveOsInput
@@ -183,10 +274,38 @@
                 [placeholder]="'students.lifecycle.reactivation.fields.checkDetail' | translate"
               />
               <div class="mt-3 flex flex-wrap gap-1.5">
-                <button type="button" class="rounded-lg border px-2.5 py-1 text-xs font-semibold" [disabled]="reviewingKey() !== null" (click)="review(item, check, 1, reviewDetail.value)">{{ 'students.lifecycle.reactivation.checkStatuses.1' | translate }}</button>
-                <button type="button" class="rounded-lg border px-2.5 py-1 text-xs font-semibold" [disabled]="reviewingKey() !== null" (click)="review(item, check, 2, reviewDetail.value)">{{ 'students.lifecycle.reactivation.checkStatuses.2' | translate }}</button>
-                <button type="button" class="rounded-lg border px-2.5 py-1 text-xs font-semibold" [disabled]="reviewingKey() !== null" (click)="review(item, check, 3, reviewDetail.value)">{{ 'students.lifecycle.reactivation.checkStatuses.3' | translate }}</button>
-                <button type="button" class="rounded-lg border px-2.5 py-1 text-xs font-semibold" [disabled]="reviewingKey() !== null" (click)="review(item, check, 4, reviewDetail.value)">{{ 'students.lifecycle.reactivation.checkStatuses.4' | translate }}</button>
+                <button
+                  type="button"
+                  class="rounded-lg border px-2.5 py-1 text-xs font-semibold"
+                  [disabled]="reviewingKey() !== null"
+                  (click)="review(item, check, 1, reviewDetail.value)"
+                >
+                  {{ 'students.lifecycle.reactivation.checkStatuses.1' | translate }}
+                </button>
+                <button
+                  type="button"
+                  class="rounded-lg border px-2.5 py-1 text-xs font-semibold"
+                  [disabled]="reviewingKey() !== null"
+                  (click)="review(item, check, 2, reviewDetail.value)"
+                >
+                  {{ 'students.lifecycle.reactivation.checkStatuses.2' | translate }}
+                </button>
+                <button
+                  type="button"
+                  class="rounded-lg border px-2.5 py-1 text-xs font-semibold"
+                  [disabled]="reviewingKey() !== null"
+                  (click)="review(item, check, 3, reviewDetail.value)"
+                >
+                  {{ 'students.lifecycle.reactivation.checkStatuses.3' | translate }}
+                </button>
+                <button
+                  type="button"
+                  class="rounded-lg border px-2.5 py-1 text-xs font-semibold"
+                  [disabled]="reviewingKey() !== null"
+                  (click)="review(item, check, 4, reviewDetail.value)"
+                >
+                  {{ 'students.lifecycle.reactivation.checkStatuses.4' | translate }}
+                </button>
               </div>
             } @else if (check.detail) {
               <p class="mt-2 text-xs text-slate-500">{{ check.detail }}</p>

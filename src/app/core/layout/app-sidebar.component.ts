@@ -15,6 +15,7 @@ import { AuthorizationService } from '../auth/authorization.service';
 import { CRM_PERMISSIONS } from '../../features/crm/domain/crm-permissions';
 import { STUDENT_PERMISSIONS } from '../../features/students/domain/student-permissions';
 import { PEDAGOGY_PERMISSIONS } from '../../features/pedagogy/domain/pedagogy-permissions';
+import { SCHEDULING_PERMISSIONS } from '../../features/scheduling/domain/scheduling-permissions';
 import { NavigationItem } from './navigation-item';
 
 interface NavigationGroup {
@@ -74,7 +75,10 @@ interface NavigationGroup {
               [attr.aria-controls]="group.id ? 'driveos-' + group.id + '-navigation' : null"
               (click)="toggleGroup(group)"
             >
-              <i [class]="(group.icon ?? 'ph ph-folder') + ' text-lg'" aria-hidden="true"></i>
+              <i
+                [class]="(group.icon ?? 'ph ph-folder') + ' text-lg'"
+                aria-hidden="true"
+              ></i>
               <span class="min-w-0 flex-1 truncate">{{ group.labelKey | translate }}</span>
               <i
                 class="ph text-sm"
@@ -310,9 +314,22 @@ export class AppSidebarComponent {
         collapsible: true,
       });
     }
-    const visibleMainItems = this.mainItems.filter((item) =>
-      item.routerLink !== '/pedagogy' || this.authorization.hasPermission(PEDAGOGY_PERMISSIONS.curricula.read),
-    );
+    const visibleMainItems = this.mainItems.filter((item) => {
+      if (item.routerLink === '/pedagogy') {
+        return this.authorization.hasPermission(PEDAGOGY_PERMISSIONS.curricula.read);
+      }
+      if (item.routerLink === '/planning') {
+        return this.authorization.hasAny([
+          SCHEDULING_PERMISSIONS.bookings.read,
+          SCHEDULING_PERMISSIONS.availability.read,
+          SCHEDULING_PERMISSIONS.conflicts.read,
+          SCHEDULING_PERMISSIONS.waitingList.read,
+          SCHEDULING_PERMISSIONS.resources.read,
+          SCHEDULING_PERMISSIONS.capacity.read,
+        ]);
+      }
+      return true;
+    });
     groups.push({ labelKey: 'navigation.groups.platform', items: visibleMainItems });
     return groups;
   });

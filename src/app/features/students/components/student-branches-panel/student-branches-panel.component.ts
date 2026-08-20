@@ -1,13 +1,24 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
 import { ApiErrorService } from '../../../../core/errors/api-error.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { DriveOsBadgeComponent, DriveOsBadgeVariant } from '../../../../shared/ui/badge/driveos-badge.component';
+import {
+  DriveOsBadgeComponent,
+  DriveOsBadgeVariant,
+} from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsButtonComponent } from '../../../../shared/ui/button/driveos-button.component';
 import { DriveOsCardComponent } from '../../../../shared/ui/card/driveos-card.component';
 import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/driveos-empty-state.component';
@@ -66,12 +77,18 @@ export class StudentBranchesPanelComponent {
   readonly analysis = signal<PrimaryBranchChangeAnalysis | null>(null);
 
   readonly canAssign = computed(() => this.hasPermission(STUDENT_PERMISSIONS.branchesAssign));
-  readonly canChangePrimary = computed(() => this.hasPermission(STUDENT_PERMISSIONS.branchesChangePrimary));
+  readonly canChangePrimary = computed(() =>
+    this.hasPermission(STUDENT_PERMISSIONS.branchesChangePrimary),
+  );
   readonly activeAssignments = computed(() =>
-    this.branches().assignments.filter((item) => item.status === 'Active' || item.status === 'Planned'),
+    this.branches().assignments.filter(
+      (item) => item.status === 'Active' || item.status === 'Planned',
+    ),
   );
   readonly pastAssignments = computed(() =>
-    this.branches().assignments.filter((item) => item.status !== 'Active' && item.status !== 'Planned'),
+    this.branches().assignments.filter(
+      (item) => item.status !== 'Active' && item.status !== 'Planned',
+    ),
   );
 
   readonly assignForm = this.fb.nonNullable.group({

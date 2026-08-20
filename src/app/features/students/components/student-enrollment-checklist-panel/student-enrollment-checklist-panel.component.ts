@@ -1,12 +1,24 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { AuthorizationService } from '../../../../core/auth/authorization.service';
 import { ApiErrorService } from '../../../../core/errors/api-error.service';
-import { DriveOsBadgeComponent, DriveOsBadgeVariant } from '../../../../shared/ui/badge/driveos-badge.component';
+import {
+  DriveOsBadgeComponent,
+  DriveOsBadgeVariant,
+} from '../../../../shared/ui/badge/driveos-badge.component';
 import { DriveOsButtonComponent } from '../../../../shared/ui/button/driveos-button.component';
 import { DriveOsCardComponent } from '../../../../shared/ui/card/driveos-card.component';
 import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/driveos-empty-state.component';
@@ -47,6 +59,7 @@ export class StudentEnrollmentChecklistPanelComponent {
   private readonly errors = inject(ApiErrorService);
   private readonly toast = inject(DriveOsToastService);
   private readonly translate = inject(TranslateService);
+  private readonly router = inject(Router);
 
   readonly studentId = input.required<string>();
   readonly checklist = input.required<EnrollmentChecklist>();
@@ -85,8 +98,17 @@ export class StudentEnrollmentChecklistPanelComponent {
     responsibleUserId: ['', Validators.required],
   });
 
+
+  openSource(item: EnrollmentChecklistItem): void {
+    if (!item.targetRoute) return;
+    void this.router.navigate(['/students', this.studentId(), ...item.targetRoute.split('/').filter(Boolean)]);
+  }
+
   openStatus(item: EnrollmentChecklistItem): void {
-    this.statusForm.reset({ status: item.status || 'InProgress', reason: item.decisionReason ?? '' });
+    this.statusForm.reset({
+      status: item.status || 'InProgress',
+      reason: item.decisionReason ?? '',
+    });
     this.action.set({ type: 'status', item });
   }
 
@@ -107,17 +129,21 @@ export class StudentEnrollmentChecklistPanelComponent {
   synchronize(): void {
     if (!this.canUpdate() || this.synchronizing()) return;
     this.synchronizing.set(true);
-    this.api.synchronizeEnrollmentChecklist(this.studentId(), this.checklist().enrollmentId).subscribe({
-      next: () => {
-        this.synchronizing.set(false);
-        this.toast.success(this.translate.instant('students.enrollment.checklist.feedback.synchronized'));
-        this.refreshed.emit();
-      },
-      error: (error: HttpErrorResponse) => {
-        this.synchronizing.set(false);
-        this.showError(error);
-      },
-    });
+    this.api
+      .synchronizeEnrollmentChecklist(this.studentId(), this.checklist().enrollmentId)
+      .subscribe({
+        next: () => {
+          this.synchronizing.set(false);
+          this.toast.success(
+            this.translate.instant('students.enrollment.checklist.feedback.synchronized'),
+          );
+          this.refreshed.emit();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.synchronizing.set(false);
+          this.showError(error);
+        },
+      });
   }
 
   saveStatus(): void {
@@ -162,21 +188,31 @@ export class StudentEnrollmentChecklistPanelComponent {
   remind(item: EnrollmentChecklistItem): void {
     if (!this.canUpdate() || this.remindingId()) return;
     this.remindingId.set(item.id);
-    this.api.remindEnrollmentChecklistItem(this.studentId(), this.checklist().enrollmentId, item.id).subscribe({
-      next: () => {
-        this.remindingId.set(null);
-        this.toast.success(this.translate.instant('students.enrollment.checklist.feedback.reminded'));
-        this.refreshed.emit();
-      },
-      error: (error: HttpErrorResponse) => {
-        this.remindingId.set(null);
-        this.showError(error);
-      },
-    });
+    this.api
+      .remindEnrollmentChecklistItem(this.studentId(), this.checklist().enrollmentId, item.id)
+      .subscribe({
+        next: () => {
+          this.remindingId.set(null);
+          this.toast.success(
+            this.translate.instant('students.enrollment.checklist.feedback.reminded'),
+          );
+          this.refreshed.emit();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.remindingId.set(null);
+          this.showError(error);
+        },
+      });
   }
 
   activate(): void {
-    if (this.action()?.type !== 'activate' || !this.checklist().canActivate || !this.canActivate() || this.saving()) return;
+    if (
+      this.action()?.type !== 'activate' ||
+      !this.checklist().canActivate ||
+      !this.canActivate() ||
+      this.saving()
+    )
+      return;
     this.run(
       this.api.activateEnrollment(this.studentId(), this.checklist().enrollmentId),
       'students.enrollment.checklist.feedback.activated',

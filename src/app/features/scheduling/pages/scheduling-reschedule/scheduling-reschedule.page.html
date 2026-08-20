@@ -1,0 +1,710 @@
+<section class="space-y-5">
+  <header
+    class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 shadow-sm"
+  >
+    <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+      <div class="flex items-start gap-3">
+        <button
+          type="button"
+          class="mt-0.5 grid h-10 w-10 place-items-center rounded-xl border border-[var(--driveos-border)] hover:bg-[var(--driveos-surface-muted)]"
+          (click)="backToBooking()"
+          [attr.aria-label]="'common.back' | translate"
+        >
+          <i class="ph ph-arrow-left text-lg"></i>
+        </button>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-orange-600">
+            {{ 'scheduling.reschedule.kicker' | translate }}
+          </p>
+          <h1 class="mt-1 text-2xl font-black tracking-tight">
+            {{ 'scheduling.reschedule.title' | translate }}
+          </h1>
+          @if (booking(); as booking) {
+            <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+              {{ booking.title }} · {{ booking.startAtUtc | date: 'EEEE d MMMM, HH:mm' }}
+            </p>
+          }
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <drive-os-button
+          variant="outline"
+          (pressed)="openSearch()"
+        >
+          <i class="ph ph-calendar-magnifying-glass mr-2"></i>
+          {{ 'scheduling.reschedule.actions.searchAutomatically' | translate }}
+        </drive-os-button>
+        <drive-os-button
+          [disabled]="!canPreview() || previewing()"
+          (pressed)="preview()"
+        >
+          @if (previewing()) {
+            <i class="ph ph-circle-notch mr-2 animate-spin"></i>
+          }
+          {{ 'scheduling.reschedule.actions.preview' | translate }}
+        </drive-os-button>
+      </div>
+    </div>
+
+    <div class="mt-5 overflow-x-auto">
+      <div class="flex min-w-max gap-1 rounded-xl bg-[var(--driveos-surface-muted)] p-1">
+        @for (item of steps; track item.id; let index = $index) {
+          <button
+            type="button"
+            class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition"
+            [class.bg-[var(--driveos-surface)]]="step() === item.id"
+            [class.shadow-sm]="step() === item.id"
+            [class.text-blue-800]="step() === item.id"
+            (click)="setStep(item.id)"
+          >
+            <span class="grid h-6 w-6 place-items-center rounded-full bg-white/70 text-xs">
+              {{ index + 1 }}
+            </span>
+            <i [class]="item.icon"></i>
+            {{ item.key | translate }}
+          </button>
+        }
+      </div>
+    </div>
+  </header>
+
+  @if (errors().length) {
+    <drive-os-state-banner
+      tone="danger"
+      [title]="'common.error' | translate"
+    >
+      <ul class="list-disc pl-5">
+        @for (error of errors(); track error) {
+          <li>{{ error | translate }}</li>
+        }
+      </ul>
+    </drive-os-state-banner>
+  }
+  @if (successKey()) {
+    <drive-os-state-banner
+      tone="success"
+      [title]="successKey()! | translate"
+    ></drive-os-state-banner>
+  }
+
+  @if (loading()) {
+    <div class="grid min-h-72 place-items-center"><drive-os-spinner /></div>
+  } @else if (!booking()) {
+    <drive-os-empty-state
+      icon="ph ph-calendar-x"
+      [title]="'scheduling.reschedule.notFound' | translate"
+    />
+  } @else if (booking(); as booking) {
+    <div class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+      <main
+        class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] shadow-sm"
+      >
+        @if (step() === 'reason') {
+          <div class="space-y-5 p-6">
+            <div>
+              <h2 class="text-lg font-black">
+                {{ 'scheduling.reschedule.reason.title' | translate }}
+              </h2>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.reschedule.reason.subtitle' | translate }}
+              </p>
+            </div>
+            <label class="block">
+              <span class="text-sm font-semibold">
+                {{ 'scheduling.reschedule.reason.label' | translate }}
+              </span>
+              <textarea
+                rows="5"
+                maxlength="500"
+                class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent p-3"
+                [value]="reason()"
+                (input)="setReason($any($event.target).value)"
+                [placeholder]="'scheduling.reschedule.reason.placeholder' | translate"
+              ></textarea>
+              <span class="mt-1 block text-right text-xs text-[var(--driveos-text-secondary)]">
+                {{ reason().length }}/500
+              </span>
+            </label>
+          </div>
+        }
+        @if (step() === 'slot') {
+          <div class="space-y-5 p-6">
+            <div>
+              <h2 class="text-lg font-black">
+                {{ 'scheduling.reschedule.slot.title' | translate }}
+              </h2>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.reschedule.slot.subtitle' | translate }}
+              </p>
+            </div>
+            <div class="grid gap-4 md:grid-cols-2">
+              <label class="block">
+                <span class="text-sm font-semibold">
+                  {{ 'scheduling.reschedule.slot.start' | translate }}
+                </span>
+                <input
+                  type="datetime-local"
+                  class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                  [value]="startAt()"
+                  (input)="setStart($any($event.target).value)"
+                />
+              </label>
+              <label class="block">
+                <span class="text-sm font-semibold">
+                  {{ 'scheduling.reschedule.slot.end' | translate }}
+                </span>
+                <input
+                  type="datetime-local"
+                  class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+                  [value]="endAt()"
+                  (input)="setEnd($any($event.target).value)"
+                />
+              </label>
+              <label class="block md:col-span-2">
+                <span class="text-sm font-semibold">
+                  {{ 'scheduling.reschedule.slot.branch' | translate }}
+                </span>
+                <select
+                  class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-2.5"
+                  [value]="branchId()"
+                  (change)="setBranch($any($event.target).value)"
+                >
+                  <option value="">{{ 'scheduling.reschedule.slot.noBranch' | translate }}</option>
+                  @for (branch of resources(); track branch.id) {
+                    @if (branch.resourceType === 'Branch' || branch.resourceType === 5) {
+                      <option [value]="branch.externalResourceId || branch.id">
+                        {{ branch.displayName }}
+                      </option>
+                    }
+                  }
+                </select>
+              </label>
+            </div>
+          </div>
+        }
+        @if (step() === 'resources') {
+          <div class="space-y-6 p-6">
+            <div>
+              <h2 class="text-lg font-black">
+                {{ 'scheduling.reschedule.resources.title' | translate }}
+              </h2>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.reschedule.resources.subtitle' | translate }}
+              </p>
+            </div>
+            <section class="rounded-2xl border border-[var(--driveos-border)] p-4">
+              <div class="flex items-center justify-between gap-3">
+                <div>
+                  <h3 class="font-bold">
+                    {{ 'scheduling.reschedule.resources.instructor' | translate }}
+                  </h3>
+                  <p class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ 'scheduling.reschedule.resources.instructorHelp' | translate }}
+                  </p>
+                </div>
+                <label class="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    [checked]="keepInstructor()"
+                    (change)="setKeepInstructor($any($event.target).checked)"
+                  />
+                  {{ 'scheduling.reschedule.resources.keep' | translate }}
+                </label>
+              </div>
+              @if (!keepInstructor()) {
+                <select
+                  class="mt-4 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-2.5"
+                  [value]="selectedInstructorResourceId()"
+                  (change)="setInstructor($any($event.target).value)"
+                >
+                  <option value="">{{ 'common.select' | translate }}</option>
+                  @for (resource of instructors(); track resource.id) {
+                    <option [value]="resource.id">{{ resource.displayName }}</option>
+                  }
+                </select>
+              }
+            </section>
+            <section class="rounded-2xl border border-[var(--driveos-border)] p-4">
+              <div class="flex items-center justify-between gap-3">
+                <div>
+                  <h3 class="font-bold">
+                    {{ 'scheduling.reschedule.resources.vehicle' | translate }}
+                  </h3>
+                  <p class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ 'scheduling.reschedule.resources.vehicleHelp' | translate }}
+                  </p>
+                </div>
+                <label class="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    [checked]="keepVehicle()"
+                    (change)="setKeepVehicle($any($event.target).checked)"
+                  />
+                  {{ 'scheduling.reschedule.resources.keep' | translate }}
+                </label>
+              </div>
+              @if (!keepVehicle()) {
+                <select
+                  class="mt-4 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-2.5"
+                  [value]="selectedVehicleResourceId()"
+                  (change)="setVehicle($any($event.target).value)"
+                >
+                  <option value="">{{ 'common.select' | translate }}</option>
+                  @for (resource of vehicles(); track resource.id) {
+                    <option [value]="resource.id">{{ resource.displayName }}</option>
+                  }
+                </select>
+              }
+            </section>
+            <section class="rounded-2xl border border-[var(--driveos-border)] p-4">
+              <h3 class="font-bold">{{ 'scheduling.reschedule.resources.room' | translate }}</h3>
+              <select
+                class="mt-3 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] px-3 py-2.5"
+                [value]="selectedRoomResourceId()"
+                (change)="setRoom($any($event.target).value)"
+              >
+                <option value="">{{ 'scheduling.reschedule.resources.noRoom' | translate }}</option>
+                @for (resource of rooms(); track resource.id) {
+                  <option [value]="resource.id">{{ resource.displayName }}</option>
+                }
+              </select>
+            </section>
+          </div>
+        }
+        @if (step() === 'impacts') {
+          <div class="space-y-5 p-6">
+            <div>
+              <h2 class="text-lg font-black">
+                {{ 'scheduling.reschedule.impacts.title' | translate }}
+              </h2>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.reschedule.impacts.subtitle' | translate }}
+              </p>
+            </div>
+            @if (!impact()) {
+              <drive-os-empty-state
+                icon="ph ph-magnifying-glass"
+                [title]="'scheduling.reschedule.impacts.empty' | translate"
+              />
+            }
+            @if (impact(); as preview) {
+              <div class="grid gap-3 sm:grid-cols-2">
+                @for (item of preview.impacts; track item.code) {
+                  <div class="rounded-xl border border-[var(--driveos-border)] p-4">
+                    <div class="flex items-start justify-between gap-2">
+                      <span class="font-bold">
+                        {{ 'scheduling.reschedule.impactLabels.' + item.code | translate }}
+                      </span>
+                      <span
+                        class="rounded-full px-2 py-1 text-xs font-bold"
+                        [class]="impactStateClass(item.state)"
+                      >
+                        {{ 'scheduling.reschedule.states.' + item.state | translate }}
+                      </span>
+                    </div>
+                    <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+                      {{ item.messageKey | translate }}
+                    </p>
+                  </div>
+                }
+              </div>
+              @if (!preview.conflictCheck.isConflictFree) {
+                <section class="rounded-xl border border-rose-200 bg-rose-50 p-4">
+                  <h3 class="font-black text-rose-800">
+                    {{ 'scheduling.reschedule.impacts.conflicts' | translate }}
+                  </h3>
+                  <div class="mt-3 space-y-2">
+                    @for (conflict of preview.conflictCheck.conflicts; track $index) {
+                      <div class="rounded-lg bg-white/80 p-3 text-sm">
+                        <span class="font-bold">
+                          {{ conflictTypeKey(conflict.type) | translate }}
+                        </span>
+                        @if (conflict.reason) {
+                          <span class="ml-2 text-rose-700">{{ conflict.reason }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                </section>
+              }
+            }
+          </div>
+        }
+        @if (step() === 'notifications') {
+          <div class="space-y-5 p-6">
+            <div>
+              <h2 class="text-lg font-black">
+                {{ 'scheduling.reschedule.notifications.title' | translate }}
+              </h2>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.reschedule.notifications.subtitle' | translate }}
+              </p>
+            </div>
+            <div class="rounded-2xl border border-blue-200 bg-blue-50 p-5">
+              <div class="flex gap-3">
+                <i class="ph ph-bell-ringing mt-0.5 text-xl text-blue-700"></i>
+                <div>
+                  <h3 class="font-bold text-blue-900">
+                    {{ 'scheduling.reschedule.notifications.targetedTitle' | translate }}
+                  </h3>
+                  <p class="mt-1 text-sm text-blue-800">
+                    {{ 'scheduling.reschedule.notifications.targetedText' | translate }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            @if (booking.notificationPolicy === 0) {
+              <drive-os-state-banner
+                tone="warning"
+                [title]="'scheduling.reschedule.notifications.disabledTitle' | translate"
+              >
+                {{ 'scheduling.reschedule.notifications.disabledText' | translate }}
+              </drive-os-state-banner>
+            }
+          </div>
+        }
+        @if (step() === 'confirmation') {
+          <div class="space-y-5 p-6">
+            <div>
+              <h2 class="text-lg font-black">
+                {{ 'scheduling.reschedule.confirmation.title' | translate }}
+              </h2>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.reschedule.confirmation.subtitle' | translate }}
+              </p>
+            </div>
+            <div class="grid gap-4 md:grid-cols-2">
+              <div
+                class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-muted)] p-5"
+              >
+                <div
+                  class="text-xs font-bold uppercase tracking-wide text-[var(--driveos-text-secondary)]"
+                >
+                  {{ 'scheduling.reschedule.previousSlot' | translate }}
+                </div>
+                <div class="mt-2 text-lg font-black">
+                  {{ booking.startAtUtc | date: 'EEE d MMM, HH:mm' }}–{{
+                    booking.endAtUtc | date: 'HH:mm'
+                  }}
+                </div>
+                <div class="mt-1 text-sm">{{ branchLabel(booking.branchId) }}</div>
+              </div>
+              <div class="rounded-2xl border border-blue-200 bg-blue-50 p-5">
+                <div class="text-xs font-bold uppercase tracking-wide text-blue-700">
+                  {{ 'scheduling.reschedule.newSlot' | translate }}
+                </div>
+                <div class="mt-2 text-lg font-black text-blue-950">
+                  {{ startAt() | date: 'EEE d MMM, HH:mm' }}–{{ endAt() | date: 'HH:mm' }}
+                </div>
+                <div class="mt-1 text-sm text-blue-800">{{ branchLabel(branchId() || null) }}</div>
+              </div>
+            </div>
+            <section>
+              <h3 class="text-sm font-black">
+                {{ 'scheduling.reschedule.changes.title' | translate }}
+              </h3>
+              <div class="mt-2 flex flex-wrap gap-2">
+                @if (!changes().length) {
+                  <span class="rounded-full bg-slate-100 px-3 py-1.5 text-sm">
+                    {{ 'scheduling.reschedule.changes.none' | translate }}
+                  </span>
+                }
+                @for (change of changes(); track change) {
+                  <span
+                    class="rounded-full bg-orange-50 px-3 py-1.5 text-sm font-semibold text-orange-700"
+                  >
+                    {{ 'scheduling.reschedule.changes.' + change | translate }}
+                  </span>
+                }
+              </div>
+            </section>
+          </div>
+        }
+
+        <footer
+          class="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--driveos-border)] px-6 py-4"
+        >
+          <drive-os-button
+            variant="ghost"
+            (pressed)="backToBooking()"
+          >
+            {{ 'common.cancel' | translate }}
+          </drive-os-button>
+          <div class="flex gap-2">
+            <drive-os-button
+              variant="outline"
+              [disabled]="!canPreview() || previewing()"
+              (pressed)="preview()"
+            >
+              {{ 'scheduling.reschedule.actions.recheck' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              [disabled]="!canApply()"
+              (pressed)="apply()"
+            >
+              @if (saving()) {
+                <i class="ph ph-circle-notch mr-2 animate-spin"></i>
+              }
+              {{ 'scheduling.reschedule.actions.confirmAndNotify' | translate }}
+            </drive-os-button>
+          </div>
+        </footer>
+      </main>
+
+      <aside class="space-y-4">
+        <section
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 shadow-sm"
+        >
+          <h2
+            class="text-sm font-black uppercase tracking-wide text-[var(--driveos-text-secondary)]"
+          >
+            {{ 'scheduling.reschedule.summary.title' | translate }}
+          </h2>
+          <div class="mt-4 space-y-4">
+            <div>
+              <div class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.reschedule.previousSlot' | translate }}
+              </div>
+              <div class="font-bold">
+                {{ booking.startAtUtc | date: 'dd/MM/yyyy HH:mm' }} →
+                {{ booking.endAtUtc | date: 'HH:mm' }}
+              </div>
+            </div>
+            <div>
+              <div class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.reschedule.newSlot' | translate }}
+              </div>
+              <div class="font-bold text-blue-800">
+                {{ startAt() | date: 'dd/MM/yyyy HH:mm' }} → {{ endAt() | date: 'HH:mm' }}
+              </div>
+            </div>
+            <div>
+              <div class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'scheduling.reschedule.reason.label' | translate }}
+              </div>
+              <div class="text-sm">{{ reason() || '—' }}</div>
+            </div>
+          </div>
+        </section>
+        <section
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 shadow-sm"
+        >
+          <h2 class="text-sm font-black">
+            {{ 'scheduling.reschedule.resources.currentSelection' | translate }}
+          </h2>
+          <div class="mt-3 space-y-2">
+            @for (resource of selectedResources(); track resource.calendarResourceId) {
+              <div
+                class="flex items-center justify-between rounded-xl bg-[var(--driveos-surface-muted)] px-3 py-2 text-sm"
+              >
+                <span>{{ resourceName(resource.calendarResourceId) }}</span>
+                <span class="text-xs text-[var(--driveos-text-secondary)]">
+                  ×{{ resource.quantity }}
+                </span>
+              </div>
+            }
+          </div>
+        </section>
+        @if (impact(); as preview) {
+          <section
+            class="rounded-2xl border p-5 shadow-sm"
+            [class.border-emerald-200]="preview.canConfirm"
+            [class.bg-emerald-50]="preview.canConfirm"
+            [class.border-rose-200]="!preview.canConfirm"
+            [class.bg-rose-50]="!preview.canConfirm"
+          >
+            <div class="flex items-center gap-3">
+              <i
+                class="text-2xl"
+                [class.ph-check-circle]="preview.canConfirm"
+                [class.ph-warning-circle]="!preview.canConfirm"
+                [class.text-emerald-700]="preview.canConfirm"
+                [class.text-rose-700]="!preview.canConfirm"
+              ></i>
+              <div>
+                <div class="font-black">
+                  {{
+                    (preview.canConfirm
+                      ? 'scheduling.reschedule.ready'
+                      : 'scheduling.reschedule.blocked'
+                    ) | translate
+                  }}
+                </div>
+                <div class="text-sm opacity-80">
+                  {{
+                    (preview.canConfirm
+                      ? 'scheduling.reschedule.readyText'
+                      : 'scheduling.reschedule.blockedText'
+                    ) | translate
+                  }}
+                </div>
+              </div>
+            </div>
+          </section>
+        }
+        @if (booking.rescheduleHistory.length) {
+          <section
+            class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface)] p-5 shadow-sm"
+          >
+            <h2 class="text-sm font-black">
+              {{ 'scheduling.reschedule.history.title' | translate }}
+            </h2>
+            <div class="mt-3 space-y-3">
+              @for (history of booking.rescheduleHistory.slice(0, 3); track history.id) {
+                <div class="border-l-2 border-blue-200 pl-3">
+                  <div class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ history.occurredAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+                  </div>
+                  <div class="mt-1 text-sm font-semibold">
+                    {{ history.previousStartAtUtc | date: 'dd/MM HH:mm' }} →
+                    {{ history.newStartAtUtc | date: 'dd/MM HH:mm' }}
+                  </div>
+                  <div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                    {{ history.reason }}
+                  </div>
+                </div>
+              }
+            </div>
+          </section>
+        }
+      </aside>
+    </div>
+  }
+</section>
+
+<drive-os-drawer
+  [open]="searchDrawerOpen()"
+  size="xl"
+  [title]="'scheduling.reschedule.search.title' | translate"
+  [description]="'scheduling.reschedule.search.subtitle' | translate"
+  [closeDisabled]="searching()"
+  (closeRequested)="closeSearch()"
+>
+  <div class="space-y-5 p-6">
+    <div class="grid gap-4 sm:grid-cols-2">
+      <label class="block">
+        <span class="text-sm font-semibold">
+          {{ 'scheduling.reschedule.search.from' | translate }}
+        </span>
+        <input
+          type="datetime-local"
+          class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+          [value]="searchFrom()"
+          (input)="searchFrom.set($any($event.target).value)"
+        />
+      </label>
+      <label class="block">
+        <span class="text-sm font-semibold">
+          {{ 'scheduling.reschedule.search.to' | translate }}
+        </span>
+        <input
+          type="datetime-local"
+          class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+          [value]="searchTo()"
+          (input)="searchTo.set($any($event.target).value)"
+        />
+      </label>
+      <label class="block">
+        <span class="text-sm font-semibold">
+          {{ 'scheduling.reschedule.search.duration' | translate }}
+        </span>
+        <input
+          type="number"
+          min="15"
+          max="480"
+          step="15"
+          class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+          [value]="searchDurationMinutes()"
+          (input)="searchDurationMinutes.set(+$any($event.target).value)"
+        />
+      </label>
+      <label class="block">
+        <span class="text-sm font-semibold">
+          {{ 'scheduling.reschedule.search.max' | translate }}
+        </span>
+        <input
+          type="number"
+          min="1"
+          max="20"
+          class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+          [value]="searchMaxSuggestions()"
+          (input)="searchMaxSuggestions.set(+$any($event.target).value)"
+        />
+      </label>
+    </div>
+    @if (slotWarnings().length) {
+      <drive-os-state-banner
+        tone="warning"
+        [title]="'scheduling.reschedule.search.warningTitle' | translate"
+      >
+        <ul class="list-disc pl-5">
+          @for (warning of slotWarnings(); track warning) {
+            <li>{{ reasonKey(warning) | translate }}</li>
+          }
+        </ul>
+      </drive-os-state-banner>
+    }
+    <div class="space-y-3">
+      @for (
+        suggestion of slotSuggestions();
+        track suggestion.startAtUtc + suggestion.instructorCalendarResourceId
+      ) {
+        <button
+          type="button"
+          class="w-full rounded-2xl border border-[var(--driveos-border)] p-4 text-left transition hover:border-blue-300 hover:bg-blue-50/50"
+          (click)="chooseSuggestion(suggestion)"
+        >
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="text-lg font-black">
+                {{ suggestion.startAtUtc | date: 'EEE d MMM · HH:mm' }}–{{
+                  suggestion.endAtUtc | date: 'HH:mm'
+                }}
+              </div>
+              <div class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ suggestion.instructorDisplayName || '—' }} ·
+                {{ suggestion.vehicleDisplayName || '—' }} · {{ suggestion.roomDisplayName || '—' }}
+              </div>
+            </div>
+            <span class="rounded-full bg-blue-50 px-3 py-1 text-sm font-black text-blue-800">
+              {{ suggestion.score }}
+            </span>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-2">
+            @for (reason of suggestion.reasons; track reason) {
+              <span class="rounded-full bg-[var(--driveos-surface-muted)] px-2.5 py-1 text-xs">
+                {{ reasonKey(reason) | translate }}
+              </span>
+            }
+          </div>
+        </button>
+      }
+      @if (!searching() && !slotSuggestions().length) {
+        <drive-os-empty-state
+          icon="ph ph-calendar-magnifying-glass"
+          [title]="'scheduling.reschedule.search.empty' | translate"
+        />
+      }
+    </div>
+  </div>
+  <div
+    driveOsDrawerFooter
+    class="flex justify-between gap-2"
+  >
+    <drive-os-button
+      variant="ghost"
+      (pressed)="closeSearch()"
+    >
+      {{ 'common.close' | translate }}
+    </drive-os-button>
+    <drive-os-button
+      [disabled]="searching()"
+      (pressed)="searchSlots()"
+    >
+      @if (searching()) {
+        <i class="ph ph-circle-notch mr-2 animate-spin"></i>
+      }
+      {{ 'scheduling.reschedule.search.action' | translate }}
+    </drive-os-button>
+  </div>
+</drive-os-drawer>
