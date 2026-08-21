@@ -96,7 +96,8 @@
       "list": "Liste des élèves",
       "newEnrollment": "Nouvelle inscription"
     },
-    "pedagogy": "Pédagogie"
+    "pedagogy": "Pédagogie",
+    "training": "Séances"
   },
   "theme": {
     "label": "Thème",
@@ -828,10 +829,135 @@
         "instructorParticipantRequired": "Une séance pédagogique doit contenir au moins un enseignant."
       }
     },
-    "students": {
-      "checklist": {
-        "derivedStatus": {
-          "manualChangeForbidden": "Ce prérequis est piloté automatiquement par sa donnée métier. Effectuez l’action depuis l’écran source ou accordez une dérogation autorisée."
+    "trainingDelivery": {
+      "dashboard": {
+        "period": {
+          "invalid": "La période du tableau de bord des séances est invalide."
+        }
+      },
+      "session": {
+        "notFound": "Séance introuvable.",
+        "preparation": {
+          "invalidStatus": "Cette séance ne peut pas être préparée dans son état actuel.",
+          "tooEarly": "La préparation est encore trop anticipée par rapport à l’horaire prévu."
+        },
+        "start": {
+          "invalidStatus": "La séance doit être prête avant de pouvoir démarrer.",
+          "tooEarly": "La séance ne peut pas encore démarrer : l’horaire est trop anticipé.",
+          "tooLate": "La séance ne peut plus être démarrée dans la fenêtre autorisée.",
+          "timestamp": {
+            "invalid": "L’heure de démarrage saisie est postérieure à l’heure serveur autorisée."
+          },
+          "operationConflict": "Conflit d’idempotence lors du démarrage de la séance."
+        },
+        "resources": {
+          "notReady": "Les prérequis de la séance ne sont pas tous conformes."
+        },
+        "readiness": {
+          "expired": "Le contrôle de préparation a expiré. Relancez les vérifications avant de démarrer."
+        },
+        "sourceBooking": {
+          "notFound": "La réservation d’origine est introuvable.",
+          "notConfirmed": "La réservation d’origine n’est pas confirmée.",
+          "wrongType": "Le type de réservation ne permet pas de créer ou démarrer une séance pédagogique.",
+          "incomplete": "La réservation d’origine ne contient pas toutes les informations nécessaires."
+        },
+        "marker": {
+          "invalid": "Le repère est invalide.",
+          "note": {
+            "required": "La note du repère est obligatoire.",
+            "tooLong": "La note du repère est trop longue."
+          },
+          "location": {
+            "invalid": "La localisation du repère est invalide."
+          },
+          "sessionStatus": {
+            "invalid": "Un repère ne peut être ajouté que pendant une séance en cours ou interrompue."
+          },
+          "occurredAt": {
+            "invalid": "L’heure du repère est invalide."
+          },
+          "operation": {
+            "conflict": "Cette opération de repère a déjà été utilisée avec des données différentes."
+          }
+        },
+        "completion": {
+          "energyLevel": {
+            "invalid": "Le niveau d’énergie doit être compris entre 0 et 100 %."
+          }
+        },
+        "reportDraft": {
+          "invalid": "Le brouillon du bilan est invalide.",
+          "requiresCompletedSession": "La séance doit être terminée avant de compléter le bilan.",
+          "versionConflict": "Le bilan a été modifié depuis votre dernière sauvegarde. Rechargez les données avant de continuer.",
+          "operationConflict": "Cette opération de sauvegarde a déjà été utilisée avec des données différentes.",
+          "locked": "Ce bilan n’est plus modifiable directement.",
+          "stepInvalid": "L’étape du bilan est invalide.",
+          "textTooLong": "Un des textes du bilan dépasse la longueur autorisée."
+        },
+        "energy": {
+          "invalid": "Les données d’énergie saisies sont invalides.",
+          "level": {
+            "invalid": "Le niveau d’énergie doit être compris entre 0 et 100 %.",
+            "required": "Un niveau d’énergie est requis pour cette observation."
+          },
+          "quantity": {
+            "invalid": "La quantité de carburant ou d’énergie doit être strictement positive."
+          },
+          "vehicle": {
+            "required": "Aucun véhicule effectif n’est rattaché à cette séance."
+          },
+          "sessionStatus": {
+            "invalid": "L’état actuel de la séance ne permet pas cette saisie énergie."
+          },
+          "observedAt": {
+            "invalid": "L’heure d’observation est invalide.",
+            "outOfOrder": "Les observations énergie doivent rester dans l’ordre chronologique."
+          },
+          "operation": {
+            "conflict": "Cette opération énergie a déjà été utilisée avec des données différentes."
+          }
+        },
+        "reportSubmission": {
+          "invalid": "La soumission du bilan est invalide.",
+          "notReady": "Le bilan n'est pas prêt à être soumis.",
+          "alreadySubmitted": "Le bilan a déjà été soumis."
+        },
+        "reportRevision": {
+          "invalid": "Demande de correction invalide.",
+          "requiresSubmittedReport": "Le bilan doit être soumis avant correction.",
+          "notFound": "Correction introuvable.",
+          "alreadyDecided": "Cette correction a déjà été décidée.",
+          "decisionReasonRequired": "Un motif de décision est requis.",
+          "versionConflict": "La version du bilan a changé."
+        }
+      },
+      "groupSession": {
+        "notFound": "Séance collective introuvable.",
+        "sourceBooking": {
+          "notFound": "Réservation source introuvable.",
+          "notConfirmed": "La réservation doit être confirmée.",
+          "wrongType": "Cette réservation ne correspond pas à une séance collective.",
+          "incomplete": "La réservation collective est incomplète."
+        },
+        "capacity": {
+          "exceeded": "La capacité de la salle ou ressource est dépassée."
+        },
+        "participant": {
+          "alreadyExists": "Ce participant est déjà inscrit.",
+          "notFound": "Participant introuvable."
+        },
+        "attendance": {
+          "invalid": "La présence saisie est invalide."
+        },
+        "assessment": {
+          "invalid": "L’évaluation individuelle est invalide."
+        },
+        "report": {
+          "invalid": "Le compte rendu collectif est invalide."
+        },
+        "operation": {
+          "conflict": "Cette opération est en conflit avec une opération déjà enregistrée."
         }
       }
     }
@@ -3359,7 +3485,7 @@
         "responsible": "Responsable :",
         "reminders": "{{count}} relance(s)",
         "itemsTitle": "Éléments de la checklist",
-        "itemsDescription": "Les prérequis se mettent à jour depuis leurs écrans métier. Utilisez les actions proposées pour compléter le dossier.",
+        "itemsDescription": "Pilotez les prérequis nécessaires avant l’activation de l’inscription.",
         "activationBlockedTitle": "Activation actuellement impossible",
         "activationBlockedDescription": "Tous les éléments bloquants doivent être terminés ou faire l’objet d’une dérogation autorisée avant activation.",
         "actions": {
@@ -3398,8 +3524,7 @@
           "Rejected": "Rejeté",
           "Blocked": "Bloqué",
           "Expired": "Expiré"
-        },
-        "automatic": "Mis à jour automatiquement"
+        }
       },
       "documents": {
         "download": "Télécharger",
@@ -4257,47 +4382,10 @@
       "identity": "Identité vérifiée",
       "identityDocument": "Pièce d’identité valide",
       "contract": "Contrat de formation signé",
-      "initialPayment": "Conditions financières initiales validées",
+      "initialPayment": "Premier paiement reçu",
       "initialAssessment": "Évaluation initiale réalisée",
-      "learningPath": "Parcours pédagogique configuré",
+      "learningPath": "Parcours pédagogique initialisé",
       "studentAccount": "Compte élève activé"
-    },
-    "checklistHelp": {
-      "IDENTITY": {
-        "description": "Confirme que les informations d’identité de l’élève ont été contrôlées depuis son profil.",
-        "impact": "Requis avant l’activation administrative du dossier et la contractualisation.",
-        "action": "Vérifier dans le profil"
-      },
-      "IDENTITY_DOCUMENT": {
-        "description": "Vérifie qu’une pièce d’identité valide et approuvée est présente dans le dossier administratif.",
-        "impact": "Sert à justifier l’identité de l’élève et à sécuriser les démarches administratives.",
-        "action": "Voir les documents"
-      },
-      "CONTRACT": {
-        "description": "Confirme qu’un contrat de formation applicable à l’élève a été signé.",
-        "impact": "Formalise les engagements de l’élève et de l’établissement avant le démarrage du parcours.",
-        "action": "Voir les contrats"
-      },
-      "INITIAL_PAYMENT": {
-        "description": "Confirme qu’un premier paiement a été reçu ou qu’un financement a été validé.",
-        "impact": "Sécurise la prise en charge financière avant l’activation de la formation.",
-        "action": "Voir la finance"
-      },
-      "INITIAL_ASSESSMENT": {
-        "description": "Confirme que l’évaluation initiale a été réalisée afin d’estimer les besoins de formation.",
-        "impact": "Sert à construire un parcours et un volume de formation adaptés au niveau de l’élève.",
-        "action": "Voir la pédagogie"
-      },
-      "LEARNING_PATH": {
-        "description": "Confirme qu’un parcours pédagogique est configuré avec un référentiel et des objectifs de progression.",
-        "impact": "Sera utilisé pendant les séances, les évaluations et le suivi du livret pédagogique.",
-        "action": "Voir le parcours"
-      },
-      "STUDENT_ACCOUNT": {
-        "description": "Confirme que l’élève dispose d’un compte lui permettant d’accéder à son espace personnel.",
-        "impact": "Donne accès au planning, aux documents, aux paiements et au suivi selon les droits accordés.",
-        "action": "Voir le profil"
-      }
     }
   },
   "shared": {
@@ -6443,6 +6531,1089 @@
         "Expired": "Expiré",
         "Cancelled": "Annulé"
       }
+    }
+  },
+  "training": {
+    "kicker": "Réalisation terrain",
+    "title": "Séances et bilans",
+    "actions": {
+      "refresh": "Actualiser",
+      "viewAll": "Tout voir",
+      "close": "Fermer"
+    },
+    "tabs": {
+      "navigation": "Navigation des séances",
+      "dashboard": "Tableau de bord",
+      "sessions": "Séances",
+      "myDay": "Ma journée",
+      "pendingReports": "Bilans en attente",
+      "sync": "Synchronisation"
+    },
+    "dashboard": {
+      "kicker": "SCR-SES-001",
+      "title": "Tableau de bord des séances",
+      "description": "Pilotez les séances du jour, les actions urgentes, les incidents et la qualité des bilans depuis un espace unique.",
+      "loadError": "Impossible de charger complètement le tableau de bord.",
+      "kpis": {
+        "sessionsToday": "Séances aujourd’hui",
+        "inProgress": "En cours",
+        "completed": "Terminées",
+        "missingReports": "Bilans manquants",
+        "lateStarts": "Retards de démarrage",
+        "absences": "Absences",
+        "cancelled": "Annulées",
+        "openIncidents": "Incidents ouverts",
+        "durationsToValidate": "Durées à valider",
+        "syncFailures": "Échecs de synchronisation",
+        "notAvailableYet": "Disponible avec SCR-SES-020"
+      },
+      "tabs": {
+        "navigation": "Vues du tableau de bord",
+        "operations": "Activité du jour",
+        "attention": "À traiter",
+        "quality": "Qualité de réalisation"
+      },
+      "today": {
+        "title": "Activité du jour",
+        "description": "Toutes les séances matérialisées pour la journée.",
+        "empty": "Aucune séance aujourd’hui",
+        "emptyDescription": "Aucune séance Training Delivery n’est prévue dans la période affichée."
+      },
+      "session": {
+        "categoryFallback": "Formation pratique"
+      },
+      "flags": {
+        "criticalIncident": "Incident critique",
+        "incident": "Incident",
+        "lateStart": "Démarrage en retard",
+        "missingReport": "Bilan manquant",
+        "durationVariance": "Écart de durée"
+      },
+      "incidents": {
+        "title": "Incidents ouverts",
+        "description": "Les incidents non résolus restent visibles jusqu’à leur clôture.",
+        "empty": "Aucun incident ouvert",
+        "emptyDescription": "Aucun incident actif ne nécessite une action."
+      },
+      "attention": {
+        "sessionsTitle": "Séances nécessitant une action",
+        "sessionsDescription": "Retard, bilan manquant, écart de durée ou incident.",
+        "empty": "Rien à traiter",
+        "emptyDescription": "Aucune séance du jour ne nécessite d’action immédiate.",
+        "incidentsTitle": "Incidents critiques",
+        "incidentsDescription": "Les incidents critiques sont toujours prioritaires.",
+        "noCriticalIncident": "Aucun incident critique",
+        "noCriticalIncidentDescription": "Aucun incident critique actif n’est signalé."
+      },
+      "quality": {
+        "reportCompletion": "Bilans complétés",
+        "reportCompletionDescription": "Part des séances terminées possédant un bilan.",
+        "withoutObjectives": "Sans objectif",
+        "withoutObjectivesDescription": "Séances terminées sans objectif pédagogique renseigné.",
+        "withoutAssessments": "Sans évaluation",
+        "withoutAssessmentsDescription": "Séances terminées sans évaluation de compétence.",
+        "durationVariances": "Écarts de durée",
+        "durationVariancesDescription": "Écart d’au moins 15 min entre durée prévue et durée délivrée."
+      },
+      "drawers": {
+        "description": "Détail contextuel sans quitter le tableau de bord.",
+        "empty": "Aucun élément",
+        "emptyDescription": "Aucune séance ne correspond à cet indicateur.",
+        "sessionsToday": {
+          "title": "Séances aujourd’hui"
+        },
+        "inProgress": {
+          "title": "Séances en cours"
+        },
+        "completed": {
+          "title": "Séances terminées"
+        },
+        "missingReports": {
+          "title": "Bilans manquants"
+        },
+        "lateStarts": {
+          "title": "Retards de démarrage"
+        },
+        "absences": {
+          "title": "Absences"
+        },
+        "cancelled": {
+          "title": "Séances annulées"
+        },
+        "openIncidents": {
+          "title": "Incidents ouverts"
+        },
+        "durationsToValidate": {
+          "title": "Durées à valider"
+        },
+        "syncFailures": {
+          "title": "Synchronisation terrain"
+        },
+        "session": {
+          "title": "Détail rapide de la séance"
+        }
+      },
+      "drawerSession": {
+        "student": "Élève",
+        "category": "Catégorie",
+        "attendance": "Présence",
+        "plannedDuration": "Durée prévue",
+        "actualDuration": "Durée réalisée",
+        "objectives": "Objectifs",
+        "noObjectives": "Aucun objectif renseigné.",
+        "openIncident": "Cette séance possède au moins un incident ouvert.",
+        "missingReport": "Le bilan de cette séance est manquant.",
+        "durationVariance": "Écart de durée détecté : {{minutes}} min."
+      },
+      "sync": {
+        "pendingTitle": "Synchronisation terrain prévue",
+        "pendingDescription": "Le suivi des échecs offline sera activé dans SCR-SES-020. Le tableau de bord n’invente pas de valeur tant que ce mécanisme n’existe pas."
+      }
+    },
+    "statuses": {
+      "session": {
+        "1": "Planifiée",
+        "2": "Prête",
+        "3": "En cours",
+        "4": "Terminée",
+        "5": "Annulée",
+        "6": "Interrompue"
+      },
+      "attendance": {
+        "none": "Non renseignée",
+        "1": "Présent",
+        "2": "En retard",
+        "3": "Élève absent",
+        "4": "Enseignant absent",
+        "5": "Présence partielle",
+        "6": "Absence excusée",
+        "7": "Absence non excusée",
+        "8": "Séance impossible"
+      },
+      "incidentSeverity": {
+        "1": "Faible",
+        "2": "Modérée",
+        "3": "Élevée",
+        "4": "Critique"
+      },
+      "incidentStatus": {
+        "1": "Ouvert",
+        "2": "Escaladé",
+        "3": "En analyse",
+        "4": "Résolu",
+        "5": "Clôturé"
+      }
+    },
+    "sessions": {
+      "kicker": "Exécution terrain",
+      "title": "Séances",
+      "description": "Consultez les séances planifiées et réalisées, identifiez les dossiers nécessitant une action et ouvrez le détail sans quitter la page.",
+      "period": {
+        "today": "Aujourd’hui",
+        "week": "Période",
+        "month": "Mois"
+      },
+      "actions": {
+        "filters": "Filtres",
+        "reset": "Réinitialiser",
+        "apply": "Appliquer"
+      },
+      "loadError": "Impossible de charger les séances.",
+      "summary": {
+        "visible": "Séances affichées",
+        "inProgress": "En cours",
+        "attention": "À traiter"
+      },
+      "columns": {
+        "date": "Date et horaire",
+        "student": "Élève",
+        "category": "Formation",
+        "status": "Statut",
+        "attendance": "Présence",
+        "duration": "Durée",
+        "alerts": "Suivi"
+      },
+      "attention": {
+        "label": "Action requise"
+      },
+      "empty": {
+        "title": "Aucune séance",
+        "description": "Aucune séance ne correspond à la période et aux filtres sélectionnés."
+      },
+      "filters": {
+        "title": "Filtrer les séances",
+        "description": "Affinez la liste sans quitter l’espace Séances.",
+        "search": "Recherche",
+        "searchPlaceholder": "Élève, formation ou lieu…",
+        "status": "Statut de séance",
+        "attendance": "Présence",
+        "attention": "Situation à traiter",
+        "all": "Tous",
+        "missingReports": "Bilans manquants",
+        "openIncidents": "Incidents ouverts",
+        "durationVariance": "Écart de durée",
+        "late": "Retards de démarrage"
+      },
+      "details": {
+        "title": "Détail de la séance",
+        "description": "Synthèse opérationnelle de la séance sélectionnée.",
+        "openFull": "Ouvrir la fiche complète"
+      }
+    },
+    "sessionDetail": {
+      "title": "Fiche séance",
+      "kicker": "Séance pédagogique",
+      "back": "Retour aux séances",
+      "unknownStudent": "Élève",
+      "loadError": "Impossible de charger la séance",
+      "tabs": {
+        "summary": "Synthèse",
+        "participants": "Participants",
+        "preparation": "Préparation",
+        "attendance": "Présence",
+        "execution": "Déroulement",
+        "report": "Bilan",
+        "incidents": "Incidents",
+        "history": "Historique"
+      },
+      "badges": {
+        "interrupted": "Séance interrompue",
+        "openIncidents": "{{count}} incident(s) ouvert(s)"
+      },
+      "actions": {
+        "technical": "Références techniques"
+      },
+      "summary": {
+        "plannedDuration": "Durée planifiée",
+        "deliveredDuration": "Durée réalisée",
+        "assessments": "Évaluations",
+        "incidents": "Incidents"
+      },
+      "sections": {
+        "session": "Informations de séance",
+        "attention": "Points d’attention"
+      },
+      "fields": {
+        "objectives": "Objectifs prévus",
+        "meetingPoint": "Point de rendez-vous",
+        "actualStart": "Début réel",
+        "actualEnd": "Fin réelle",
+        "status": "Statut"
+      },
+      "alerts": {
+        "missingReport": "Le bilan pédagogique de cette séance reste à compléter.",
+        "openIncidents": "{{count}} incident(s) nécessitent encore un suivi.",
+        "none": "Aucun point d’attention détecté."
+      },
+      "participants": {
+        "student": "Élève",
+        "openStudent": "Ouvrir la fiche élève",
+        "instructor": "Enseignant",
+        "vehicle": "Véhicule",
+        "branch": "Agence"
+      },
+      "preparation": {
+        "title": "Préparation de la séance",
+        "description": "État du contrôle de disponibilité et de conformité réalisé avant démarrage.",
+        "checked": "Préparation contrôlée",
+        "notChecked": "Non contrôlée",
+        "checkedAt": "Contrôlé le",
+        "actions": {
+          "viewChecks": "Voir les contrôles",
+          "recheck": "Recontrôler",
+          "check": "Contrôler la préparation"
+        },
+        "checkError": "Le contrôle de préparation a échoué",
+        "notApplicable": "Non applicable",
+        "meetingPoint": "Point de rendez-vous",
+        "objectivesTitle": "Objectifs prévus",
+        "objectivesDescription": "Objectifs pédagogiques issus de la séance planifiée.",
+        "noObjectives": "Aucun objectif pédagogique n’a été renseigné pour cette séance.",
+        "readinessSummary": "Synthèse des contrôles",
+        "passed": "Validés",
+        "blocked": "Bloquants",
+        "review": "À revoir",
+        "canStart": "La séance peut démarrer",
+        "cannotStart": "La séance ne peut pas démarrer",
+        "runCheckHint": "Lancez le contrôle de préparation pour obtenir l’état autoritatif des prérequis avant démarrage.",
+        "drawerTitle": "Contrôles de préparation",
+        "drawerDescription": "Détail des contrôles autoritatifs effectués avant le démarrage de la séance.",
+        "status": {
+          "1": "Validé",
+          "2": "Bloquant",
+          "3": "Revue externe",
+          "4": "Non applicable"
+        }
+      },
+      "attendance": {
+        "current": "Présence actuelle",
+        "arrival": "Arrivée réelle",
+        "departure": "Départ réel",
+        "late": "Retard",
+        "emptyTitle": "Présence non renseignée",
+        "emptyDescription": "Aucune information de présence n’a encore été enregistrée pour cette séance.",
+        "correctAction": "Corriger la présence",
+        "presenceDuration": "Durée de présence",
+        "plannedDuration": "Durée planifiée",
+        "plannedDurationHint": "Créneau prévu par le planning.",
+        "grossDuration": "Durée réelle",
+        "grossDurationHint": "Temps entre le démarrage et la fin réels, interruptions incluses.",
+        "pedagogicalDuration": "Durée pédagogique",
+        "pedagogicalDurationHint": "Temps réellement délivré après retrait des interruptions.",
+        "billableDuration": "Durée facturable",
+        "financialDecision": "Décision finance",
+        "billableDurationHint": "La durée facturable appartient au domaine Finance et ne doit pas être déduite silencieusement de la présence.",
+        "durationDifferenceTitle": "Écart planifié / pédagogique",
+        "durationDifference": "Écart de {{value}} minute(s) par rapport au créneau planifié.",
+        "historyTitle": "Historique des présences",
+        "override": "dérogation",
+        "correctionTitle": "Corriger la présence",
+        "correctionDescription": "Créer une nouvelle révision sans supprimer l’historique.",
+        "auditNotice": "La correction crée une nouvelle révision auditée. Elle ne modifie pas directement la durée facturable.",
+        "reason": "Motif ou précision",
+        "useOverride": "Utiliser une dérogation",
+        "useOverrideHint": "Réservé aux rôles habilités lorsque la fenêtre normale de correction est dépassée ou qu’une exception doit être tracée.",
+        "overrideReason": "Motif obligatoire de la dérogation",
+        "saveCorrection": "Enregistrer la correction"
+      },
+      "execution": {
+        "interventions": "Interventions pédagogiques et sécurité",
+        "observations": "Observations",
+        "internal": "Note interne",
+        "noInterventions": "Aucune intervention enregistrée.",
+        "noObservations": "Aucune observation enregistrée."
+      },
+      "report": {
+        "title": "Bilan de séance",
+        "completedAt": "Clôturé le",
+        "completed": "Bilan complété",
+        "summary": "Synthèse",
+        "nextObjective": "Prochain objectif",
+        "worked": "Objectifs travaillés",
+        "achieved": "Objectifs atteints",
+        "emptyTitle": "Bilan non disponible",
+        "emptyDescription": "La séance ne possède pas encore de bilan pédagogique finalisé."
+      },
+      "incidents": {
+        "emptyTitle": "Aucun incident",
+        "emptyDescription": "Aucun incident n’est rattaché à cette séance.",
+        "drawerTitle": "Détail de l’incident",
+        "drawerDescription": "Contexte, actions immédiates et résolution.",
+        "description": "Description",
+        "immediateActions": "Actions immédiates",
+        "resolution": "Résolution"
+      },
+      "history": {
+        "title": "Historique de la séance",
+        "description": "{{count}} élément(s) métier historisé(s) sur cette séance.",
+        "attendance": "Présence",
+        "intervention": "Intervention",
+        "assessment": "Évaluation"
+      },
+      "technical": {
+        "title": "Références techniques",
+        "description": "Identifiants métier utiles au support et à l’audit."
+      },
+      "incidentSeverity": {
+        "1": "Faible",
+        "2": "Modérée",
+        "3": "Élevée",
+        "4": "Critique"
+      },
+      "incidentStatus": {
+        "1": "Ouvert",
+        "2": "Escaladé",
+        "3": "En analyse",
+        "4": "Résolu",
+        "5": "Clôturé"
+      },
+      "observationType": {
+        "1": "Situation rencontrée",
+        "2": "Comportement de l’élève",
+        "3": "Environnement",
+        "4": "Signal de progression",
+        "5": "Difficulté",
+        "6": "Note enseignant",
+        "99": "Autre"
+      },
+      "interventionType": {
+        "1": "Consigne pédagogique",
+        "2": "Correction pédagogique",
+        "3": "Sécurité — verbal",
+        "4": "Sécurité — volant",
+        "5": "Sécurité — pédales",
+        "6": "Arrêt d’urgence",
+        "99": "Autre"
+      },
+      "interventionSeverity": {
+        "1": "Information",
+        "2": "Mineure",
+        "3": "Significative",
+        "4": "Critique"
+      },
+      "prestartCheck": {
+        "title": "Vérification élève et véhicule",
+        "description": "Contrôles avant séance : données autoritatives de l’élève et du véhicule, puis points terrain à confirmer.",
+        "ready": "Contrôles automatiques conformes",
+        "actionRequired": "Action requise",
+        "open": "Ouvrir la vérification",
+        "validated": "Validé",
+        "toCheck": "À vérifier",
+        "active": "Active",
+        "authorized": "Autorisée",
+        "blocked": "Bloqué",
+        "none": "Aucune",
+        "drawerTitle": "Vérification avant séance",
+        "drawerDescription": "Vérifiez les prérequis de l’élève et du véhicule avant de poursuivre vers le démarrage.",
+        "refreshAuthoritative": "Actualiser les contrôles autoritatifs",
+        "student": {
+          "title": "Élève",
+          "identity": "Identité utile vérifiée",
+          "enrollment": "Inscription active",
+          "scheduling": "Autorisation de planification",
+          "restrictions": "Restrictions actives",
+          "restrictionsHint": "Blocages opérationnels actifs sur le dossier."
+        },
+        "vehicle": {
+          "title": "Véhicule",
+          "operational": "Conformité opérationnelle",
+          "assigned": "Véhicule affecté",
+          "compliance": "Documents et immobilisation",
+          "complianceHint": "État issu du contrôle Fleet autoritatif.",
+          "notRequired": "Aucun véhicule requis",
+          "notRequiredDescription": "Cette séance ne nécessite pas de véhicule selon la réservation source."
+        },
+        "field": {
+          "title": "Contrôles terrain",
+          "description": "Ces points nécessitent une observation sur place. Ils ne sont pas considérés comme validés tant qu’ils ne sont pas enregistrés dans le workflow terrain approprié.",
+          "visual": "État visuel acceptable",
+          "energy": "Niveau d’énergie suffisant",
+          "odometer": "Kilométrage de départ",
+          "safety": "Équipements de sécurité",
+          "toConfirm": "À confirmer",
+          "persistenceNotice": "Le kilométrage et les autres mesures terrain seront enregistrés dans les étapes dédiées de la séance afin de conserver une trace métier et de préparer le mode hors connexion."
+        }
+      },
+      "start": {
+        "action": "Démarrer la séance",
+        "drawerTitle": "Démarrage de la séance",
+        "drawerDescription": "Dernier contrôle avant le passage en exécution réelle.",
+        "authoritativeTitle": "Contrôle serveur obligatoire",
+        "authoritativeDescription": "DriveOS revalide les ressources, le dossier élève et la conformité du véhicule au moment du démarrage.",
+        "student": "Élève",
+        "plannedTime": "Horaire prévu",
+        "instructor": "Enseignant réel",
+        "vehicle": "Véhicule réel",
+        "checking": "Vérification des prérequis en cours…",
+        "ready": "Prérequis validés — démarrage autorisé",
+        "blocked": "Démarrage bloqué",
+        "checkedAt": "Contrôlé le",
+        "resolveBeforeStart": "Corrigez les éléments bloquants avant de démarrer la séance.",
+        "existingReadiness": "La séance dispose déjà d’un contrôle de préparation valide. Le serveur effectuera une nouvelle validation au démarrage.",
+        "checkRequired": "Contrôle requis",
+        "checkRequiredDescription": "Lancez la préparation avant de démarrer la séance.",
+        "failed": "Impossible de démarrer la séance",
+        "serverTimeNotice": "L’heure réelle de début est enregistrée par le serveur au moment de la validation. Elle n’est pas saisie manuellement afin de préserver la traçabilité.",
+        "safetyNotice": "Utilisez cet écran uniquement lorsque le véhicule est à l’arrêt et dans des conditions sûres.",
+        "recheck": "Recontrôler",
+        "confirm": "Confirmer le démarrage",
+        "started": "Séance en cours",
+        "startedAt": "Démarrée le"
+      },
+      "live": {
+        "inProgress": "Séance en cours",
+        "startedAt": "Début :",
+        "elapsed": "Durée écoulée :",
+        "interrupted": "Séance interrompue",
+        "safetyNotice": "Utilisez DriveOS uniquement lorsque le véhicule est à l’arrêt.",
+        "objectives": "Objectifs",
+        "currentFocus": "Points à travailler",
+        "noObjectives": "Aucun objectif renseigné.",
+        "sessionSnapshot": "Suivi rapide",
+        "interventionsCount": "Interventions",
+        "observationsCount": "Repères",
+        "incidentsCount": "Incidents ouverts",
+        "lastMileage": "Dernier kilométrage",
+        "stoppedActions": "Actions à l’arrêt uniquement",
+        "quickActions": "Actions rapides",
+        "addMarker": "Ajouter un repère",
+        "reportIntervention": "Signaler une intervention",
+        "reportIncident": "Signaler un incident",
+        "finishSession": "Terminer la séance",
+        "interrupt": "Interrompre la séance",
+        "resume": "Reprendre la séance",
+        "viewIncidents": "Voir les incidents",
+        "notInProgressTitle": "La séance n’est pas en cours",
+        "notInProgressDescription": "Le suivi terrain devient disponible après le démarrage de la séance.",
+        "observationDrawerTitle": "Ajouter un repère",
+        "observationDrawerDescription": "Enregistrez une note courte, horodatée, à développer ensuite dans le bilan.",
+        "observationType": "Type de repère",
+        "shortNote": "Note courte",
+        "internalNote": "Note interne uniquement",
+        "interventionDrawerTitle": "Signaler une intervention",
+        "interventionDrawerDescription": "Consignez rapidement une intervention pédagogique ou de sécurité.",
+        "interventionType": "Type d’intervention",
+        "severity": "Gravité",
+        "interruptDrawerTitle": "Interrompre la séance",
+        "interruptDrawerDescription": "Interrompez la séance uniquement si la situation le justifie. La reprise sera tracée séparément.",
+        "reason": "Motif",
+        "detailsOptional": "Détails facultatifs",
+        "confirmInterrupt": "Confirmer l’interruption",
+        "incidentDrawerTitle": "Signaler un incident",
+        "incidentDrawerDescription": "Enregistrez immédiatement les faits essentiels et les mesures prises.",
+        "incidentType": "Type d’incident",
+        "incidentDescription": "Description",
+        "immediateActions": "Actions immédiates",
+        "interruptionReason": {
+          "1": "Problème véhicule",
+          "2": "Santé élève",
+          "3": "Santé enseignant",
+          "4": "Incident de sécurité",
+          "5": "Météo",
+          "6": "Administratif",
+          "7": "Événement externe",
+          "8": "Problème technique",
+          "9": "Pause",
+          "99": "Autre"
+        },
+        "incidentTypeValue": {
+          "1": "Sécurité",
+          "2": "Accident",
+          "3": "Quasi-accident",
+          "4": "Problème véhicule",
+          "5": "Médical",
+          "6": "Comportement élève",
+          "7": "Problème enseignant",
+          "8": "Données personnelles",
+          "9": "Pédagogique",
+          "10": "Dommage matériel",
+          "11": "Événement externe",
+          "99": "Autre"
+        },
+        "incidentSeverityValue": {
+          "1": "Faible",
+          "2": "Modérée",
+          "3": "Élevée",
+          "4": "Critique"
+        }
+      },
+      "marker": {
+        "drawerTitle": "Ajouter un repère",
+        "drawerDescription": "Capturez en quelques secondes un fait utile au bilan, sans créer une évaluation définitive.",
+        "typeLabel": "Type de repère",
+        "competencyLabel": "Compétence liée (facultatif)",
+        "noCompetency": "Aucune compétence liée",
+        "loadingCompetencies": "Chargement des compétences…",
+        "noteLabel": "Note courte",
+        "notePlaceholder": "Ex. Contrôle tardif à droite",
+        "severityLabel": "Importance",
+        "locationOptional": "Ajouter une localisation ponctuelle",
+        "locationHelp": "Facultatif. À utiliser uniquement lorsque cela est utile et autorisé.",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "notAssessmentTitle": "Repère de terrain",
+        "notAssessmentDescription": "Ce repère prépare le bilan. Il ne modifie pas à lui seul le niveau de compétence de l’élève.",
+        "save": "Enregistrer le repère",
+        "recentTitle": "Repères récents",
+        "empty": "Aucun repère enregistré pour cette séance.",
+        "count": "Repères",
+        "competencyLinked": "Compétence liée",
+        "offline": "Créé hors ligne",
+        "type": {
+          "1": "Compétence observée",
+          "2": "Réussite",
+          "3": "Difficulté",
+          "4": "Intervention enseignant",
+          "5": "Événement de sécurité",
+          "6": "Point à revoir",
+          "7": "Commentaire élève",
+          "8": "Contexte de parcours",
+          "9": "Incident"
+        },
+        "severity": {
+          "1": "Information",
+          "2": "À surveiller",
+          "3": "Important",
+          "4": "Critique"
+        }
+      },
+      "finish": {
+        "title": "Terminer la séance",
+        "description": "Enregistrez la fin réelle et préparez la reprise du bilan pédagogique.",
+        "startedAt": "Début réel",
+        "currentTime": "Heure actuelle",
+        "duration": "Durée réelle",
+        "attendance": "Présence",
+        "endMileage": "Kilométrage de fin",
+        "lastMileage": "Dernier relevé : {{value}} km",
+        "energyLevel": "Niveau d’énergie en fin de séance",
+        "vehicleState": "État du véhicule",
+        "vehicleOk": "Aucun problème",
+        "vehicleIssue": "Problème à signaler",
+        "issueDescription": "Problème constaté",
+        "immediateActions": "Actions immédiates",
+        "afterFinish": "Après la fin de séance",
+        "reportNow": "Compléter le bilan maintenant",
+        "reportNowHint": "Poursuivre directement vers le bilan pédagogique.",
+        "reportLater": "Enregistrer le bilan plus tard",
+        "reportLaterHint": "La séance est terminée et le bilan restera à compléter.",
+        "safetyTitle": "À effectuer véhicule à l’arrêt",
+        "safetyText": "Vérifiez les données de fin uniquement lorsque le véhicule est immobilisé en sécurité.",
+        "confirmNow": "Terminer et compléter le bilan",
+        "confirmLater": "Terminer et reprendre plus tard",
+        "errors": {
+          "mileageLower": "Le kilométrage de fin ne peut pas être inférieur au dernier relevé.",
+          "vehicleIssueRequired": "Décrivez le problème véhicule et les actions immédiates."
+        }
+      },
+      "vehicleUsage": {
+        "eyebrow": "Véhicule utilisé",
+        "title": "Kilométrage et énergie",
+        "record": "Saisir les données véhicule",
+        "startMileage": "Kilométrage début",
+        "endMileage": "Kilométrage fin",
+        "distance": "Distance parcourue",
+        "energy": "Énergie",
+        "addedSummary": "Carburant ajouté : {{fuel}} L · Recharge : {{charge}} kWh",
+        "drawerTitle": "Kilométrage et énergie",
+        "drawerDescription": "Enregistrez les valeurs réellement observées pendant la séance. Les données globales du véhicule restent sous la responsabilité du domaine Flotte.",
+        "vehicleFrozenTitle": "Véhicule de la séance",
+        "vehicleFrozenDescription": "Les observations sont rattachées au véhicule réellement utilisé : {{vehicle}}.",
+        "mileage": "Kilométrage observé",
+        "previousMileage": "Dernier relevé : {{value}} km",
+        "eventType": "Type d’observation énergie",
+        "levelObservation": "Niveau d’énergie",
+        "fuelAdded": "Carburant ajouté",
+        "charging": "Recharge",
+        "energyLevel": "Niveau d’énergie",
+        "liters": "Quantité ajoutée (L)",
+        "kwh": "Énergie rechargée (kWh)",
+        "note": "Note / justificatif",
+        "anomaly": "Signaler une anomalie",
+        "anomalyHelp": "Une anomalie véhicule sera transmise via le workflow incident et pourra nécessiter un suivi Flotte.",
+        "anomalyDescription": "Description de l’anomalie",
+        "confirm": "Enregistrer",
+        "offline": "Saisie hors ligne — synchronisation à venir"
+      },
+      "intervention": {
+        "title": "Intervention pédagogique et sécurité",
+        "description": "Enregistrez factuellement l’action de l’enseignant et son contexte. Une intervention n’est pas automatiquement un incident.",
+        "factualTitle": "Rester factuel",
+        "factualText": "Décrivez ce qui a été observé, l’action réalisée et son résultat. Évitez les jugements de valeur ou informations sensibles inutiles.",
+        "typeLabel": "Type d’intervention",
+        "context": "Contexte",
+        "reason": "Motif",
+        "competency": "Compétence associée",
+        "outcome": "Résultat / suite immédiate",
+        "sharedExplanation": "Explication partageable",
+        "sharedHint": "Cette formulation pourra être reprise dans le bilan partagé.",
+        "internalComment": "Note interne",
+        "internalHint": "Réservée à l’équipe autorisée. La séparation complète des droits sera finalisée dans SCR-SES-015.",
+        "createIncident": "Créer aussi un incident de sécurité",
+        "createIncidentHint": "À utiliser pour une situation significative ou critique nécessitant un suivi distinct.",
+        "type": {
+          "1": "Consigne verbale",
+          "2": "Contrôle physique",
+          "3": "Utilisation double commande",
+          "4": "Freinage d’urgence",
+          "5": "Intervention sur le volant",
+          "6": "Instruction de trajectoire",
+          "7": "Pause de séance",
+          "8": "Arrêt de sécurité",
+          "99": "Autre"
+        }
+      }
+    },
+    "myDay": {
+      "kicker": "SCR-SES-004",
+      "title": "Ma journée enseignant",
+      "description": "Retrouvez vos séances du jour, la séance en cours, la prochaine étape et les points d’attention dans une seule vue terrain.",
+      "loadError": "Impossible de charger votre journée.",
+      "actions": {
+        "previous": "Jour précédent",
+        "next": "Jour suivant"
+      },
+      "summary": {
+        "sessions": "Séances prévues",
+        "remaining": "À venir / en cours",
+        "completed": "Terminées",
+        "attention": "À traiter"
+      },
+      "focus": {
+        "current": "Séance en cours",
+        "next": "Prochaine séance",
+        "noneCurrent": "Aucune séance en cours actuellement.",
+        "noObjectives": "Aucun objectif préparé pour cette séance."
+      },
+      "timeline": {
+        "title": "Déroulé de la journée",
+        "description": "Vos séances sont affichées dans l’ordre chronologique.",
+        "attention": "À traiter"
+      },
+      "empty": {
+        "title": "Aucune séance prévue",
+        "description": "Aucune séance ne vous est affectée pour cette journée."
+      },
+      "drawer": {
+        "title": "Détail rapide",
+        "description": "Informations utiles sans quitter votre journée.",
+        "student": "Élève",
+        "attention": "Cette séance nécessite une action ou un suivi."
+      }
+    },
+    "reportWorkflow": {
+      "title": "Bilan pédagogique",
+      "subtitle": "Complétez le bilan de la séance étape par étape.",
+      "back": "Retour à la séance",
+      "step": "Étape {{current}} sur {{total}}",
+      "saving": "Enregistrement…",
+      "saved": "Enregistré",
+      "pendingSync": "Enregistré localement · synchronisation en attente",
+      "offline": "Mode hors connexion : vos modifications sont conservées localement et seront synchronisées dès le retour du réseau.",
+      "previous": "Précédent",
+      "saveContinue": "Enregistrer et continuer",
+      "saveDraft": "Enregistrer le brouillon",
+      "autoSaveHint": "Sauvegarde automatique active",
+      "openDraft": "Compléter le bilan",
+      "completed": "Renseigné",
+      "missing": "À compléter",
+      "optional": "Facultatif",
+      "steps": {
+        "summary": "Résumé",
+        "attendance": "Présence et durée",
+        "competencies": "Compétences",
+        "observations": "Observations",
+        "safety": "Interventions et sécurité",
+        "nextObjectives": "Objectifs suivants",
+        "vehicle": "Véhicule et kilométrage",
+        "sharedComment": "Commentaire partagé",
+        "validation": "Validation"
+      },
+      "fields": {
+        "summary": "Résumé",
+        "summaryPlaceholder": "Synthèse pédagogique de la séance…",
+        "actualStart": "Début réel",
+        "actualEnd": "Fin réelle",
+        "duration": "Durée pédagogique",
+        "objectivesWorked": "Objectifs travaillés",
+        "objectivesAchieved": "Objectifs atteints",
+        "nextObjective": "Prochain objectif",
+        "nextObjectivePlaceholder": "Objectif prioritaire pour la prochaine séance…",
+        "interventions": "Interventions",
+        "interruptions": "Interruptions",
+        "vehicle": "Véhicule",
+        "distance": "Distance",
+        "energy": "Énergie fin",
+        "sharedComment": "Commentaire partagé avec l’élève",
+        "internalNote": "Note interne enseignant",
+        "plannedDuration": "Durée planifiée",
+        "actualDuration": "Durée réelle",
+        "pedagogicalDuration": "Durée pédagogique",
+        "billableDuration": "Durée facturable",
+        "financialDecision": "Décision finance",
+        "seeSession": "Voir la fiche séance"
+      },
+      "hints": {
+        "attendanceNext": "La qualification détaillée des présences et durées sera disponible dans SCR-SES-012.",
+        "validationInSes016": "La soumission définitive et le contrôle de version seront réalisés dans SCR-SES-016.",
+        "attendanceSeparated": "La présence et la durée pédagogique sont issues de TrainingDelivery. La durée facturable est décidée séparément par le domaine Finance."
+      },
+      "empty": {
+        "competencies": "Aucune évaluation de compétence enregistrée pour cette séance.",
+        "observations": "Aucun repère terrain enregistré."
+      }
+    },
+    "sessionNarratives": {
+      "sharedVisibilityWarning": "Ce commentaire sera visible par l’élève et les personnes autorisées.",
+      "internalVisibilityWarning": "Note interne — visible uniquement par les membres de l’équipe disposant de la permission.",
+      "internalPermissionRequired": "Vous n’avez pas la permission de consulter les notes internes.",
+      "history": "Historique des modifications ({{count}})",
+      "cleared": "Note supprimée à cette version.",
+      "sharedPermissionRequired": "Vous n’avez pas la permission de créer ou modifier le commentaire partagé."
+    },
+    "reportReview": {
+      "title": "Validation du bilan",
+      "subtitle": "Vérifiez les éléments du bilan avant sa soumission définitive.",
+      "refresh": "Revérifier",
+      "blocking": "Contrôle bloquant",
+      "warning": "Contrôle non bloquant",
+      "serverVersion": "Version serveur : {{version}}",
+      "syncPending": "Synchronisation en attente — la soumission est bloquée.",
+      "syncOk": "Synchronisation à jour.",
+      "lockedFields": "Après soumission, le contenu pédagogique est verrouillé et toute correction passe par le workflow de révision.",
+      "submit": "Soumettre le bilan",
+      "requestReview": "Demander une validation",
+      "locked": "Bilan soumis — modification directe verrouillée.",
+      "confirmTitle": "Soumettre ce bilan ?",
+      "confirmReviewTitle": "Demander une validation du bilan ?",
+      "confirmText": "La version serveur et tous les contrôles bloquants seront vérifiés une dernière fois.",
+      "afterSubmitWarning": "Après soumission, certaines informations ne pourront plus être modifiées directement.",
+      "back": "Retour",
+      "confirmSubmit": "Soumettre",
+      "confirmRequestReview": "Demander la validation",
+      "summary": {
+        "attendance": "Présence",
+        "duration": "Durée réelle",
+        "competencies": "Compétences",
+        "distance": "Kilométrage"
+      },
+      "checks": {
+        "report": "Brouillon de bilan présent",
+        "attendance": "Présence renseignée",
+        "duration": "Durée réelle cohérente",
+        "competencies": "Compétences évaluées",
+        "markers": "Repères cohérents",
+        "comment": "Commentaire partagé renseigné",
+        "kilometers": "Kilométrage renseigné si véhicule utilisé",
+        "summary": "Résumé renseigné",
+        "nextObjective": "Prochain objectif renseigné",
+        "incidents": "Incidents documentés"
+      }
+    },
+    "pendingReports": {
+      "kicker": "Suivi des bilans",
+      "title": "Bilans en attente",
+      "description": "Centralisez les séances terminées dont le bilan doit encore être complété, synchronisé, corrigé ou validé.",
+      "loadError": "Impossible de charger les bilans en attente.",
+      "scope": {
+        "all": "Tous les bilans",
+        "mine": "Mes bilans"
+      },
+      "summary": {
+        "total": "Tous",
+        "drafts": "Brouillons",
+        "toComplete": "À compléter",
+        "toCorrect": "À corriger",
+        "toValidate": "À valider",
+        "overdue": "En retard"
+      },
+      "categories": {
+        "all": "Tous",
+        "drafts": "Brouillons",
+        "complete": "À compléter",
+        "sync": "Synchronisation",
+        "correct": "À corriger",
+        "validate": "À valider",
+        "overdue": "En retard"
+      },
+      "empty": {
+        "title": "Aucun bilan dans cette catégorie",
+        "description": "Les bilans nécessitant une action apparaîtront ici."
+      },
+      "progress": "Bilan complété",
+      "sync": {
+        "label": "Synchronisation",
+        "current": "À jour",
+        "pending": "À synchroniser"
+      },
+      "due": {
+        "label": "Échéance",
+        "overdue": "En retard",
+        "upcoming": "À remettre avant"
+      },
+      "priority": {
+        "criticalIncident": "Incident critique",
+        "incident": "Incident ouvert",
+        "rejected": "Correction demandée",
+        "overdue": "En retard"
+      },
+      "actions": {
+        "continue": "Continuer",
+        "sync": "Synchroniser",
+        "details": "Détails",
+        "openSession": "Ouvrir la séance"
+      },
+      "status": {
+        "missing": "Bilan à créer"
+      },
+      "drawer": {
+        "title": "Détail du bilan en attente",
+        "description": "État, priorité et point de reprise du bilan.",
+        "student": "Élève",
+        "resumeStep": "Étape de reprise",
+        "correctionRequired": "Correction demandée",
+        "correctionDetailPending": "Le bilan a été rejeté pour correction. Le détail structuré des corrections sera géré par SCR-SES-018."
+      }
+    },
+    "reportRevision": {
+      "title": "Correction ou contestation du bilan",
+      "subtitle": "Corriger ou contester sans supprimer l’historique.",
+      "requestAction": "Nouvelle demande",
+      "originalVersion": "Version actuelle",
+      "originalPreserved": "Original conservé",
+      "financialSeparation": "Impact financier",
+      "separateReview": "Recalcul séparé",
+      "requestTitle": "Demande de correction",
+      "decisionTitle": "Décision sur la correction",
+      "scenarioLabel": "Scénario",
+      "field": "Champ concerné",
+      "currentValue": "Valeur actuelle",
+      "proposedValue": "Nouvelle valeur proposée",
+      "reason": "Motif",
+      "financialImpact": "Impact financier à revoir",
+      "approvalRequired": "Approbation requise",
+      "submit": "Soumettre la correction",
+      "decisionReason": "Motif de décision",
+      "reject": "Rejeter",
+      "approve": "Approuver",
+      "decide": "Décider",
+      "empty": "Aucune correction ou contestation enregistrée.",
+      "fields": {
+        "duration": "Durée réelle",
+        "summary": "Résumé",
+        "nextObjective": "Prochain objectif",
+        "sharedComment": "Commentaire partagé"
+      },
+      "status": {
+        "1": "En attente",
+        "2": "Approbation requise",
+        "3": "Revue financière",
+        "4": "Approuvée",
+        "5": "Rejetée",
+        "6": "Résolue sans changement"
+      },
+      "scenario": {
+        "1": "Correction enseignant",
+        "2": "Correction superviseur",
+        "3": "Contestation élève",
+        "4": "Contestation représentant",
+        "5": "Correction administrative",
+        "6": "Revue d’impact financier"
+      }
+    },
+    "groupSession": {
+      "title": "Séance collective",
+      "eyebrow": "Séance collective",
+      "noRoom": "Salle non renseignée",
+      "registered": "Inscrits",
+      "present": "Présents",
+      "absent": "Absents",
+      "late": "En retard",
+      "capacity": "Capacité",
+      "remaining": "{{count}} place(s) restante(s)",
+      "addParticipant": "Ajouter un participant autorisé",
+      "outsideList": "Hors liste initiale",
+      "sharedObjectives": "Objectifs communs",
+      "tabs": {
+        "attendance": "Présences",
+        "report": "Compte rendu",
+        "assessments": "Évaluations individuelles",
+        "certificates": "Attestations"
+      },
+      "attendance": {
+        "title": "Présence individuelle"
+      },
+      "report": {
+        "title": "Bilan collectif",
+        "empty": "Aucun compte rendu collectif pour le moment.",
+        "edit": "Compléter le compte rendu",
+        "collective": "Compte rendu collectif"
+      },
+      "assessment": {
+        "empty": "Aucune observation individuelle.",
+        "edit": "Évaluer le participant",
+        "level": "Niveau",
+        "observation": "Observation individuelle"
+      },
+      "certificate": {
+        "ready": "Attestation prête",
+        "notReady": "Non préparée",
+        "prepare": "Préparer l’attestation"
+      }
+    },
+    "sync": {
+      "kicker": "Terrain & hors connexion",
+      "title": "Synchronisation terrain",
+      "description": "Suivez les données enregistrées localement, leurs dépendances, les échecs et les conflits avant transmission au serveur.",
+      "online": "En ligne",
+      "offline": "Hors connexion",
+      "lastSuccess": "Dernière synchronisation réussie",
+      "never": "Aucune",
+      "syncNow": "Synchroniser maintenant",
+      "syncing": "Synchronisation…",
+      "pending": "À synchroniser",
+      "failed": "En échec",
+      "conflicts": "Conflits",
+      "blocked": "Bloqués",
+      "empty": "Aucun élément dans cette vue.",
+      "retryCount": "Tentatives",
+      "queuedOffline": "Donnée enregistrée localement et ajoutée à la file de synchronisation.",
+      "drawer": {
+        "title": "Détail de synchronisation",
+        "type": "Type",
+        "state": "État",
+        "dependencies": "Dépendances"
+      },
+      "actions": {
+        "retry": "Relancer",
+        "resolve": "Ouvrir pour résoudre",
+        "exportEvidence": "Exporter la preuve locale",
+        "deleteDraft": "Supprimer le brouillon local"
+      },
+      "errors": {
+        "network": "Réseau indisponible. Une nouvelle tentative sera effectuée.",
+        "permission": "Vos permissions ont changé. Une validation par un responsable est requise.",
+        "conflict": "Conflit de version. Ouvrez l'élément pour le résoudre.",
+        "validation": "La validation métier bloque la synchronisation.",
+        "failed": "La synchronisation a échoué."
+      },
+      "states": {
+        "LocalDraft": "Brouillon local",
+        "PendingSync": "En attente",
+        "Syncing": "Synchronisation",
+        "Synced": "Synchronisé",
+        "Failed": "Échec",
+        "Conflict": "Conflit",
+        "BlockedByPermission": "Bloqué par permission",
+        "BlockedByValidation": "Bloqué par validation"
+      },
+      "filters": {
+        "All": "Tous",
+        "PendingSync": "À synchroniser",
+        "Syncing": "Synchronisation",
+        "Synced": "Synchronisés",
+        "Failed": "En échec",
+        "Conflict": "Conflits",
+        "BlockedByPermission": "Permissions",
+        "BlockedByValidation": "Validation"
+      },
+      "types": {
+        "SessionStart": "Démarrage séance",
+        "SessionMarker": "Repère terrain",
+        "SessionEnd": "Fin de séance",
+        "Attendance": "Présence",
+        "SessionReport": "Bilan",
+        "CompetencyAssessment": "Évaluation de compétence",
+        "VehicleMileage": "Kilométrage",
+        "VehicleCheck": "Contrôle véhicule",
+        "Incident": "Incident",
+        "Photo": "Photo",
+        "LocationEvent": "Localisation",
+        "Intervention": "Intervention",
+        "Observation": "Observation",
+        "SessionInterrupt": "Interruption",
+        "SessionResume": "Reprise",
+        "GroupAttendance": "Présence collective",
+        "Other": "Autre"
+      }
+    }
+  },
+  "trainingDelivery": {
+    "readiness": {
+      "sourceBookingConfirmed": "Réservation confirmée",
+      "studentLinked": "Élève correctement rattaché",
+      "instructorLinked": "Enseignant correctement rattaché",
+      "schedulingConflictFree": "Aucun conflit de planning",
+      "schedulingConflict": "Conflit de planning détecté",
+      "fleetComplianceVerified": "Conformité du véhicule vérifiée",
+      "fleetComplianceRequired": "Conformité du véhicule requise",
+      "vehicleNotApplicable": "Aucun véhicule requis pour cette séance",
+      "studentIdentityVerified": "Identité de l’élève vérifiée",
+      "studentIdentityVerificationRequired": "Vérification de l’identité de l’élève requise",
+      "studentEnrollmentActive": "Inscription élève active",
+      "studentEnrollmentInactive": "Inscription élève inactive ou indisponible",
+      "studentStartLessonAllowed": "Démarrage de leçon autorisé pour l’élève",
+      "studentStartLessonBlocked": "Démarrage de leçon bloqué pour l’élève"
     }
   }
 }

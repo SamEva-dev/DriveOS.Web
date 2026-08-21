@@ -109,6 +109,7 @@ export class AuthService {
   }
 
   logout(): void {
+    if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('driveos:session-revoked'));
     this.tokens.clear();
     this.tokensSignal.set(null);
     this.userSignal.set(null);

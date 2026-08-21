@@ -1,0 +1,137 @@
+@if (loading()) {
+  <div class="flex min-h-72 items-center justify-center"><drive-os-spinner /></div>
+} @else {
+  <div class="mx-auto max-w-5xl space-y-5 px-4 py-5 sm:px-6 lg:px-8">
+    <header class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <button type="button" class="mb-3 text-sm font-bold text-blue-700" (click)="backToSession()">← {{ 'training.reportWorkflow.back' | translate }}</button>
+          <h1 class="text-2xl font-black">{{ 'training.reportWorkflow.title' | translate }}</h1>
+          <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'training.reportWorkflow.subtitle' | translate }}</p>
+        </div>
+        <div class="text-right text-xs font-semibold text-[var(--driveos-text-secondary)]">
+          <div>{{ 'training.reportWorkflow.step' | translate:{ current: step(), total: 9 } }}</div>
+          @if (saving()) { <div class="mt-1">{{ 'training.reportWorkflow.saving' | translate }}</div> }
+          @else if (pendingSync()) { <div class="mt-1 text-orange-700">{{ 'training.reportWorkflow.pendingSync' | translate }}</div> }
+          @else if (lastSavedAtUtc()) { <div class="mt-1 text-green-700">{{ 'training.reportWorkflow.saved' | translate }} · {{ lastSavedAtUtc() | date:'HH:mm' }}</div> }
+        </div>
+      </div>
+      <div class="mt-4 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div class="h-full bg-blue-600 transition-all" [style.width.%]="progress()"></div></div>
+      <div class="mt-4 flex gap-2 overflow-x-auto pb-1">
+        @for (item of steps; track item; let i = $index) {
+          <button type="button" class="min-w-max rounded-full border px-3 py-1.5 text-xs font-bold" [class.border-blue-600]="step() === i + 1" [class.bg-blue-50]="step() === i + 1" (click)="save(true); step.set(i + 1)">{{ i + 1 }}. {{ ('training.reportWorkflow.steps.' + item) | translate }}</button>
+        }
+      </div>
+    </header>
+
+    @if (!online()) { <div class="rounded-xl border border-orange-200 bg-orange-50 p-3 text-sm font-semibold text-orange-900">{{ 'training.reportWorkflow.offline' | translate }}</div> }
+    @if (errors().length) { <div class="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">@for (error of errors(); track error) { <div>{{ error | translate }}</div> }</div> }
+
+    <section class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 sm:p-6">
+      @switch (currentStepKey()) {
+        @case ('summary') {
+          <h2 class="text-xl font-black">{{ 'training.reportWorkflow.steps.summary' | translate }}</h2>
+          <textarea class="mt-4 min-h-44 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent p-3" maxlength="5000" [ngModel]="summary()" (ngModelChange)="summary.set($event); fieldChanged()" [placeholder]="'training.reportWorkflow.fields.summaryPlaceholder' | translate"></textarea>
+        }
+        @case ('attendance') {
+          <h2 class="text-xl font-black">{{ 'training.reportWorkflow.steps.attendance' | translate }}</h2>
+          <div class="mt-4 grid gap-3 sm:grid-cols-3">
+            <div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-900"><div class="text-xs font-bold uppercase">{{ 'training.reportWorkflow.fields.actualStart' | translate }}</div><div class="mt-1 font-black">{{ session()?.actualStartAtUtc | date:'HH:mm' }}</div></div>
+            <div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-900"><div class="text-xs font-bold uppercase">{{ 'training.reportWorkflow.fields.actualEnd' | translate }}</div><div class="mt-1 font-black">{{ session()?.actualEndAtUtc | date:'HH:mm' }}</div></div>
+            <div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-900"><div class="text-xs font-bold uppercase">{{ 'training.reportWorkflow.fields.duration' | translate }}</div><div class="mt-1 font-black">{{ session()?.deliveredDurationMinutes ?? 0 }} min</div></div>
+          </div>
+          <p class="mt-4 text-sm text-[var(--driveos-text-secondary)]">{{ 'training.reportWorkflow.hints.attendanceNext' | translate }}</p>
+        }
+        @case ('competencies') {
+          <h2 class="text-xl font-black">{{ 'training.reportWorkflow.steps.competencies' | translate }}</h2>
+          <div class="mt-4 space-y-3">@for (assessment of session()?.competencyAssessments ?? []; track assessment.id) { <div class="rounded-xl border border-[var(--driveos-border)] p-3"><div class="font-bold">{{ assessment.levelCode }}</div><div class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ assessment.observedCriteria || assessment.context || '—' }}</div></div> } @empty { <p class="text-sm text-[var(--driveos-text-secondary)]">{{ 'training.reportWorkflow.empty.competencies' | translate }}</p> }</div>
+        }
+        @case ('observations') {
+          <h2 class="text-xl font-black">{{ 'training.reportWorkflow.steps.observations' | translate }}</h2>
+          <div class="mt-4 space-y-3">@for (marker of session()?.markers ?? []; track marker.id) { <div class="rounded-xl border border-[var(--driveos-border)] p-3"><div class="text-sm font-bold">{{ marker.shortNote }}</div><div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">{{ marker.occurredAtUtc | date:'HH:mm' }}</div></div> } @empty { <p class="text-sm text-[var(--driveos-text-secondary)]">{{ 'training.reportWorkflow.empty.observations' | translate }}</p> }</div>
+          <label class="mt-5 block text-sm font-bold">{{ 'training.reportWorkflow.fields.objectivesWorked' | translate }}</label><textarea class="mt-2 min-h-28 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent p-3" maxlength="4000" [ngModel]="objectivesWorked()" (ngModelChange)="objectivesWorked.set($event); fieldChanged()"></textarea>
+          <label class="mt-4 block text-sm font-bold">{{ 'training.reportWorkflow.fields.objectivesAchieved' | translate }}</label><textarea class="mt-2 min-h-28 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent p-3" maxlength="4000" [ngModel]="objectivesAchieved()" (ngModelChange)="objectivesAchieved.set($event); fieldChanged()"></textarea>
+        }
+        @case ('safety') {
+          <h2 class="text-xl font-black">{{ 'training.reportWorkflow.steps.safety' | translate }}</h2>
+          <div class="mt-4 grid gap-3 sm:grid-cols-2"><div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-900"><span class="text-sm font-bold">{{ 'training.reportWorkflow.fields.interventions' | translate }}</span><div class="mt-1 text-2xl font-black">{{ session()?.interventions?.length ?? 0 }}</div></div><div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-900"><span class="text-sm font-bold">{{ 'training.reportWorkflow.fields.interruptions' | translate }}</span><div class="mt-1 text-2xl font-black">{{ session()?.interruptions?.length ?? 0 }}</div></div></div>
+        }
+        @case ('nextObjectives') {
+          <h2 class="text-xl font-black">{{ 'training.reportWorkflow.steps.nextObjectives' | translate }}</h2>
+          <textarea class="mt-4 min-h-40 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent p-3" maxlength="2000" [ngModel]="nextObjective()" (ngModelChange)="nextObjective.set($event); fieldChanged()" [placeholder]="'training.reportWorkflow.fields.nextObjectivePlaceholder' | translate"></textarea>
+        }
+        @case ('vehicle') {
+          <h2 class="text-xl font-black">{{ 'training.reportWorkflow.steps.vehicle' | translate }}</h2>
+          <div class="mt-4 grid gap-3 sm:grid-cols-3"><div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-900"><div class="text-xs font-bold uppercase">{{ 'training.reportWorkflow.fields.vehicle' | translate }}</div><div class="mt-1 font-black">{{ session()?.actualVehicleId || session()?.vehicleId || '—' }}</div></div><div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-900"><div class="text-xs font-bold uppercase">{{ 'training.reportWorkflow.fields.distance' | translate }}</div><div class="mt-1 font-black">{{ session()?.distanceKilometers ?? 0 }} km</div></div><div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-900"><div class="text-xs font-bold uppercase">{{ 'training.reportWorkflow.fields.energy' | translate }}</div><div class="mt-1 font-black">{{ session()?.endEnergyLevelPercent ?? '—' }}%</div></div></div>
+        }
+        @case ('sharedComment') {
+          <h2 class="text-xl font-black">{{ 'training.reportWorkflow.steps.sharedComment' | translate }}</h2>
+          <div class="mt-4 rounded-2xl border border-blue-200 bg-blue-50/70 p-4 dark:border-blue-900 dark:bg-blue-950/25">
+            <div class="flex items-start gap-3"><span class="ph ph-users-three mt-0.5 text-xl text-blue-700"></span><div><p class="font-black">{{ 'training.reportWorkflow.fields.sharedComment' | translate }}</p><p class="mt-1 text-xs font-semibold text-blue-800 dark:text-blue-200">{{ 'training.sessionNarratives.sharedVisibilityWarning' | translate }}</p></div></div>
+            <textarea class="mt-3 min-h-36 w-full rounded-xl border border-blue-200 bg-white p-3 dark:border-blue-900 dark:bg-slate-950" maxlength="5000" [disabled]="!canCreateSharedComment()" [ngModel]="sharedComment()" (ngModelChange)="sharedComment.set($event); fieldChanged()"></textarea>
+          </div>
+          <div class="mt-4 rounded-2xl border border-amber-200 bg-amber-50/70 p-4 dark:border-amber-900 dark:bg-amber-950/20">
+            <div class="flex items-start gap-3"><span class="ph ph-lock-key mt-0.5 text-xl text-amber-700"></span><div><p class="font-black">{{ 'training.reportWorkflow.fields.internalNote' | translate }}</p><p class="mt-1 text-xs font-semibold text-amber-800 dark:text-amber-200">{{ 'training.sessionNarratives.internalVisibilityWarning' | translate }}</p></div></div>
+            @if (canReadInternalNote()) {
+              <textarea class="mt-3 min-h-32 w-full rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-900 dark:bg-slate-950" maxlength="5000" [disabled]="!canCreateInternalNote()" [ngModel]="internalNote()" (ngModelChange)="internalNote.set($event); fieldChanged()"></textarea>
+              @if (internalNoteHistory().length) {
+                <details class="mt-3"><summary class="cursor-pointer text-sm font-bold">{{ 'training.sessionNarratives.history' | translate:{ count: internalNoteHistory().length } }}</summary><div class="mt-2 space-y-2">@for (revision of internalNoteHistory(); track revision.id) { <div class="rounded-xl bg-white/70 p-3 text-xs dark:bg-slate-950/60"><div class="font-bold">v{{ revision.reportVersion }} · {{ revision.changedAtUtc | date:'dd/MM/yyyy HH:mm' }}</div><p class="mt-1 whitespace-pre-line">{{ revision.content || ('training.sessionNarratives.cleared' | translate) }}</p></div> }</div></details>
+              }
+            } @else { <p class="mt-3 text-sm font-semibold">{{ 'training.sessionNarratives.internalPermissionRequired' | translate }}</p> }
+          </div>
+        }
+        @case ('validation') {
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div><h2 class="text-xl font-black">{{ 'training.reportReview.title' | translate }}</h2><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'training.reportReview.subtitle' | translate }}</p></div>
+            <drive-os-button variant="secondary" [loading]="reviewing()" (pressed)="refreshReview()">{{ 'training.reportReview.refresh' | translate }}</drive-os-button>
+          </div>
+          <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-900"><div class="text-xs font-bold uppercase">{{ 'training.reportReview.summary.attendance' | translate }}</div><div class="mt-1 font-black">{{ session()?.currentAttendance ? ('training.reportWorkflow.completed' | translate) : ('training.reportWorkflow.missing' | translate) }}</div></div>
+            <div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-900"><div class="text-xs font-bold uppercase">{{ 'training.reportReview.summary.duration' | translate }}</div><div class="mt-1 font-black">{{ session()?.deliveredDurationMinutes ?? 0 }} min</div></div>
+            <div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-900"><div class="text-xs font-bold uppercase">{{ 'training.reportReview.summary.competencies' | translate }}</div><div class="mt-1 font-black">{{ session()?.competencyAssessments?.length ?? 0 }}</div></div>
+            <div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-900"><div class="text-xs font-bold uppercase">{{ 'training.reportReview.summary.distance' | translate }}</div><div class="mt-1 font-black">{{ session()?.distanceKilometers ?? '—' }} km</div></div>
+          </div>
+          <div class="mt-5 space-y-2">
+            @for (check of review()?.checks ?? []; track check.code) {
+              <div class="flex items-start gap-3 rounded-xl border border-[var(--driveos-border)] p-3">
+                <span class="ph mt-0.5 text-lg" [class.ph-check-circle]="check.passed" [class.ph-warning-circle]="!check.passed" [class.text-emerald-600]="check.passed" [class.text-amber-600]="!check.passed"></span>
+                <div class="min-w-0 flex-1"><div class="font-bold">{{ check.messageKey | translate }}</div><div class="mt-0.5 text-xs text-[var(--driveos-text-secondary)]">{{ (check.blocking ? 'training.reportReview.blocking' : 'training.reportReview.warning') | translate }}</div></div>
+              </div>
+            }
+          </div>
+          <div class="mt-5 rounded-xl border border-blue-200 bg-blue-50/70 p-4 text-sm dark:border-blue-900 dark:bg-blue-950/25">
+            <div class="font-black">{{ 'training.reportReview.serverVersion' | translate:{ version: review()?.serverVersion ?? serverVersion() } }}</div>
+            <div class="mt-1">{{ pendingSync() ? ('training.reportReview.syncPending' | translate) : ('training.reportReview.syncOk' | translate) }}</div>
+            <div class="mt-1">{{ 'training.reportReview.lockedFields' | translate }}</div>
+          </div>
+          @if (!reportLocked()) {
+            <div class="mt-5 flex flex-wrap gap-3">
+              <drive-os-button [disabled]="!review()?.canSubmit || pendingSync() || !canSubmitReports()" (pressed)="prepareSubmission(false)">{{ 'training.reportReview.submit' | translate }}</drive-os-button>
+              @if (canRequestReview()) { <drive-os-button variant="secondary" [disabled]="!review()?.canSubmit || pendingSync()" (pressed)="prepareSubmission(true)">{{ 'training.reportReview.requestReview' | translate }}</drive-os-button> }
+            </div>
+          } @else { <div class="mt-5 rounded-xl bg-emerald-50 p-4 font-bold text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-200">{{ 'training.reportReview.locked' | translate }}</div><div class="mt-3"><drive-os-button variant="secondary" (pressed)="openRevision()">{{ 'training.reportRevision.requestAction' | translate }}</drive-os-button></div> }
+        }
+      }
+    </section>
+
+    <footer class="sticky bottom-3 flex items-center justify-between gap-3 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-3 shadow-lg">
+      <drive-os-button variant="secondary" [disabled]="!canGoBack()" (pressed)="previous()">{{ 'training.reportWorkflow.previous' | translate }}</drive-os-button>
+      <div class="hidden text-xs font-semibold text-[var(--driveos-text-secondary)] sm:block">{{ 'training.reportWorkflow.autoSaveHint' | translate }}</div>
+      @if (canGoNext()) { <drive-os-button [loading]="saving()" (pressed)="next()">{{ 'training.reportWorkflow.saveContinue' | translate }}</drive-os-button> }
+      @else { <drive-os-button [loading]="saving()" [disabled]="reportLocked() || !canWriteReports()" (pressed)="save(false)">{{ 'training.reportWorkflow.saveDraft' | translate }}</drive-os-button> }
+    </footer>
+  </div>
+}
+
+<drive-os-drawer
+  [open]="submitDrawerOpen()"
+  [title]="(requestSupervisorReview() ? 'training.reportReview.confirmReviewTitle' : 'training.reportReview.confirmTitle') | translate"
+  [description]="'training.reportReview.confirmText' | translate"
+  [closeDisabled]="submitting()"
+  (closeRequested)="submitDrawerOpen.set(false)">
+  <div class="rounded-xl bg-amber-50 p-4 text-sm font-semibold text-amber-900 dark:bg-amber-950/30 dark:text-amber-100">{{ 'training.reportReview.afterSubmitWarning' | translate }}</div>
+  <div class="mt-6 flex gap-3">
+    <drive-os-button variant="secondary" [disabled]="submitting()" (pressed)="submitDrawerOpen.set(false)">{{ 'training.reportReview.back' | translate }}</drive-os-button>
+    <drive-os-button [loading]="submitting()" [disabled]="!review()?.canSubmit" (pressed)="confirmSubmission()">{{ requestSupervisorReview() ? ('training.reportReview.confirmRequestReview' | translate) : ('training.reportReview.confirmSubmit' | translate) }}</drive-os-button>
+  </div>
+</drive-os-drawer>

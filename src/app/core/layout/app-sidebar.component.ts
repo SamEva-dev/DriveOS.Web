@@ -16,6 +16,7 @@ import { CRM_PERMISSIONS } from '../../features/crm/domain/crm-permissions';
 import { STUDENT_PERMISSIONS } from '../../features/students/domain/student-permissions';
 import { PEDAGOGY_PERMISSIONS } from '../../features/pedagogy/domain/pedagogy-permissions';
 import { SCHEDULING_PERMISSIONS } from '../../features/scheduling/domain/scheduling-permissions';
+import { TRAINING_DELIVERY_PERMISSIONS } from '../../features/training-delivery/domain/training-delivery-permissions';
 import { NavigationItem } from './navigation-item';
 
 interface NavigationGroup {
@@ -168,6 +169,7 @@ export class AppSidebarComponent {
     { labelKey: 'navigation.organizations', icon: 'ph ph-buildings', routerLink: '/organizations' },
     { labelKey: 'navigation.pedagogy', icon: 'ph ph-books', routerLink: '/pedagogy' },
     { labelKey: 'navigation.planning', icon: 'ph ph-calendar-dots', routerLink: '/planning' },
+    { labelKey: 'navigation.training', icon: 'ph ph-steering-wheel', routerLink: '/training' },
     {
       labelKey: 'navigation.instructors',
       icon: 'ph ph-identification-card',
@@ -326,6 +328,12 @@ export class AppSidebarComponent {
           SCHEDULING_PERMISSIONS.waitingList.read,
           SCHEDULING_PERMISSIONS.resources.read,
           SCHEDULING_PERMISSIONS.capacity.read,
+        ]);
+      }
+      if (item.routerLink === '/training') {
+        return this.authorization.hasAny([
+          TRAINING_DELIVERY_PERMISSIONS.sessions.read,
+          TRAINING_DELIVERY_PERMISSIONS.incidents.read,
         ]);
       }
       return true;

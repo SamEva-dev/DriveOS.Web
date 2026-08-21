@@ -96,7 +96,8 @@
       "list": "Student list",
       "newEnrollment": "New enrollment"
     },
-    "pedagogy": "Pedagogy"
+    "pedagogy": "Pedagogy",
+    "training": "Sessions"
   },
   "theme": {
     "label": "Theme",
@@ -828,10 +829,135 @@
         "instructorParticipantRequired": "A training booking must contain at least one instructor."
       }
     },
-    "students": {
-      "checklist": {
-        "derivedStatus": {
-          "manualChangeForbidden": "This prerequisite is managed automatically from its source business data. Complete the action from the source screen or grant an authorized waiver."
+    "trainingDelivery": {
+      "dashboard": {
+        "period": {
+          "invalid": "The session dashboard period is invalid."
+        }
+      },
+      "session": {
+        "notFound": "Session not found.",
+        "preparation": {
+          "invalidStatus": "This session cannot be prepared in its current state.",
+          "tooEarly": "Preparation is still too early for the planned session time."
+        },
+        "start": {
+          "invalidStatus": "The session must be ready before it can start.",
+          "tooEarly": "The session cannot start yet because it is too early.",
+          "tooLate": "The session can no longer be started within the allowed time window.",
+          "timestamp": {
+            "invalid": "The recorded start time is later than the allowed server time."
+          },
+          "operationConflict": "Idempotency conflict while starting the session."
+        },
+        "resources": {
+          "notReady": "Not all session prerequisites are compliant."
+        },
+        "readiness": {
+          "expired": "The preparation check has expired. Run the checks again before starting."
+        },
+        "sourceBooking": {
+          "notFound": "The source booking could not be found.",
+          "notConfirmed": "The source booking is not confirmed.",
+          "wrongType": "The booking type cannot be used to create or start a training session.",
+          "incomplete": "The source booking does not contain all required information."
+        },
+        "marker": {
+          "invalid": "The marker is invalid.",
+          "note": {
+            "required": "The marker note is required.",
+            "tooLong": "The marker note is too long."
+          },
+          "location": {
+            "invalid": "The marker location is invalid."
+          },
+          "sessionStatus": {
+            "invalid": "A marker can only be added while a session is in progress or interrupted."
+          },
+          "occurredAt": {
+            "invalid": "The marker time is invalid."
+          },
+          "operation": {
+            "conflict": "This marker operation was already used with different data."
+          }
+        },
+        "completion": {
+          "energyLevel": {
+            "invalid": "Energy level must be between 0 and 100%."
+          }
+        },
+        "reportDraft": {
+          "invalid": "The report draft is invalid.",
+          "requiresCompletedSession": "The session must be completed before editing the report.",
+          "versionConflict": "The report has changed since your last save. Reload the data before continuing.",
+          "operationConflict": "This save operation was already used with different data.",
+          "locked": "This report can no longer be edited directly.",
+          "stepInvalid": "The report step is invalid.",
+          "textTooLong": "One of the report texts exceeds the allowed length."
+        },
+        "energy": {
+          "invalid": "The recorded energy data is invalid.",
+          "level": {
+            "invalid": "Energy level must be between 0 and 100%.",
+            "required": "An energy level is required for this observation."
+          },
+          "quantity": {
+            "invalid": "Fuel or charging quantity must be greater than zero."
+          },
+          "vehicle": {
+            "required": "No effective vehicle is attached to this session."
+          },
+          "sessionStatus": {
+            "invalid": "The current session status does not allow this energy entry."
+          },
+          "observedAt": {
+            "invalid": "The observation time is invalid.",
+            "outOfOrder": "Energy observations must remain in chronological order."
+          },
+          "operation": {
+            "conflict": "This energy operation was already used with different data."
+          }
+        },
+        "reportSubmission": {
+          "invalid": "The report submission is invalid.",
+          "notReady": "The report is not ready to submit.",
+          "alreadySubmitted": "The report has already been submitted."
+        },
+        "reportRevision": {
+          "invalid": "Invalid correction request.",
+          "requiresSubmittedReport": "The report must be submitted before correction.",
+          "notFound": "Correction not found.",
+          "alreadyDecided": "This correction has already been decided.",
+          "decisionReasonRequired": "A decision reason is required.",
+          "versionConflict": "The report version has changed."
+        }
+      },
+      "groupSession": {
+        "notFound": "Group session not found.",
+        "sourceBooking": {
+          "notFound": "Source booking not found.",
+          "notConfirmed": "The booking must be confirmed.",
+          "wrongType": "This booking is not eligible for a group session.",
+          "incomplete": "The group booking is incomplete."
+        },
+        "capacity": {
+          "exceeded": "Room or resource capacity has been exceeded."
+        },
+        "participant": {
+          "alreadyExists": "This participant is already registered.",
+          "notFound": "Participant not found."
+        },
+        "attendance": {
+          "invalid": "Attendance data is invalid."
+        },
+        "assessment": {
+          "invalid": "Individual assessment is invalid."
+        },
+        "report": {
+          "invalid": "Group report is invalid."
+        },
+        "operation": {
+          "conflict": "This operation conflicts with an operation already recorded."
         }
       }
     }
@@ -3365,7 +3491,7 @@
         "responsible": "Owner:",
         "reminders": "{{count}} reminder(s)",
         "itemsTitle": "Checklist items",
-        "itemsDescription": "Prerequisites are updated from their source business screens. Use the suggested actions to complete the record.",
+        "itemsDescription": "Manage the prerequisites required before enrollment activation.",
         "activationBlockedTitle": "Activation is currently unavailable",
         "activationBlockedDescription": "All blocking items must be completed or covered by an authorized waiver before activation.",
         "actions": {
@@ -3404,8 +3530,7 @@
           "Rejected": "Rejected",
           "Blocked": "Blocked",
           "Expired": "Expired"
-        },
-        "automatic": "Updated automatically"
+        }
       },
       "documents": {
         "download": "Download",
@@ -4263,47 +4388,10 @@
       "identity": "Identity verified",
       "identityDocument": "Valid identity document",
       "contract": "Training contract signed",
-      "initialPayment": "Initial financial conditions validated",
+      "initialPayment": "Initial payment received",
       "initialAssessment": "Initial assessment completed",
-      "learningPath": "Learning path configured",
+      "learningPath": "Learning path initialized",
       "studentAccount": "Student account activated"
-    },
-    "checklistHelp": {
-      "IDENTITY": {
-        "description": "Confirms that the student’s identity information has been verified from the profile.",
-        "impact": "Required before administrative activation of the record and contracting.",
-        "action": "Verify in profile"
-      },
-      "IDENTITY_DOCUMENT": {
-        "description": "Checks that a valid and approved identity document is present in the administrative record.",
-        "impact": "Supports identity evidence and secures administrative procedures.",
-        "action": "View documents"
-      },
-      "CONTRACT": {
-        "description": "Confirms that an applicable training contract for the student has been signed.",
-        "impact": "Formalizes the commitments of the student and the school before training starts.",
-        "action": "View contracts"
-      },
-      "INITIAL_PAYMENT": {
-        "description": "Confirms that an initial payment has been received or that funding has been approved.",
-        "impact": "Secures the financial coverage required before training activation.",
-        "action": "View finance"
-      },
-      "INITIAL_ASSESSMENT": {
-        "description": "Confirms that the initial assessment has been completed to estimate training needs.",
-        "impact": "Used to build a training path and volume adapted to the student’s level.",
-        "action": "View pedagogy"
-      },
-      "LEARNING_PATH": {
-        "description": "Confirms that a learning path is configured with a curriculum and progression objectives.",
-        "impact": "Used during sessions, assessments and pedagogical progress tracking.",
-        "action": "View learning path"
-      },
-      "STUDENT_ACCOUNT": {
-        "description": "Confirms that the student has an account to access the personal portal.",
-        "impact": "Provides access to schedule, documents, payments and progress according to granted rights.",
-        "action": "View profile"
-      }
     }
   },
   "shared": {
@@ -6449,6 +6537,1089 @@
         "Expired": "Expired",
         "Cancelled": "Cancelled"
       }
+    }
+  },
+  "training": {
+    "kicker": "Field delivery",
+    "title": "Sessions and reports",
+    "actions": {
+      "refresh": "Refresh",
+      "viewAll": "View all",
+      "close": "Close"
+    },
+    "tabs": {
+      "navigation": "Session navigation",
+      "dashboard": "Dashboard",
+      "sessions": "Sessions",
+      "myDay": "My day",
+      "pendingReports": "Pending reports",
+      "sync": "Sync"
+    },
+    "dashboard": {
+      "kicker": "SCR-SES-001",
+      "title": "Session dashboard",
+      "description": "Manage today’s sessions, urgent actions, incidents and report quality from one workspace.",
+      "loadError": "The dashboard could not be fully loaded.",
+      "kpis": {
+        "sessionsToday": "Sessions today",
+        "inProgress": "In progress",
+        "completed": "Completed",
+        "missingReports": "Missing reports",
+        "lateStarts": "Late starts",
+        "absences": "Absences",
+        "cancelled": "Cancelled",
+        "openIncidents": "Open incidents",
+        "durationsToValidate": "Durations to validate",
+        "syncFailures": "Sync failures",
+        "notAvailableYet": "Available with SCR-SES-020"
+      },
+      "tabs": {
+        "navigation": "Dashboard views",
+        "operations": "Today activity",
+        "attention": "Needs attention",
+        "quality": "Delivery quality"
+      },
+      "today": {
+        "title": "Today activity",
+        "description": "All Training Delivery sessions materialized for today.",
+        "empty": "No sessions today",
+        "emptyDescription": "No Training Delivery session is scheduled in the displayed period."
+      },
+      "session": {
+        "categoryFallback": "Practical training"
+      },
+      "flags": {
+        "criticalIncident": "Critical incident",
+        "incident": "Incident",
+        "lateStart": "Late start",
+        "missingReport": "Missing report",
+        "durationVariance": "Duration variance"
+      },
+      "incidents": {
+        "title": "Open incidents",
+        "description": "Unresolved incidents remain visible until closure.",
+        "empty": "No open incident",
+        "emptyDescription": "No active incident requires action."
+      },
+      "attention": {
+        "sessionsTitle": "Sessions requiring action",
+        "sessionsDescription": "Late start, missing report, duration variance or incident.",
+        "empty": "Nothing to handle",
+        "emptyDescription": "No session today requires immediate action.",
+        "incidentsTitle": "Critical incidents",
+        "incidentsDescription": "Critical incidents are always prioritized.",
+        "noCriticalIncident": "No critical incident",
+        "noCriticalIncidentDescription": "No active critical incident is reported."
+      },
+      "quality": {
+        "reportCompletion": "Reports completed",
+        "reportCompletionDescription": "Share of completed sessions with a report.",
+        "withoutObjectives": "Without objectives",
+        "withoutObjectivesDescription": "Completed sessions without pedagogical objectives.",
+        "withoutAssessments": "Without assessment",
+        "withoutAssessmentsDescription": "Completed sessions without competency assessment.",
+        "durationVariances": "Duration variances",
+        "durationVariancesDescription": "At least 15 min between planned and delivered duration."
+      },
+      "drawers": {
+        "description": "Contextual details without leaving the dashboard.",
+        "empty": "No item",
+        "emptyDescription": "No session matches this indicator.",
+        "sessionsToday": {
+          "title": "Sessions today"
+        },
+        "inProgress": {
+          "title": "Sessions in progress"
+        },
+        "completed": {
+          "title": "Completed sessions"
+        },
+        "missingReports": {
+          "title": "Missing reports"
+        },
+        "lateStarts": {
+          "title": "Late starts"
+        },
+        "absences": {
+          "title": "Absences"
+        },
+        "cancelled": {
+          "title": "Cancelled sessions"
+        },
+        "openIncidents": {
+          "title": "Open incidents"
+        },
+        "durationsToValidate": {
+          "title": "Durations to validate"
+        },
+        "syncFailures": {
+          "title": "Field synchronization"
+        },
+        "session": {
+          "title": "Session quick details"
+        }
+      },
+      "drawerSession": {
+        "student": "Student",
+        "category": "Category",
+        "attendance": "Attendance",
+        "plannedDuration": "Planned duration",
+        "actualDuration": "Delivered duration",
+        "objectives": "Objectives",
+        "noObjectives": "No objective provided.",
+        "openIncident": "This session has at least one open incident.",
+        "missingReport": "This session report is missing.",
+        "durationVariance": "Duration variance detected: {{minutes}} min."
+      },
+      "sync": {
+        "pendingTitle": "Field synchronization planned",
+        "pendingDescription": "Offline failure tracking will be enabled in SCR-SES-020. The dashboard does not fabricate a value before that mechanism exists."
+      }
+    },
+    "statuses": {
+      "session": {
+        "1": "Scheduled",
+        "2": "Ready",
+        "3": "In progress",
+        "4": "Completed",
+        "5": "Cancelled",
+        "6": "Interrupted"
+      },
+      "attendance": {
+        "none": "Not recorded",
+        "1": "Present",
+        "2": "Late arrival",
+        "3": "Student absent",
+        "4": "Instructor absent",
+        "5": "Partial attendance",
+        "6": "Excused absence",
+        "7": "Unexcused absence",
+        "8": "Unable to deliver"
+      },
+      "incidentSeverity": {
+        "1": "Low",
+        "2": "Moderate",
+        "3": "High",
+        "4": "Critical"
+      },
+      "incidentStatus": {
+        "1": "Open",
+        "2": "Escalated",
+        "3": "Under review",
+        "4": "Resolved",
+        "5": "Closed"
+      }
+    },
+    "sessions": {
+      "kicker": "Field delivery",
+      "title": "Sessions",
+      "description": "Review planned and delivered sessions, identify records requiring action and open details without leaving the page.",
+      "period": {
+        "today": "Today",
+        "week": "Period",
+        "month": "Month"
+      },
+      "actions": {
+        "filters": "Filters",
+        "reset": "Reset",
+        "apply": "Apply"
+      },
+      "loadError": "Unable to load sessions.",
+      "summary": {
+        "visible": "Visible sessions",
+        "inProgress": "In progress",
+        "attention": "Needs attention"
+      },
+      "columns": {
+        "date": "Date and time",
+        "student": "Student",
+        "category": "Training",
+        "status": "Status",
+        "attendance": "Attendance",
+        "duration": "Duration",
+        "alerts": "Follow-up"
+      },
+      "attention": {
+        "label": "Action required"
+      },
+      "empty": {
+        "title": "No sessions",
+        "description": "No session matches the selected period and filters."
+      },
+      "filters": {
+        "title": "Filter sessions",
+        "description": "Refine the list without leaving the Sessions workspace.",
+        "search": "Search",
+        "searchPlaceholder": "Student, training or location…",
+        "status": "Session status",
+        "attendance": "Attendance",
+        "attention": "Needs attention",
+        "all": "All",
+        "missingReports": "Missing reports",
+        "openIncidents": "Open incidents",
+        "durationVariance": "Duration variance",
+        "late": "Late starts"
+      },
+      "details": {
+        "title": "Session details",
+        "description": "Operational summary of the selected session.",
+        "openFull": "Open full record"
+      }
+    },
+    "sessionDetail": {
+      "title": "Session record",
+      "kicker": "Training session",
+      "back": "Back to sessions",
+      "unknownStudent": "Student",
+      "loadError": "Unable to load the session",
+      "tabs": {
+        "summary": "Overview",
+        "participants": "Participants",
+        "preparation": "Preparation",
+        "attendance": "Attendance",
+        "execution": "Execution",
+        "report": "Report",
+        "incidents": "Incidents",
+        "history": "History"
+      },
+      "badges": {
+        "interrupted": "Session interrupted",
+        "openIncidents": "{{count}} open incident(s)"
+      },
+      "actions": {
+        "technical": "Technical references"
+      },
+      "summary": {
+        "plannedDuration": "Planned duration",
+        "deliveredDuration": "Delivered duration",
+        "assessments": "Assessments",
+        "incidents": "Incidents"
+      },
+      "sections": {
+        "session": "Session information",
+        "attention": "Items requiring attention"
+      },
+      "fields": {
+        "objectives": "Planned objectives",
+        "meetingPoint": "Meeting point",
+        "actualStart": "Actual start",
+        "actualEnd": "Actual end",
+        "status": "Status"
+      },
+      "alerts": {
+        "missingReport": "The pedagogical report for this session is still missing.",
+        "openIncidents": "{{count}} incident(s) still require follow-up.",
+        "none": "No attention item detected."
+      },
+      "participants": {
+        "student": "Student",
+        "openStudent": "Open student record",
+        "instructor": "Instructor",
+        "vehicle": "Vehicle",
+        "branch": "Branch"
+      },
+      "preparation": {
+        "title": "Session preparation",
+        "description": "Availability and compliance checks completed before the session starts.",
+        "checked": "Preparation checked",
+        "notChecked": "Not checked",
+        "checkedAt": "Checked at",
+        "actions": {
+          "viewChecks": "View checks",
+          "recheck": "Run checks again",
+          "check": "Check preparation"
+        },
+        "checkError": "Preparation check failed",
+        "notApplicable": "Not applicable",
+        "meetingPoint": "Meeting point",
+        "objectivesTitle": "Planned objectives",
+        "objectivesDescription": "Pedagogical objectives from the planned session.",
+        "noObjectives": "No pedagogical objective has been entered for this session.",
+        "readinessSummary": "Readiness summary",
+        "passed": "Passed",
+        "blocked": "Blocking",
+        "review": "Review",
+        "canStart": "The session can start",
+        "cannotStart": "The session cannot start",
+        "runCheckHint": "Run the preparation check to retrieve the authoritative prerequisite status before starting the session.",
+        "drawerTitle": "Preparation checks",
+        "drawerDescription": "Details of the authoritative checks performed before the session starts.",
+        "status": {
+          "1": "Passed",
+          "2": "Blocking",
+          "3": "External review",
+          "4": "Not applicable"
+        }
+      },
+      "attendance": {
+        "current": "Current attendance",
+        "arrival": "Actual arrival",
+        "departure": "Actual departure",
+        "late": "Late",
+        "emptyTitle": "Attendance not recorded",
+        "emptyDescription": "No attendance information has been recorded for this session yet.",
+        "correctAction": "Correct attendance",
+        "presenceDuration": "Attendance duration",
+        "plannedDuration": "Planned duration",
+        "plannedDurationHint": "Time slot planned by Scheduling.",
+        "grossDuration": "Actual duration",
+        "grossDurationHint": "Elapsed time between actual start and end, including interruptions.",
+        "pedagogicalDuration": "Teaching duration",
+        "pedagogicalDurationHint": "Actual teaching time after removing interruptions.",
+        "billableDuration": "Billable duration",
+        "financialDecision": "Finance decision",
+        "billableDurationHint": "Billable duration belongs to Finance and must not be silently inferred from attendance.",
+        "durationDifferenceTitle": "Planned / teaching variance",
+        "durationDifference": "{{value}} minute(s) variance versus the planned slot.",
+        "historyTitle": "Attendance history",
+        "override": "override",
+        "correctionTitle": "Correct attendance",
+        "correctionDescription": "Create a new revision without deleting history.",
+        "auditNotice": "A correction creates a new audited revision. It does not directly change billable duration.",
+        "reason": "Reason or details",
+        "useOverride": "Use an override",
+        "useOverrideHint": "Reserved for authorized roles when the standard correction window has expired or an exception must be audited.",
+        "overrideReason": "Required override reason",
+        "saveCorrection": "Save correction"
+      },
+      "execution": {
+        "interventions": "Pedagogical and safety interventions",
+        "observations": "Observations",
+        "internal": "Internal note",
+        "noInterventions": "No intervention recorded.",
+        "noObservations": "No observation recorded."
+      },
+      "report": {
+        "title": "Session report",
+        "completedAt": "Completed at",
+        "completed": "Report completed",
+        "summary": "Summary",
+        "nextObjective": "Next objective",
+        "worked": "Objectives worked on",
+        "achieved": "Objectives achieved",
+        "emptyTitle": "Report unavailable",
+        "emptyDescription": "This session does not have a finalized pedagogical report yet."
+      },
+      "incidents": {
+        "emptyTitle": "No incident",
+        "emptyDescription": "No incident is linked to this session.",
+        "drawerTitle": "Incident details",
+        "drawerDescription": "Context, immediate actions and resolution.",
+        "description": "Description",
+        "immediateActions": "Immediate actions",
+        "resolution": "Resolution"
+      },
+      "history": {
+        "title": "Session history",
+        "description": "{{count}} business item(s) are recorded for this session.",
+        "attendance": "Attendance",
+        "intervention": "Intervention",
+        "assessment": "Assessment"
+      },
+      "technical": {
+        "title": "Technical references",
+        "description": "Business identifiers useful for support and audit."
+      },
+      "incidentSeverity": {
+        "1": "Low",
+        "2": "Moderate",
+        "3": "High",
+        "4": "Critical"
+      },
+      "incidentStatus": {
+        "1": "Open",
+        "2": "Escalated",
+        "3": "Under review",
+        "4": "Resolved",
+        "5": "Closed"
+      },
+      "observationType": {
+        "1": "Situation encountered",
+        "2": "Learner behaviour",
+        "3": "Environment",
+        "4": "Progress signal",
+        "5": "Difficulty",
+        "6": "Instructor note",
+        "99": "Other"
+      },
+      "interventionType": {
+        "1": "Pedagogical instruction",
+        "2": "Pedagogical correction",
+        "3": "Safety — verbal",
+        "4": "Safety — steering",
+        "5": "Safety — pedals",
+        "6": "Emergency stop",
+        "99": "Other"
+      },
+      "interventionSeverity": {
+        "1": "Informational",
+        "2": "Minor",
+        "3": "Significant",
+        "4": "Critical"
+      },
+      "prestartCheck": {
+        "title": "Student and vehicle check",
+        "description": "Pre-session checks combining authoritative student/vehicle data with field items that still need confirmation.",
+        "ready": "Automatic checks passed",
+        "actionRequired": "Action required",
+        "open": "Open check",
+        "validated": "Passed",
+        "toCheck": "Check required",
+        "active": "Active",
+        "authorized": "Authorized",
+        "blocked": "Blocked",
+        "none": "None",
+        "drawerTitle": "Pre-session verification",
+        "drawerDescription": "Verify student and vehicle prerequisites before continuing to session start.",
+        "refreshAuthoritative": "Refresh authoritative checks",
+        "student": {
+          "title": "Student",
+          "identity": "Useful identity verified",
+          "enrollment": "Active enrollment",
+          "scheduling": "Scheduling authorization",
+          "restrictions": "Active restrictions",
+          "restrictionsHint": "Active operational blocks on the student file."
+        },
+        "vehicle": {
+          "title": "Vehicle",
+          "operational": "Operational compliance",
+          "assigned": "Assigned vehicle",
+          "compliance": "Documents and immobilization",
+          "complianceHint": "Status returned by the authoritative Fleet check.",
+          "notRequired": "No vehicle required",
+          "notRequiredDescription": "The source booking does not require a vehicle for this session."
+        },
+        "field": {
+          "title": "Field checks",
+          "description": "These items require an on-site observation. They are not treated as validated until they are recorded by the appropriate field workflow.",
+          "visual": "Visual condition acceptable",
+          "energy": "Sufficient energy level",
+          "odometer": "Starting odometer",
+          "safety": "Safety equipment",
+          "toConfirm": "Confirm",
+          "persistenceNotice": "Odometer and other field measurements will be recorded in the dedicated session steps to preserve the business audit trail and prepare offline operation."
+        }
+      },
+      "start": {
+        "action": "Start session",
+        "drawerTitle": "Start session",
+        "drawerDescription": "Final checks before switching to actual session execution.",
+        "authoritativeTitle": "Server-side validation required",
+        "authoritativeDescription": "DriveOS revalidates resources, the student file and vehicle compliance when the session starts.",
+        "student": "Student",
+        "plannedTime": "Planned time",
+        "instructor": "Actual instructor",
+        "vehicle": "Actual vehicle",
+        "checking": "Checking prerequisites…",
+        "ready": "Prerequisites passed — start allowed",
+        "blocked": "Start blocked",
+        "checkedAt": "Checked at",
+        "resolveBeforeStart": "Resolve blocking items before starting the session.",
+        "existingReadiness": "The session already has a valid preparation check. The server will validate it again when starting.",
+        "checkRequired": "Check required",
+        "checkRequiredDescription": "Run preparation before starting the session.",
+        "failed": "Unable to start the session",
+        "serverTimeNotice": "The actual start time is recorded by the server when the action is validated. It is not entered manually in order to preserve traceability.",
+        "safetyNotice": "Use this screen only while the vehicle is stationary and conditions are safe.",
+        "recheck": "Run checks again",
+        "confirm": "Confirm start",
+        "started": "Session in progress",
+        "startedAt": "Started at"
+      },
+      "live": {
+        "inProgress": "Session in progress",
+        "startedAt": "Started:",
+        "elapsed": "Elapsed:",
+        "interrupted": "Session interrupted",
+        "safetyNotice": "Use DriveOS only while the vehicle is stationary.",
+        "objectives": "Objectives",
+        "currentFocus": "Current focus",
+        "noObjectives": "No objective has been provided.",
+        "sessionSnapshot": "Quick tracking",
+        "interventionsCount": "Interventions",
+        "observationsCount": "Markers",
+        "incidentsCount": "Open incidents",
+        "lastMileage": "Latest mileage",
+        "stoppedActions": "Stationary-only actions",
+        "quickActions": "Quick actions",
+        "addMarker": "Add marker",
+        "reportIntervention": "Report intervention",
+        "reportIncident": "Report incident",
+        "finishSession": "Finish session",
+        "interrupt": "Interrupt session",
+        "resume": "Resume session",
+        "viewIncidents": "View incidents",
+        "notInProgressTitle": "The session is not in progress",
+        "notInProgressDescription": "Field tracking becomes available after the session starts.",
+        "observationDrawerTitle": "Add marker",
+        "observationDrawerDescription": "Record a short timestamped note to expand later in the report.",
+        "observationType": "Marker type",
+        "shortNote": "Short note",
+        "internalNote": "Internal note only",
+        "interventionDrawerTitle": "Report intervention",
+        "interventionDrawerDescription": "Quickly record a pedagogical or safety intervention.",
+        "interventionType": "Intervention type",
+        "severity": "Severity",
+        "interruptDrawerTitle": "Interrupt session",
+        "interruptDrawerDescription": "Interrupt the session only when justified. Resuming will be recorded separately.",
+        "reason": "Reason",
+        "detailsOptional": "Optional details",
+        "confirmInterrupt": "Confirm interruption",
+        "incidentDrawerTitle": "Report incident",
+        "incidentDrawerDescription": "Record the essential facts and immediate actions straight away.",
+        "incidentType": "Incident type",
+        "incidentDescription": "Description",
+        "immediateActions": "Immediate actions",
+        "interruptionReason": {
+          "1": "Vehicle issue",
+          "2": "Student health",
+          "3": "Instructor health",
+          "4": "Safety incident",
+          "5": "Weather",
+          "6": "Administrative",
+          "7": "External event",
+          "8": "Technical issue",
+          "9": "Break",
+          "99": "Other"
+        },
+        "incidentTypeValue": {
+          "1": "Safety",
+          "2": "Accident",
+          "3": "Near miss",
+          "4": "Vehicle issue",
+          "5": "Medical",
+          "6": "Student behaviour",
+          "7": "Instructor issue",
+          "8": "Data privacy",
+          "9": "Pedagogical",
+          "10": "Property damage",
+          "11": "External event",
+          "99": "Other"
+        },
+        "incidentSeverityValue": {
+          "1": "Low",
+          "2": "Moderate",
+          "3": "High",
+          "4": "Critical"
+        }
+      },
+      "marker": {
+        "drawerTitle": "Add marker",
+        "drawerDescription": "Capture a useful fact for the report in a few seconds, without creating a final assessment.",
+        "typeLabel": "Marker type",
+        "competencyLabel": "Related competency (optional)",
+        "noCompetency": "No related competency",
+        "loadingCompetencies": "Loading competencies…",
+        "noteLabel": "Short note",
+        "notePlaceholder": "E.g. Late right-side check",
+        "severityLabel": "Importance",
+        "locationOptional": "Add one-time location",
+        "locationHelp": "Optional. Use only when useful and permitted.",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "notAssessmentTitle": "Field marker",
+        "notAssessmentDescription": "This marker feeds the report. It does not by itself change the learner’s competency level.",
+        "save": "Save marker",
+        "recentTitle": "Recent markers",
+        "empty": "No markers recorded for this session.",
+        "count": "Markers",
+        "competencyLinked": "Competency linked",
+        "offline": "Created offline",
+        "type": {
+          "1": "Competency observed",
+          "2": "Success",
+          "3": "Difficulty",
+          "4": "Instructor intervention",
+          "5": "Safety event",
+          "6": "Question to review",
+          "7": "Student comment",
+          "8": "Route context",
+          "9": "Incident"
+        },
+        "severity": {
+          "1": "Information",
+          "2": "Attention",
+          "3": "Important",
+          "4": "Critical"
+        }
+      },
+      "finish": {
+        "title": "Finish session",
+        "description": "Record the actual end and prepare the pedagogical report workflow.",
+        "startedAt": "Actual start",
+        "currentTime": "Current time",
+        "duration": "Actual duration",
+        "attendance": "Attendance",
+        "endMileage": "End mileage",
+        "lastMileage": "Last reading: {{value}} km",
+        "energyLevel": "End energy level",
+        "vehicleState": "Vehicle condition",
+        "vehicleOk": "No issue",
+        "vehicleIssue": "Report an issue",
+        "issueDescription": "Issue observed",
+        "immediateActions": "Immediate actions",
+        "afterFinish": "After finishing",
+        "reportNow": "Complete the report now",
+        "reportNowHint": "Continue directly to the pedagogical report.",
+        "reportLater": "Save the report for later",
+        "reportLaterHint": "The session ends now and the report remains to be completed.",
+        "safetyTitle": "Use only while parked",
+        "safetyText": "Check end-of-session data only when the vehicle is safely stopped.",
+        "confirmNow": "Finish and complete report",
+        "confirmLater": "Finish and resume later",
+        "errors": {
+          "mileageLower": "End mileage cannot be lower than the latest reading.",
+          "vehicleIssueRequired": "Describe the vehicle issue and immediate actions."
+        }
+      },
+      "vehicleUsage": {
+        "eyebrow": "Vehicle used",
+        "title": "Mileage and energy",
+        "record": "Record vehicle data",
+        "startMileage": "Start mileage",
+        "endMileage": "End mileage",
+        "distance": "Distance driven",
+        "energy": "Energy",
+        "addedSummary": "Fuel added: {{fuel}} L · Charging: {{charge}} kWh",
+        "drawerTitle": "Mileage and energy",
+        "drawerDescription": "Record values actually observed during the lesson. Fleet remains authoritative for the vehicle global history.",
+        "vehicleFrozenTitle": "Session vehicle",
+        "vehicleFrozenDescription": "Observations are attached to the vehicle actually used: {{vehicle}}.",
+        "mileage": "Observed mileage",
+        "previousMileage": "Previous reading: {{value}} km",
+        "eventType": "Energy observation type",
+        "levelObservation": "Energy level",
+        "fuelAdded": "Fuel added",
+        "charging": "Charging",
+        "energyLevel": "Energy level",
+        "liters": "Quantity added (L)",
+        "kwh": "Energy charged (kWh)",
+        "note": "Note / evidence",
+        "anomaly": "Report an anomaly",
+        "anomalyHelp": "A vehicle anomaly is sent through the incident workflow and may require Fleet follow-up.",
+        "anomalyDescription": "Anomaly description",
+        "confirm": "Save",
+        "offline": "Offline entry — synchronization pending"
+      },
+      "intervention": {
+        "title": "Pedagogical and safety intervention",
+        "description": "Factually record the instructor action and its context. An intervention is not automatically an incident.",
+        "factualTitle": "Keep it factual",
+        "factualText": "Describe what was observed, the action taken and the outcome. Avoid value judgements or unnecessary sensitive information.",
+        "typeLabel": "Intervention type",
+        "context": "Context",
+        "reason": "Reason",
+        "competency": "Related competency",
+        "outcome": "Outcome / immediate follow-up",
+        "sharedExplanation": "Shareable explanation",
+        "sharedHint": "This wording may later be reused in the shared report.",
+        "internalComment": "Internal note",
+        "internalHint": "Visible only to authorised staff. Full permission separation is completed in SCR-SES-015.",
+        "createIncident": "Also create a safety incident",
+        "createIncidentHint": "Use for significant or critical situations requiring separate follow-up.",
+        "type": {
+          "1": "Verbal prompt",
+          "2": "Physical control",
+          "3": "Dual-control use",
+          "4": "Emergency braking",
+          "5": "Steering intervention",
+          "6": "Route instruction",
+          "7": "Session pause",
+          "8": "Safety stop",
+          "99": "Other"
+        }
+      }
+    },
+    "myDay": {
+      "kicker": "SCR-SES-004",
+      "title": "My instructor day",
+      "description": "See your sessions for the day, the active session, what comes next and attention items in one field-oriented view.",
+      "loadError": "Unable to load your day.",
+      "actions": {
+        "previous": "Previous day",
+        "next": "Next day"
+      },
+      "summary": {
+        "sessions": "Planned sessions",
+        "remaining": "Upcoming / active",
+        "completed": "Completed",
+        "attention": "Needs attention"
+      },
+      "focus": {
+        "current": "Current session",
+        "next": "Next session",
+        "noneCurrent": "No session is currently in progress.",
+        "noObjectives": "No objectives have been prepared for this session."
+      },
+      "timeline": {
+        "title": "Day timeline",
+        "description": "Your sessions are shown in chronological order.",
+        "attention": "Needs attention"
+      },
+      "empty": {
+        "title": "No session planned",
+        "description": "No session is assigned to you for this day."
+      },
+      "drawer": {
+        "title": "Quick details",
+        "description": "Useful information without leaving your day.",
+        "student": "Student",
+        "attention": "This session requires action or follow-up."
+      }
+    },
+    "reportWorkflow": {
+      "title": "Pedagogical report",
+      "subtitle": "Complete the session report step by step.",
+      "back": "Back to session",
+      "step": "Step {{current}} of {{total}}",
+      "saving": "Saving…",
+      "saved": "Saved",
+      "pendingSync": "Saved locally · synchronization pending",
+      "offline": "Offline mode: your changes are kept locally and will sync when the network is back.",
+      "previous": "Previous",
+      "saveContinue": "Save and continue",
+      "saveDraft": "Save draft",
+      "autoSaveHint": "Automatic saving enabled",
+      "openDraft": "Complete report",
+      "completed": "Completed",
+      "missing": "To complete",
+      "optional": "Optional",
+      "steps": {
+        "summary": "Summary",
+        "attendance": "Attendance and duration",
+        "competencies": "Competencies",
+        "observations": "Observations",
+        "safety": "Interventions and safety",
+        "nextObjectives": "Next objectives",
+        "vehicle": "Vehicle and mileage",
+        "sharedComment": "Shared comment",
+        "validation": "Validation"
+      },
+      "fields": {
+        "summary": "Summary",
+        "summaryPlaceholder": "Pedagogical summary of the session…",
+        "actualStart": "Actual start",
+        "actualEnd": "Actual end",
+        "duration": "Pedagogical duration",
+        "objectivesWorked": "Objectives worked on",
+        "objectivesAchieved": "Objectives achieved",
+        "nextObjective": "Next objective",
+        "nextObjectivePlaceholder": "Priority objective for the next session…",
+        "interventions": "Interventions",
+        "interruptions": "Interruptions",
+        "vehicle": "Vehicle",
+        "distance": "Distance",
+        "energy": "End energy",
+        "sharedComment": "Comment shared with the student",
+        "internalNote": "Internal instructor note",
+        "plannedDuration": "Planned duration",
+        "actualDuration": "Actual duration",
+        "pedagogicalDuration": "Teaching duration",
+        "billableDuration": "Billable duration",
+        "financialDecision": "Finance decision",
+        "seeSession": "See session record"
+      },
+      "hints": {
+        "attendanceNext": "Detailed attendance and duration qualification will be available in SCR-SES-012.",
+        "validationInSes016": "Final submission and server-version checks will be implemented in SCR-SES-016.",
+        "attendanceSeparated": "Attendance and teaching duration come from TrainingDelivery. Billable duration is decided separately by Finance."
+      },
+      "empty": {
+        "competencies": "No competency assessment has been recorded for this session.",
+        "observations": "No field marker has been recorded."
+      }
+    },
+    "sessionNarratives": {
+      "sharedVisibilityWarning": "This comment will be visible to the student and authorized people.",
+      "internalVisibilityWarning": "Internal note — visible only to team members with the required permission.",
+      "internalPermissionRequired": "You do not have permission to read internal notes.",
+      "history": "Change history ({{count}})",
+      "cleared": "Note cleared in this version.",
+      "sharedPermissionRequired": "You do not have permission to create or edit the shared comment."
+    },
+    "reportReview": {
+      "title": "Report validation",
+      "subtitle": "Review the report before its final submission.",
+      "refresh": "Check again",
+      "blocking": "Blocking check",
+      "warning": "Non-blocking check",
+      "serverVersion": "Server version: {{version}}",
+      "syncPending": "Synchronization pending — submission is blocked.",
+      "syncOk": "Synchronization up to date.",
+      "lockedFields": "After submission, pedagogical content is locked and any correction must use the revision workflow.",
+      "submit": "Submit report",
+      "requestReview": "Request validation",
+      "locked": "Report submitted — direct editing is locked.",
+      "confirmTitle": "Submit this report?",
+      "confirmReviewTitle": "Request report validation?",
+      "confirmText": "The server version and all blocking checks will be verified one last time.",
+      "afterSubmitWarning": "After submission, some information can no longer be edited directly.",
+      "back": "Back",
+      "confirmSubmit": "Submit",
+      "confirmRequestReview": "Request validation",
+      "summary": {
+        "attendance": "Attendance",
+        "duration": "Actual duration",
+        "competencies": "Competencies",
+        "distance": "Mileage"
+      },
+      "checks": {
+        "report": "Report draft exists",
+        "attendance": "Attendance recorded",
+        "duration": "Actual duration is coherent",
+        "competencies": "Competencies assessed",
+        "markers": "Markers are coherent",
+        "comment": "Shared comment completed",
+        "kilometers": "Mileage recorded when a vehicle was used",
+        "summary": "Summary completed",
+        "nextObjective": "Next objective completed",
+        "incidents": "Incidents documented"
+      }
+    },
+    "pendingReports": {
+      "kicker": "Report follow-up",
+      "title": "Pending reports",
+      "description": "Centralize completed sessions whose report still needs to be completed, synchronized, corrected or validated.",
+      "loadError": "Unable to load pending reports.",
+      "scope": {
+        "all": "All reports",
+        "mine": "My reports"
+      },
+      "summary": {
+        "total": "All",
+        "drafts": "Drafts",
+        "toComplete": "To complete",
+        "toCorrect": "To correct",
+        "toValidate": "To validate",
+        "overdue": "Overdue"
+      },
+      "categories": {
+        "all": "All",
+        "drafts": "Drafts",
+        "complete": "To complete",
+        "sync": "Synchronization",
+        "correct": "To correct",
+        "validate": "To validate",
+        "overdue": "Overdue"
+      },
+      "empty": {
+        "title": "No reports in this category",
+        "description": "Reports requiring action will appear here."
+      },
+      "progress": "Report completed",
+      "sync": {
+        "label": "Synchronization",
+        "current": "Up to date",
+        "pending": "Pending synchronization"
+      },
+      "due": {
+        "label": "Due date",
+        "overdue": "Overdue",
+        "upcoming": "Due before"
+      },
+      "priority": {
+        "criticalIncident": "Critical incident",
+        "incident": "Open incident",
+        "rejected": "Correction requested",
+        "overdue": "Overdue"
+      },
+      "actions": {
+        "continue": "Continue",
+        "sync": "Synchronize",
+        "details": "Details",
+        "openSession": "Open session"
+      },
+      "status": {
+        "missing": "Report to create"
+      },
+      "drawer": {
+        "title": "Pending report details",
+        "description": "Status, priority and resume point for the report.",
+        "student": "Student",
+        "resumeStep": "Resume step",
+        "correctionRequired": "Correction requested",
+        "correctionDetailPending": "The report was rejected for correction. Structured correction details will be handled by SCR-SES-018."
+      }
+    },
+    "reportRevision": {
+      "title": "Report correction or dispute",
+      "subtitle": "Correct or dispute without deleting history.",
+      "requestAction": "New request",
+      "originalVersion": "Current version",
+      "originalPreserved": "Original preserved",
+      "financialSeparation": "Financial impact",
+      "separateReview": "Separate recalculation",
+      "requestTitle": "Correction request",
+      "decisionTitle": "Correction decision",
+      "scenarioLabel": "Scenario",
+      "field": "Affected field",
+      "currentValue": "Current value",
+      "proposedValue": "Proposed value",
+      "reason": "Reason",
+      "financialImpact": "Financial impact to review",
+      "approvalRequired": "Approval required",
+      "submit": "Submit correction",
+      "decisionReason": "Decision reason",
+      "reject": "Reject",
+      "approve": "Approve",
+      "decide": "Decide",
+      "empty": "No correction or dispute recorded.",
+      "fields": {
+        "duration": "Actual duration",
+        "summary": "Summary",
+        "nextObjective": "Next objective",
+        "sharedComment": "Shared comment"
+      },
+      "status": {
+        "1": "Pending",
+        "2": "Approval required",
+        "3": "Financial review",
+        "4": "Approved",
+        "5": "Rejected",
+        "6": "Resolved without change"
+      },
+      "scenario": {
+        "1": "Instructor correction",
+        "2": "Supervisor correction",
+        "3": "Student dispute",
+        "4": "Guardian dispute",
+        "5": "Administrative correction",
+        "6": "Financial impact review"
+      }
+    },
+    "groupSession": {
+      "title": "Group session",
+      "eyebrow": "Group session",
+      "noRoom": "Room not specified",
+      "registered": "Registered",
+      "present": "Present",
+      "absent": "Absent",
+      "late": "Late",
+      "capacity": "Capacity",
+      "remaining": "{{count}} seat(s) remaining",
+      "addParticipant": "Add authorized participant",
+      "outsideList": "Outside original list",
+      "sharedObjectives": "Shared objectives",
+      "tabs": {
+        "attendance": "Attendance",
+        "report": "Group report",
+        "assessments": "Individual assessments",
+        "certificates": "Certificates"
+      },
+      "attendance": {
+        "title": "Individual attendance"
+      },
+      "report": {
+        "title": "Group report",
+        "empty": "No group report yet.",
+        "edit": "Complete report",
+        "collective": "Collective report"
+      },
+      "assessment": {
+        "empty": "No individual observation.",
+        "edit": "Assess participant",
+        "level": "Level",
+        "observation": "Individual observation"
+      },
+      "certificate": {
+        "ready": "Certificate ready",
+        "notReady": "Not prepared",
+        "prepare": "Prepare certificate"
+      }
+    },
+    "sync": {
+      "kicker": "Field & offline",
+      "title": "Field synchronization",
+      "description": "Track locally recorded data, dependencies, failures and conflicts before server transmission.",
+      "online": "Online",
+      "offline": "Offline",
+      "lastSuccess": "Last successful sync",
+      "never": "Never",
+      "syncNow": "Sync now",
+      "syncing": "Syncing…",
+      "pending": "Pending sync",
+      "failed": "Failed",
+      "conflicts": "Conflicts",
+      "blocked": "Blocked",
+      "empty": "No items in this view.",
+      "retryCount": "Attempts",
+      "queuedOffline": "Data saved locally and queued for synchronization.",
+      "drawer": {
+        "title": "Synchronization details",
+        "type": "Type",
+        "state": "State",
+        "dependencies": "Dependencies"
+      },
+      "actions": {
+        "retry": "Retry",
+        "resolve": "Open to resolve",
+        "exportEvidence": "Export local evidence",
+        "deleteDraft": "Delete local draft"
+      },
+      "errors": {
+        "network": "Network unavailable. A retry will be attempted.",
+        "permission": "Your permissions changed. Supervisor validation is required.",
+        "conflict": "Version conflict. Open the item to resolve it.",
+        "validation": "Business validation blocks synchronization.",
+        "failed": "Synchronization failed."
+      },
+      "states": {
+        "LocalDraft": "Local draft",
+        "PendingSync": "Pending sync",
+        "Syncing": "Syncing",
+        "Synced": "Synced",
+        "Failed": "Failed",
+        "Conflict": "Conflict",
+        "BlockedByPermission": "Blocked by permission",
+        "BlockedByValidation": "Blocked by validation"
+      },
+      "filters": {
+        "All": "All",
+        "PendingSync": "Pending sync",
+        "Syncing": "Syncing",
+        "Synced": "Synced",
+        "Failed": "Failed",
+        "Conflict": "Conflicts",
+        "BlockedByPermission": "Permissions",
+        "BlockedByValidation": "Validation"
+      },
+      "types": {
+        "SessionStart": "Session start",
+        "SessionMarker": "Field marker",
+        "SessionEnd": "Session end",
+        "Attendance": "Attendance",
+        "SessionReport": "Session report",
+        "CompetencyAssessment": "Competency assessment",
+        "VehicleMileage": "Vehicle mileage",
+        "VehicleCheck": "Vehicle check",
+        "Incident": "Incident",
+        "Photo": "Photo",
+        "LocationEvent": "Location event",
+        "Intervention": "Intervention",
+        "Observation": "Observation",
+        "SessionInterrupt": "Session interruption",
+        "SessionResume": "Session resume",
+        "GroupAttendance": "Group attendance",
+        "Other": "Other"
+      }
+    }
+  },
+  "trainingDelivery": {
+    "readiness": {
+      "sourceBookingConfirmed": "Booking confirmed",
+      "studentLinked": "Student correctly linked",
+      "instructorLinked": "Instructor correctly linked",
+      "schedulingConflictFree": "No scheduling conflict",
+      "schedulingConflict": "Scheduling conflict detected",
+      "fleetComplianceVerified": "Vehicle compliance verified",
+      "fleetComplianceRequired": "Vehicle compliance required",
+      "vehicleNotApplicable": "No vehicle required for this session",
+      "studentIdentityVerified": "Student identity verified",
+      "studentIdentityVerificationRequired": "Student identity verification required",
+      "studentEnrollmentActive": "Student enrollment active",
+      "studentEnrollmentInactive": "Student enrollment inactive or unavailable",
+      "studentStartLessonAllowed": "Student is allowed to start a lesson",
+      "studentStartLessonBlocked": "Student is blocked from starting a lesson"
     }
   }
 }

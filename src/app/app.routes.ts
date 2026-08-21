@@ -101,6 +101,18 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'field/sync',
+        redirectTo: 'training/sync',
+        pathMatch: 'full',
+      },
+      {
+        path: 'training',
+        loadChildren: () =>
+          import('./features/training-delivery/training-delivery.routes').then(
+            (module) => module.TRAINING_DELIVERY_ROUTES,
+          ),
+      },
+      {
         path: 'instructors',
         loadComponent: () =>
           import('./shared/pages/coming-soon/coming-soon.page').then(

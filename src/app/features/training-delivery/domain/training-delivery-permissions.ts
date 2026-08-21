@@ -1,0 +1,65 @@
+export const TRAINING_DELIVERY_PERMISSIONS = {
+  sessions: {
+    read: 'TrainingDelivery.Sessions.Read',
+    materialize: 'TrainingDelivery.Sessions.Materialize',
+    prepare: 'TrainingDelivery.Sessions.Prepare',
+    start: 'TrainingDelivery.Sessions.Start',
+    complete: 'TrainingDelivery.Sessions.Complete',
+  },
+  attendance: {
+    record: 'TrainingDelivery.Attendance.Record',
+    correct: 'TrainingDelivery.Attendance.Correct',
+    override: 'TrainingDelivery.Attendance.Override',
+  },
+  execution: {
+    interventionRecord: 'TrainingDelivery.Execution.Interventions.Record',
+    observationRecord: 'TrainingDelivery.Execution.Observations.Record',
+    interrupt: 'TrainingDelivery.Execution.Interrupt',
+    resume: 'TrainingDelivery.Execution.Resume',
+    odometerRecord: 'TrainingDelivery.Execution.Odometer.Record',
+  },
+  assessments: {
+    record: 'TrainingDelivery.Assessments.Record',
+  },
+  cancellations: {
+    read: 'TrainingDelivery.Cancellations.Read',
+    record: 'TrainingDelivery.Cancellations.Record',
+  },
+  incidents: {
+    read: 'TrainingDelivery.Incidents.Read',
+    report: 'TrainingDelivery.Incidents.Report',
+    update: 'TrainingDelivery.Incidents.Update',
+    escalate: 'TrainingDelivery.Incidents.Escalate',
+    resolve: 'TrainingDelivery.Incidents.Resolve',
+    close: 'TrainingDelivery.Incidents.Close',
+  },
+  narratives: {
+    createShared: 'TrainingDelivery.SessionComments.CreateShared',
+    createInternal: 'TrainingDelivery.SessionNotes.CreateInternal',
+    readInternal: 'TrainingDelivery.SessionNotes.ReadInternal',
+  },
+  reports: {
+    read: 'TrainingDelivery.Reports.Read',
+    write: 'TrainingDelivery.Reports.Write',
+    submit: 'TrainingDelivery.Reports.Submit',
+    requestReview: 'TrainingDelivery.Reports.RequestReview',
+    monitor: 'TrainingDelivery.Reports.Monitor',
+    requestCorrection: 'TrainingDelivery.Reports.RequestCorrection',
+    correct: 'TrainingDelivery.Reports.Correct',
+    approveCorrection: 'TrainingDelivery.Reports.ApproveCorrection',
+    dispute: 'TrainingDelivery.Reports.Dispute',
+  },
+  groupSessions: {
+    read: 'TrainingDelivery.GroupSessions.Read',
+    materialize: 'TrainingDelivery.GroupSessions.Materialize',
+    manageParticipants: 'TrainingDelivery.GroupSessions.ManageParticipants',
+    attendanceRecord: 'TrainingDelivery.GroupSessions.Attendance.Record',
+    assessmentsRecord: 'TrainingDelivery.GroupSessions.Assessments.Record',
+    reportWrite: 'TrainingDelivery.GroupSessions.Report.Write',
+    certificatesPrepare: 'TrainingDelivery.GroupSessions.Certificates.Prepare',
+  },
+  consequences: {
+    read: 'TrainingDelivery.Consequences.Read',
+    retry: 'TrainingDelivery.Consequences.Retry',
+  },
+} as const;
