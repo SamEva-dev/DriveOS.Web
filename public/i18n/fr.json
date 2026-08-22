@@ -59,7 +59,8 @@
     "reset": "Reset",
     "select": "Select",
     "verified": "Verified",
-    "yes": "Oui"
+    "yes": "Oui",
+    "success": "Succès"
   },
   "navigation": {
     "dashboard": "Tableau de bord",
@@ -97,7 +98,8 @@
       "newEnrollment": "Nouvelle inscription"
     },
     "pedagogy": "Pédagogie",
-    "training": "Séances"
+    "training": "Séances",
+    "exams": "Examens"
   },
   "theme": {
     "label": "Thème",
@@ -959,6 +961,11 @@
         "operation": {
           "conflict": "Cette opération est en conflit avec une opération déjà enregistrée."
         }
+      }
+    },
+    "exams": {
+      "places": {
+        "invalidImportJson": "Le contenu JSON à importer est invalide."
       }
     }
   },
@@ -7614,6 +7621,490 @@
       "studentEnrollmentInactive": "Inscription élève inactive ou indisponible",
       "studentStartLessonAllowed": "Démarrage de leçon autorisé pour l’élève",
       "studentStartLessonBlocked": "Démarrage de leçon bloqué pour l’élève"
+    }
+  },
+  "exams": {
+    "kicker": "BC-11 · Examens & certification",
+    "title": "Examens & certification",
+    "tabs": {
+      "navigation": "Navigation examens",
+      "dashboard": "Tableau de bord",
+      "readiness": "Préparation",
+      "places": "Places & centres",
+      "registrations": "Inscriptions",
+      "results": "Résultats",
+      "operations": "Opérations"
+    },
+    "common": {
+      "loading": "Chargement…",
+      "loadError": "Certaines données examens n’ont pas pu être chargées.",
+      "studentId": "Identifiant élève",
+      "trainingPathId": "Identifiant du parcours",
+      "registrationId": "Identifiant de l’inscription",
+      "configure": "Configurer",
+      "add": "Ajouter",
+      "reason": "Motif",
+      "notes": "Notes"
+    },
+    "dashboard": {
+      "kicker": "Pilotage",
+      "title": "Tableau de bord examens",
+      "description": "Résultats, assiduité, remédiations et signaux de vigilance issus du backend BC-11.",
+      "kpis": {
+        "scheduled": "Passages planifiés",
+        "presented": "Candidats présentés",
+        "passRate": "Taux de réussite",
+        "absenceRate": "Taux d’absence",
+        "remediation": "Remédiations requises",
+        "finalized": "Résultats finalisés",
+        "passed": "réussites",
+        "failed": "échecs",
+        "firstAttempt": "Réussite au 1er passage",
+        "averageAttempt": "Nombre moyen de passages",
+        "revalidated": "validées pour une nouvelle présentation"
+      },
+      "trend": "Évolution mensuelle",
+      "samples": "résultats",
+      "alerts": "Alertes analytiques",
+      "emptyTrend": "Aucune tendance disponible",
+      "noAlerts": "Aucune alerte détectée",
+      "filters": {
+        "from": "Du",
+        "to": "Au",
+        "examType": "Type d’examen",
+        "examTypePlaceholder": "Ex. Practical",
+        "license": "Catégorie de permis",
+        "licensePlaceholder": "Ex. B",
+        "apply": "Appliquer",
+        "reset": "Réinitialiser"
+      },
+      "tabs": {
+        "overview": "Synthèse",
+        "performance": "Performances",
+        "quality": "Alertes & qualité"
+      },
+      "presentedSamples": "candidats présentés",
+      "smallSample": "Petit échantillon",
+      "emptyDimension": "Aucune donnée pour cette dimension",
+      "attemptDistribution": "Réussite par numéro de passage",
+      "failureReasons": "Motifs d’échec",
+      "noData": "Aucune donnée disponible",
+      "alertMeta": "Dimension : {{dimension}} · Élément : {{key}} · Échantillon : {{sample}}",
+      "dimensions": {
+        "branch": "Agence",
+        "license": "Catégorie",
+        "type": "Type d’examen",
+        "center": "Centre",
+        "instructor": "Enseignant"
+      },
+      "table": {
+        "dimension": "Dimension",
+        "sample": "Échantillon",
+        "presented": "Présentés",
+        "passed": "Réussites",
+        "failed": "Échecs",
+        "rate": "Taux"
+      },
+      "context": {
+        "title": "Contexte statistique",
+        "description": "Les indicateurs sont des signaux de pilotage. Les petits échantillons et écarts contextuels ne doivent pas être interprétés comme des conclusions causales.",
+        "smallOverallSample": "La période sélectionnée contient un petit échantillon ; interprétez les taux avec prudence."
+      }
+    },
+    "readiness": {
+      "kicker": "Éligibilité",
+      "title": "Préparation à l’examen",
+      "description": "Consultez le snapshot transversal puis enregistrez la décision humaine finale.",
+      "snapshot": "Snapshot de préparation",
+      "currentDecision": "Décision actuelle",
+      "noDecision": "Aucune décision enregistrée",
+      "recordDecision": "Enregistrer une décision",
+      "drawer": {
+        "title": "Décision de présentation",
+        "description": "La décision reste humaine et s’appuie sur les contrôles pédagogiques, administratifs et financiers."
+      },
+      "outcome": "Décision",
+      "rationale": "Motivation",
+      "conditions": "Conditions éventuelles",
+      "tabs": {
+        "decision": "Décision",
+        "opinion": "Avis pédagogique",
+        "history": "Historique des avis"
+      },
+      "actions": {
+        "decide": "Décider",
+        "addOpinion": "Ajouter un avis"
+      },
+      "drawerDecision": "Décision de présentation",
+      "drawerOpinion": "Avis pédagogique",
+      "opinionContext": "Contexte pédagogique",
+      "progress": "Progression",
+      "competencies": "Compétences évaluées",
+      "criticalValidated": "Compétences critiques validées",
+      "reviewCompleted": "Bilan pédagogique terminé",
+      "blockers": "Blocages",
+      "noOpinions": "Aucun avis pédagogique",
+      "searchPrompt": "Recherchez un élève et son parcours de formation.",
+      "opinion": "Avis",
+      "autonomy": "Autonomie observée",
+      "reservationCodes": "Codes de réserve",
+      "reservationCodesHint": "Ex. Stress, Observation",
+      "reservations": "Réserves"
+    },
+    "places": {
+      "kicker": "Capacité officielle",
+      "title": "Centres & places d’examen",
+      "description": "Consultez les centres et places provenant des sources autoritatives BC-11.",
+      "centers": "Centres",
+      "availablePlaces": "Places disponibles",
+      "noCenters": "Aucun centre disponible",
+      "noPlaces": "Aucune place disponible",
+      "examType": "Type d’examen",
+      "category": "Catégorie",
+      "date": "Date",
+      "capacity": "Capacité",
+      "tabs": {
+        "availability": "Disponibilités",
+        "watches": "Surveillance",
+        "providers": "Fournisseurs"
+      },
+      "from": "Du",
+      "to": "Au",
+      "licenseCategory": "Catégorie de permis",
+      "empty": "Aucune place disponible sur cette période.",
+      "actions": {
+        "center": "Nouveau centre",
+        "place": "Nouvelle place",
+        "watch": "Nouvelle surveillance",
+        "connection": "Nouvelle connexion",
+        "sync": "Synchroniser",
+        "import": "Importer"
+      },
+      "scan": "Scanner",
+      "pause": "Suspendre",
+      "resume": "Reprendre",
+      "scans": "Derniers scans",
+      "noScans": "Sélectionnez une surveillance pour afficher ses contrôles.",
+      "providerCatalog": "Catalogue fournisseurs",
+      "connections": "Connexions",
+      "test": "Tester",
+      "suspend": "Suspendre",
+      "revoke": "Révoquer",
+      "drawerTitle": "Gestion des centres, places et fournisseurs",
+      "name": "Nom",
+      "country": "Pays",
+      "timeZone": "Fuseau horaire",
+      "area": "Zone administrative",
+      "address": "Adresse",
+      "center": "Centre",
+      "provider": "Fournisseur",
+      "interval": "Intervalle (minutes)",
+      "displayName": "Nom affiché",
+      "authMode": "Authentification",
+      "baseUrl": "URL de base",
+      "credentialReference": "Référence du secret",
+      "importRows": "Lignes à importer",
+      "importHint": "Format avancé : tableau JSON correspondant aux lignes ExamPlaceImportRow.",
+      "invalidImportJson": "Le contenu JSON à importer est invalide."
+    },
+    "registrations": {
+      "kicker": "Dossier candidat",
+      "title": "Inscriptions à l’examen",
+      "description": "Retrouvez les inscriptions et leur état officiel à partir d’un élève.",
+      "empty": "Recherchez un élève pour afficher ses inscriptions.",
+      "actions": {
+        "create": "Nouvelle inscription",
+        "refreshFile": "Actualiser le dossier",
+        "submit": "Soumettre",
+        "officialData": "Données officielles",
+        "retry": "Réessayer",
+        "officialResponse": "Réponse officielle",
+        "releaseHold": "Libérer la place",
+        "hold": "Réserver temporairement"
+      },
+      "tabs": {
+        "overview": "Synthèse",
+        "file": "Dossier candidat",
+        "submissions": "Soumissions"
+      },
+      "registration": "Inscription",
+      "status": "Statut",
+      "candidateReference": "Référence candidat",
+      "externalRegistrationId": "Identifiant officiel",
+      "schedule": "Planification",
+      "fileStatus": "État du dossier",
+      "noFile": "Aucun dossier candidat disponible",
+      "noSubmissions": "Aucune soumission enregistrée",
+      "drawerTitle": "Gestion de l’inscription",
+      "placeId": "Identifiant de la place",
+      "holdMinutes": "Durée de réservation (minutes)",
+      "holdActive": "Place réservée temporairement",
+      "outcome": "Décision officielle",
+      "externalSubmissionId": "Identifiant de soumission",
+      "providerResponseCode": "Code réponse fournisseur",
+      "providerErrorCode": "Code erreur fournisseur",
+      "providerResponse": "Réponse fournisseur"
+    },
+    "results": {
+      "kicker": "Résultats officiels",
+      "title": "Résultats",
+      "description": "Consultez les résultats enregistrés et leur synthèse par élève.",
+      "empty": "Recherchez un élève pour afficher ses résultats.",
+      "selected": "Résultat sélectionné",
+      "summary": "Synthèse du résultat",
+      "score": "Score",
+      "failureReason": "Motif d’échec",
+      "verified": "Vérifié",
+      "finalized": "Finalisé",
+      "revisions": "Historique des révisions",
+      "outcome": "Résultat",
+      "providerCode": "Code fournisseur",
+      "comments": "Commentaires",
+      "correctionReason": "Motif de correction",
+      "verificationReference": "Référence de vérification",
+      "tabs": {
+        "result": "Résultat",
+        "failure": "Analyse d’échec",
+        "remediation": "Remédiation",
+        "success": "Réussite",
+        "attestations": "Attestations"
+      },
+      "actions": {
+        "verify": "Vérifier",
+        "finalize": "Finaliser",
+        "correct": "Corriger",
+        "record": "Saisir un résultat"
+      },
+      "drawer": {
+        "verify": {
+          "title": "Vérifier le résultat"
+        },
+        "correct": {
+          "title": "Corriger le résultat"
+        },
+        "finding": {
+          "title": "Ajouter un constat"
+        },
+        "narrative": {
+          "title": "Analyse pédagogique de l’échec"
+        },
+        "completeFailure": {
+          "title": "Finaliser l’analyse d’échec"
+        },
+        "configureRemediation": {
+          "title": "Configurer la remédiation"
+        },
+        "cancelRemediation": {
+          "title": "Annuler la remédiation"
+        },
+        "issueAttestation": {
+          "title": "Émettre une attestation"
+        },
+        "signAttestation": {
+          "title": "Signer l’attestation"
+        },
+        "deliverAttestation": {
+          "title": "Remettre l’attestation"
+        },
+        "revokeAttestation": {
+          "title": "Révoquer l’attestation"
+        },
+        "recordResult": {
+          "title": "Saisir ou importer un résultat"
+        },
+        "correctAttestation": {
+          "title": "Corriger le document d’attestation"
+        }
+      },
+      "attemptId": "Identifiant du passage",
+      "receivedAt": "Résultat reçu le",
+      "sourceKind": "Source",
+      "importMode": "Importer depuis une source externe"
+    },
+    "operations": {
+      "kicker": "EXM-006 à EXM-012",
+      "title": "Préparation & Jour J",
+      "description": "Pilotez la convocation, la préparation, les ressources et le déroulement opérationnel d’une inscription sans quitter son contexte.",
+      "tabs": {
+        "preparation": "Préparation",
+        "convocation": "Convocation",
+        "resources": "Plan & ressources",
+        "attempt": "Jour J"
+      },
+      "revision": "Révision",
+      "preparation": {
+        "title": "Checklist de préparation",
+        "empty": "Aucune préparation disponible pour cette inscription.",
+        "confirm": "Confirmer la préparation",
+        "drawerTitle": "Mettre à jour la préparation",
+        "meetingPoint": "Point de rendez-vous confirmé",
+        "vehicleEnergy": "Énergie / niveau du véhicule confirmé",
+        "instructor": "Enseignant confirmé",
+        "instructions": "Consignes transmises",
+        "reminders": "Rappels en jours (séparés par des virgules)"
+      },
+      "convocation": {
+        "title": "Convocation officielle",
+        "empty": "Aucune convocation disponible.",
+        "meeting": "Point de rendez-vous",
+        "delivered": "Marquer comme transmise",
+        "acknowledge": "Accusé de réception",
+        "provider": "Fournisseur",
+        "reference": "Référence officielle",
+        "meetingAt": "Heure de rendez-vous interne",
+        "instructions": "Consignes",
+        "channel": "Canal de transmission",
+        "receive": "Recevoir une convocation",
+        "examCenterId": "Identifiant du centre",
+        "providerCode": "Code fournisseur",
+        "scheduledStart": "Début officiel",
+        "scheduledEnd": "Fin officielle",
+        "officialReference": "Référence officielle",
+        "requiredDocuments": "Documents requis"
+      },
+      "resources": {
+        "title": "Plan opérationnel et ressources",
+        "description": "Cadrez la fenêtre opérationnelle puis affectez l’enseignant et le véhicule via les ressources calendaires autoritatives.",
+        "plan": "Configurer le plan",
+        "assign": "Affecter les ressources",
+        "window": "Fenêtre opérationnelle",
+        "instructors": "Enseignants disponibles",
+        "vehicles": "Véhicules disponibles",
+        "currentAssignment": "Affectation actuelle",
+        "instructorId": "Enseignant",
+        "vehicleId": "Véhicule",
+        "bookingId": "Réservation planning",
+        "schedulingError": "Erreur planning",
+        "planDrawer": "Planifier l’accompagnement",
+        "before": "Marge avant (min)",
+        "after": "Marge après (min)",
+        "branchId": "Agence de départ",
+        "instructorRequired": "Enseignant requis",
+        "vehicleRequired": "Véhicule requis",
+        "preview": "Actualiser les disponibilités",
+        "instructorCalendarId": "Ressource calendrier enseignant",
+        "vehicleCalendarId": "Ressource calendrier véhicule",
+        "trainingCategory": "Catégorie de formation",
+        "transmission": "Transmission",
+        "energy": "Énergie",
+        "adaptations": "Adaptations requises (virgules)",
+        "dualControl": "Double commande requise"
+      },
+      "attempt": {
+        "title": "Passage d’examen",
+        "empty": "Aucun passage opérationnel n’a encore été créé.",
+        "create": "Créer le passage",
+        "departure": "Départ",
+        "arrival": "Arrivée centre",
+        "start": "Démarrer",
+        "complete": "Terminer",
+        "return": "Retour",
+        "checkIn": "Pointage",
+        "addNote": "Ajouter une note",
+        "absent": "Absent",
+        "postpone": "Reporter",
+        "interrupt": "Interrompre",
+        "unableToStart": "Impossible de démarrer",
+        "timeline": "Chronologie",
+        "reasonTitle": "Motif opérationnel",
+        "reasonCode": "Code motif",
+        "notes": "Notes",
+        "incident": "Signaler un incident",
+        "location": "Enregistrer la position",
+        "resourceChange": "Changement de ressource",
+        "incidentCode": "Code incident",
+        "description": "Description",
+        "accuracy": "Précision (mètres)",
+        "purpose": "Finalité de la position"
+      }
+    },
+    "failure": {
+      "title": "Analyse de l’échec",
+      "addFinding": "Ajouter un constat",
+      "editNarrative": "Compléter l’analyse",
+      "complete": "Finaliser l’analyse",
+      "narrative": "Analyse et retour",
+      "instructorAnalysis": "Analyse de l’enseignant",
+      "studentFeedback": "Retour de l’élève",
+      "recommendation": "Recommandation",
+      "findings": "Constats",
+      "critical": "Critique",
+      "noFindings": "Aucun constat enregistré.",
+      "empty": "Aucune analyse d’échec disponible.",
+      "kind": "Type de constat",
+      "code": "Code",
+      "detail": "Détail",
+      "summary": "Synthèse finale"
+    },
+    "remediation": {
+      "title": "Remédiation post-échec",
+      "provision": "Créer le plan pédagogique",
+      "validateRepresentation": "Valider pour nouvelle présentation",
+      "create": "Créer la demande de remédiation",
+      "empty": "Aucune demande de remédiation n’est encore créée.",
+      "recommendedHours": "Heures recommandées",
+      "reviewDate": "Date de bilan",
+      "targetDate": "Date cible",
+      "planId": "Plan pédagogique",
+      "responsibleUserId": "Responsable",
+      "mockExamRequired": "Examen blanc requis",
+      "fundingReviewRequired": "Révision financière requise"
+    },
+    "success": {
+      "title": "Traitement de la réussite",
+      "complete": "Finaliser le processus",
+      "archive": "Archiver",
+      "requeue": "Relancer les conséquences",
+      "consequences": "Conséquences de la réussite",
+      "noConsequences": "Aucune conséquence enregistrée.",
+      "empty": "Aucun processus de réussite disponible."
+    },
+    "attestations": {
+      "issue": "Émettre une attestation",
+      "sign": "Signer",
+      "deliver": "Remettre",
+      "revoke": "Révoquer",
+      "empty": "Aucune attestation pour ce résultat.",
+      "type": "Type",
+      "reference": "Référence",
+      "templateCode": "Modèle",
+      "templateVersion": "Version du modèle",
+      "documentId": "Document",
+      "publicToken": "Jeton de vérification publique",
+      "expiresAt": "Expiration",
+      "signatureProcess": "Référence du processus de signature",
+      "signatureEvidence": "Empreinte de preuve de signature",
+      "deliveryChannel": "Canal de remise",
+      "correct": "Corriger le document"
+    },
+    "analytics": {
+      "alerts": {
+        "passRateDrop": "Baisse significative du taux de réussite",
+        "contextualUnderperformance": "Performance inférieure au groupe comparable",
+        "recurrentFailureReason": "Motif d’échec récurrent"
+      },
+      "context": {
+        "smallOverallSample": "Petit échantillon global sur la période sélectionnée",
+        "someAttemptsWithoutDepartureBranch": "Certains passages ne sont rattachés à aucune agence de départ"
+      },
+      "branch": {
+        "smallSample": "Petit échantillon : interprétation prudente requise"
+      },
+      "center": {
+        "smallSample": "Petit échantillon : interprétation prudente requise"
+      },
+      "instructor": {
+        "smallSample": "Petit échantillon : interprétation prudente requise"
+      },
+      "license": {
+        "smallSample": "Petit échantillon : interprétation prudente requise"
+      },
+      "examType": {
+        "smallSample": "Petit échantillon : interprétation prudente requise"
+      },
+      "month": {
+        "smallSample": "Petit échantillon : interprétation prudente requise"
+      }
     }
   }
 }

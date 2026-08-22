@@ -59,7 +59,8 @@
     "reset": "Reset",
     "select": "Select",
     "verified": "Verified",
-    "yes": "Yes"
+    "yes": "Yes",
+    "success": "Success"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -97,7 +98,8 @@
       "newEnrollment": "New enrollment"
     },
     "pedagogy": "Pedagogy",
-    "training": "Sessions"
+    "training": "Sessions",
+    "exams": "Exams"
   },
   "theme": {
     "label": "Theme",
@@ -959,6 +961,11 @@
         "operation": {
           "conflict": "This operation conflicts with an operation already recorded."
         }
+      }
+    },
+    "exams": {
+      "places": {
+        "invalidImportJson": "The JSON import payload is invalid."
       }
     }
   },
@@ -7620,6 +7627,490 @@
       "studentEnrollmentInactive": "Student enrollment inactive or unavailable",
       "studentStartLessonAllowed": "Student is allowed to start a lesson",
       "studentStartLessonBlocked": "Student is blocked from starting a lesson"
+    }
+  },
+  "exams": {
+    "kicker": "BC-11 · Exams & certification",
+    "title": "Exams & certification",
+    "tabs": {
+      "navigation": "Exam navigation",
+      "dashboard": "Dashboard",
+      "readiness": "Readiness",
+      "places": "Places & centers",
+      "registrations": "Registrations",
+      "results": "Results",
+      "operations": "Operations"
+    },
+    "common": {
+      "loading": "Loading…",
+      "loadError": "Some exam data could not be loaded.",
+      "studentId": "Student ID",
+      "trainingPathId": "Training path ID",
+      "registrationId": "Registration ID",
+      "configure": "Configure",
+      "add": "Add",
+      "reason": "Reason",
+      "notes": "Notes"
+    },
+    "dashboard": {
+      "kicker": "Operations",
+      "title": "Exam dashboard",
+      "description": "Results, attendance, remediation and vigilance signals from the BC-11 backend.",
+      "kpis": {
+        "scheduled": "Scheduled attempts",
+        "presented": "Presented candidates",
+        "passRate": "Pass rate",
+        "absenceRate": "Absence rate",
+        "remediation": "Remediation required",
+        "finalized": "Finalized results",
+        "passed": "passed",
+        "failed": "failed",
+        "firstAttempt": "First-attempt pass rate",
+        "averageAttempt": "Average attempt number",
+        "revalidated": "validated for re-presentation"
+      },
+      "trend": "Monthly trend",
+      "samples": "results",
+      "alerts": "Analytics alerts",
+      "emptyTrend": "No trend available",
+      "noAlerts": "No alerts detected",
+      "filters": {
+        "from": "From",
+        "to": "To",
+        "examType": "Exam type",
+        "examTypePlaceholder": "E.g. Practical",
+        "license": "Licence category",
+        "licensePlaceholder": "E.g. B",
+        "apply": "Apply",
+        "reset": "Reset"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "performance": "Performance",
+        "quality": "Alerts & quality"
+      },
+      "presentedSamples": "presented candidates",
+      "smallSample": "Small sample",
+      "emptyDimension": "No data for this dimension",
+      "attemptDistribution": "Pass rate by attempt number",
+      "failureReasons": "Failure reasons",
+      "noData": "No data available",
+      "alertMeta": "Dimension: {{dimension}} · Item: {{key}} · Sample: {{sample}}",
+      "dimensions": {
+        "branch": "Branch",
+        "license": "Licence category",
+        "type": "Exam type",
+        "center": "Centre",
+        "instructor": "Instructor"
+      },
+      "table": {
+        "dimension": "Dimension",
+        "sample": "Sample",
+        "presented": "Presented",
+        "passed": "Passed",
+        "failed": "Failed",
+        "rate": "Rate"
+      },
+      "context": {
+        "title": "Statistical context",
+        "description": "These indicators are management signals. Small samples and contextual gaps must not be interpreted as causal conclusions.",
+        "smallOverallSample": "The selected period contains a small sample; interpret rates with caution."
+      }
+    },
+    "readiness": {
+      "kicker": "Eligibility",
+      "title": "Exam readiness",
+      "description": "Review the cross-domain snapshot then record the final human decision.",
+      "snapshot": "Readiness snapshot",
+      "currentDecision": "Current decision",
+      "noDecision": "No decision recorded",
+      "recordDecision": "Record decision",
+      "drawer": {
+        "title": "Exam presentation decision",
+        "description": "The decision remains human and relies on pedagogical, administrative and financial checks."
+      },
+      "outcome": "Decision",
+      "rationale": "Rationale",
+      "conditions": "Optional conditions",
+      "tabs": {
+        "decision": "Decision",
+        "opinion": "Pedagogical opinion",
+        "history": "Opinion history"
+      },
+      "actions": {
+        "decide": "Decide",
+        "addOpinion": "Add opinion"
+      },
+      "drawerDecision": "Exam presentation decision",
+      "drawerOpinion": "Pedagogical opinion",
+      "opinionContext": "Pedagogical context",
+      "progress": "Progress",
+      "competencies": "Competencies assessed",
+      "criticalValidated": "Critical competencies validated",
+      "reviewCompleted": "Pedagogical review completed",
+      "blockers": "Blockers",
+      "noOpinions": "No pedagogical opinion",
+      "searchPrompt": "Search for a student and training path.",
+      "opinion": "Opinion",
+      "autonomy": "Observed autonomy",
+      "reservationCodes": "Reservation codes",
+      "reservationCodesHint": "e.g. Stress, Observation",
+      "reservations": "Reservations"
+    },
+    "places": {
+      "kicker": "Official capacity",
+      "title": "Exam centers & places",
+      "description": "Review centers and places from BC-11 authoritative sources.",
+      "centers": "Centers",
+      "availablePlaces": "Available places",
+      "noCenters": "No center available",
+      "noPlaces": "No place available",
+      "examType": "Exam type",
+      "category": "Category",
+      "date": "Date",
+      "capacity": "Capacity",
+      "tabs": {
+        "availability": "Availability",
+        "watches": "Monitoring",
+        "providers": "Providers"
+      },
+      "from": "From",
+      "to": "To",
+      "licenseCategory": "License category",
+      "empty": "No exam place is available for this period.",
+      "actions": {
+        "center": "New center",
+        "place": "New place",
+        "watch": "New monitor",
+        "connection": "New connection",
+        "sync": "Synchronize",
+        "import": "Import"
+      },
+      "scan": "Scan",
+      "pause": "Pause",
+      "resume": "Resume",
+      "scans": "Latest scans",
+      "noScans": "Select a monitor to view its checks.",
+      "providerCatalog": "Provider catalog",
+      "connections": "Connections",
+      "test": "Test",
+      "suspend": "Suspend",
+      "revoke": "Revoke",
+      "drawerTitle": "Manage centers, places and providers",
+      "name": "Name",
+      "country": "Country",
+      "timeZone": "Time zone",
+      "area": "Administrative area",
+      "address": "Address",
+      "center": "Center",
+      "provider": "Provider",
+      "interval": "Interval (minutes)",
+      "displayName": "Display name",
+      "authMode": "Authentication",
+      "baseUrl": "Base URL",
+      "credentialReference": "Secret reference",
+      "importRows": "Rows to import",
+      "importHint": "Advanced format: JSON array matching ExamPlaceImportRow rows.",
+      "invalidImportJson": "The JSON import payload is invalid."
+    },
+    "registrations": {
+      "kicker": "Candidate file",
+      "title": "Exam registrations",
+      "description": "Find registrations and their official status for a student.",
+      "empty": "Search for a student to display registrations.",
+      "actions": {
+        "create": "New registration",
+        "refreshFile": "Refresh file",
+        "submit": "Submit",
+        "officialData": "Official data",
+        "retry": "Retry",
+        "officialResponse": "Official response",
+        "releaseHold": "Release place",
+        "hold": "Hold place"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "file": "Candidate file",
+        "submissions": "Submissions"
+      },
+      "registration": "Registration",
+      "status": "Status",
+      "candidateReference": "Candidate reference",
+      "externalRegistrationId": "Official registration ID",
+      "schedule": "Schedule",
+      "fileStatus": "File status",
+      "noFile": "No candidate file available",
+      "noSubmissions": "No submission recorded",
+      "drawerTitle": "Manage registration",
+      "placeId": "Place ID",
+      "holdMinutes": "Hold duration (minutes)",
+      "holdActive": "Place temporarily held",
+      "outcome": "Official outcome",
+      "externalSubmissionId": "Submission ID",
+      "providerResponseCode": "Provider response code",
+      "providerErrorCode": "Provider error code",
+      "providerResponse": "Provider response"
+    },
+    "results": {
+      "kicker": "Official results",
+      "title": "Results",
+      "description": "Review recorded results and their summary by student.",
+      "empty": "Search for a student to display results.",
+      "selected": "Selected result",
+      "summary": "Result summary",
+      "score": "Score",
+      "failureReason": "Failure reason",
+      "verified": "Verified",
+      "finalized": "Finalized",
+      "revisions": "Revision history",
+      "outcome": "Outcome",
+      "providerCode": "Provider code",
+      "comments": "Comments",
+      "correctionReason": "Correction reason",
+      "verificationReference": "Verification reference",
+      "tabs": {
+        "result": "Result",
+        "failure": "Failure analysis",
+        "remediation": "Remediation",
+        "success": "Success",
+        "attestations": "Attestations"
+      },
+      "actions": {
+        "verify": "Verify",
+        "finalize": "Finalize",
+        "correct": "Correct",
+        "record": "Record result"
+      },
+      "drawer": {
+        "verify": {
+          "title": "Verify result"
+        },
+        "correct": {
+          "title": "Correct result"
+        },
+        "finding": {
+          "title": "Add finding"
+        },
+        "narrative": {
+          "title": "Failure pedagogical analysis"
+        },
+        "completeFailure": {
+          "title": "Complete failure analysis"
+        },
+        "configureRemediation": {
+          "title": "Configure remediation"
+        },
+        "cancelRemediation": {
+          "title": "Cancel remediation"
+        },
+        "issueAttestation": {
+          "title": "Issue attestation"
+        },
+        "signAttestation": {
+          "title": "Sign attestation"
+        },
+        "deliverAttestation": {
+          "title": "Deliver attestation"
+        },
+        "revokeAttestation": {
+          "title": "Revoke attestation"
+        },
+        "recordResult": {
+          "title": "Record or import result"
+        },
+        "correctAttestation": {
+          "title": "Correct attestation document"
+        }
+      },
+      "attemptId": "Attempt identifier",
+      "receivedAt": "Result received at",
+      "sourceKind": "Source",
+      "importMode": "Import from an external source"
+    },
+    "operations": {
+      "kicker": "EXM-006 to EXM-012",
+      "title": "Preparation & Exam day",
+      "description": "Manage the convocation, preparation, resources and operational exam flow without leaving the registration context.",
+      "tabs": {
+        "preparation": "Preparation",
+        "convocation": "Convocation",
+        "resources": "Plan & resources",
+        "attempt": "Exam day"
+      },
+      "revision": "Revision",
+      "preparation": {
+        "title": "Preparation checklist",
+        "empty": "No preparation is available for this registration.",
+        "confirm": "Confirm preparation",
+        "drawerTitle": "Update preparation",
+        "meetingPoint": "Meeting point confirmed",
+        "vehicleEnergy": "Vehicle energy / level confirmed",
+        "instructor": "Instructor confirmed",
+        "instructions": "Instructions transmitted",
+        "reminders": "Reminder offsets in days (comma separated)"
+      },
+      "convocation": {
+        "title": "Official convocation",
+        "empty": "No convocation is available.",
+        "meeting": "Meeting point",
+        "delivered": "Mark as delivered",
+        "acknowledge": "Acknowledge receipt",
+        "provider": "Provider",
+        "reference": "Official reference",
+        "meetingAt": "Internal meeting time",
+        "instructions": "Instructions",
+        "channel": "Delivery channel",
+        "receive": "Receive convocation",
+        "examCenterId": "Exam center ID",
+        "providerCode": "Provider code",
+        "scheduledStart": "Official start",
+        "scheduledEnd": "Official end",
+        "officialReference": "Official reference",
+        "requiredDocuments": "Required documents"
+      },
+      "resources": {
+        "title": "Operational plan and resources",
+        "description": "Define the operational window then assign instructor and vehicle through authoritative calendar resources.",
+        "plan": "Configure plan",
+        "assign": "Assign resources",
+        "window": "Operational window",
+        "instructors": "Available instructors",
+        "vehicles": "Available vehicles",
+        "currentAssignment": "Current assignment",
+        "instructorId": "Instructor",
+        "vehicleId": "Vehicle",
+        "bookingId": "Scheduling booking",
+        "schedulingError": "Scheduling error",
+        "planDrawer": "Plan exam support",
+        "before": "Buffer before (min)",
+        "after": "Buffer after (min)",
+        "branchId": "Departure branch",
+        "instructorRequired": "Instructor required",
+        "vehicleRequired": "Vehicle required",
+        "preview": "Refresh availability",
+        "instructorCalendarId": "Instructor calendar resource",
+        "vehicleCalendarId": "Vehicle calendar resource",
+        "trainingCategory": "Training category",
+        "transmission": "Transmission",
+        "energy": "Energy",
+        "adaptations": "Required adaptations (comma separated)",
+        "dualControl": "Dual control required"
+      },
+      "attempt": {
+        "title": "Exam attempt",
+        "empty": "No operational exam attempt has been created yet.",
+        "create": "Create attempt",
+        "departure": "Departure",
+        "arrival": "Center arrival",
+        "start": "Start",
+        "complete": "Complete",
+        "return": "Return",
+        "checkIn": "Check-in",
+        "addNote": "Add note",
+        "absent": "Absent",
+        "postpone": "Postpone",
+        "interrupt": "Interrupt",
+        "unableToStart": "Unable to start",
+        "timeline": "Timeline",
+        "reasonTitle": "Operational reason",
+        "reasonCode": "Reason code",
+        "notes": "Notes",
+        "incident": "Report incident",
+        "location": "Record location",
+        "resourceChange": "Resource change",
+        "incidentCode": "Incident code",
+        "description": "Description",
+        "accuracy": "Accuracy (meters)",
+        "purpose": "Location purpose"
+      }
+    },
+    "failure": {
+      "title": "Failure analysis",
+      "addFinding": "Add finding",
+      "editNarrative": "Complete analysis",
+      "complete": "Complete analysis",
+      "narrative": "Analysis and feedback",
+      "instructorAnalysis": "Instructor analysis",
+      "studentFeedback": "Student feedback",
+      "recommendation": "Recommendation",
+      "findings": "Findings",
+      "critical": "Critical",
+      "noFindings": "No finding recorded.",
+      "empty": "No failure analysis available.",
+      "kind": "Finding type",
+      "code": "Code",
+      "detail": "Detail",
+      "summary": "Final summary"
+    },
+    "remediation": {
+      "title": "Post-failure remediation",
+      "provision": "Create pedagogical plan",
+      "validateRepresentation": "Validate for re-presentation",
+      "create": "Create remediation request",
+      "empty": "No remediation request has been created yet.",
+      "recommendedHours": "Recommended hours",
+      "reviewDate": "Review date",
+      "targetDate": "Target date",
+      "planId": "Pedagogical plan",
+      "responsibleUserId": "Owner",
+      "mockExamRequired": "Mock exam required",
+      "fundingReviewRequired": "Funding review required"
+    },
+    "success": {
+      "title": "Success processing",
+      "complete": "Complete process",
+      "archive": "Archive",
+      "requeue": "Requeue consequences",
+      "consequences": "Success consequences",
+      "noConsequences": "No consequence recorded.",
+      "empty": "No success process available."
+    },
+    "attestations": {
+      "issue": "Issue attestation",
+      "sign": "Sign",
+      "deliver": "Deliver",
+      "revoke": "Revoke",
+      "empty": "No attestation for this result.",
+      "type": "Type",
+      "reference": "Reference",
+      "templateCode": "Template",
+      "templateVersion": "Template version",
+      "documentId": "Document",
+      "publicToken": "Public verification token",
+      "expiresAt": "Expiration",
+      "signatureProcess": "Signature process reference",
+      "signatureEvidence": "Signature evidence hash",
+      "deliveryChannel": "Delivery channel",
+      "correct": "Correct document"
+    },
+    "analytics": {
+      "alerts": {
+        "passRateDrop": "Significant pass-rate decrease",
+        "contextualUnderperformance": "Performance below comparable group",
+        "recurrentFailureReason": "Recurring failure reason"
+      },
+      "context": {
+        "smallOverallSample": "Small overall sample for the selected period",
+        "someAttemptsWithoutDepartureBranch": "Some attempts have no departure branch"
+      },
+      "branch": {
+        "smallSample": "Small sample: cautious interpretation required"
+      },
+      "center": {
+        "smallSample": "Small sample: cautious interpretation required"
+      },
+      "instructor": {
+        "smallSample": "Small sample: cautious interpretation required"
+      },
+      "license": {
+        "smallSample": "Small sample: cautious interpretation required"
+      },
+      "examType": {
+        "smallSample": "Small sample: cautious interpretation required"
+      },
+      "month": {
+        "smallSample": "Small sample: cautious interpretation required"
+      }
     }
   }
 }

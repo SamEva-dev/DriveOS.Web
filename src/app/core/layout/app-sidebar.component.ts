@@ -15,6 +15,7 @@ import { AuthorizationService } from '../auth/authorization.service';
 import { CRM_PERMISSIONS } from '../../features/crm/domain/crm-permissions';
 import { STUDENT_PERMISSIONS } from '../../features/students/domain/student-permissions';
 import { PEDAGOGY_PERMISSIONS } from '../../features/pedagogy/domain/pedagogy-permissions';
+import { EXAMS_PERMISSIONS } from '../../features/exams/domain/exams-permissions';
 import { SCHEDULING_PERMISSIONS } from '../../features/scheduling/domain/scheduling-permissions';
 import { TRAINING_DELIVERY_PERMISSIONS } from '../../features/training-delivery/domain/training-delivery-permissions';
 import { NavigationItem } from './navigation-item';
@@ -170,6 +171,7 @@ export class AppSidebarComponent {
     { labelKey: 'navigation.pedagogy', icon: 'ph ph-books', routerLink: '/pedagogy' },
     { labelKey: 'navigation.planning', icon: 'ph ph-calendar-dots', routerLink: '/planning' },
     { labelKey: 'navigation.training', icon: 'ph ph-steering-wheel', routerLink: '/training' },
+    { labelKey: 'navigation.exams', icon: 'ph ph-exam', routerLink: '/exams' },
     {
       labelKey: 'navigation.instructors',
       icon: 'ph ph-identification-card',
@@ -334,6 +336,15 @@ export class AppSidebarComponent {
         return this.authorization.hasAny([
           TRAINING_DELIVERY_PERMISSIONS.sessions.read,
           TRAINING_DELIVERY_PERMISSIONS.incidents.read,
+        ]);
+      }
+      if (item.routerLink === '/exams') {
+        return this.authorization.hasAny([
+          EXAMS_PERMISSIONS.analytics.read,
+          EXAMS_PERMISSIONS.readiness.read,
+          EXAMS_PERMISSIONS.places.read,
+          EXAMS_PERMISSIONS.registrations.read,
+          EXAMS_PERMISSIONS.results.read,
         ]);
       }
       return true;

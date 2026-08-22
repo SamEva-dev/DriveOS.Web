@@ -113,6 +113,11 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'exams',
+        loadChildren: () =>
+          import('./features/exams/exams.routes').then((module) => module.EXAMS_ROUTES),
+      },
+      {
         path: 'instructors',
         loadComponent: () =>
           import('./shared/pages/coming-soon/coming-soon.page').then(
