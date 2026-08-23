@@ -6,6 +6,7 @@ import { PedagogyApiService } from '../../data-access/pedagogy-api.service';
 import {
   ProgressionCompetency,
   StudentPedagogyOverview,
+  StudentRegulatoryTrainingRecordOverview,
 } from '../../models/student-pedagogy-overview.models';
 import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/driveos-empty-state.component';
 import { DriveOsSpinnerComponent } from '../../../../shared/ui/spinner/driveos-spinner.component';
@@ -40,6 +41,9 @@ export class StudentPedagogyPage {
   readonly data = signal<StudentPedagogyOverview | null>(null);
   readonly loading = signal(true);
   readonly error = signal(false);
+  readonly regulatoryRecord = signal<StudentRegulatoryTrainingRecordOverview | null>(null);
+  readonly regulatoryLoading = signal(false);
+  readonly regulatoryError = signal(false);
   readonly section = signal<PedagogySection>('overview');
   readonly sections: readonly PedagogySection[] = [
     'overview',
@@ -65,6 +69,7 @@ export class StudentPedagogyPage {
       next: (value) => {
         this.data.set(value);
         this.loading.set(false);
+        this.loadRegulatoryRecord(value.selectedTrainingPathId);
       },
       error: () => {
         this.error.set(true);
@@ -75,6 +80,46 @@ export class StudentPedagogyPage {
 
   changeTrainingPath(trainingPathId: string): void {
     if (trainingPathId) this.load(trainingPathId);
+  }
+
+  private loadRegulatoryRecord(trainingPathId?: string | null): void {
+    this.regulatoryRecord.set(null);
+    this.regulatoryError.set(false);
+
+    if (this.data()?.trainingPath?.countryCode?.toUpperCase() !== 'FR') {
+      this.regulatoryLoading.set(false);
+      return;
+    }
+
+    this.regulatoryLoading.set(true);
+    this.api.getStudentRegulatoryTrainingRecordOverview(this.studentId, trainingPathId).subscribe({
+      next: (value) => {
+        this.regulatoryRecord.set(value);
+        this.regulatoryLoading.set(false);
+      },
+      error: () => {
+        this.regulatoryError.set(true);
+        this.regulatoryLoading.set(false);
+      },
+    });
+  }
+
+  regulatoryTone(status?: string | null): DriveOsStatusTone {
+    const value = (status ?? '').toLowerCase();
+    if (value === 'accepted') return 'success';
+    if (['rejected', 'failed'].includes(value)) return 'danger';
+    if (['waitingfordata', 'pending', 'processing', 'retrypending'].includes(value)) return 'warning';
+    return 'neutral';
+  }
+
+  regulatoryStatusKey(status?: string | null): string {
+    return status
+      ? `pedagogy.student.regulatoryRecord.status.${status}`
+      : 'pedagogy.student.regulatoryRecord.status.notStarted';
+  }
+
+  regulatoryIssueKey(code: string): string {
+    return `pedagogy.student.regulatoryRecord.issues.${code}`;
   }
 
   statusTone(status: string): DriveOsStatusTone {

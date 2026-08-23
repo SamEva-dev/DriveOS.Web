@@ -153,6 +153,147 @@
           </div>
         }
 
+        @if (pedagogy.trainingPath?.countryCode?.toUpperCase() === 'FR') {
+          <section
+            class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+          >
+            <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+              <div>
+                <p class="text-xs font-bold uppercase tracking-wide text-slate-500">
+                  {{ 'pedagogy.student.regulatoryRecord.eyebrow' | translate }}
+                </p>
+                <h2 class="mt-1 text-lg font-extrabold">
+                  {{ 'pedagogy.student.regulatoryRecord.title' | translate }}
+                </h2>
+                <p class="mt-1 max-w-3xl text-sm text-slate-500">
+                  {{ 'pedagogy.student.regulatoryRecord.description' | translate }}
+                </p>
+              </div>
+
+              @if (regulatoryRecord(); as record) {
+                <drive-os-status-badge
+                  [label]="regulatoryStatusKey(record.currentStatus) | translate"
+                  [tone]="regulatoryTone(record.currentStatus)"
+                />
+              }
+            </div>
+
+            @if (regulatoryLoading()) {
+              <div class="mt-5 flex min-h-20 items-center justify-center">
+                <drive-os-spinner
+                  size="sm"
+                  [label]="'pedagogy.student.regulatoryRecord.loading' | translate"
+                />
+              </div>
+            } @else if (regulatoryError()) {
+              <div class="mt-4">
+                <drive-os-state-banner
+                  tone="warning"
+                  icon="ph ph-warning-circle"
+                  [title]="'pedagogy.student.regulatoryRecord.errors.load' | translate"
+                />
+              </div>
+            } @else if (regulatoryRecord(); as record) {
+              @if (record.totalSubmissions === 0) {
+                <div class="mt-4 rounded-lg border border-dashed border-[var(--driveos-border)] p-4">
+                  <p class="font-bold">{{ 'pedagogy.student.regulatoryRecord.empty.title' | translate }}</p>
+                  <p class="mt-1 text-sm text-slate-500">
+                    {{ 'pedagogy.student.regulatoryRecord.empty.description' | translate }}
+                  </p>
+                </div>
+              } @else {
+                <div class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                  <div class="rounded-lg border border-[var(--driveos-border)] p-3">
+                    <p class="text-xs font-bold uppercase text-slate-500">
+                      {{ 'pedagogy.student.regulatoryRecord.kpis.transmissions' | translate }}
+                    </p>
+                    <p class="mt-1 text-xl font-black">{{ record.totalSubmissions }}</p>
+                  </div>
+                  <div class="rounded-lg border border-[var(--driveos-border)] p-3">
+                    <p class="text-xs font-bold uppercase text-slate-500">
+                      {{ 'pedagogy.student.regulatoryRecord.kpis.accepted' | translate }}
+                    </p>
+                    <p class="mt-1 text-xl font-black">{{ record.accepted }}</p>
+                  </div>
+                  <div class="rounded-lg border border-[var(--driveos-border)] p-3">
+                    <p class="text-xs font-bold uppercase text-slate-500">
+                      {{ 'pedagogy.student.regulatoryRecord.kpis.attention' | translate }}
+                    </p>
+                    <p class="mt-1 text-xl font-black">
+                      {{ record.waitingForData + record.rejected + record.failed }}
+                    </p>
+                  </div>
+                  <div class="rounded-lg border border-[var(--driveos-border)] p-3">
+                    <p class="text-xs font-bold uppercase text-slate-500">
+                      {{ 'pedagogy.student.regulatoryRecord.kpis.lastAccepted' | translate }}
+                    </p>
+                    <p class="mt-1 text-sm font-bold">
+                      {{
+                        record.lastAcceptedAtUtc
+                          ? (record.lastAcceptedAtUtc | date: 'short')
+                          : ('pedagogy.student.regulatoryRecord.never' | translate)
+                      }}
+                    </p>
+                  </div>
+                </div>
+
+                @if (record.currentIssues.length > 0 || record.lastErrorCode) {
+                  <div class="mt-4 rounded-lg border border-amber-200 bg-amber-50/60 p-4 dark:border-amber-900 dark:bg-amber-950/20">
+                    <p class="font-bold">
+                      {{ 'pedagogy.student.regulatoryRecord.attention.title' | translate }}
+                    </p>
+                    <div class="mt-2 grid gap-1 text-sm">
+                      @for (issue of record.currentIssues; track issue) {
+                        <p>• {{ regulatoryIssueKey(issue) | translate }}</p>
+                      }
+                      @if (record.lastErrorCode) {
+                        <p>
+                          • {{
+                            'pedagogy.student.regulatoryRecord.providerError'
+                              | translate: { code: record.lastErrorCode }
+                          }}
+                        </p>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <div class="mt-5">
+                  <h3 class="text-sm font-extrabold">
+                    {{ 'pedagogy.student.regulatoryRecord.recent.title' | translate }}
+                  </h3>
+                  <div class="mt-3 grid gap-2">
+                    @for (submission of record.recentSubmissions; track submission.id) {
+                      <article
+                        class="flex flex-col gap-2 rounded-lg border border-[var(--driveos-border)] p-3 sm:flex-row sm:items-center sm:justify-between"
+                      >
+                        <div>
+                          <p class="text-sm font-bold">
+                            {{ 'pedagogy.student.regulatoryRecord.recent.session' | translate }}
+                            {{ submission.sessionId }}
+                          </p>
+                          <p class="text-xs text-slate-500">
+                            {{ submission.createdAtUtc | date: 'short' }}
+                            ·
+                            {{
+                              'pedagogy.student.regulatoryRecord.recent.revision'
+                                | translate: { revision: submission.revision }
+                            }}
+                          </p>
+                        </div>
+                        <drive-os-status-badge
+                          [label]="regulatoryStatusKey(submission.status) | translate"
+                          [tone]="regulatoryTone(submission.status)"
+                        />
+                      </article>
+                    }
+                  </div>
+                </div>
+              }
+            }
+          </section>
+        }
+
         <div class="grid gap-5 xl:grid-cols-2">
           <section
             class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"

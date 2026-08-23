@@ -1,0 +1,975 @@
+<main class="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
+  <a routerLink="/workforce/employees" class="inline-flex items-center gap-2 text-sm font-bold text-[var(--driveos-text-secondary)] hover:text-blue-800">
+    <i class="ph ph-arrow-left" aria-hidden="true"></i>
+    {{ 'workforce.employeeDetail.back' | translate }}
+  </a>
+
+  @if (loading()) {
+    <div class="flex min-h-72 items-center justify-center">
+      <drive-os-spinner [label]="'common.loading' | translate" />
+    </div>
+  } @else if (errors().length) {
+    <div class="mt-6 space-y-3">
+      @for (error of errors(); track error) {
+        <drive-os-form-alert tone="danger" [title]="'workforce.employeeDetail.loadError' | translate" [message]="error" />
+      }
+    </div>
+  } @else if (employee(); as item) {
+    <header class="mt-4 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 sm:p-6">
+      <div class="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+        <div class="flex items-start gap-4">
+          <div class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-2xl font-black text-blue-800 dark:bg-blue-950/30">
+            {{ item.employeeNumber.slice(0, 2).toUpperCase() }}
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h1 class="text-2xl font-black text-[var(--driveos-text-primary)]">{{ item.employeeNumber }}</h1>
+              <drive-os-status-badge [tone]="statusTone(item.status)" [label]="('workforce.status.' + item.status) | translate" />
+            </div>
+            <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.identityPending' | translate }}</p>
+            <p class="mt-1 text-xs text-[var(--driveos-text-tertiary)]">Employee ID · {{ item.id }}</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          @if (canEditIdentity() && item.status !== 'Ended') {
+            <drive-os-button variant="outline" icon="pencil-simple" (pressed)="openIdentityDrawer()">
+              {{ 'workforce.employeeDetail.actions.editIdentity' | translate }}
+            </drive-os-button>
+          }
+          @if (availableAction('onboarding', item)) {
+            <drive-os-button icon="user-circle-plus" (pressed)="openDrawer('onboarding')">
+              {{ 'workforce.employeeDetail.actions.startOnboarding' | translate }}
+            </drive-os-button>
+          }
+          @if (availableAction('activate', item)) {
+            <drive-os-button icon="check-circle" (pressed)="openDrawer('activate')">
+              {{ 'workforce.employeeDetail.actions.activate' | translate }}
+            </drive-os-button>
+          }
+          @if (availableAction('suspend', item)) {
+            <drive-os-button variant="outline" icon="pause-circle" (pressed)="openDrawer('suspend')">
+              {{ 'workforce.employeeDetail.actions.suspend' | translate }}
+            </drive-os-button>
+          }
+          @if (availableAction('reactivate', item)) {
+            <drive-os-button icon="arrow-counter-clockwise" (pressed)="openDrawer('reactivate')">
+              {{ 'workforce.employeeDetail.actions.reactivate' | translate }}
+            </drive-os-button>
+          }
+          @if (availableAction('termination', item)) {
+            <drive-os-button variant="danger" icon="sign-out" (pressed)="openDrawer('termination')">
+              {{ 'workforce.employeeDetail.actions.startTermination' | translate }}
+            </drive-os-button>
+          }
+          @if (item.status === 'Ended' && canRehire()) {
+            <drive-os-button icon="arrow-counter-clockwise" (pressed)="openRehireDrawer()">
+              {{ 'workforce.employeeDetail.actions.rehire' | translate }}
+            </drive-os-button>
+          }
+        </div>
+      </div>
+
+      <div class="mt-6 grid gap-4 border-t border-[var(--driveos-border)] pt-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.startDate' | translate }}</p>
+          <p class="mt-1 font-bold">{{ item.employmentStartDate | date:'mediumDate' }}</p>
+        </div>
+        <div>
+          <p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.endDate' | translate }}</p>
+          <p class="mt-1 font-bold">{{ item.employmentEndDate ? (item.employmentEndDate | date:'mediumDate') : '—' }}</p>
+        </div>
+        <div>
+          <p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.account' | translate }}</p>
+          <p class="mt-1 font-bold">{{ item.userId ? ('workforce.employeeDetail.linked' | translate) : ('workforce.employeeDetail.unlinked' | translate) }}</p>
+        </div>
+        <div>
+          <p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.history.periods' | translate }}</p>
+          <p class="mt-1 font-bold">{{ history().length }}</p>
+        </div>
+      </div>
+    </header>
+
+    <nav class="mt-5 overflow-x-auto rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-2" [attr.aria-label]="'workforce.employeeDetail.tabs.label' | translate">
+      <div class="flex min-w-max gap-1">
+        @for (tab of tabs; track tab.key) {
+          <button
+            type="button"
+            [class]="activeTab() === tab.key ? 'inline-flex items-center gap-2 rounded-xl bg-blue-800 px-3 py-2 text-sm font-bold text-white transition' : 'inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold text-[var(--driveos-text-secondary)] transition hover:bg-[var(--driveos-surface-hover)]'"
+            [class.opacity-45]="!canAccessTab(tab.key)"
+            [disabled]="!canAccessTab(tab.key)"
+            [attr.aria-disabled]="!canAccessTab(tab.key)"
+            [attr.title]="!canAccessTab(tab.key) ? ('workforce.employeeDetail.tabs.noPermission' | translate) : null"
+            (click)="canAccessTab(tab.key) && activeTab.set(tab.key)"
+          >
+            <i [class]="tab.icon" aria-hidden="true"></i>
+            {{ ('workforce.employeeDetail.tabs.' + tab.key) | translate }}
+          </button>
+        }
+      </div>
+    </nav>
+
+    @if (activeTab() === 'overview') {
+      <div class="mt-5 grid gap-5 xl:grid-cols-[1fr_.9fr]">
+        <section class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-black">{{ 'workforce.employeeDetail.overview.employment' | translate }}</h2>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.overview.employmentDescription' | translate }}</p>
+            </div>
+            @if (canEditIdentity() && item.status !== 'Ended') {
+              <button type="button" class="inline-flex size-9 items-center justify-center rounded-xl border border-[var(--driveos-border)] text-[var(--driveos-text-secondary)] hover:bg-[var(--driveos-surface-hover)]" (click)="openIdentityDrawer()" [attr.aria-label]="'workforce.employeeDetail.actions.editIdentity' | translate">
+                <i class="ph ph-pencil-simple" aria-hidden="true"></i>
+              </button>
+            }
+          </div>
+          <dl class="mt-5 grid gap-5 sm:grid-cols-2">
+            <div><dt class="text-xs font-extrabold uppercase tracking-wide text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.employeeNumber' | translate }}</dt><dd class="mt-1 font-bold">{{ item.employeeNumber }}</dd></div>
+            <div><dt class="text-xs font-extrabold uppercase tracking-wide text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.personId' | translate }}</dt><dd class="mt-1 break-all font-mono text-xs">{{ item.personId }}</dd></div>
+            <div><dt class="text-xs font-extrabold uppercase tracking-wide text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.userId' | translate }}</dt><dd class="mt-1 break-all font-mono text-xs">{{ item.userId ?? '—' }}</dd></div>
+            <div><dt class="text-xs font-extrabold uppercase tracking-wide text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.rehireSource' | translate }}</dt><dd class="mt-1 break-all font-mono text-xs">{{ item.rehiredFromEmployeeId ?? '—' }}</dd></div>
+          </dl>
+        </section>
+
+        <aside class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+          <h2 class="text-lg font-black">{{ 'workforce.employeeDetail.lifecycle.title' | translate }}</h2>
+          <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.lifecycle.description' | translate }}</p>
+
+          <div class="mt-5 flex items-center gap-3 rounded-xl border border-[var(--driveos-border)] p-4">
+            <span class="flex size-10 items-center justify-center rounded-xl bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-300"><i class="ph ph-user-focus" aria-hidden="true"></i></span>
+            <div>
+              <p class="text-xs font-extrabold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.lifecycle.current' | translate }}</p>
+              <p class="mt-1 font-black">{{ ('workforce.status.' + item.status) | translate }}</p>
+            </div>
+          </div>
+
+          <div class="mt-4 space-y-2">
+            @if (availableAction('onboarding', item)) { <drive-os-button fullWidth icon="user-circle-plus" (pressed)="openDrawer('onboarding')">{{ 'workforce.employeeDetail.actions.startOnboarding' | translate }}</drive-os-button> }
+            @if (availableAction('activate', item)) { <drive-os-button fullWidth icon="check-circle" (pressed)="openDrawer('activate')">{{ 'workforce.employeeDetail.actions.activate' | translate }}</drive-os-button> }
+            @if (availableAction('suspend', item)) { <drive-os-button fullWidth variant="outline" icon="pause-circle" (pressed)="openDrawer('suspend')">{{ 'workforce.employeeDetail.actions.suspend' | translate }}</drive-os-button> }
+            @if (availableAction('reactivate', item)) { <drive-os-button fullWidth icon="arrow-counter-clockwise" (pressed)="openDrawer('reactivate')">{{ 'workforce.employeeDetail.actions.reactivate' | translate }}</drive-os-button> }
+            @if (availableAction('termination', item)) { <drive-os-button fullWidth variant="danger" icon="sign-out" (pressed)="openDrawer('termination')">{{ 'workforce.employeeDetail.actions.startTermination' | translate }}</drive-os-button> }
+            @if (item.status === 'Ending') {
+              <div class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900 dark:border-orange-900 dark:bg-orange-950/25 dark:text-orange-100">
+                <p class="font-black">{{ 'workforce.employeeDetail.lifecycle.offboardingStarted' | translate }}</p>
+                <p class="mt-1 leading-6">{{ 'workforce.employeeDetail.lifecycle.offboardingStartedDescription' | translate }}</p>
+              </div>
+            }
+            @if (item.status === 'Ended') {
+              <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-200">
+                <p class="font-black">{{ 'workforce.employeeDetail.lifecycle.ended' | translate }}</p>
+                <p class="mt-1 leading-6">{{ 'workforce.employeeDetail.lifecycle.endedDescription' | translate }}</p>
+                @if (canRehire()) {
+                  <div class="mt-3"><drive-os-button icon="arrow-counter-clockwise" (pressed)="openRehireDrawer()">{{ 'workforce.employeeDetail.actions.rehire' | translate }}</drive-os-button></div>
+                }
+              </div>
+            }
+          </div>
+        </aside>
+      </div>
+
+      <section class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 class="text-lg font-black">{{ 'workforce.employeeDetail.history.title' | translate }}</h2>
+            <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.history.description' | translate }}</p>
+          </div>
+          <span class="text-xs font-bold uppercase tracking-wide text-[var(--driveos-text-tertiary)]">{{ history().length }} {{ 'workforce.employeeDetail.history.periods' | translate }}</span>
+        </div>
+        <div class="mt-5 grid gap-3 lg:grid-cols-2">
+          @for (period of history(); track period.id) {
+            <div [class]="period.id === item.id ? 'rounded-xl border border-blue-300 bg-blue-50 p-4 dark:bg-blue-950/20' : 'rounded-xl border border-[var(--driveos-border)] p-4'">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="font-black">{{ period.employeeNumber }}</p>
+                  <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ period.employmentStartDate | date:'mediumDate' }} → {{ period.employmentEndDate ? (period.employmentEndDate | date:'mediumDate') : ('workforce.employeeDetail.history.current' | translate) }}</p>
+                </div>
+                <drive-os-status-badge [tone]="statusTone(period.status)" [label]="('workforce.status.' + period.status) | translate" />
+              </div>
+              @if (period.id === item.id) {
+                <p class="mt-3 text-xs font-extrabold uppercase tracking-wide text-blue-800 dark:text-blue-300">{{ 'workforce.employeeDetail.history.selectedPeriod' | translate }}</p>
+              }
+              @else {
+                <a [routerLink]="['/workforce/employees', period.id]" class="mt-3 inline-flex items-center gap-1 text-xs font-extrabold text-blue-800 hover:underline dark:text-blue-300">{{ 'workforce.employeeDetail.history.openPeriod' | translate }} <i class="ph ph-arrow-right"></i></a>
+              }
+            </div>
+          }
+        </div>
+      </section>
+    } @else if (activeTab() === 'branches') {
+      <section class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 sm:p-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <h2 class="text-lg font-black">{{ 'workforce.employeeDetail.branches.title' | translate }}</h2>
+            <p class="mt-1 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.branches.description' | translate }}</p>
+          </div>
+          @if (canManageBranchAssignments() && item.status !== 'Ended') {
+            <drive-os-button icon="plus" (pressed)="openBranchCreateDrawer()">{{ 'workforce.employeeDetail.branches.add' | translate }}</drive-os-button>
+          }
+        </div>
+
+        <div class="mt-5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100">
+          <div class="flex gap-3">
+            <i class="ph ph-info mt-0.5 text-lg" aria-hidden="true"></i>
+            <p>{{ 'workforce.employeeDetail.branches.accessNote' | translate }}</p>
+          </div>
+        </div>
+
+        @if (!canReadBranchAssignments()) {
+          <div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900 dark:border-orange-900 dark:bg-orange-950/20 dark:text-orange-100">{{ 'workforce.employeeDetail.branches.noReadPermission' | translate }}</div>
+        } @else if (!branchAssignments().length) {
+          <div class="mt-6 rounded-2xl border border-dashed border-[var(--driveos-border)] px-6 py-12 text-center">
+            <i class="ph ph-buildings text-4xl text-[var(--driveos-text-tertiary)]" aria-hidden="true"></i>
+            <h3 class="mt-3 font-black">{{ 'workforce.employeeDetail.branches.emptyTitle' | translate }}</h3>
+            <p class="mx-auto mt-1 max-w-xl text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.branches.emptyDescription' | translate }}</p>
+          </div>
+        } @else {
+          <div class="mt-6 space-y-3">
+            @for (assignment of branchAssignments(); track assignment.id) {
+              <article class="rounded-2xl border border-[var(--driveos-border)] p-4 sm:p-5">
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <div class="flex items-start gap-3">
+                    <span class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-300"><i class="ph ph-buildings" aria-hidden="true"></i></span>
+                    <div>
+                      <div class="flex flex-wrap items-center gap-2">
+                        <h3 class="font-black">{{ branchName(assignment.branchId) }}</h3>
+                        @if (assignment.isPrimary) {
+                          <span class="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-black text-orange-800 dark:bg-orange-950/40 dark:text-orange-200">{{ 'workforce.employeeDetail.branches.primary' | translate }}</span>
+                        }
+                        <drive-os-status-badge [tone]="branchAssignmentTone(assignment.status)" [label]="('workforce.branchAssignmentStatus.' + assignment.status) | translate" />
+                      </div>
+                      <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+                        {{ assignment.startDate | date:'mediumDate' }} → {{ assignment.endDate ? (assignment.endDate | date:'mediumDate') : ('workforce.employeeDetail.branches.openEnded' | translate) }}
+                      </p>
+                    </div>
+                  </div>
+
+                  @if (canManageBranchAssignments() && assignment.status !== 'Cancelled' && assignment.status !== 'Ended') {
+                    <div class="flex flex-wrap gap-2">
+                      @if (canEditBranchAssignment(assignment)) {
+                        <drive-os-button variant="outline" icon="pencil-simple" (pressed)="openBranchEditDrawer(assignment)">{{ 'workforce.employeeDetail.branches.edit' | translate }}</drive-os-button>
+                        <drive-os-button variant="outline" icon="calendar-x" (pressed)="openBranchEndDrawer(assignment)">{{ 'workforce.employeeDetail.branches.end' | translate }}</drive-os-button>
+                      }
+                      @if (canCancelBranchAssignment(assignment)) {
+                        <drive-os-button variant="danger" icon="x-circle" (pressed)="openBranchCancelDrawer(assignment)">{{ 'common.cancel' | translate }}</drive-os-button>
+                      }
+                    </div>
+                  }
+                </div>
+              </article>
+            }
+          </div>
+        }
+      </section>
+    } @else if (activeTab() === 'positions') {
+      <section class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 sm:p-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div><h2 class="text-lg font-black">{{ 'workforce.employeeDetail.positions.title' | translate }}</h2><p class="mt-1 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.positions.description' | translate }}</p></div>
+          @if (canAssignJobPositions() && item.status !== 'Ended') { <drive-os-button icon="plus" (pressed)="openJobPositionCreateDrawer()">{{ 'workforce.employeeDetail.positions.add' | translate }}</drive-os-button> }
+        </div>
+        <div class="mt-5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100"><div class="flex gap-3"><i class="ph ph-info mt-0.5 text-lg"></i><p>{{ 'workforce.employeeDetail.positions.securityNote' | translate }}</p></div></div>
+        @if (!canReadJobPositions()) { <div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900 dark:border-orange-900 dark:bg-orange-950/20 dark:text-orange-100">{{ 'workforce.employeeDetail.positions.noReadPermission' | translate }}</div> }
+        @else if (!jobPositionAssignments().length) { <div class="mt-6 rounded-2xl border border-dashed border-[var(--driveos-border)] px-6 py-12 text-center"><i class="ph ph-briefcase text-4xl text-[var(--driveos-text-tertiary)]"></i><h3 class="mt-3 font-black">{{ 'workforce.employeeDetail.positions.emptyTitle' | translate }}</h3><p class="mx-auto mt-1 max-w-xl text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.positions.emptyDescription' | translate }}</p></div> }
+        @else { <div class="mt-6 space-y-3">@for (assignment of jobPositionAssignments(); track assignment.id) { <article class="rounded-2xl border border-[var(--driveos-border)] p-4 sm:p-5"><div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"><div class="flex items-start gap-3"><span class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-300"><i class="ph ph-briefcase"></i></span><div><div class="flex flex-wrap items-center gap-2"><h3 class="font-black">{{ jobPositionName(assignment.jobPositionId) }}</h3>@if(assignment.isPrimary){<span class="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-black text-orange-800 dark:bg-orange-950/40 dark:text-orange-200">{{'workforce.employeeDetail.positions.primary'|translate}}</span>}<drive-os-status-badge [tone]="jobPositionAssignmentTone(assignment.status)" [label]="('workforce.jobPositionAssignmentStatus.'+assignment.status)|translate"/></div><p class="mt-1 text-sm font-bold text-[var(--driveos-text-secondary)]">{{('workforce.professionalFunctions.'+professionalFunction(assignment.jobPositionId))|translate}}</p><p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{ assignment.branchId ? branchName(assignment.branchId) : ('workforce.employeeDetail.positions.allBranches'|translate) }} · {{assignment.startDate|date:'mediumDate'}} → {{assignment.endDate ? (assignment.endDate|date:'mediumDate') : ('workforce.employeeDetail.positions.openEnded'|translate)}}</p></div></div>@if(canAssignJobPositions() && assignment.status!=='Ended' && assignment.status!=='Cancelled'){<div class="flex flex-wrap gap-2">@if(canEditJobPositionAssignment(assignment)){<drive-os-button variant="outline" icon="pencil-simple" (pressed)="openJobPositionEditDrawer(assignment)">{{'common.edit'|translate}}</drive-os-button><drive-os-button variant="outline" icon="calendar-x" (pressed)="openJobPositionEndDrawer(assignment)">{{'workforce.employeeDetail.positions.end'|translate}}</drive-os-button>}@if(canCancelJobPositionAssignment(assignment)){<drive-os-button variant="danger" icon="x-circle" (pressed)="openJobPositionCancelDrawer(assignment)">{{'common.cancel'|translate}}</drive-os-button>}</div>}</div></article> }</div> }
+      </section>
+    } @else if (activeTab() === 'contracts') {
+      <section class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 sm:p-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <h2 class="text-lg font-black">{{ 'workforce.employeeDetail.contracts.title' | translate }}</h2>
+            <p class="mt-1 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.contracts.description' | translate }}</p>
+          </div>
+          @if (canManageEmploymentContracts() && item.status !== 'Ended') {
+            <drive-os-button icon="plus" (pressed)="openEmploymentContractCreateDrawer()">{{ 'workforce.employeeDetail.contracts.add' | translate }}</drive-os-button>
+          }
+        </div>
+        <div class="mt-5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100">
+          <div class="flex gap-3"><i class="ph ph-info mt-0.5 text-lg"></i><p>{{ 'workforce.employeeDetail.contracts.boundaryNote' | translate }}</p></div>
+        </div>
+        @if (!canReadEmploymentContracts()) {
+          <div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900 dark:border-orange-900 dark:bg-orange-950/20 dark:text-orange-100">{{ 'workforce.employeeDetail.contracts.noReadPermission' | translate }}</div>
+        } @else if (!employmentContracts().length) {
+          <div class="mt-6 rounded-2xl border border-dashed border-[var(--driveos-border)] px-6 py-12 text-center">
+            <i class="ph ph-file-text text-4xl text-[var(--driveos-text-tertiary)]"></i>
+            <h3 class="mt-3 font-black">{{ 'workforce.employeeDetail.contracts.emptyTitle' | translate }}</h3>
+            <p class="mx-auto mt-1 max-w-xl text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.contracts.emptyDescription' | translate }}</p>
+          </div>
+        } @else {
+          <div class="mt-6 space-y-4">
+            @for (contract of employmentContracts(); track contract.id) {
+              <article class="rounded-2xl border border-[var(--driveos-border)] p-4 sm:p-5">
+                <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                  <div class="min-w-0">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <h3 class="font-black">{{ ('workforce.employmentContractType.' + contract.contractType) | translate }}</h3>
+                      <drive-os-status-badge [tone]="employmentContractTone(contract.status)" [label]="('workforce.employmentContractStatus.' + contract.status) | translate" />
+                    </div>
+                    <div class="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4 text-sm">
+                      <div><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.contracts.fields.period' | translate }}</p><p class="mt-1 font-bold">{{ contract.startDate | date:'mediumDate' }} → {{ contract.endDate ? (contract.endDate | date:'mediumDate') : ('workforce.employeeDetail.contracts.openEnded' | translate) }}</p></div>
+                      <div><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.contracts.fields.weeklyHours' | translate }}</p><p class="mt-1 font-bold">{{ contract.contractualWeeklyHours ?? '—' }}</p></div>
+                      <div><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.contracts.fields.primaryPosition' | translate }}</p><p class="mt-1 font-bold">{{ contract.primaryJobPositionId ? jobPositionName(contract.primaryJobPositionId) : '—' }}</p></div>
+                      <div><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.contracts.fields.document' | translate }}</p><p class="mt-1 break-all font-mono text-xs">{{ contract.contractDocumentId || '—' }}</p></div>
+                    </div>
+                    @if (contract.signatureProcessId) {<p class="mt-3 text-xs text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.contracts.fields.signatureProcess' | translate }}: <span class="font-mono">{{ contract.signatureProcessId }}</span></p>}
+                  </div>
+                  <div class="flex flex-wrap gap-2 xl:max-w-md xl:justify-end">
+                    @if (canEditEmploymentContract(contract)) {<drive-os-button variant="outline" icon="pencil-simple" (pressed)="openEmploymentContractEditDrawer(contract)">{{ 'common.edit' | translate }}</drive-os-button>}
+                    @if (canLinkEmploymentContractDocument(contract)) {<drive-os-button variant="outline" icon="link" (pressed)="openEmploymentContractDocumentDrawer(contract)">{{ 'workforce.employeeDetail.contracts.actions.linkDocument' | translate }}</drive-os-button>}
+                    @if (canMarkEmploymentContractSigned(contract)) {<drive-os-button variant="outline" icon="signature" (pressed)="openEmploymentContractSignedDrawer(contract)">{{ 'workforce.employeeDetail.contracts.actions.markSigned' | translate }}</drive-os-button>}
+                    @if (canActivateEmploymentContract(contract)) {<drive-os-button icon="check-circle" (pressed)="openEmploymentContractActivateDrawer(contract)">{{ 'workforce.employeeDetail.contracts.actions.activate' | translate }}</drive-os-button>}
+                    @if (canTerminateEmploymentContract(contract)) {<drive-os-button variant="outline" icon="calendar-x" (pressed)="openEmploymentContractTerminateDrawer(contract)">{{ 'workforce.employeeDetail.contracts.actions.terminate' | translate }}</drive-os-button>}
+                    @if (canCancelEmploymentContract(contract)) {<drive-os-button variant="danger" icon="x-circle" (pressed)="openEmploymentContractCancelDrawer(contract)">{{ 'common.cancel' | translate }}</drive-os-button>}
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+        }
+      </section>
+    } @else if (activeTab() === 'leave') {
+      <section class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 sm:p-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div><h2 class="text-lg font-black">{{ 'workforce.employeeDetail.leave.title' | translate }}</h2><p class="mt-1 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.leave.description' | translate }}</p></div>
+          @if (leaveView()==='requests' && canManageLeaveRequests() && item.status !== 'Ended') {<drive-os-button icon="plus" (pressed)="openLeaveRequestCreateDrawer()">{{'workforce.employeeDetail.leave.requests.create'|translate}}</drive-os-button>}
+          @else if (leaveView()==='policies' && canManageLeavePolicies()) {<drive-os-button icon="plus" (pressed)="openLeavePolicyCreateDrawer()">{{'workforce.employeeDetail.leave.policies.create'|translate}}</drive-os-button>}
+        </div>
+        <div class="mt-5 inline-flex rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-hover)] p-1">
+          <button type="button" [class]="leaveView()==='requests' ? 'rounded-lg bg-[var(--driveos-surface-card)] px-4 py-2 text-sm font-black shadow-sm' : 'rounded-lg px-4 py-2 text-sm font-bold text-[var(--driveos-text-secondary)]'" (click)="leaveView.set('requests')">{{'workforce.employeeDetail.leave.subTabs.requests'|translate}}</button>
+          <button type="button" [class]="leaveView()==='policies' ? 'rounded-lg bg-[var(--driveos-surface-card)] px-4 py-2 text-sm font-black shadow-sm' : 'rounded-lg px-4 py-2 text-sm font-bold text-[var(--driveos-text-secondary)]'" (click)="leaveView.set('policies')">{{'workforce.employeeDetail.leave.subTabs.policies'|translate}}</button>
+        </div>
+        @if (leaveView()==='requests') {
+          <div class="mt-5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100">{{'workforce.employeeDetail.leave.requests.availabilityNote'|translate}}</div>
+          @if (!canReadLeaveRequests()) {<div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900">{{'workforce.employeeDetail.leave.requests.noReadPermission'|translate}}</div>}
+          @else if (!leaveRequests().length) {<div class="mt-6 rounded-2xl border border-dashed border-[var(--driveos-border)] px-6 py-12 text-center"><i class="ph ph-calendar-x text-4xl text-[var(--driveos-text-tertiary)]"></i><h3 class="mt-3 font-black">{{'workforce.employeeDetail.leave.requests.emptyTitle'|translate}}</h3><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{'workforce.employeeDetail.leave.requests.emptyDescription'|translate}}</p></div>}
+          @else {<div class="mt-5 space-y-4">@for (request of leaveRequests(); track request.id) {<article class="rounded-2xl border border-[var(--driveos-border)] p-5"><div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between"><div><div class="flex flex-wrap items-center gap-2"><h3 class="font-black">{{leavePolicyName(request.leavePolicyId)}} <span class="text-[var(--driveos-text-tertiary)]">({{request.policyCode}})</span></h3><drive-os-status-badge [tone]="leaveRequestTone(request.status)" [label]="('workforce.leaveRequestStatus.'+request.status)|translate"/></div><p class="mt-2 text-sm font-bold">{{request.startDate|date:'mediumDate'}} → {{request.endDate|date:'mediumDate'}}</p><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{('workforce.leaveDayPortion.'+request.startPortion)|translate}} → {{('workforce.leaveDayPortion.'+request.endPortion)|translate}}</p>@if(request.reason){<p class="mt-3 text-sm">{{request.reason}}</p>}@if(request.evidenceDocumentId){<p class="mt-2 break-all font-mono text-xs text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.leave.requests.evidence'|translate}}: {{request.evidenceDocumentId}}</p>}@if(request.decisionReason){<p class="mt-3 rounded-xl bg-[var(--driveos-surface-hover)] p-3 text-sm">{{request.decisionReason}}</p>}</div><div class="flex flex-wrap gap-2">@if(canEditLeaveRequest(request)){<drive-os-button variant="outline" icon="pencil-simple" (pressed)="openLeaveRequestEditDrawer(request)">{{'common.edit'|translate}}</drive-os-button>}@if(canSubmitLeaveRequest(request)){<drive-os-button icon="paper-plane-tilt" (pressed)="openLeaveRequestActionDrawer(request,'submit')">{{'workforce.employeeDetail.leave.requests.submit'|translate}}</drive-os-button>}@if(canDecideLeaveRequest(request)){<drive-os-button variant="outline" icon="check-circle" (pressed)="openLeaveRequestActionDrawer(request,'approve')">{{'workforce.employeeDetail.leave.requests.approve'|translate}}</drive-os-button><drive-os-button variant="danger" icon="x-circle" (pressed)="openLeaveRequestActionDrawer(request,'reject')">{{'workforce.employeeDetail.leave.requests.reject'|translate}}</drive-os-button>}@if(canCancelLeaveRequest(request)){<drive-os-button variant="outline" icon="calendar-x" (pressed)="openLeaveRequestActionDrawer(request,'cancel')">{{'workforce.employeeDetail.leave.requests.cancel'|translate}}</drive-os-button>}</div></div></article>}</div>}
+        } @else {
+          <div class="mt-5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100">{{'workforce.employeeDetail.leave.policies.scopeNote'|translate}}</div>
+          @if (!canReadLeavePolicies()) {<div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900">{{'workforce.employeeDetail.leave.policies.noReadPermission'|translate}}</div>}
+          @else if (!leavePolicies().length) {<div class="mt-6 rounded-2xl border border-dashed border-[var(--driveos-border)] px-6 py-12 text-center"><i class="ph ph-sliders-horizontal text-4xl text-[var(--driveos-text-tertiary)]"></i><h3 class="mt-3 font-black">{{'workforce.employeeDetail.leave.policies.emptyTitle'|translate}}</h3></div>}
+          @else {<div class="mt-5 grid gap-4 xl:grid-cols-2">@for(policy of leavePolicies(); track policy.id){<article class="rounded-2xl border border-[var(--driveos-border)] p-5"><div class="flex flex-wrap items-center gap-2"><h3 class="font-black">{{policy.name}}</h3><drive-os-status-badge [tone]="policy.status==='Active'?'success':'neutral'" [label]="('workforce.leavePolicyStatus.'+policy.status)|translate"/></div><p class="mt-1 text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{policy.countryCode}} · {{policy.code}} · {{('workforce.leaveCategory.'+policy.category)|translate}}</p><div class="mt-4 grid gap-2 text-sm sm:grid-cols-2"><p>{{'workforce.employeeDetail.leave.policies.paid'|translate}}: <strong>{{(policy.isPaid?'common.yes':'common.no')|translate}}</strong></p><p>{{'workforce.employeeDetail.leave.policies.approval'|translate}}: <strong>{{(policy.requiresApproval?'common.yes':'common.no')|translate}}</strong></p><p>{{'workforce.employeeDetail.leave.policies.evidence'|translate}}: <strong>{{(policy.requiresEvidence?'common.yes':'common.no')|translate}}</strong></p><p>{{'workforce.employeeDetail.leave.policies.halfDay'|translate}}: <strong>{{(policy.allowHalfDay?'common.yes':'common.no')|translate}}</strong></p><p>{{'workforce.employeeDetail.leave.policies.notice'|translate}}: <strong>{{policy.minimumNoticeDays ?? '—'}}</strong></p><p>{{'workforce.employeeDetail.leave.policies.maxDays'|translate}}: <strong>{{policy.maximumConsecutiveDays ?? '—'}}</strong></p></div>@if(canManageLeavePolicies()){<div class="mt-4 flex gap-2"><drive-os-button variant="outline" icon="pencil-simple" (pressed)="openLeavePolicyEditDrawer(policy)">{{'common.edit'|translate}}</drive-os-button><drive-os-button [variant]="policy.status==='Active'?'danger':'outline'" [icon]="policy.status==='Active'?'pause-circle':'play-circle'" (pressed)="openLeavePolicyStatusDrawer(policy)">{{(policy.status==='Active'?'workforce.employeeDetail.leave.policies.deactivate':'workforce.employeeDetail.leave.policies.reactivate')|translate}}</drive-os-button></div>}</article>}</div>}
+        }
+      </section>
+    } @else if (activeTab() === 'time') {
+      <section class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 sm:p-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between"><div><h2 class="text-lg font-black">{{'workforce.employeeDetail.time.title'|translate}}</h2><p class="mt-1 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{'workforce.employeeDetail.time.description'|translate}}</p></div>@if(timeView()==='summary'&&canManageWorkingTime()&&item.status!=='Ended'){<drive-os-button icon="plus" (pressed)="openWorkingTimePolicyCreateDrawer()">{{'workforce.employeeDetail.time.policy.create'|translate}}</drive-os-button>}@else if(timeView()==='timesheets'&&canManageTimesheets()&&item.status!=='Ended'){<drive-os-button icon="plus" (pressed)="openTimesheetCreateDrawer()">{{'workforce.employeeDetail.time.timesheets.create'|translate}}</drive-os-button>}</div>
+        <div class="mt-5 inline-flex rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-hover)] p-1"><button type="button" [class]="timeView()==='summary'?'rounded-lg bg-[var(--driveos-surface-card)] px-4 py-2 text-sm font-black shadow-sm':'rounded-lg px-4 py-2 text-sm font-bold text-[var(--driveos-text-secondary)]'" (click)="timeView.set('summary')">{{'workforce.employeeDetail.time.subTabs.summary'|translate}}</button><button type="button" [class]="timeView()==='timesheets'?'rounded-lg bg-[var(--driveos-surface-card)] px-4 py-2 text-sm font-black shadow-sm':'rounded-lg px-4 py-2 text-sm font-bold text-[var(--driveos-text-secondary)]'" (click)="timeView.set('timesheets')">{{'workforce.employeeDetail.time.subTabs.timesheets'|translate}}</button></div>
+        @if(timeView()==='summary'){
+          @if(!canReadWorkingTime()){<div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900">{{'workforce.employeeDetail.time.noReadPermission'|translate}}</div>}@else{
+            <form [formGroup]="workingTimeSummaryForm" class="mt-5 flex flex-wrap items-end gap-3"><div><label class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.time.from'|translate}}</label><input type="date" formControlName="from" class="mt-1 block rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.time.to'|translate}}</label><input type="date" formControlName="to" class="mt-1 block rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><drive-os-button variant="outline" icon="arrows-clockwise" [loading]="summaryLoading()" (pressed)="loadWorkingTimeSummary()">{{'workforce.employeeDetail.time.summary.calculate'|translate}}</drive-os-button></form>
+            @if (workingTimeSummary(); as summary){<div class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5"><div class="rounded-2xl bg-[var(--driveos-surface-hover)] p-4"><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.time.summary.contractual'|translate}}</p><p class="mt-2 text-2xl font-black">{{summary.contractualHours|number:'1.0-2'}} h</p></div><div class="rounded-2xl bg-[var(--driveos-surface-hover)] p-4"><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.time.summary.planned'|translate}}</p><p class="mt-2 text-2xl font-black">{{summary.plannedHours|number:'1.0-2'}} h</p></div><div class="rounded-2xl bg-[var(--driveos-surface-hover)] p-4"><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.time.summary.actualTeaching'|translate}}</p><p class="mt-2 text-2xl font-black">{{summary.actualTeachingHours|number:'1.0-2'}} h</p></div><div class="rounded-2xl bg-[var(--driveos-surface-hover)] p-4"><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.time.summary.leave'|translate}}</p><p class="mt-2 text-2xl font-black">{{summary.approvedLeaveHours|number:'1.0-2'}} h</p></div><div class="rounded-2xl bg-[var(--driveos-surface-hover)] p-4"><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.time.summary.variance'|translate}}</p><p class="mt-2 text-2xl font-black">{{summary.varianceToContractHours|number:'1.0-2'}} h</p></div></div>}
+            <div class="mt-6"><h3 class="font-black">{{'workforce.employeeDetail.time.policy.title'|translate}}</h3>@if(!workingTimePolicies().length){<div class="mt-3 rounded-xl border border-dashed border-[var(--driveos-border)] p-7 text-center text-sm text-[var(--driveos-text-secondary)]">{{'workforce.employeeDetail.time.policy.empty'|translate}}</div>}@else{<div class="mt-3 grid gap-4 xl:grid-cols-2">@for(policy of workingTimePolicies();track policy.id){<article class="rounded-2xl border border-[var(--driveos-border)] p-5"><div class="flex items-center justify-between gap-3"><strong>{{policy.effectiveFrom|date:'mediumDate'}} → {{policy.effectiveTo?(policy.effectiveTo|date:'mediumDate'):('workforce.employeeDetail.time.openEnded'|translate)}}</strong><drive-os-status-badge [tone]="workingTimePolicyTone(policy.status)" [label]="('workforce.workingTimePolicyStatus.'+policy.status)|translate"/></div><dl class="mt-4 grid gap-3 sm:grid-cols-3 text-sm"><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.time.policy.weekly'|translate}}</dt><dd class="font-bold">{{policy.contractualWeeklyHours|number:'1.0-2'}} h</dd></div><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.time.policy.daily'|translate}}</dt><dd class="font-bold">{{policy.contractualDailyHours??'—'}} h</dd></div><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.time.policy.maxDays'|translate}}</dt><dd class="font-bold">{{policy.maxWorkingDaysPerWeek??'—'}}</dd></div></dl>@if(canManageWorkingTime()&&policy.status==='Active'){<div class="mt-4 flex gap-2"><drive-os-button variant="outline" icon="pencil-simple" (pressed)="openWorkingTimePolicyEditDrawer(policy)">{{'common.edit'|translate}}</drive-os-button><drive-os-button variant="danger" icon="pause-circle" (pressed)="openWorkingTimePolicyDeactivateDrawer(policy)">{{'workforce.employeeDetail.time.policy.deactivate'|translate}}</drive-os-button></div>}</article>}</div>}</div>
+          }
+        } @else {
+          @if(!canReadTimesheets()){<div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900">{{'workforce.employeeDetail.time.timesheets.noReadPermission'|translate}}</div>}@else if(!timesheets().length){<div class="mt-6 rounded-2xl border border-dashed border-[var(--driveos-border)] px-6 py-12 text-center"><i class="ph ph-clock-counter-clockwise text-4xl text-[var(--driveos-text-tertiary)]"></i><h3 class="mt-3 font-black">{{'workforce.employeeDetail.time.timesheets.emptyTitle'|translate}}</h3><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{'workforce.employeeDetail.time.timesheets.emptyDescription'|translate}}</p></div>}@else{<div class="mt-5 space-y-4">@for(sheet of timesheets();track sheet.id){<article class="rounded-2xl border border-[var(--driveos-border)] p-5"><div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"><div><div class="flex flex-wrap items-center gap-2"><h3 class="font-black">{{sheet.periodFrom|date:'mediumDate'}} → {{sheet.periodTo|date:'mediumDate'}}</h3><drive-os-status-badge [tone]="timesheetTone(sheet.status)" [label]="('workforce.timesheetStatus.'+sheet.status)|translate"/></div><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{sheet.totalHours|number:'1.0-2'}} h · {{sheet.entries.length}} {{'workforce.employeeDetail.time.timesheets.entries'|translate}}</p></div><div class="flex flex-wrap gap-2">@if(canEditTimesheet(sheet)){<drive-os-button variant="outline" icon="plus" (pressed)="openTimesheetEntryDrawer(sheet)">{{'workforce.employeeDetail.time.timesheets.addEntry'|translate}}</drive-os-button>}@if(canSubmitTimesheet(sheet)){<drive-os-button icon="paper-plane-tilt" (pressed)="openTimesheetActionDrawer(sheet,'submit')">{{'workforce.employeeDetail.time.timesheets.submit'|translate}}</drive-os-button>}@if(canReviewTimesheet(sheet)){<drive-os-button icon="magnifying-glass" (pressed)="openTimesheetActionDrawer(sheet,'review')">{{'workforce.employeeDetail.time.timesheets.startReview'|translate}}</drive-os-button>}@if(canDecideTimesheet(sheet)){<drive-os-button icon="check-circle" (pressed)="openTimesheetActionDrawer(sheet,'approve')">{{'workforce.employeeDetail.time.timesheets.approve'|translate}}</drive-os-button><drive-os-button variant="danger" icon="x-circle" (pressed)="openTimesheetActionDrawer(sheet,'reject')">{{'workforce.employeeDetail.time.timesheets.reject'|translate}}</drive-os-button>}@if(canLockTimesheet(sheet)){<drive-os-button icon="lock" (pressed)="openTimesheetActionDrawer(sheet,'lock')">{{'workforce.employeeDetail.time.timesheets.lock'|translate}}</drive-os-button>}</div></div>@if(sheet.decisionReason){<p class="mt-3 rounded-xl bg-[var(--driveos-surface-hover)] p-3 text-sm">{{sheet.decisionReason}}</p>}@if(sheet.entries.length){<div class="mt-4 overflow-x-auto"><table class="w-full min-w-[720px] text-left text-sm"><thead class="text-xs uppercase text-[var(--driveos-text-tertiary)]"><tr><th class="pb-2">{{'workforce.employeeDetail.time.date'|translate}}</th><th class="pb-2">{{'workforce.employeeDetail.time.timesheets.activity'|translate}}</th><th class="pb-2">{{'workforce.employeeDetail.time.timesheets.hours'|translate}}</th><th class="pb-2">{{'workforce.employeeDetail.time.timesheets.source'|translate}}</th><th class="pb-2">{{'workforce.employeeDetail.time.descriptionField'|translate}}</th><th></th></tr></thead><tbody>@for(entry of sheet.entries;track entry.id){<tr class="border-t border-[var(--driveos-border)]"><td class="py-3">{{entry.date|date:'mediumDate'}}</td><td>{{('workforce.timesheetActivityType.'+entry.activityType)|translate}}</td><td class="font-bold">{{entry.hours|number:'1.0-2'}} h</td><td>{{('workforce.timesheetEntrySource.'+entry.source)|translate}}</td><td>{{entry.description||'—'}}</td><td class="text-right">@if(canEditTimesheet(sheet)){<div class="flex justify-end gap-1"><button type="button" class="rounded-lg p-2 hover:bg-[var(--driveos-surface-hover)]" (click)="openTimesheetEntryDrawer(sheet,entry)"><i class="ph ph-pencil-simple"></i></button><button type="button" class="rounded-lg p-2 text-red-700 hover:bg-red-50" (click)="openTimesheetEntryRemoveDrawer(sheet,entry)"><i class="ph ph-trash"></i></button></div>}</td></tr>}</tbody></table></div>}</article>}</div>}
+        }
+      </section>
+    } @else if (activeTab() === 'equipment') {
+      <section class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 sm:p-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div><h2 class="text-lg font-black">{{ 'workforce.employeeDetail.equipment.title' | translate }}</h2><p class="mt-1 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.equipment.description' | translate }}</p></div>
+          @if (canManageEquipmentAssignments() && item.status !== 'Ended') {<drive-os-button icon="plus" (pressed)="openEquipmentCreateDrawer()">{{ 'workforce.employeeDetail.equipment.create' | translate }}</drive-os-button>}
+        </div>
+        <div class="mt-5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100">{{ 'workforce.employeeDetail.equipment.resourceBoundary' | translate }}</div>
+        @if (!canReadEquipmentAssignments()) {
+          <div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900">{{ 'workforce.employeeDetail.equipment.noReadPermission' | translate }}</div>
+        } @else if (!equipmentAssignments().length) {
+          <div class="mt-6 rounded-2xl border border-dashed border-[var(--driveos-border)] px-6 py-12 text-center"><i class="ph ph-device-mobile text-4xl text-[var(--driveos-text-tertiary)]"></i><h3 class="mt-3 font-black">{{ 'workforce.employeeDetail.equipment.empty' | translate }}</h3></div>
+        } @else {
+          <div class="mt-5 grid gap-4 xl:grid-cols-2">
+            @for (assignment of equipmentAssignments(); track assignment.id) {
+              <article class="rounded-2xl border border-[var(--driveos-border)] p-5">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                  <div><h3 class="font-black">{{ ('workforce.employeeDetail.equipment.resourceTypes.' + assignment.resourceType) | translate }}</h3><p class="mt-1 break-all text-xs font-mono text-[var(--driveos-text-tertiary)]">{{ assignment.resourceId }}</p></div>
+                  <drive-os-status-badge [tone]="equipmentTone(assignment.status)" [label]="('workforce.employeeDetail.equipment.status.' + assignment.status) | translate" />
+                </div>
+                <dl class="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+                  <div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.equipment.period' | translate }}</dt><dd class="font-bold">{{ assignment.startDate | date:'mediumDate' }} → {{ assignment.plannedEndDate ? (assignment.plannedEndDate | date:'mediumDate') : '—' }}</dd></div>
+                  <div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.equipment.handover' | translate }}</dt><dd>{{ ('workforce.employeeDetail.equipment.condition.' + assignment.handoverCondition) | translate }}</dd></div>
+                  <div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.equipment.return' | translate }}</dt><dd>@if(assignment.returnedOn){ {{ assignment.returnedOn | date:'mediumDate' }} · {{ ('workforce.employeeDetail.equipment.condition.' + assignment.returnCondition) | translate }} } @else { — }</dd></div>
+                  <div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.equipment.notes' | translate }}</dt><dd>{{ assignment.returnNotes || assignment.handoverNotes || assignment.cancellationReason || '—' }}</dd></div>
+                </dl>
+                @if (canManageEquipmentAssignments()) {
+                  <div class="mt-4 flex flex-wrap gap-2">
+                    @if (canEditEquipment(assignment)) {<drive-os-button variant="outline" icon="pencil-simple" (pressed)="openEquipmentEditDrawer(assignment)">{{ 'workforce.employeeDetail.equipment.actions.edit' | translate }}</drive-os-button>}
+                    @if (canHandOverEquipment(assignment)) {<drive-os-button icon="hand" (pressed)="openEquipmentHandoverDrawer(assignment)">{{ 'workforce.employeeDetail.equipment.actions.handover' | translate }}</drive-os-button>}
+                    @if (canReturnEquipment(assignment)) {<drive-os-button icon="arrow-u-up-left" (pressed)="openEquipmentReturnDrawer(assignment)">{{ 'workforce.employeeDetail.equipment.actions.return' | translate }}</drive-os-button>}
+                    @if (canCancelEquipment(assignment)) {<drive-os-button variant="danger" icon="x-circle" (pressed)="openEquipmentCancelDrawer(assignment)">{{ 'workforce.employeeDetail.equipment.actions.cancel' | translate }}</drive-os-button>}
+                  </div>
+                }
+              </article>
+            }
+          </div>
+        }
+      </section>
+    } @else if (activeTab() === 'reviews') {
+      <section class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 sm:p-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div><h2 class="text-lg font-black">{{ 'workforce.employeeDetail.reviews.title' | translate }}</h2><p class="mt-1 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.reviews.description' | translate }}</p></div>
+          @if (canManagePerformanceReviews() && item.status !== 'Ended') {<drive-os-button icon="plus" (pressed)="openPerformanceReviewCreateDrawer()">{{ 'workforce.employeeDetail.reviews.create' | translate }}</drive-os-button>}
+        </div>
+        <div class="mt-5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100">{{ 'workforce.employeeDetail.reviews.boundaryNote' | translate }}</div>
+        @if (!canReadPerformanceReviews()) {
+          <div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900">{{ 'workforce.employeeDetail.reviews.noReadPermission' | translate }}</div>
+        } @else if (!performanceReviews().length) {
+          <div class="mt-6 rounded-2xl border border-dashed border-[var(--driveos-border)] px-6 py-12 text-center"><i class="ph ph-chart-line-up text-4xl text-[var(--driveos-text-tertiary)]"></i><h3 class="mt-3 font-black">{{ 'workforce.employeeDetail.reviews.emptyTitle' | translate }}</h3><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.reviews.emptyDescription' | translate }}</p></div>
+        } @else {
+          <div class="mt-5 space-y-5">
+            @for (review of performanceReviews(); track review.id) {
+              <article class="rounded-2xl border border-[var(--driveos-border)] p-5">
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div><div class="flex flex-wrap items-center gap-2"><h3 class="font-black">{{ review.title }}</h3><drive-os-status-badge [tone]="performanceReviewTone(review.status)" [label]="('workforce.performanceReviewStatus.' + review.status) | translate" /></div><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ review.periodFrom | date:'mediumDate' }} → {{ review.periodTo | date:'mediumDate' }}</p><p class="mt-1 text-xs font-mono text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.reviews.evaluator' | translate }}: {{ review.evaluatorUserId }}</p></div>
+                  @if (weightedReviewScore(review) !== null) {<div class="rounded-xl bg-[var(--driveos-surface-hover)] px-4 py-3 text-center"><div class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.reviews.weightedScore' | translate }}</div><div class="mt-1 text-2xl font-black">{{ weightedReviewScore(review) | number:'1.1-2' }} / 5</div></div>}
+                </div>
+                <div class="mt-5 grid gap-3 lg:grid-cols-2">
+                  @for (criterion of review.criteria; track criterion.id) {
+                    <div class="rounded-xl border border-[var(--driveos-border)] p-4">
+                      <div class="flex items-start justify-between gap-3"><div><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ criterion.code }} · {{ criterion.weight }}%</p><h4 class="mt-1 font-black">{{ criterion.label }}</h4></div><span class="rounded-full bg-[var(--driveos-surface-hover)] px-3 py-1 text-sm font-black">{{ criterion.rating ?? '—' }} / 5</span></div>
+                      @if (criterion.comment) {<p class="mt-3 text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ criterion.comment }}</p>}
+                      @if (canEditPerformanceReview(review)) {<div class="mt-3"><drive-os-button variant="outline" icon="star" (pressed)="openPerformanceReviewCriterionDrawer(review, criterion)">{{ 'workforce.employeeDetail.reviews.rate' | translate }}</drive-os-button></div>}
+                    </div>
+                  }
+                </div>
+                @if (review.overallAssessment || review.objectives) {<div class="mt-5 grid gap-4 lg:grid-cols-2"><div class="rounded-xl bg-[var(--driveos-surface-hover)] p-4"><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.reviews.overallAssessment' | translate }}</p><p class="mt-2 whitespace-pre-line text-sm leading-6">{{ review.overallAssessment || '—' }}</p></div><div class="rounded-xl bg-[var(--driveos-surface-hover)] p-4"><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.reviews.objectives' | translate }}</p><p class="mt-2 whitespace-pre-line text-sm leading-6">{{ review.objectives || '—' }}</p></div></div>}
+                @if (review.employeeComment) {<div class="mt-4 rounded-xl border border-[var(--driveos-border)] p-4"><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.reviews.employeeComment' | translate }}</p><p class="mt-2 whitespace-pre-line text-sm">{{ review.employeeComment }}</p></div>}
+                @if (review.cancellationReason) {<div class="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">{{ review.cancellationReason }}</div>}
+                <div class="mt-5 flex flex-wrap gap-2">
+                  @if (canEditPerformanceReview(review)) {<drive-os-button variant="outline" icon="plus" (pressed)="openPerformanceReviewCriterionDrawer(review)">{{ 'workforce.employeeDetail.reviews.addCriterion' | translate }}</drive-os-button><drive-os-button variant="outline" icon="note-pencil" (pressed)="openPerformanceReviewSummaryDrawer(review)">{{ 'workforce.employeeDetail.reviews.editSummary' | translate }}</drive-os-button>}
+                  @if (canStartPerformanceReview(review)) {<drive-os-button icon="play" (pressed)="openPerformanceReviewActionDrawer(review,'start')">{{ 'workforce.employeeDetail.reviews.start' | translate }}</drive-os-button>}
+                  @if (canSubmitPerformanceReview(review)) {<drive-os-button icon="paper-plane-tilt" (pressed)="openPerformanceReviewActionDrawer(review,'submit')">{{ 'workforce.employeeDetail.reviews.submit' | translate }}</drive-os-button>}
+                  @if (canAcknowledgePerformanceReview(review)) {<drive-os-button icon="signature" (pressed)="openPerformanceReviewActionDrawer(review,'acknowledge')">{{ 'workforce.employeeDetail.reviews.acknowledge' | translate }}</drive-os-button>}
+                  @if (canCompletePerformanceReview(review)) {<drive-os-button icon="check-circle" (pressed)="openPerformanceReviewActionDrawer(review,'complete')">{{ 'workforce.employeeDetail.reviews.complete' | translate }}</drive-os-button>}
+                  @if (canCancelPerformanceReview(review)) {<drive-os-button variant="danger" icon="x-circle" (pressed)="openPerformanceReviewActionDrawer(review,'cancel')">{{ 'workforce.employeeDetail.reviews.cancel' | translate }}</drive-os-button>}
+                </div>
+              </article>
+            }
+          </div>
+        }
+      </section>
+    } @else if (activeTab() === 'documents') {
+      <section class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 sm:p-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div><h2 class="text-lg font-black">{{ 'workforce.employeeDetail.documents.title' | translate }}</h2><p class="mt-1 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.documents.description' | translate }}</p></div>
+          @if (canManageEmployeeDocuments() && item.status !== 'Ended') {<drive-os-button icon="plus" (pressed)="openEmployeeDocumentCreateDrawer()">{{ 'workforce.employeeDetail.documents.create' | translate }}</drive-os-button>}
+        </div>
+        <div class="mt-5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100">{{ 'workforce.employeeDetail.documents.boundaryNote' | translate }}</div>
+        @if (!canReadEmployeeDocuments()) {
+          <div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900">{{ 'workforce.employeeDetail.documents.noReadPermission' | translate }}</div>
+        } @else if (!employeeDocuments().length) {
+          <div class="mt-6 rounded-2xl border border-dashed border-[var(--driveos-border)] px-6 py-12 text-center"><i class="ph ph-folder-open text-4xl text-[var(--driveos-text-tertiary)]"></i><h3 class="mt-3 font-black">{{ 'workforce.employeeDetail.documents.emptyTitle' | translate }}</h3><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.documents.emptyDescription' | translate }}</p></div>
+        } @else {
+          <div class="mt-5 space-y-4">
+            @for (doc of employeeDocuments(); track doc.id) {
+              <article class="rounded-2xl border border-[var(--driveos-border)] p-5">
+                <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                  <div class="min-w-0 flex-1">
+                    <div class="flex flex-wrap items-center gap-2"><h3 class="font-black">{{ doc.title }}</h3><drive-os-status-badge [tone]="employeeDocumentTone(doc.status)" [label]="('workforce.employeeDocumentStatus.'+doc.status)|translate"/><span class="rounded-full bg-[var(--driveos-surface-hover)] px-2.5 py-1 text-xs font-extrabold">{{('workforce.employeeDocumentConfidentiality.'+doc.confidentiality)|translate}}</span>@if(doc.isExpired){<span class="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-extrabold text-orange-800">{{'workforce.employeeDetail.documents.expired'|translate}}</span>}</div>
+                    <p class="mt-1 text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{('workforce.employeeDocumentCategory.'+doc.category)|translate}} · {{doc.documentTypeCode}}</p>
+                    <dl class="mt-4 grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-3"><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.documents.fields.validity'|translate}}</dt><dd>{{doc.validFrom ? (doc.validFrom|date:'mediumDate') : (doc.issuedOn ? (doc.issuedOn|date:'mediumDate') : '—')}} → {{doc.expiresOn ? (doc.expiresOn|date:'mediumDate') : ('workforce.employeeDetail.documents.noExpiry'|translate)}}</dd></div><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.documents.fields.issuer'|translate}}</dt><dd>{{doc.issuer || '—'}}</dd></div><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.documents.fields.referenceNumber'|translate}}</dt><dd>{{doc.referenceNumber || '—'}}</dd></div></dl>
+                    <div class="mt-4 rounded-xl bg-[var(--driveos-surface-hover)] p-3 text-sm"><span class="font-bold">{{'workforce.employeeDetail.documents.fields.documentReferenceId'|translate}}:</span> @if(doc.documentReferenceId){<span class="ml-2 break-all font-mono text-xs">{{doc.documentReferenceId}}</span>}@else{<span class="ml-2 font-bold text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.documents.protectedReference'|translate}}</span>}</div>
+                    @if(doc.verifiedAtUtc){<p class="mt-3 text-xs text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.documents.verifiedAt'|translate}} {{doc.verifiedAtUtc|date:'medium'}} @if(doc.verifiedByUserId){· {{doc.verifiedByUserId}}}</p>}
+                    @if(doc.revocationReason){<div class="mt-3 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-900">{{doc.revocationReason}}</div>}
+                    @if(doc.supersededByEmployeeDocumentId){<p class="mt-3 break-all text-xs text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.documents.supersededBy'|translate}}: {{doc.supersededByEmployeeDocumentId}}</p>}
+                  </div>
+                  <div class="flex flex-wrap gap-2 xl:max-w-sm xl:justify-end">@if(canEditEmployeeDocument(doc)){<drive-os-button variant="outline" icon="pencil-simple" (pressed)="openEmployeeDocumentEditDrawer(doc)">{{'common.edit'|translate}}</drive-os-button>}@if(canVerifyEmployeeDocument(doc)){<drive-os-button icon="seal-check" (pressed)="openEmployeeDocumentActionDrawer(doc,'verify')">{{'workforce.employeeDetail.documents.actions.verify'|translate}}</drive-os-button>}@if(canRevealEmployeeDocument(doc)){<drive-os-button variant="outline" icon="eye" (pressed)="openEmployeeDocumentActionDrawer(doc,'reveal')">{{'workforce.employeeDetail.documents.actions.reveal'|translate}}</drive-os-button>}@if(canSupersedeEmployeeDocument(doc)){<drive-os-button variant="outline" icon="arrows-clockwise" (pressed)="openEmployeeDocumentActionDrawer(doc,'supersede')">{{'workforce.employeeDetail.documents.actions.supersede'|translate}}</drive-os-button>}@if(canRevokeEmployeeDocument(doc)){<drive-os-button variant="danger" icon="prohibit" (pressed)="openEmployeeDocumentActionDrawer(doc,'revoke')">{{'workforce.employeeDetail.documents.actions.revoke'|translate}}</drive-os-button>}@if(canArchiveEmployeeDocument(doc)){<drive-os-button variant="outline" icon="archive" (pressed)="openEmployeeDocumentActionDrawer(doc,'archive')">{{'workforce.employeeDetail.documents.actions.archive'|translate}}</drive-os-button>}</div>
+                </div>
+              </article>
+            }
+          </div>
+        }
+      </section>
+    } @else if (activeTab() === 'qualifications') {
+      <section class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 sm:p-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div><h2 class="text-lg font-black">{{ 'workforce.employeeDetail.qualifications.title' | translate }}</h2><p class="mt-1 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.qualifications.description' | translate }}</p></div>
+          @if (qualificationView() === 'qualifications' && canManageQualifications() && item.status !== 'Ended') {<drive-os-button icon="plus" (pressed)="openQualificationDeclareDrawer()">{{ 'workforce.employeeDetail.qualifications.declare' | translate }}</drive-os-button>}
+          @else if (qualificationView() === 'authorizations' && canManageInstructorAuthorizations() && item.status !== 'Ended') {<drive-os-button icon="plus" (pressed)="openAuthorizationDeclareDrawer()">{{ 'workforce.employeeDetail.authorizations.declare' | translate }}</drive-os-button>}
+        </div>
+        <div class="mt-5 inline-flex rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-hover)] p-1">
+          <button type="button" [class]="qualificationView()==='qualifications' ? 'rounded-lg bg-[var(--driveos-surface-card)] px-4 py-2 text-sm font-black shadow-sm' : 'rounded-lg px-4 py-2 text-sm font-bold text-[var(--driveos-text-secondary)]'" (click)="qualificationView.set('qualifications')">{{ 'workforce.employeeDetail.qualifications.subTabs.qualifications' | translate }}</button>
+          <button type="button" [class]="qualificationView()==='authorizations' ? 'rounded-lg bg-[var(--driveos-surface-card)] px-4 py-2 text-sm font-black shadow-sm' : 'rounded-lg px-4 py-2 text-sm font-bold text-[var(--driveos-text-secondary)]'" (click)="qualificationView.set('authorizations')">{{ 'workforce.employeeDetail.qualifications.subTabs.authorizations' | translate }}</button>
+        </div>
+        @if (qualificationView() === 'qualifications') {
+          @if (!canReadQualifications()) {<div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900 dark:border-orange-900 dark:bg-orange-950/20 dark:text-orange-100">{{ 'workforce.employeeDetail.qualifications.noReadPermission' | translate }}</div>}
+          @else if (!qualifications().length) {<div class="mt-6 rounded-2xl border border-dashed border-[var(--driveos-border)] px-6 py-12 text-center"><i class="ph ph-certificate text-4xl text-[var(--driveos-text-tertiary)]"></i><h3 class="mt-3 font-black">{{ 'workforce.employeeDetail.qualifications.emptyTitle' | translate }}</h3><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.qualifications.emptyDescription' | translate }}</p></div>}
+          @else {<div class="mt-5 grid gap-4 xl:grid-cols-2">@for (q of qualifications(); track q.id) {<article class="rounded-2xl border border-[var(--driveos-border)] p-5"><div class="flex flex-wrap items-center gap-2"><h3 class="font-black">{{q.title}}</h3><drive-os-status-badge [tone]="credentialTone(q.status)" [label]="('workforce.credentialStatus.'+q.status)|translate"/>@if(isExpired(q.expiresOn)){<span class="rounded-full bg-orange-100 px-2 py-1 text-xs font-extrabold text-orange-800">{{'workforce.employeeDetail.qualifications.expired'|translate}}</span>}</div><p class="mt-1 text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{q.countryCode}} · {{q.qualificationType}}</p><dl class="mt-4 grid gap-3 sm:grid-cols-2 text-sm"><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.qualifications.fields.identifier'|translate}}</dt><dd>{{q.identifier || '—'}}</dd></div><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.qualifications.fields.issuer'|translate}}</dt><dd>{{q.issuingAuthority || '—'}}</dd></div><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.qualifications.fields.validity'|translate}}</dt><dd>{{q.issuedOn ? (q.issuedOn|date:'mediumDate') : '—'}} → {{q.expiresOn ? (q.expiresOn|date:'mediumDate') : ('workforce.employeeDetail.qualifications.noExpiry'|translate)}}</dd></div><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.qualifications.fields.source'|translate}}</dt><dd>{{('workforce.qualificationSource.'+q.source)|translate}}</dd></div></dl>@if(q.decisionReason){<p class="mt-4 rounded-xl bg-[var(--driveos-surface-hover)] p-3 text-sm">{{q.decisionReason}}</p>}@if(canVerifyQualifications() && canDecideCredential(q.status)){<div class="mt-4 flex gap-2"><drive-os-button variant="outline" icon="seal-check" (pressed)="openQualificationDecisionDrawer(q,'verify')">{{'workforce.employeeDetail.qualifications.verify'|translate}}</drive-os-button><drive-os-button variant="danger" icon="x-circle" (pressed)="openQualificationDecisionDrawer(q,'reject')">{{'workforce.employeeDetail.qualifications.reject'|translate}}</drive-os-button></div>}</article>}</div>}
+        } @else {
+          <div class="mt-5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100">{{ 'workforce.employeeDetail.authorizations.scopeNote' | translate }}</div>
+          @if (!canReadInstructorAuthorizations()) {<div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900">{{ 'workforce.employeeDetail.authorizations.noReadPermission' | translate }}</div>}
+          @else if (!instructorAuthorizations().length) {<div class="mt-6 rounded-2xl border border-dashed border-[var(--driveos-border)] px-6 py-12 text-center"><i class="ph ph-steering-wheel text-4xl text-[var(--driveos-text-tertiary)]"></i><h3 class="mt-3 font-black">{{'workforce.employeeDetail.authorizations.emptyTitle'|translate}}</h3><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{'workforce.employeeDetail.authorizations.emptyDescription'|translate}}</p></div>}
+          @else {<div class="mt-5 grid gap-4 xl:grid-cols-2">@for (a of instructorAuthorizations(); track a.id) {<article class="rounded-2xl border border-[var(--driveos-border)] p-5"><div class="flex flex-wrap items-center gap-2"><h3 class="font-black">{{a.authorizationType}}</h3><drive-os-status-badge [tone]="credentialTone(a.status)" [label]="('workforce.credentialStatus.'+a.status)|translate"/>@if(isExpired(a.expiresOn)){<span class="rounded-full bg-orange-100 px-2 py-1 text-xs font-extrabold text-orange-800">{{'workforce.employeeDetail.qualifications.expired'|translate}}</span>}</div><p class="mt-1 text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{a.countryCode}} · {{'workforce.employeeDetail.authorizations.category'|translate}} {{a.licenseCategoryCode}} @if(a.jurisdictionCode){· {{a.jurisdictionCode}}}</p><dl class="mt-4 grid gap-3 sm:grid-cols-2 text-sm"><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.authorizations.fields.identifier'|translate}}</dt><dd>{{a.identifier}}</dd></div><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.qualifications.fields.issuer'|translate}}</dt><dd>{{a.issuingAuthority}}</dd></div><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.qualifications.fields.validity'|translate}}</dt><dd>{{a.issuedOn ? (a.issuedOn|date:'mediumDate') : '—'}} → {{a.expiresOn ? (a.expiresOn|date:'mediumDate') : ('workforce.employeeDetail.qualifications.noExpiry'|translate)}}</dd></div><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.qualifications.fields.source'|translate}}</dt><dd>{{('workforce.qualificationSource.'+a.source)|translate}}</dd></div></dl>@if(a.decisionReason){<p class="mt-4 rounded-xl bg-[var(--driveos-surface-hover)] p-3 text-sm">{{a.decisionReason}}</p>}@if(canVerifyInstructorAuthorizations() && canDecideCredential(a.status)){<div class="mt-4 flex gap-2"><drive-os-button variant="outline" icon="seal-check" (pressed)="openAuthorizationDecisionDrawer(a,'verify')">{{'workforce.employeeDetail.qualifications.verify'|translate}}</drive-os-button><drive-os-button variant="danger" icon="x-circle" (pressed)="openAuthorizationDecisionDrawer(a,'reject')">{{'workforce.employeeDetail.qualifications.reject'|translate}}</drive-os-button></div>}</article>}</div>}
+        }
+      </section>
+    } @else if (activeTab() === 'restrictions') {
+      <section class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 sm:p-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div><h2 class="text-lg font-black">{{ 'workforce.employeeDetail.restrictions.title' | translate }}</h2><p class="mt-1 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.restrictions.description' | translate }}</p></div>
+          @if (canManageProfessionalRestrictions() && item.status !== 'Ended') {<drive-os-button icon="plus" (pressed)="openProfessionalRestrictionCreateDrawer()">{{ 'workforce.employeeDetail.restrictions.create' | translate }}</drive-os-button>}
+        </div>
+        <div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm leading-6 text-orange-950 dark:border-orange-900 dark:bg-orange-950/20 dark:text-orange-100"><div class="flex gap-3"><i class="ph ph-shield-warning mt-0.5 text-lg"></i><p>{{ 'workforce.employeeDetail.restrictions.boundaryNote' | translate }}</p></div></div>
+        @if (!canReadProfessionalRestrictions()) {
+          <div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900">{{ 'workforce.employeeDetail.restrictions.noReadPermission' | translate }}</div>
+        } @else if (!professionalRestrictions().length) {
+          <div class="mt-6 rounded-2xl border border-dashed border-[var(--driveos-border)] px-6 py-12 text-center"><i class="ph ph-shield-check text-4xl text-[var(--driveos-text-tertiary)]"></i><h3 class="mt-3 font-black">{{ 'workforce.employeeDetail.restrictions.emptyTitle' | translate }}</h3><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.restrictions.emptyDescription' | translate }}</p></div>
+        } @else {
+          <div class="mt-5 space-y-4">
+            @for (restriction of professionalRestrictions(); track restriction.id) {
+              <article class="rounded-2xl border border-[var(--driveos-border)] p-5">
+                <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                  <div class="min-w-0 flex-1">
+                    <div class="flex flex-wrap items-center gap-2"><h3 class="font-black">{{ ('workforce.professionalRestrictionActivity.'+restriction.activity) | translate }}</h3><drive-os-status-badge [tone]="professionalRestrictionTone(restriction.status)" [label]="('workforce.professionalRestrictionStatus.'+restriction.status)|translate"/><span class="rounded-full bg-[var(--driveos-surface-hover)] px-2.5 py-1 text-xs font-extrabold">{{('workforce.professionalRestrictionSource.'+restriction.source)|translate}}</span></div>
+                    <p class="mt-2 text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ restriction.reason }}</p>
+                    <dl class="mt-4 grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-3"><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.restrictions.fields.period'|translate}}</dt><dd>{{restriction.startDate|date:'mediumDate'}} → {{restriction.endDate ? (restriction.endDate|date:'mediumDate') : ('workforce.employeeDetail.restrictions.openEnded'|translate)}}</dd></div><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.restrictions.fields.scope'|translate}}</dt><dd>{{professionalRestrictionScope(restriction)}}</dd></div><div><dt class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.restrictions.fields.document'|translate}}</dt><dd class="break-all font-mono text-xs">{{restriction.supportingDocumentReferenceId || '—'}}</dd></div></dl>
+                    @if(restriction.liftReason){<div class="mt-3 rounded-xl border border-green-200 bg-green-50 p-3 text-sm text-green-900"><strong>{{'workforce.employeeDetail.restrictions.liftReason'|translate}}:</strong> {{restriction.liftReason}}</div>}
+                    @if(restriction.cancellationReason){<div class="mt-3 rounded-xl bg-[var(--driveos-surface-hover)] p-3 text-sm"><strong>{{'workforce.employeeDetail.restrictions.cancellationReason'|translate}}:</strong> {{restriction.cancellationReason}}</div>}
+                  </div>
+                  <div class="flex flex-wrap gap-2 xl:max-w-sm xl:justify-end">@if(canManageProfessionalRestrictions() && restriction.status==='Planned'){<drive-os-button variant="outline" icon="pencil-simple" (pressed)="openProfessionalRestrictionEditDrawer(restriction)">{{'common.edit'|translate}}</drive-os-button>}@if(canApplyProfessionalRestrictions() && restriction.status==='Planned'){<drive-os-button icon="shield-check" (pressed)="openProfessionalRestrictionActionDrawer(restriction,'activate')">{{'workforce.employeeDetail.restrictions.actions.activate'|translate}}</drive-os-button>}@if(canLiftProfessionalRestrictions() && restriction.status==='Active'){<drive-os-button variant="outline" icon="check-circle" (pressed)="openProfessionalRestrictionActionDrawer(restriction,'lift')">{{'workforce.employeeDetail.restrictions.actions.lift'|translate}}</drive-os-button>}@if(canManageProfessionalRestrictions() && restriction.status==='Planned'){<drive-os-button variant="danger" icon="x-circle" (pressed)="openProfessionalRestrictionActionDrawer(restriction,'cancel')">{{'common.cancel'|translate}}</drive-os-button>}</div>
+                </div>
+              </article>
+            }
+          </div>
+        }
+      </section>
+    } @else if (activeTab() === 'offboarding') {
+      <section class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 sm:p-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <h2 class="text-lg font-black">{{ 'workforce.employeeDetail.offboarding.title' | translate }}</h2>
+            <p class="mt-1 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.offboarding.description' | translate }}</p>
+          </div>
+          @if (offboarding() && canManageOffboarding() && offboarding()?.status !== 'Completed' && offboarding()?.status !== 'Cancelled') {
+            <drive-os-button variant="outline" icon="arrows-clockwise" (pressed)="openOffboardingRefreshDrawer()">{{ 'workforce.employeeDetail.offboarding.refresh' | translate }}</drive-os-button>
+          }
+        </div>
+
+        @if (!canReadOffboarding()) {
+          <div class="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900">{{ 'workforce.employeeDetail.offboarding.noReadPermission' | translate }}</div>
+        } @else if (!offboarding()) {
+          <div class="mt-6 rounded-2xl border border-dashed border-[var(--driveos-border)] px-6 py-12 text-center">
+            <i class="ph ph-sign-out text-4xl text-[var(--driveos-text-tertiary)]"></i>
+            <h3 class="mt-3 font-black">{{ 'workforce.employeeDetail.offboarding.emptyTitle' | translate }}</h3>
+            <p class="mx-auto mt-2 max-w-2xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.offboarding.emptyDescription' | translate }}</p>
+            @if (item.status !== 'Ending' && item.status !== 'Ended') {
+              <p class="mx-auto mt-3 max-w-2xl rounded-xl bg-[var(--driveos-surface-hover)] p-3 text-xs text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.offboarding.startHint' | translate }}</p>
+            }
+          </div>
+        } @else {
+          @if (offboarding(); as process) {
+            <div class="mt-5 grid gap-4 lg:grid-cols-4">
+              <div class="rounded-2xl border border-[var(--driveos-border)] p-4"><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.offboarding.status'|translate}}</p><div class="mt-2"><drive-os-status-badge [tone]="offboardingTone(process.status)" [label]="('workforce.offboardingStatus.'+process.status)|translate"/></div></div>
+              <div class="rounded-2xl border border-[var(--driveos-border)] p-4"><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.offboarding.plannedEndDate'|translate}}</p><p class="mt-2 font-black">{{process.plannedEndDate|date:'mediumDate'}}</p></div>
+              <div class="rounded-2xl border border-[var(--driveos-border)] p-4"><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.offboarding.progress'|translate}}</p><p class="mt-2 font-black">{{offboardingCompletedCount()}} / {{process.items.length}}</p></div>
+              <div class="rounded-2xl border border-[var(--driveos-border)] p-4"><p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.offboarding.reason'|translate}}</p><p class="mt-2 text-sm font-semibold">{{process.reason}}</p></div>
+            </div>
+
+            <div class="mt-5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100">
+              {{ 'workforce.employeeDetail.offboarding.boundaryNote' | translate }}
+            </div>
+
+            <div class="mt-5 space-y-3">
+              @for (check of process.items; track check.id) {
+                <article class="rounded-2xl border border-[var(--driveos-border)] p-4 sm:p-5">
+                  <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                    <div class="min-w-0 flex-1">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <h3 class="font-black">{{('workforce.offboardingItemKind.'+check.kind)|translate}}</h3>
+                        <drive-os-status-badge [tone]="offboardingItemTone(check.status)" [label]="('workforce.offboardingItemStatus.'+check.status)|translate"/>
+                        <span class="rounded-full bg-[var(--driveos-surface-hover)] px-2.5 py-1 text-xs font-extrabold">{{(check.isAutomatic?'workforce.employeeDetail.offboarding.automatic':'workforce.employeeDetail.offboarding.manual')|translate}}</span>
+                      </div>
+                      @if (check.blockerCount > 0) {<p class="mt-2 text-sm font-bold text-orange-700 dark:text-orange-300">{{'workforce.employeeDetail.offboarding.blockers'|translate:{count:check.blockerCount} }}</p>}
+                      @if (check.note) {<p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{check.note | translate}}</p>}
+                      @if (check.waiverReason) {<div class="mt-3 rounded-xl border border-orange-200 bg-orange-50 p-3 text-sm text-orange-900"><strong>{{'workforce.employeeDetail.offboarding.waiverReason'|translate}}:</strong> {{check.waiverReason}}</div>}
+                      @if (check.lastEvaluatedAtUtc) {<p class="mt-2 text-xs text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.offboarding.lastEvaluated'|translate}} {{check.lastEvaluatedAtUtc|date:'short'}}</p>}
+                    </div>
+                    @if (check.status === 'Pending' && process.status !== 'Completed' && process.status !== 'Cancelled') {
+                      <div class="flex flex-wrap gap-2">
+                        @if (!check.isAutomatic && canManageOffboarding()) {<drive-os-button icon="check-circle" (pressed)="openOffboardingItemDrawer(check)">{{'workforce.employeeDetail.offboarding.completeItem'|translate}}</drive-os-button>}
+                        @if (canWaiveOffboarding()) {<drive-os-button variant="outline" icon="warning" (pressed)="openOffboardingWaiveDrawer(check)">{{'workforce.employeeDetail.offboarding.waive'|translate}}</drive-os-button>}
+                      </div>
+                    }
+                  </div>
+                </article>
+              }
+            </div>
+
+            @if (process.status === 'ReadyToComplete' && canCompleteOffboarding()) {
+              <div class="mt-6 flex flex-col gap-3 rounded-2xl border border-green-200 bg-green-50 p-5 sm:flex-row sm:items-center sm:justify-between dark:border-green-900 dark:bg-green-950/20">
+                <div><h3 class="font-black text-green-950 dark:text-green-100">{{'workforce.employeeDetail.offboarding.readyTitle'|translate}}</h3><p class="mt-1 text-sm text-green-900 dark:text-green-200">{{'workforce.employeeDetail.offboarding.readyDescription'|translate}}</p></div>
+                <drive-os-button icon="check-circle" (pressed)="openOffboardingCompleteDrawer()">{{'workforce.employeeDetail.offboarding.completeEmployment'|translate}}</drive-os-button>
+              </div>
+            }
+          }
+        }
+      </section>
+  }
+  }
+</main>
+
+<drive-os-drawer
+  [open]="drawer() !== null"
+  [title]="drawerTitleKey() | translate"
+  [description]="drawerDescriptionKey() | translate"
+  size="md"
+  [closeDisabled]="saving()"
+  (closeRequested)="closeDrawer()"
+>
+  <div class="space-y-5 p-6">
+    @for (error of actionErrors(); track error) {
+      <drive-os-form-alert tone="danger" [title]="'workforce.employeeDetail.actionError' | translate" [message]="error" />
+    }
+
+    @if (drawer() === 'offboardingRefresh') {
+      <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100">{{'workforce.employeeDetail.offboarding.refreshHelp'|translate}}</div>
+    } @else if (drawer() === 'offboardingCompleteItem') {
+      <form [formGroup]="offboardingItemForm" class="space-y-4">
+        <div><p class="text-sm font-black">{{('workforce.offboardingItemKind.'+(selectedOffboardingItem()?.kind ?? ''))|translate}}</p><p class="mt-1 text-xs text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.offboarding.manualItemHelp'|translate}}</p></div>
+        <div><label class="text-sm font-bold">{{'workforce.employeeDetail.offboarding.note'|translate}}</label><textarea rows="5" formControlName="note" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></div>
+      </form>
+    } @else if (drawer() === 'offboardingWaiveItem') {
+      <form [formGroup]="offboardingWaiverForm" class="space-y-4"><div class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-950">{{'workforce.employeeDetail.offboarding.waiveHelp'|translate}}</div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.offboarding.waiverReason'|translate}}</label><textarea rows="5" formControlName="reason" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></div></form>
+    } @else if (drawer() === 'offboardingComplete') {
+      <form [formGroup]="offboardingCompletionForm" class="space-y-4"><div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-950 dark:border-red-900 dark:bg-red-950/20 dark:text-red-100">{{'workforce.employeeDetail.offboarding.completeHelp'|translate}}</div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.offboarding.completionReason'|translate}}</label><textarea rows="5" formControlName="reason" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></div></form>
+    } @else if (drawer() === 'restrictionCreate' || drawer() === 'restrictionEdit') {
+      <form [formGroup]="professionalRestrictionForm" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.restrictions.fields.activity'|translate}}</label><select formControlName="activity" [disabled]="drawer()==='restrictionEdit'" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(x of restrictionActivities;track x){<option [value]="x">{{('workforce.professionalRestrictionActivity.'+x)|translate}}</option>}</select></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.restrictions.fields.source'|translate}}</label><select formControlName="source" [disabled]="drawer()==='restrictionEdit'" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(x of restrictionSources;track x){<option [value]="x">{{('workforce.professionalRestrictionSource.'+x)|translate}}</option>}</select></div></div>
+        <div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.restrictions.fields.startDate'|translate}}</label><input type="date" formControlName="startDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.restrictions.fields.endDate'|translate}}</label><input type="date" formControlName="endDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div></div>
+        <div><label class="text-sm font-bold">{{'workforce.employeeDetail.restrictions.fields.reason'|translate}}</label><textarea rows="4" formControlName="reason" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></div>
+        <div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.restrictions.fields.country'|translate}}</label><input formControlName="countryCode" maxlength="8" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 uppercase"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.restrictions.fields.licenseCategory'|translate}}</label><input formControlName="licenseCategoryCode" maxlength="32" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 uppercase"/></div></div>
+        <div><label class="text-sm font-bold">{{'workforce.employeeDetail.restrictions.fields.branch'|translate}}</label><select formControlName="branchId" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5"><option value="">{{'workforce.employeeDetail.restrictions.allBranches'|translate}}</option>@for(branch of branches();track branch.id){<option [value]="branch.id">{{branch.name}} ({{branch.code}})</option>}</select></div>
+        <div><label class="text-sm font-bold">{{'workforce.employeeDetail.restrictions.fields.document'|translate}}</label><input formControlName="supportingDocumentReferenceId" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 font-mono text-sm"/><p class="mt-2 text-xs text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.restrictions.documentBoundary'|translate}}</p></div>
+      </form>
+    } @else if (drawer() === 'restrictionActivate') {
+      <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-900 dark:border-red-900 dark:bg-red-950/20 dark:text-red-100">{{'workforce.employeeDetail.restrictions.activateHelp'|translate}}</div>
+    } @else if (drawer() === 'restrictionLift' || drawer() === 'restrictionCancel') {
+      <form [formGroup]="professionalRestrictionReasonForm"><label class="text-sm font-bold">{{(drawer()==='restrictionLift'?'workforce.employeeDetail.restrictions.liftReason':'workforce.employeeDetail.restrictions.cancellationReason')|translate}}</label><textarea rows="5" formControlName="reason" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></form>
+    } @else if (drawer() === 'identity') {
+      <form class="space-y-5" [formGroup]="identityForm" (ngSubmit)="saveIdentity()">
+        <div>
+          <label class="text-sm font-bold" for="employeeNumber">{{ 'workforce.employeeDetail.employeeNumber' | translate }}</label>
+          <input id="employeeNumber" formControlName="employeeNumber" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20" />
+        </div>
+        <div>
+          <label class="text-sm font-bold" for="userId">{{ 'workforce.employeeDetail.userId' | translate }}</label>
+          <input id="userId" formControlName="userId" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 font-mono text-sm outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20" />
+          <p class="mt-2 text-xs text-[var(--driveos-text-tertiary)]">{{ 'workforce.employeeDetail.drawers.identity.userIdHelp' | translate }}</p>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label class="text-sm font-bold" for="employmentStartDate">{{ 'workforce.employeeDetail.startDate' | translate }}</label>
+            <input id="employmentStartDate" type="date" formControlName="employmentStartDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20" />
+          </div>
+          <div>
+            <label class="text-sm font-bold" for="employmentEndDate">{{ 'workforce.employeeDetail.endDate' | translate }}</label>
+            <input id="employmentEndDate" type="date" formControlName="employmentEndDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20" />
+          </div>
+        </div>
+      </form>
+    } @else if (drawer() === 'branchCreate' || drawer() === 'branchEdit') {
+      <form [formGroup]="branchAssignmentForm" class="space-y-5">
+        <div>
+          <label class="text-sm font-bold" for="branchAssignmentBranch">{{ 'workforce.employeeDetail.branches.fields.branch' | translate }}</label>
+          <select id="branchAssignmentBranch" formControlName="branchId" [disabled]="drawer() === 'branchEdit'" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20">
+            <option value="">{{ 'workforce.employeeDetail.branches.fields.selectBranch' | translate }}</option>
+            @for (branch of branches(); track branch.id) {
+              <option [value]="branch.id">{{ branch.name }} · {{ branch.code }} · {{ branch.city }}</option>
+            }
+          </select>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label class="text-sm font-bold" for="branchStartDate">{{ 'workforce.employeeDetail.branches.fields.startDate' | translate }}</label>
+            <input id="branchStartDate" type="date" formControlName="startDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20" />
+          </div>
+          <div>
+            <label class="text-sm font-bold" for="branchEndDate">{{ 'workforce.employeeDetail.branches.fields.endDate' | translate }}</label>
+            <input id="branchEndDate" type="date" formControlName="endDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20" />
+          </div>
+        </div>
+        <label class="flex items-start gap-3 rounded-xl border border-[var(--driveos-border)] p-4">
+          <input type="checkbox" formControlName="isPrimary" class="mt-1 size-4 rounded border-[var(--driveos-border)]" />
+          <span><span class="block font-bold">{{ 'workforce.employeeDetail.branches.fields.primary' | translate }}</span><span class="mt-1 block text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'workforce.employeeDetail.branches.fields.primaryHelp' | translate }}</span></span>
+        </label>
+      </form>
+    } @else if (drawer() === 'branchEnd') {
+      <form [formGroup]="branchEndForm" class="space-y-5">
+        <div class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm leading-6 text-orange-900 dark:border-orange-900 dark:bg-orange-950/20 dark:text-orange-100">{{ 'workforce.employeeDetail.drawers.branchEnd.warning' | translate }}</div>
+        <div>
+          <label class="text-sm font-bold" for="branchAssignmentEndDate">{{ 'workforce.employeeDetail.branches.fields.endDate' | translate }}</label>
+          <input id="branchAssignmentEndDate" type="date" formControlName="endDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20" />
+        </div>
+      </form>
+    } @else if (drawer() === 'branchCancel') {
+      <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-900 dark:border-red-900 dark:bg-red-950/20 dark:text-red-100">{{ 'workforce.employeeDetail.drawers.branchCancel.warning' | translate }}</div>
+    } @else if (drawer() === 'positionCreate' || drawer() === 'positionEdit') {
+      <form [formGroup]="jobPositionAssignmentForm" class="space-y-5">
+        <div><label class="text-sm font-bold">{{'workforce.employeeDetail.positions.fields.position'|translate}}</label><select formControlName="jobPositionId" [disabled]="drawer()==='positionEdit'" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5"><option value="">{{'workforce.employeeDetail.positions.fields.selectPosition'|translate}}</option>@for(position of jobPositions();track position.id){@if(position.status==='Active'||position.id===selectedJobPositionAssignment()?.jobPositionId){<option [value]="position.id">{{position.name}} · {{position.code}}</option>}}</select></div>
+        <div><label class="text-sm font-bold">{{'workforce.employeeDetail.positions.fields.branch'|translate}}</label><select formControlName="branchId" [disabled]="drawer()==='positionEdit'" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5"><option value="">{{'workforce.employeeDetail.positions.allBranches'|translate}}</option>@for(branch of branches();track branch.id){<option [value]="branch.id">{{branch.name}} · {{branch.code}}</option>}</select><p class="mt-2 text-xs text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.positions.fields.branchHelp'|translate}}</p></div>
+        <div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.positions.fields.startDate'|translate}}</label><input type="date" formControlName="startDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.positions.fields.endDate'|translate}}</label><input type="date" formControlName="endDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div></div>
+        <label class="flex items-start gap-3 rounded-xl border border-[var(--driveos-border)] p-4"><input type="checkbox" formControlName="isPrimary" class="mt-1 size-4"/><span><span class="block font-bold">{{'workforce.employeeDetail.positions.fields.primary'|translate}}</span><span class="mt-1 block text-sm text-[var(--driveos-text-secondary)]">{{'workforce.employeeDetail.positions.fields.primaryHelp'|translate}}</span></span></label>
+      </form>
+    } @else if (drawer() === 'positionEnd') {
+      <form [formGroup]="jobPositionEndForm" class="space-y-5"><div class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900 dark:border-orange-900 dark:bg-orange-950/20 dark:text-orange-100">{{'workforce.employeeDetail.drawers.positionEnd.warning'|translate}}</div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.positions.fields.endDate'|translate}}</label><input type="date" formControlName="endDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div></form>
+    } @else if (drawer() === 'positionCancel') {
+      <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900 dark:border-red-900 dark:bg-red-950/20 dark:text-red-100">{{'workforce.employeeDetail.drawers.positionCancel.warning'|translate}}</div>
+    } @else if (drawer() === 'leaveRequestCreate' || drawer() === 'leaveRequestEdit') {
+      <drive-os-button [loading]="saving()" [disabled]="leaveRequestForm.invalid" (pressed)="saveLeaveRequest()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leaveRequestSubmit') {
+      <drive-os-button [loading]="saving()" (pressed)="submitLeaveRequest()">{{'workforce.employeeDetail.leave.requests.submit'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leaveRequestApprove') {
+      <drive-os-button [loading]="saving()" (pressed)="approveLeaveRequest()">{{'workforce.employeeDetail.leave.requests.approve'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leaveRequestReject') {
+      <drive-os-button variant="danger" [loading]="saving()" [disabled]="leaveRejectForm.invalid" (pressed)="rejectLeaveRequest()">{{'workforce.employeeDetail.leave.requests.reject'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leaveRequestCancel') {
+      <drive-os-button variant="danger" [loading]="saving()" (pressed)="cancelLeaveRequest()">{{'workforce.employeeDetail.leave.requests.cancel'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leavePolicyCreate' || drawer() === 'leavePolicyEdit') {
+      <drive-os-button [loading]="saving()" [disabled]="leavePolicyForm.invalid" (pressed)="saveLeavePolicy()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leavePolicyDeactivate' || drawer() === 'leavePolicyReactivate') {
+      <drive-os-button [variant]="drawer()==='leavePolicyDeactivate'?'danger':'primary'" [loading]="saving()" (pressed)="changeLeavePolicyStatus()">{{(drawer()==='leavePolicyDeactivate'?'workforce.employeeDetail.leave.policies.deactivate':'workforce.employeeDetail.leave.policies.reactivate')|translate}}</drive-os-button>
+    } @else if (drawer() === 'contractCreate' || drawer() === 'contractEdit') {
+      <drive-os-button [loading]="saving()" [disabled]="employmentContractForm.invalid" (pressed)="saveEmploymentContract()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'contractDocument') {
+      <drive-os-button [loading]="saving()" [disabled]="employmentContractDocumentForm.invalid" (pressed)="linkEmploymentContractDocument()">{{'workforce.employeeDetail.contracts.actions.linkDocument'|translate}}</drive-os-button>
+    } @else if (drawer() === 'contractSigned') {
+      <drive-os-button [loading]="saving()" [disabled]="employmentContractSignedForm.invalid" (pressed)="markEmploymentContractSigned()">{{'workforce.employeeDetail.contracts.actions.markSigned'|translate}}</drive-os-button>
+    } @else if (drawer() === 'contractActivate') {
+      <drive-os-button [loading]="saving()" [disabled]="employmentContractActivationForm.invalid" (pressed)="activateEmploymentContract()">{{'workforce.employeeDetail.contracts.actions.activate'|translate}}</drive-os-button>
+    } @else if (drawer() === 'contractTerminate') {
+      <drive-os-button variant="danger" [loading]="saving()" [disabled]="employmentContractTerminationForm.invalid" (pressed)="terminateEmploymentContract()">{{'workforce.employeeDetail.contracts.actions.terminate'|translate}}</drive-os-button>
+    } @else if (drawer() === 'contractCancel') {
+      <drive-os-button variant="danger" [loading]="saving()" (pressed)="cancelEmploymentContract()">{{'common.cancel'|translate}}</drive-os-button>
+    } @else if (drawer() === 'qualificationDeclare') {
+      <form [formGroup]="qualificationForm" class="space-y-5"><div class="grid gap-4 sm:grid-cols-2"><input maxlength="2" formControlName="countryCode" [placeholder]="'workforce.employeeDetail.qualifications.fields.country'|translate" class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 uppercase"/><input formControlName="qualificationType" [placeholder]="'workforce.employeeDetail.qualifications.fields.type'|translate" class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><input formControlName="title" [placeholder]="'workforce.employeeDetail.qualifications.fields.title'|translate" class="w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/><div class="grid gap-4 sm:grid-cols-2"><input formControlName="identifier" [placeholder]="'workforce.employeeDetail.qualifications.fields.identifier'|translate" class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/><input formControlName="issuingAuthority" [placeholder]="'workforce.employeeDetail.qualifications.fields.issuer'|translate" class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div class="grid gap-4 sm:grid-cols-2"><input type="date" formControlName="issuedOn" class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/><input type="date" formControlName="expiresOn" class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><select formControlName="source" class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(source of qualificationSources;track source){<option [value]="source">{{('workforce.qualificationSource.'+source)|translate}}</option>}</select></form>
+    } @else if (drawer() === 'authorizationDeclare') {
+      <form [formGroup]="instructorAuthorizationForm" class="space-y-5"><div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950">{{'workforce.employeeDetail.authorizations.instructorFunctionRequired'|translate}}</div><div class="grid gap-4 sm:grid-cols-2"><input maxlength="2" formControlName="countryCode" class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 uppercase"/><input formControlName="licenseCategoryCode" class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 uppercase"/></div><input formControlName="authorizationType" class="w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/><div class="grid gap-4 sm:grid-cols-2"><input formControlName="identifier" class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/><input formControlName="issuingAuthority" class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><input formControlName="jurisdictionCode" [placeholder]="'workforce.employeeDetail.authorizations.fields.jurisdiction'|translate" class="w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/><div class="grid gap-4 sm:grid-cols-2"><input type="date" formControlName="issuedOn" class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/><input type="date" formControlName="expiresOn" class="rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><select formControlName="source" class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(source of qualificationSources;track source){<option [value]="source">{{('workforce.qualificationSource.'+source)|translate}}</option>}</select></form>
+    } @else if (drawer() === 'qualificationVerify' || drawer() === 'authorizationVerify') {
+      <form [formGroup]="verificationForm" class="space-y-5"><div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950">{{'workforce.employeeDetail.qualifications.verificationHelp'|translate}}</div><input formControlName="verificationMethod" [placeholder]="'workforce.employeeDetail.qualifications.fields.verificationMethod'|translate" class="w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/><textarea rows="4" formControlName="reason" [placeholder]="'workforce.employeeDetail.qualifications.fields.decisionReasonOptional'|translate" class="w-full resize-none rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></form>
+    } @else if (drawer() === 'qualificationReject' || drawer() === 'authorizationReject') {
+      <form [formGroup]="rejectionForm" class="space-y-5"><div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">{{'workforce.employeeDetail.qualifications.rejectionHelp'|translate}}</div><textarea rows="5" formControlName="reason" [placeholder]="'workforce.employeeDetail.qualifications.fields.reason'|translate" class="w-full resize-none rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></form>
+    } @else if (drawer() === 'leaveRequestCreate' || drawer() === 'leaveRequestEdit') {
+      <drive-os-button [loading]="saving()" [disabled]="leaveRequestForm.invalid" (pressed)="saveLeaveRequest()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leaveRequestSubmit') {
+      <drive-os-button [loading]="saving()" (pressed)="submitLeaveRequest()">{{'workforce.employeeDetail.leave.requests.submit'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leaveRequestApprove') {
+      <drive-os-button [loading]="saving()" (pressed)="approveLeaveRequest()">{{'workforce.employeeDetail.leave.requests.approve'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leaveRequestReject') {
+      <drive-os-button variant="danger" [loading]="saving()" [disabled]="leaveRejectForm.invalid" (pressed)="rejectLeaveRequest()">{{'workforce.employeeDetail.leave.requests.reject'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leaveRequestCancel') {
+      <drive-os-button variant="danger" [loading]="saving()" (pressed)="cancelLeaveRequest()">{{'workforce.employeeDetail.leave.requests.cancel'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leavePolicyCreate' || drawer() === 'leavePolicyEdit') {
+      <drive-os-button [loading]="saving()" [disabled]="leavePolicyForm.invalid" (pressed)="saveLeavePolicy()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leavePolicyDeactivate' || drawer() === 'leavePolicyReactivate') {
+      <drive-os-button [variant]="drawer()==='leavePolicyDeactivate'?'danger':'primary'" [loading]="saving()" (pressed)="changeLeavePolicyStatus()">{{(drawer()==='leavePolicyDeactivate'?'workforce.employeeDetail.leave.policies.deactivate':'workforce.employeeDetail.leave.policies.reactivate')|translate}}</drive-os-button>
+    } @else if (drawer() === 'contractCreate' || drawer() === 'contractEdit') {
+      <form [formGroup]="employmentContractForm" class="space-y-5">
+        <div><label class="text-sm font-bold">{{ 'workforce.employeeDetail.contracts.fields.type' | translate }}</label><select formControlName="contractType" [disabled]="drawer()==='contractEdit'" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(type of employmentContractTypes; track type){<option [value]="type">{{('workforce.employmentContractType.'+type)|translate}}</option>}</select></div>
+        <div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.contracts.fields.startDate'|translate}}</label><input type="date" formControlName="startDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.contracts.fields.endDate'|translate}}</label><input type="date" formControlName="endDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div></div>
+        <div><label class="text-sm font-bold">{{'workforce.employeeDetail.contracts.fields.weeklyHours'|translate}}</label><input type="number" min="0.01" max="168" step="0.25" formControlName="contractualWeeklyHours" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div>
+        <div><label class="text-sm font-bold">{{'workforce.employeeDetail.contracts.fields.primaryPosition'|translate}}</label><select formControlName="primaryJobPositionId" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5"><option value="">{{'common.none'|translate}}</option>@for(position of jobPositions();track position.id){<option [value]="position.id">{{position.name}} · {{position.code}}</option>}</select></div>
+        <div class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900 dark:border-orange-900 dark:bg-orange-950/20 dark:text-orange-100">{{'workforce.employeeDetail.contracts.immutableHelp'|translate}}</div>
+      </form>
+    } @else if (drawer() === 'contractDocument') {
+      <form [formGroup]="employmentContractDocumentForm" class="space-y-5">
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100">{{'workforce.employeeDetail.contracts.documentHelp'|translate}}</div>
+        <div><label class="text-sm font-bold">{{'workforce.employeeDetail.contracts.fields.documentId'|translate}}</label><input formControlName="contractDocumentId" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 font-mono text-sm"/></div>
+        <div><label class="text-sm font-bold">{{'workforce.employeeDetail.contracts.fields.signatureProcessId'|translate}}</label><input formControlName="signatureProcessId" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 font-mono text-sm"/><p class="mt-2 text-xs text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.contracts.signatureOptionalHelp'|translate}}</p></div>
+      </form>
+    } @else if (drawer() === 'contractSigned') {
+      <form [formGroup]="employmentContractSignedForm" class="space-y-5"><div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100">{{'workforce.employeeDetail.contracts.signedHelp'|translate}}</div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.contracts.fields.signatureProcessId'|translate}}</label><input formControlName="signatureProcessId" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 font-mono text-sm"/></div></form>
+    } @else if (drawer() === 'contractActivate') {
+      <form [formGroup]="employmentContractActivationForm" class="space-y-5"><div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100">{{'workforce.employeeDetail.contracts.activationHelp'|translate}}</div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.contracts.fields.activationDate'|translate}}</label><input type="date" formControlName="activationDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div></form>
+    } @else if (drawer() === 'contractTerminate') {
+      <form [formGroup]="employmentContractTerminationForm" class="space-y-5"><div class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900 dark:border-orange-900 dark:bg-orange-950/20 dark:text-orange-100">{{'workforce.employeeDetail.contracts.terminationHelp'|translate}}</div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.contracts.fields.endDate'|translate}}</label><input type="date" formControlName="endDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div></form>
+    } @else if (drawer() === 'contractCancel') {
+      <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900 dark:border-red-900 dark:bg-red-950/20 dark:text-red-100">{{'workforce.employeeDetail.contracts.cancelHelp'|translate}}</div>
+    } @else if (drawer() === 'leaveRequestCreate' || drawer() === 'leaveRequestEdit') {
+      <form [formGroup]="leaveRequestForm" class="space-y-5"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.requests.policy'|translate}}</label><select formControlName="leavePolicyId" [disabled]="drawer()==='leaveRequestEdit'" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(p of leavePolicies();track p.id){@if(p.status==='Active'||p.id===selectedLeaveRequest()?.leavePolicyId){<option [value]="p.id">{{p.name}} ({{p.code}})</option>}}</select></div><div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.requests.startDate'|translate}}</label><input type="date" formControlName="startDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.requests.endDate'|translate}}</label><input type="date" formControlName="endDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.requests.startPortion'|translate}}</label><select formControlName="startPortion" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(x of ['FullDay','Morning','Afternoon'];track x){<option [value]="x">{{('workforce.leaveDayPortion.'+x)|translate}}</option>}</select></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.requests.endPortion'|translate}}</label><select formControlName="endPortion" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(x of ['FullDay','Morning','Afternoon'];track x){<option [value]="x">{{('workforce.leaveDayPortion.'+x)|translate}}</option>}</select></div></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.requests.reason'|translate}}</label><textarea rows="4" formControlName="reason" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.requests.evidenceDocumentId'|translate}}</label><input formControlName="evidenceDocumentId" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 font-mono text-sm"/><p class="mt-2 text-xs text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.leave.requests.evidenceBoundary'|translate}}</p></div></form>
+    } @else if (drawer() === 'leaveRequestSubmit') {
+      <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950">{{'workforce.employeeDetail.leave.requests.submitHelp'|translate}}</div>
+    } @else if (drawer() === 'leaveRequestApprove' || drawer() === 'leaveRequestCancel') {
+      <form [formGroup]="leaveDecisionForm"><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.requests.decisionReason'|translate}}</label><textarea rows="4" formControlName="reason" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></form>
+    } @else if (drawer() === 'leaveRequestReject') {
+      <form [formGroup]="leaveRejectForm"><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.requests.decisionReasonRequired'|translate}}</label><textarea rows="4" formControlName="reason" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></form>
+    } @else if (drawer() === 'leavePolicyCreate' || drawer() === 'leavePolicyEdit') {
+      <form [formGroup]="leavePolicyForm" class="space-y-5"><div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.policies.country'|translate}}</label><input maxlength="2" formControlName="countryCode" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 uppercase"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.policies.code'|translate}}</label><input formControlName="code" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 uppercase"/></div></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.policies.name'|translate}}</label><input formControlName="name" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.policies.category'|translate}}</label><select formControlName="category" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(x of ['PaidLeave','UnpaidLeave','SickLeave','TrainingLeave','ParentalLeave','CompensatoryLeave','Other'];track x){<option [value]="x">{{('workforce.leaveCategory.'+x)|translate}}</option>}</select></div><div class="grid gap-3 sm:grid-cols-2"><label class="flex items-center gap-2"><input type="checkbox" formControlName="isPaid"/>{{'workforce.employeeDetail.leave.policies.paid'|translate}}</label><label class="flex items-center gap-2"><input type="checkbox" formControlName="requiresApproval"/>{{'workforce.employeeDetail.leave.policies.approval'|translate}}</label><label class="flex items-center gap-2"><input type="checkbox" formControlName="requiresEvidence"/>{{'workforce.employeeDetail.leave.policies.evidence'|translate}}</label><label class="flex items-center gap-2"><input type="checkbox" formControlName="allowHalfDay"/>{{'workforce.employeeDetail.leave.policies.halfDay'|translate}}</label></div><div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.policies.notice'|translate}}</label><input type="number" min="0" formControlName="minimumNoticeDays" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.leave.policies.maxDays'|translate}}</label><input type="number" min="1" formControlName="maximumConsecutiveDays" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div></div></form>
+    } @else if (drawer() === 'leavePolicyDeactivate' || drawer() === 'leavePolicyReactivate') {
+      <div class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900">{{(drawer()==='leavePolicyDeactivate'?'workforce.employeeDetail.leave.policies.deactivateHelp':'workforce.employeeDetail.leave.policies.reactivateHelp')|translate}}</div>
+    } @else if (drawer() === 'documentCreate' || drawer() === 'documentEdit') {
+      <form [formGroup]="employeeDocumentForm" class="space-y-4">
+        @if(drawer()==='documentCreate'){<div><label class="text-sm font-bold">{{'workforce.employeeDetail.documents.fields.documentReferenceId'|translate}}</label><input formControlName="documentReferenceId" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 font-mono"/><p class="mt-1 text-xs text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.documents.referenceHelp'|translate}}</p></div>}
+        <div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.documents.fields.category'|translate}}</label><select formControlName="category" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(c of documentCategories;track c){<option [value]="c">{{('workforce.employeeDocumentCategory.'+c)|translate}}</option>}</select></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.documents.fields.confidentiality'|translate}}</label><select formControlName="confidentiality" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(c of documentConfidentialities;track c){<option [value]="c">{{('workforce.employeeDocumentConfidentiality.'+c)|translate}}</option>}</select></div></div>
+        <div><label class="text-sm font-bold">{{'workforce.employeeDetail.documents.fields.documentTypeCode'|translate}}</label><input formControlName="documentTypeCode" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div>
+        <div><label class="text-sm font-bold">{{'workforce.employeeDetail.documents.fields.title'|translate}}</label><input formControlName="title" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div>
+        <div class="grid gap-4 sm:grid-cols-3"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.documents.fields.issuedOn'|translate}}</label><input type="date" formControlName="issuedOn" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.documents.fields.validFrom'|translate}}</label><input type="date" formControlName="validFrom" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.documents.fields.expiresOn'|translate}}</label><input type="date" formControlName="expiresOn" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div></div>
+        <div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.documents.fields.issuer'|translate}}</label><input formControlName="issuer" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.documents.fields.referenceNumber'|translate}}</label><input formControlName="referenceNumber" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div></div>
+      </form>
+    } @else if (drawer() === 'documentVerify') {<div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950">{{'workforce.employeeDetail.documents.verifyHelp'|translate}}</div>
+    } @else if (drawer() === 'documentReveal') {<div class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-950">{{'workforce.employeeDetail.documents.revealHelp'|translate}}</div>@if(selectedEmployeeDocument()?.documentReferenceId){<p class="mt-4 break-all rounded-xl bg-[var(--driveos-surface-hover)] p-3 font-mono text-xs">{{selectedEmployeeDocument()?.documentReferenceId}}</p>}
+    } @else if (drawer() === 'documentSupersede') {<form [formGroup]="employeeDocumentSupersedeForm"><label class="text-sm font-bold">{{'workforce.employeeDetail.documents.fields.replacementId'|translate}}</label><input formControlName="replacementEmployeeDocumentId" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 font-mono"/><p class="mt-2 text-xs text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.documents.supersedeHelp'|translate}}</p></form>
+    } @else if (drawer() === 'documentRevoke') {<form [formGroup]="employeeDocumentRevokeForm"><label class="text-sm font-bold">{{'workforce.employeeDetail.drawers.reason'|translate}}</label><textarea rows="6" formControlName="reason" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></form>
+    } @else if (drawer() === 'documentArchive') {<div class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-950">{{'workforce.employeeDetail.documents.archiveHelp'|translate}}</div>
+    } @else if (drawer() === 'workingTimeCreate' || drawer() === 'workingTimeEdit') {
+      <form [formGroup]="workingTimePolicyForm" class="space-y-4"><div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.time.from'|translate}}</label><input type="date" formControlName="effectiveFrom" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.time.to'|translate}}</label><input type="date" formControlName="effectiveTo" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.time.policy.weekly'|translate}}</label><input type="number" step="0.25" formControlName="contractualWeeklyHours" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.time.policy.daily'|translate}}</label><input type="number" step="0.25" formControlName="contractualDailyHours" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.time.policy.maxDays'|translate}}</label><input type="number" min="1" max="7" formControlName="maxWorkingDaysPerWeek" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div></div></form>
+    } @else if (drawer() === 'workingTimeDeactivate') {<div class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900">{{'workforce.employeeDetail.time.policy.deactivateHelp'|translate}}</div>
+    } @else if (drawer() === 'timesheetCreate') {<form [formGroup]="timesheetForm" class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.time.from'|translate}}</label><input type="date" formControlName="periodFrom" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.time.to'|translate}}</label><input type="date" formControlName="periodTo" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div></form>
+    } @else if (drawer() === 'timesheetEntryCreate' || drawer() === 'timesheetEntryEdit') {<form [formGroup]="timesheetEntryForm" class="space-y-4"><div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.time.date'|translate}}</label><input type="date" formControlName="date" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.time.timesheets.hours'|translate}}</label><input type="number" step="0.25" formControlName="hours" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.time.timesheets.activity'|translate}}</label><select formControlName="activityType" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(x of timesheetActivityTypes;track x){<option [value]="x">{{('workforce.timesheetActivityType.'+x)|translate}}</option>}</select></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.time.timesheets.source'|translate}}</label><div class="mt-2 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-hover)] px-3 py-2.5 text-sm font-bold">{{('workforce.timesheetEntrySource.'+timesheetEntryForm.getRawValue().source)|translate}}</div><p class="mt-2 text-xs leading-5 text-[var(--driveos-text-tertiary)]">{{'workforce.employeeDetail.time.timesheets.sourceHelp'|translate}}</p></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.time.descriptionField'|translate}}</label><textarea rows="4" formControlName="description" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.time.timesheets.sourceReference'|translate}}</label><input formControlName="sourceReference" [disabled]="drawer()==='timesheetEntryEdit'" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div></form>
+    } @else if (drawer() === 'timesheetEntryRemove') {<div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">{{'workforce.employeeDetail.time.timesheets.removeEntryHelp'|translate}}</div>
+    } @else if (drawer() === 'timesheetApprove') {<form [formGroup]="timesheetDecisionForm"><label class="text-sm font-bold">{{'workforce.employeeDetail.time.reason'|translate}}</label><textarea rows="4" formControlName="reason" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></form>
+    } @else if (drawer() === 'timesheetReject') {<form [formGroup]="timesheetRejectForm"><label class="text-sm font-bold">{{'workforce.employeeDetail.time.reason'|translate}}</label><textarea rows="4" formControlName="reason" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></form>
+    } @else if (drawer() === 'timesheetSubmit' || drawer() === 'timesheetReview' || drawer() === 'timesheetLock') {<div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950">{{('workforce.employeeDetail.drawers.'+drawer()+'.confirmation')|translate}}</div>
+    } @else if (drawer() === 'rehire') {
+      <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950 dark:border-blue-900 dark:bg-blue-950/25 dark:text-blue-100">{{ 'workforce.employeeDetail.rehire.description' | translate }}</div>
+      <form [formGroup]="rehireForm" class="mt-4 space-y-4">
+        <div><label class="text-sm font-bold">{{ 'workforce.employeeDetail.employeeNumber' | translate }}</label><input formControlName="employeeNumber" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5" /></div>
+        <div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{ 'workforce.employeeDetail.startDate' | translate }}</label><input type="date" formControlName="employmentStartDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5" /></div><div><label class="text-sm font-bold">{{ 'workforce.employeeDetail.endDate' | translate }}</label><input type="date" formControlName="employmentEndDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5" /></div></div>
+        @if (employee(); as currentEmployee) {
+          @if (currentEmployee.userId) {<label class="flex items-start gap-3 rounded-xl border border-[var(--driveos-border)] p-4"><input type="checkbox" formControlName="reusePreviousUserLink" class="mt-1" /><span><span class="block font-bold">{{ 'workforce.employeeDetail.rehire.reuseUser' | translate }}</span><span class="mt-1 block text-sm text-[var(--driveos-text-secondary)]">{{ currentEmployee.userId }}</span></span></label>}
+        }
+        @if (!rehireForm.controls.reusePreviousUserLink.value) {<div><label class="text-sm font-bold">{{ 'workforce.employeeDetail.userId' | translate }}</label><input formControlName="userId" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 font-mono" /></div>}
+        <div class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm leading-6 text-orange-950 dark:border-orange-900 dark:bg-orange-950/25 dark:text-orange-100">{{ 'workforce.employeeDetail.rehire.warning' | translate }}</div>
+      </form>
+    } @else if (drawer() === 'equipmentCreate' || drawer() === 'equipmentEdit') {
+      <form [formGroup]="equipmentAssignmentForm" class="space-y-4">
+        <div><label class="text-sm font-bold">{{ 'workforce.employeeDetail.equipment.resourceType' | translate }}</label><select formControlName="resourceType" [disabled]="drawer()==='equipmentEdit'" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(type of equipmentResourceTypes;track type){<option [value]="type">{{ ('workforce.employeeDetail.equipment.resourceTypes.'+type)|translate }}</option>}</select></div>
+        <div><label class="text-sm font-bold">{{ 'workforce.employeeDetail.equipment.resourceId' | translate }}</label><input formControlName="resourceId" [readOnly]="drawer()==='equipmentEdit'" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 font-mono" /></div>
+        <div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{ 'workforce.employeeDetail.time.from' | translate }}</label><input type="date" formControlName="startDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5" /></div><div><label class="text-sm font-bold">{{ 'workforce.employeeDetail.time.to' | translate }}</label><input type="date" formControlName="plannedEndDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5" /></div></div>
+      </form>
+    } @else if (drawer() === 'equipmentHandover') {
+      <form [formGroup]="equipmentConditionForm" class="space-y-4"><div><label class="text-sm font-bold">{{ 'workforce.employeeDetail.equipment.condition' | translate }}</label><select formControlName="condition" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(c of equipmentConditions;track c){<option [value]="c">{{ ('workforce.employeeDetail.equipment.condition.'+c)|translate }}</option>}</select></div><div><label class="text-sm font-bold">{{ 'workforce.employeeDetail.equipment.notes' | translate }}</label><textarea rows="5" formControlName="notes" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></div></form>
+    } @else if (drawer() === 'equipmentReturn') {
+      <form [formGroup]="equipmentReturnForm" class="space-y-4"><div><label class="text-sm font-bold">{{ 'workforce.employeeDetail.equipment.returnedOn' | translate }}</label><input type="date" formControlName="returnedOn" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5" /></div><div><label class="text-sm font-bold">{{ 'workforce.employeeDetail.equipment.condition' | translate }}</label><select formControlName="condition" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(c of equipmentConditions;track c){<option [value]="c">{{ ('workforce.employeeDetail.equipment.condition.'+c)|translate }}</option>}</select></div><div><label class="text-sm font-bold">{{ 'workforce.employeeDetail.equipment.notes' | translate }}</label><textarea rows="5" formControlName="notes" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></div></form>
+    } @else if (drawer() === 'equipmentCancel') {
+      <form [formGroup]="equipmentCancelForm"><label class="text-sm font-bold">{{ 'workforce.employeeDetail.drawers.reason' | translate }}</label><textarea rows="5" formControlName="reason" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></form>
+    } @else if (drawer() === 'reviewCreate') {
+      <form [formGroup]="performanceReviewForm" class="space-y-4"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.reviews.fields.title'|translate}}</label><input formControlName="title" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5" /></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.reviews.fields.evaluatorUserId'|translate}}</label><input formControlName="evaluatorUserId" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 font-mono" /></div><div class="grid gap-4 sm:grid-cols-2"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.reviews.fields.periodFrom'|translate}}</label><input type="date" formControlName="periodFrom" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5" /></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.reviews.fields.periodTo'|translate}}</label><input type="date" formControlName="periodTo" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5" /></div></div></form>
+    } @else if (drawer() === 'reviewCriterionAdd') {
+      <form [formGroup]="performanceReviewCriterionForm" class="space-y-4"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.reviews.fields.code'|translate}}</label><input formControlName="code" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5" /></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.reviews.fields.label'|translate}}</label><input formControlName="label" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5" /></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.reviews.fields.weight'|translate}}</label><input type="number" min="1" max="100" formControlName="weight" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5" /></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.reviews.fields.comment'|translate}}</label><textarea rows="4" formControlName="comment" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></div></form>
+    } @else if (drawer() === 'reviewCriterionRate') {
+      <form [formGroup]="performanceReviewRatingForm" class="space-y-4"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.reviews.fields.rating'|translate}}</label><input type="number" min="1" max="5" formControlName="rating" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5" /></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.reviews.fields.comment'|translate}}</label><textarea rows="5" formControlName="comment" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></div></form>
+    } @else if (drawer() === 'reviewSummary') {
+      <form [formGroup]="performanceReviewSummaryForm" class="space-y-4"><div><label class="text-sm font-bold">{{'workforce.employeeDetail.reviews.overallAssessment'|translate}}</label><textarea rows="8" formControlName="overallAssessment" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></div><div><label class="text-sm font-bold">{{'workforce.employeeDetail.reviews.objectives'|translate}}</label><textarea rows="6" formControlName="objectives" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></div></form>
+    } @else if (drawer() === 'reviewAcknowledge') {
+      <form [formGroup]="performanceReviewAcknowledgeForm"><div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950">{{'workforce.employeeDetail.reviews.acknowledgeHelp'|translate}}</div><label class="mt-4 block text-sm font-bold">{{'workforce.employeeDetail.reviews.employeeComment'|translate}}</label><textarea rows="7" formControlName="employeeComment" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></form>
+    } @else if (drawer() === 'reviewCancel') {
+      <form [formGroup]="performanceReviewCancelForm"><label class="text-sm font-bold">{{'workforce.employeeDetail.drawers.reason'|translate}}</label><textarea rows="6" formControlName="reason" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></form>
+    } @else if (drawer() === 'reviewStart' || drawer() === 'reviewSubmit' || drawer() === 'reviewComplete') {
+      <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950">{{('workforce.employeeDetail.drawers.'+drawer()+'.confirmation')|translate}}</div>
+    } @else if (drawer() === 'suspend') {
+      <form [formGroup]="suspendForm" class="space-y-5">
+        <div class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm leading-6 text-orange-900 dark:border-orange-900 dark:bg-orange-950/20 dark:text-orange-100">{{ 'workforce.employeeDetail.drawers.suspend.warning' | translate }}</div>
+        <div>
+          <label class="text-sm font-bold" for="suspensionReason">{{ 'workforce.employeeDetail.drawers.reason' | translate }}</label>
+          <textarea id="suspensionReason" rows="5" formControlName="reason" class="mt-2 w-full resize-none rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20"></textarea>
+        </div>
+      </form>
+    } @else if (drawer() === 'termination') {
+      <form [formGroup]="terminationForm" class="space-y-5">
+        <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-900 dark:border-red-900 dark:bg-red-950/20 dark:text-red-100">{{ 'workforce.employeeDetail.drawers.termination.warning' | translate }}</div>
+        <div>
+          <label class="text-sm font-bold" for="plannedEndDate">{{ 'workforce.employeeDetail.drawers.termination.plannedEndDate' | translate }}</label>
+          <input id="plannedEndDate" type="date" formControlName="plannedEndDate" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20" />
+        </div>
+        <div>
+          <label class="text-sm font-bold" for="terminationReason">{{ 'workforce.employeeDetail.drawers.reason' | translate }}</label>
+          <textarea id="terminationReason" rows="5" formControlName="reason" class="mt-2 w-full resize-none rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20"></textarea>
+        </div>
+      </form>
+    } @else if (drawer() === 'onboarding' || drawer() === 'activate' || drawer() === 'reactivate') {
+      <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-100">
+        {{ ('workforce.employeeDetail.drawers.' + drawer() + '.confirmation') | translate }}
+      </div>
+    }
+  </div>
+
+  <div driveOsDrawerFooter class="flex items-center justify-end gap-2">
+    <drive-os-button variant="ghost" [disabled]="saving()" (pressed)="closeDrawer()">{{ 'common.cancel' | translate }}</drive-os-button>
+    @if (drawer() === 'offboardingRefresh') {<drive-os-button [loading]="saving()" (pressed)="refreshOffboarding()">{{'workforce.employeeDetail.offboarding.refresh'|translate}}</drive-os-button>
+    } @else if (drawer() === 'offboardingCompleteItem') {<drive-os-button [loading]="saving()" (pressed)="completeOffboardingItem()">{{'workforce.employeeDetail.offboarding.completeItem'|translate}}</drive-os-button>
+    } @else if (drawer() === 'offboardingWaiveItem') {<drive-os-button variant="danger" [loading]="saving()" [disabled]="offboardingWaiverForm.invalid" (pressed)="waiveOffboardingItem()">{{'workforce.employeeDetail.offboarding.waive'|translate}}</drive-os-button>
+    } @else if (drawer() === 'offboardingComplete') {<drive-os-button variant="danger" [loading]="saving()" [disabled]="offboardingCompletionForm.invalid" (pressed)="completeOffboarding()">{{'workforce.employeeDetail.offboarding.completeEmployment'|translate}}</drive-os-button>
+    } @else if (drawer() === 'restrictionCreate' || drawer() === 'restrictionEdit') {<drive-os-button [loading]="saving()" [disabled]="professionalRestrictionForm.invalid" (pressed)="saveProfessionalRestriction()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'restrictionActivate') {<drive-os-button variant="danger" [loading]="saving()" (pressed)="activateProfessionalRestriction()">{{'workforce.employeeDetail.restrictions.actions.activate'|translate}}</drive-os-button>
+    } @else if (drawer() === 'restrictionLift') {<drive-os-button [loading]="saving()" [disabled]="professionalRestrictionReasonForm.invalid" (pressed)="liftProfessionalRestriction()">{{'workforce.employeeDetail.restrictions.actions.lift'|translate}}</drive-os-button>
+    } @else if (drawer() === 'restrictionCancel') {<drive-os-button variant="danger" [loading]="saving()" [disabled]="professionalRestrictionReasonForm.invalid" (pressed)="cancelProfessionalRestriction()">{{'common.cancel'|translate}}</drive-os-button>
+    } @else if (drawer() === 'documentCreate' || drawer() === 'documentEdit') {<drive-os-button [loading]="saving()" [disabled]="employeeDocumentForm.invalid" (pressed)="saveEmployeeDocument()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'documentVerify') {<drive-os-button [loading]="saving()" (pressed)="verifyEmployeeDocument()">{{'workforce.employeeDetail.documents.actions.verify'|translate}}</drive-os-button>
+    } @else if (drawer() === 'documentReveal') {<drive-os-button [loading]="saving()" (pressed)="revealEmployeeDocumentReference()">{{'workforce.employeeDetail.documents.actions.reveal'|translate}}</drive-os-button>
+    } @else if (drawer() === 'documentSupersede') {<drive-os-button [loading]="saving()" [disabled]="employeeDocumentSupersedeForm.invalid" (pressed)="supersedeEmployeeDocument()">{{'workforce.employeeDetail.documents.actions.supersede'|translate}}</drive-os-button>
+    } @else if (drawer() === 'documentRevoke') {<drive-os-button variant="danger" [loading]="saving()" [disabled]="employeeDocumentRevokeForm.invalid" (pressed)="revokeEmployeeDocument()">{{'workforce.employeeDetail.documents.actions.revoke'|translate}}</drive-os-button>
+    } @else if (drawer() === 'documentArchive') {<drive-os-button variant="danger" [loading]="saving()" (pressed)="archiveEmployeeDocument()">{{'workforce.employeeDetail.documents.actions.archive'|translate}}</drive-os-button>
+    } @else if (drawer() === 'reviewCreate') {<drive-os-button [loading]="saving()" [disabled]="performanceReviewForm.invalid" (pressed)="createPerformanceReview()">{{'common.create'|translate}}</drive-os-button>
+    } @else if (drawer() === 'reviewCriterionAdd') {<drive-os-button [loading]="saving()" [disabled]="performanceReviewCriterionForm.invalid" (pressed)="addPerformanceReviewCriterion()">{{'common.add'|translate}}</drive-os-button>
+    } @else if (drawer() === 'reviewCriterionRate') {<drive-os-button [loading]="saving()" [disabled]="performanceReviewRatingForm.invalid" (pressed)="ratePerformanceReviewCriterion()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'reviewSummary') {<drive-os-button [loading]="saving()" [disabled]="performanceReviewSummaryForm.invalid" (pressed)="savePerformanceReviewSummary()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'reviewStart') {<drive-os-button [loading]="saving()" (pressed)="startPerformanceReview()">{{'workforce.employeeDetail.reviews.start'|translate}}</drive-os-button>
+    } @else if (drawer() === 'reviewSubmit') {<drive-os-button [loading]="saving()" (pressed)="submitPerformanceReview()">{{'workforce.employeeDetail.reviews.submit'|translate}}</drive-os-button>
+    } @else if (drawer() === 'reviewAcknowledge') {<drive-os-button [loading]="saving()" [disabled]="performanceReviewAcknowledgeForm.invalid" (pressed)="acknowledgePerformanceReview()">{{'workforce.employeeDetail.reviews.acknowledge'|translate}}</drive-os-button>
+    } @else if (drawer() === 'reviewComplete') {<drive-os-button [loading]="saving()" (pressed)="completePerformanceReview()">{{'workforce.employeeDetail.reviews.complete'|translate}}</drive-os-button>
+    } @else if (drawer() === 'reviewCancel') {<drive-os-button variant="danger" [loading]="saving()" [disabled]="performanceReviewCancelForm.invalid" (pressed)="cancelPerformanceReview()">{{'workforce.employeeDetail.reviews.cancel'|translate}}</drive-os-button>
+    } @else if (drawer() === 'equipmentCreate' || drawer() === 'equipmentEdit') {<drive-os-button [loading]="saving()" [disabled]="equipmentAssignmentForm.invalid" (pressed)="saveEquipmentAssignment()">{{ 'common.save' | translate }}</drive-os-button>
+    } @else if (drawer() === 'equipmentHandover') {<drive-os-button [loading]="saving()" [disabled]="equipmentConditionForm.invalid" (pressed)="handOverEquipmentAssignment()">{{ 'workforce.employeeDetail.equipment.actions.handover' | translate }}</drive-os-button>
+    } @else if (drawer() === 'equipmentReturn') {<drive-os-button [loading]="saving()" [disabled]="equipmentReturnForm.invalid" (pressed)="returnEquipmentAssignment()">{{ 'workforce.employeeDetail.equipment.actions.return' | translate }}</drive-os-button>
+    } @else if (drawer() === 'equipmentCancel') {<drive-os-button variant="danger" [loading]="saving()" [disabled]="equipmentCancelForm.invalid" (pressed)="cancelEquipmentAssignment()">{{ 'workforce.employeeDetail.equipment.actions.cancel' | translate }}</drive-os-button>
+    } @else if (drawer() === 'workingTimeCreate' || drawer() === 'workingTimeEdit') {<drive-os-button [loading]="saving()" (pressed)="saveWorkingTimePolicy()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'workingTimeDeactivate') {<drive-os-button variant="danger" [loading]="saving()" (pressed)="deactivateWorkingTimePolicy()">{{'workforce.employeeDetail.time.policy.deactivate'|translate}}</drive-os-button>
+    } @else if (drawer() === 'timesheetCreate') {<drive-os-button [loading]="saving()" (pressed)="createTimesheet()">{{'common.create'|translate}}</drive-os-button>
+    } @else if (drawer() === 'timesheetEntryCreate' || drawer() === 'timesheetEntryEdit') {<drive-os-button [loading]="saving()" (pressed)="saveTimesheetEntry()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'timesheetEntryRemove') {<drive-os-button variant="danger" [loading]="saving()" (pressed)="removeTimesheetEntry()">{{'workforce.employeeDetail.time.timesheets.removeEntry'|translate}}</drive-os-button>
+    } @else if (drawer() === 'timesheetSubmit') {<drive-os-button [loading]="saving()" (pressed)="submitTimesheet()">{{'workforce.employeeDetail.time.timesheets.submit'|translate}}</drive-os-button>
+    } @else if (drawer() === 'timesheetReview') {<drive-os-button [loading]="saving()" (pressed)="startTimesheetReview()">{{'workforce.employeeDetail.time.timesheets.startReview'|translate}}</drive-os-button>
+    } @else if (drawer() === 'timesheetApprove') {<drive-os-button [loading]="saving()" (pressed)="approveTimesheet()">{{'workforce.employeeDetail.time.timesheets.approve'|translate}}</drive-os-button>
+    } @else if (drawer() === 'timesheetReject') {<drive-os-button variant="danger" [loading]="saving()" (pressed)="rejectTimesheet()">{{'workforce.employeeDetail.time.timesheets.reject'|translate}}</drive-os-button>
+    } @else if (drawer() === 'timesheetLock') {<drive-os-button [loading]="saving()" (pressed)="lockTimesheet()">{{'workforce.employeeDetail.time.timesheets.lock'|translate}}</drive-os-button>
+    } @else if (drawer() === 'rehire') {
+      <drive-os-button [loading]="saving()" [disabled]="rehireForm.invalid" (pressed)="rehireEmployee()">{{ 'workforce.employeeDetail.actions.rehire' | translate }}</drive-os-button>
+    } @else if (drawer() === 'identity') {
+      <drive-os-button [loading]="saving()" [disabled]="identityForm.invalid" (pressed)="saveIdentity()">{{ 'common.save' | translate }}</drive-os-button>
+    } @else if (drawer() === 'branchCreate' || drawer() === 'branchEdit') {
+      <drive-os-button [loading]="saving()" [disabled]="branchAssignmentForm.invalid" (pressed)="saveBranchAssignment()">{{ 'common.save' | translate }}</drive-os-button>
+    } @else if (drawer() === 'branchEnd') {
+      <drive-os-button [loading]="saving()" [disabled]="branchEndForm.invalid" (pressed)="endBranchAssignment()">{{ 'workforce.employeeDetail.branches.end' | translate }}</drive-os-button>
+    } @else if (drawer() === 'branchCancel') {
+      <drive-os-button variant="danger" [loading]="saving()" (pressed)="cancelBranchAssignment()">{{ 'workforce.employeeDetail.branches.cancelAssignment' | translate }}</drive-os-button>
+    } @else if (drawer() === 'positionCreate' || drawer() === 'positionEdit') {
+      <drive-os-button [loading]="saving()" [disabled]="jobPositionAssignmentForm.invalid" (pressed)="saveJobPositionAssignment()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'positionEnd') {
+      <drive-os-button [loading]="saving()" [disabled]="jobPositionEndForm.invalid" (pressed)="endJobPositionAssignment()">{{'workforce.employeeDetail.positions.end'|translate}}</drive-os-button>
+    } @else if (drawer() === 'positionCancel') {
+      <drive-os-button variant="danger" [loading]="saving()" (pressed)="cancelJobPositionAssignment()">{{'workforce.employeeDetail.positions.cancelAssignment'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leaveRequestCreate' || drawer() === 'leaveRequestEdit') {
+      <drive-os-button [loading]="saving()" [disabled]="leaveRequestForm.invalid" (pressed)="saveLeaveRequest()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leaveRequestSubmit') {
+      <drive-os-button [loading]="saving()" (pressed)="submitLeaveRequest()">{{'workforce.employeeDetail.leave.requests.submit'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leaveRequestApprove') {
+      <drive-os-button [loading]="saving()" (pressed)="approveLeaveRequest()">{{'workforce.employeeDetail.leave.requests.approve'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leaveRequestReject') {
+      <drive-os-button variant="danger" [loading]="saving()" [disabled]="leaveRejectForm.invalid" (pressed)="rejectLeaveRequest()">{{'workforce.employeeDetail.leave.requests.reject'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leaveRequestCancel') {
+      <drive-os-button variant="danger" [loading]="saving()" (pressed)="cancelLeaveRequest()">{{'workforce.employeeDetail.leave.requests.cancel'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leavePolicyCreate' || drawer() === 'leavePolicyEdit') {
+      <drive-os-button [loading]="saving()" [disabled]="leavePolicyForm.invalid" (pressed)="saveLeavePolicy()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'leavePolicyDeactivate' || drawer() === 'leavePolicyReactivate') {
+      <drive-os-button [variant]="drawer()==='leavePolicyDeactivate'?'danger':'primary'" [loading]="saving()" (pressed)="changeLeavePolicyStatus()">{{(drawer()==='leavePolicyDeactivate'?'workforce.employeeDetail.leave.policies.deactivate':'workforce.employeeDetail.leave.policies.reactivate')|translate}}</drive-os-button>
+    } @else if (drawer() === 'contractCreate' || drawer() === 'contractEdit') {
+      <drive-os-button [loading]="saving()" [disabled]="employmentContractForm.invalid" (pressed)="saveEmploymentContract()">{{'common.save'|translate}}</drive-os-button>
+    } @else if (drawer() === 'contractDocument') {
+      <drive-os-button [loading]="saving()" [disabled]="employmentContractDocumentForm.invalid" (pressed)="linkEmploymentContractDocument()">{{'workforce.employeeDetail.contracts.actions.linkDocument'|translate}}</drive-os-button>
+    } @else if (drawer() === 'contractSigned') {
+      <drive-os-button [loading]="saving()" [disabled]="employmentContractSignedForm.invalid" (pressed)="markEmploymentContractSigned()">{{'workforce.employeeDetail.contracts.actions.markSigned'|translate}}</drive-os-button>
+    } @else if (drawer() === 'contractActivate') {
+      <drive-os-button [loading]="saving()" [disabled]="employmentContractActivationForm.invalid" (pressed)="activateEmploymentContract()">{{'workforce.employeeDetail.contracts.actions.activate'|translate}}</drive-os-button>
+    } @else if (drawer() === 'contractTerminate') {
+      <drive-os-button variant="danger" [loading]="saving()" [disabled]="employmentContractTerminationForm.invalid" (pressed)="terminateEmploymentContract()">{{'workforce.employeeDetail.contracts.actions.terminate'|translate}}</drive-os-button>
+    } @else if (drawer() === 'contractCancel') {
+      <drive-os-button variant="danger" [loading]="saving()" (pressed)="cancelEmploymentContract()">{{'common.cancel'|translate}}</drive-os-button>
+    } @else if (drawer() === 'qualificationDeclare') {
+      <drive-os-button [loading]="saving()" [disabled]="qualificationForm.invalid" (pressed)="declareQualification()">{{'workforce.employeeDetail.qualifications.declare'|translate}}</drive-os-button>
+    } @else if (drawer() === 'authorizationDeclare') {
+      <drive-os-button [loading]="saving()" [disabled]="instructorAuthorizationForm.invalid" (pressed)="declareInstructorAuthorization()">{{'workforce.employeeDetail.authorizations.declare'|translate}}</drive-os-button>
+    } @else if (drawer() === 'qualificationVerify' || drawer() === 'authorizationVerify') {
+      <drive-os-button [loading]="saving()" [disabled]="verificationForm.invalid" (pressed)="verifyCredential()">{{'workforce.employeeDetail.qualifications.verify'|translate}}</drive-os-button>
+    } @else if (drawer() === 'qualificationReject' || drawer() === 'authorizationReject') {
+      <drive-os-button variant="danger" [loading]="saving()" [disabled]="rejectionForm.invalid" (pressed)="rejectCredential()">{{'workforce.employeeDetail.qualifications.reject'|translate}}</drive-os-button>
+    } @else {
+      <drive-os-button [variant]="drawer() === 'termination' ? 'danger' : 'primary'" [loading]="saving()" (pressed)="confirmLifecycleAction()">{{ 'workforce.employeeDetail.drawers.confirm' | translate }}</drive-os-button>
+    }
+  </div>
+</drive-os-drawer>

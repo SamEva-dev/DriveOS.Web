@@ -118,14 +118,16 @@ export const routes: Routes = [
           import('./features/exams/exams.routes').then((module) => module.EXAMS_ROUTES),
       },
       {
-        path: 'instructors',
-        loadComponent: () =>
-          import('./shared/pages/coming-soon/coming-soon.page').then(
-            (component) => component.ComingSoonPage,
+        path: 'workforce',
+        loadChildren: () =>
+          import('./features/workforce/workforce.routes').then(
+            (module) => module.WORKFORCE_ROUTES,
           ),
-        data: {
-          titleKey: 'navigation.instructors',
-        },
+      },
+      {
+        path: 'instructors',
+        redirectTo: 'workforce/employees',
+        pathMatch: 'full',
       },
       {
         path: 'vehicles',
@@ -149,13 +151,8 @@ export const routes: Routes = [
       },
       {
         path: 'settings',
-        loadComponent: () =>
-          import('./shared/pages/coming-soon/coming-soon.page').then(
-            (component) => component.ComingSoonPage,
-          ),
-        data: {
-          titleKey: 'navigation.settings',
-        },
+        loadChildren: () =>
+          import('./features/settings/settings.routes').then((module) => module.SETTINGS_ROUTES),
       },
     ],
   },

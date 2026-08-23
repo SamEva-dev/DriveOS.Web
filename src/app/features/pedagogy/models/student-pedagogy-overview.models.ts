@@ -197,3 +197,37 @@ export interface StudentPedagogyOverview {
   alerts: StudentPedagogyAlert[];
   generatedAtUtc: string;
 }
+
+export interface StudentRegulatoryTrainingRecordRecentSubmission {
+  id: string;
+  sessionId: string;
+  status: string;
+  revision: number;
+  attemptCount: number;
+  createdAtUtc: string;
+  acknowledgedAtUtc?: string | null;
+  externalReference?: string | null;
+  lastErrorCode?: string | null;
+  hasIssues: boolean;
+}
+
+export interface StudentRegulatoryTrainingRecordOverview {
+  studentId: string;
+  trainingPathId?: string | null;
+  countryCode: string;
+  providerCode: string;
+  currentStatus?: string | null;
+  totalSubmissions: number;
+  accepted: number;
+  waitingForData: number;
+  pending: number;
+  rejected: number;
+  retryPending: number;
+  failed: number;
+  lastActivityAtUtc?: string | null;
+  lastAcceptedAtUtc?: string | null;
+  lastErrorCode?: string | null;
+  lastErrorDetail?: string | null;
+  currentIssues: string[];
+  recentSubmissions: StudentRegulatoryTrainingRecordRecentSubmission[];
+}

@@ -60,7 +60,9 @@
     "select": "Select",
     "verified": "Verified",
     "yes": "Yes",
-    "success": "Success"
+    "success": "Success",
+    "confirm": "Confirm",
+    "edit": "Edit"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -99,7 +101,14 @@
     },
     "pedagogy": "Pedagogy",
     "training": "Sessions",
-    "exams": "Exams"
+    "exams": "Exams",
+    "workforce": {
+      "label": "Team",
+      "dashboard": "Dashboard",
+      "employees": "Employees",
+      "jobPositions": "Job positions",
+      "analytics": "Analytics"
+    }
   },
   "theme": {
     "label": "Theme",
@@ -966,6 +975,156 @@
     "exams": {
       "places": {
         "invalidImportJson": "The JSON import payload is invalid."
+      }
+    },
+    "workforce": {
+      "qualification": {
+        "invalidOwner": "The owner or actor is invalid.",
+        "invalid": "The qualification information is invalid.",
+        "invalidValidityPeriod": "The validity period is invalid.",
+        "verificationMethodRequired": "A verification method is required.",
+        "decisionReasonRequired": "A reason is required.",
+        "notCurrent": "This qualification is no longer current.",
+        "notFound": "Qualification not found."
+      },
+      "instructorAuthorization": {
+        "invalid": "The authorization information is invalid.",
+        "instructorFunctionRequired": "An Instructor job position must cover the authorization date.",
+        "employeeNotEligible": "The employee is not eligible for this authorization."
+      },
+      "employmentContract": {
+        "invalidIdentifier": "Invalid employment contract identifier.",
+        "invalidPeriod": "The employment contract period is invalid.",
+        "invalidWeeklyHours": "Contractual weekly hours must be greater than 0 and no more than 168 hours.",
+        "invalidDocumentReference": "The contract document reference is invalid.",
+        "invalidLifecycleTransition": "This transition is not allowed for the current contract status.",
+        "immutableAfterSignatureFlow": "Contract terms can no longer be edited after the signature flow starts.",
+        "periodOverlap": "This contract period overlaps another current employment contract.",
+        "notFound": "Employment contract not found.",
+        "employeeEnded": "A contract cannot be added or changed for an ended employment period.",
+        "activationBeforeStartDate": "The activation date cannot be before the contract start date."
+      },
+      "leavePolicy": {
+        "invalidIdentifier": "Invalid leave policy identifier.",
+        "invalidOrganization": "Invalid organization.",
+        "invalidCountryCode": "Country code must contain two characters.",
+        "codeRequired": "Policy code is required.",
+        "codeTooLong": "Policy code is too long.",
+        "nameRequired": "Policy name is required.",
+        "nameTooLong": "Policy name is too long.",
+        "invalidRuleValue": "A leave rule contains an invalid value.",
+        "duplicateCode": "A policy with this code already exists in this scope.",
+        "notFound": "Leave policy not found.",
+        "alreadyInactive": "This policy is already inactive.",
+        "alreadyActive": "This policy is already active.",
+        "invalidStatus": "Invalid leave policy status.",
+        "invalidCategory": "Invalid leave category."
+      },
+      "leaveRequest": {
+        "invalidIdentifier": "Invalid leave request identifier.",
+        "invalidReference": "A leave request reference is invalid.",
+        "invalidPolicySnapshot": "The snapshotted policy rules are invalid.",
+        "invalidPeriod": "The leave period is invalid.",
+        "halfDayNotAllowed": "This policy does not allow half days.",
+        "invalidDayPortion": "The selected day portion is invalid.",
+        "maximumDurationExceeded": "The policy maximum duration is exceeded.",
+        "minimumNoticeNotMet": "The policy minimum notice is not met.",
+        "evidenceRequired": "Evidence is required for this request.",
+        "onlyDraftCanBeEdited": "Only Draft requests can be edited.",
+        "invalidTransition": "This status transition is not allowed.",
+        "decisionReasonRequired": "A decision reason is required.",
+        "startedLeaveCannotBeCancelled": "An approved leave that already started cannot be cancelled.",
+        "overlappingRequest": "This request overlaps another leave request.",
+        "policyInactive": "The selected leave policy is inactive.",
+        "employeeNotEligible": "The employee is not eligible for this request.",
+        "periodOutsideEmployment": "The requested period is outside the employment period.",
+        "notFound": "Leave request not found.",
+        "invalidStatus": "Invalid leave request status."
+      },
+      "timesheet": {
+        "invalidIdentifier": "Invalid timesheet identifier.",
+        "invalidPeriod": "Invalid timesheet period.",
+        "overlappingPeriod": "A timesheet already overlaps this period.",
+        "entryOutsidePeriod": "The entry is outside the period.",
+        "invalidHours": "Invalid hours.",
+        "invalidText": "Invalid text.",
+        "empty": "Add at least one entry before submitting.",
+        "notEditable": "This timesheet is no longer editable.",
+        "invalidTransition": "Invalid timesheet transition.",
+        "decisionReasonRequired": "A decision reason is required.",
+        "entryNotFound": "Timesheet entry not found.",
+        "notFound": "Timesheet not found."
+      },
+      "equipmentAssignment": {
+        "invalidIdentifier": "Invalid equipment or employee identifier.",
+        "invalidPeriod": "The assignment period is invalid.",
+        "invalidReturnDate": "The return date cannot be before the assignment start date.",
+        "invalidNotes": "The notes are too long.",
+        "invalidTransition": "This action is not allowed in the current assignment state.",
+        "notEditable": "This assignment can no longer be edited.",
+        "resourceAlreadyAssigned": "This resource is already assigned during this period.",
+        "cancellationReasonRequired": "A reason is required to cancel the assignment.",
+        "notFound": "Equipment assignment not found."
+      },
+      "performanceReview": {
+        "invalidIdentifier": "The performance review identifier is invalid.",
+        "invalidPeriod": "The review period is invalid.",
+        "invalidText": "Review text is invalid or exceeds the allowed length.",
+        "invalidWeight": "Criterion weight must be between 1 and 100.",
+        "invalidRating": "Rating must be between 1 and 5.",
+        "duplicateCriterion": "A criterion with this code already exists in the review.",
+        "criterionNotFound": "The requested criterion was not found.",
+        "notEditable": "This review can no longer be edited.",
+        "invalidTransition": "This transition is not allowed for the current review status.",
+        "incomplete": "Every criterion must be rated and an overall assessment must be provided before submission.",
+        "cancellationReasonRequired": "A cancellation reason is required.",
+        "overlappingPeriod": "Another review for this employee already covers this period.",
+        "notFound": "The performance review was not found."
+      },
+      "employeeDocument": {
+        "invalidIdentifier": "Invalid HR document identifier.",
+        "invalidMetadata": "The HR document metadata is invalid.",
+        "invalidValidityPeriod": "The HR document validity period is invalid.",
+        "invalidTransition": "This HR document status transition is not allowed.",
+        "notEditable": "This HR document can no longer be edited.",
+        "duplicateDocumentReference": "This BC-06 document reference is already registered in Workforce.",
+        "revocationReasonRequired": "A revocation reason is required.",
+        "notFound": "HR document not found."
+      },
+      "professionalRestriction": {
+        "invalidIdentifier": "Invalid professional restriction identifier.",
+        "invalidPeriod": "The restriction period is invalid.",
+        "reasonRequired": "A restriction reason is required.",
+        "liftReasonRequired": "A lift reason is required.",
+        "cancellationReasonRequired": "A cancellation reason is required.",
+        "invalidScope": "The restriction scope is invalid.",
+        "invalidTransition": "This restriction transition is not allowed.",
+        "notEditable": "This restriction can no longer be edited.",
+        "overlap": "An incompatible professional restriction already overlaps this period.",
+        "notFound": "Professional restriction not found."
+      },
+      "offboarding": {
+        "invalidIdentifier": "Invalid offboarding identifier.",
+        "reasonRequired": "A reason is required.",
+        "waiverReasonRequired": "A waiver reason is required.",
+        "notFound": "No active offboarding process was found.",
+        "existingProcess": "An offboarding process is already active for this employee.",
+        "employeeMustBeEnding": "The employee must be in the Ending state.",
+        "checklistIncomplete": "The offboarding checklist is not complete yet.",
+        "notEditable": "This offboarding process is no longer editable.",
+        "invalidTransition": "This offboarding transition is not allowed.",
+        "itemNotFound": "The checklist item was not found.",
+        "manualItemExpected": "This is an automatic item and cannot be completed manually.",
+        "automaticItemExpected": "This item requires manual completion."
+      },
+      "employee": {
+        "invalidRehireUserSelection": "The user account selection for rehiring is invalid.",
+        "rehireRequiresEndedEmployment": "Only an ended employment can be rehired.",
+        "rehireMustStartAfterPreviousEmployment": "The new employment must start after the previous employment ended.",
+        "rehireSourceMustBeLatestEmployment": "Only the latest ended employment for this person can be used as the rehire source.",
+        "existingEmployment": "An employment relationship already exists for this person in the relevant period.",
+        "userAlreadyLinked": "This user account is already linked to an incompatible employment relationship.",
+        "duplicateEmployeeNumber": "This employee number is already used by an active employment relationship."
       }
     }
   },
@@ -7755,7 +7914,16 @@
       "autonomy": "Observed autonomy",
       "reservationCodes": "Reservation codes",
       "reservationCodesHint": "e.g. Stress, Observation",
-      "reservations": "Reservations"
+      "reservations": "Reservations",
+      "regulatory": {
+        "satisfied": "Digital learning record compliant",
+        "blocked": "Digital learning record is blocking",
+        "notApplicable": "Digital learning record not applicable",
+        "warning": "Digital learning record requires review",
+        "pending": "Digital learning record synchronization pending",
+        "providerPending": "Digital learning record connection not configured",
+        "unavailable": "Digital learning record status temporarily unavailable"
+      }
     },
     "places": {
       "kicker": "Official capacity",
@@ -8111,6 +8279,1276 @@
       "month": {
         "smallSample": "Small sample: cautious interpretation required"
       }
+    }
+  },
+  "workforce": {
+    "label": "Team & HR",
+    "status": {
+      "Draft": "Draft",
+      "Onboarding": "Onboarding",
+      "Active": "Active",
+      "Suspended": "Suspended",
+      "OnLeave": "On leave",
+      "Ending": "Ending",
+      "Ended": "Ended"
+    },
+    "dashboard": {
+      "title": "Workforce dashboard",
+      "description": "Track headcount, leave, HR deadlines and operational alerts.",
+      "loadError": "Unable to load the Workforce dashboard.",
+      "kpis": {
+        "current": "Current headcount",
+        "active": "Active",
+        "onboarding": "Onboarding",
+        "suspended": "Suspended",
+        "onLeave": "On leave",
+        "ending": "Ending",
+        "pendingApproval": "Requests to approve",
+        "activeToday": "Absent today",
+        "upcomingLeave": "Upcoming leave",
+        "expiredAuthorizations": "Expired authorizations",
+        "expiringAuthorizations": "Authorizations expiring",
+        "expiredDocuments": "Expired documents",
+        "timesheetsToReview": "Timesheets to review",
+        "equipmentOverdue": "Overdue equipment",
+        "pendingSignatures": "Contracts to sign"
+      },
+      "sections": {
+        "leave": "Leave",
+        "leaveTitle": "Leave & availability",
+        "compliance": "Compliance",
+        "complianceTitle": "Authorizations & documents",
+        "operations": "Operations",
+        "operationsTitle": "Time, contracts & equipment"
+      },
+      "alerts": {
+        "title": "Alerts to address",
+        "description": "Deadlines and issues detected in the next {{days}} days.",
+        "dueDate": "Due date",
+        "openEmployee": "Open employee",
+        "empty": "No Workforce alerts to address",
+        "employmentEnding": "Employment ends in {{days}} day(s).",
+        "contractExpiring": "Employment contract expires in {{days}} day(s).",
+        "instructorAuthorizationExpired": "Teaching authorization expired (category {{category}}).",
+        "instructorAuthorizationExpiring": "Teaching authorization expires in {{days}} day(s) (category {{category}}).",
+        "employeeDocumentExpired": "HR document expired.",
+        "employeeDocumentExpiring": "HR document expires in {{days}} day(s).",
+        "equipmentReturnOverdue": "Equipment return is overdue by {{days}} day(s)."
+      },
+      "quickAccess": {
+        "title": "Quick access",
+        "description": "Open employee records and HR operations."
+      }
+    },
+    "employees": {
+      "title": "Employees",
+      "description": "Review employment periods and employee status for the current tenant.",
+      "searchPlaceholder": "Search by employee number or identifier…",
+      "allStatuses": "All statuses",
+      "loadError": "Unable to load employees.",
+      "empty": "No employees",
+      "emptyDescription": "No employee matches the current criteria.",
+      "openEnded": "Ongoing",
+      "linkedAccount": "Linked account",
+      "noLinkedAccount": "No linked account",
+      "columns": {
+        "employee": "Employee",
+        "status": "Status",
+        "period": "Employment period",
+        "account": "Account",
+        "actions": "Actions"
+      }
+    },
+    "employeeDetail": {
+      "title": "Employee record",
+      "back": "Back to employees",
+      "loadError": "Unable to load the employee.",
+      "identityPending": "Detailed identity will be enriched from the Person source; the UI does not invent names.",
+      "startDate": "Start",
+      "endDate": "End",
+      "account": "Account",
+      "linked": "Linked",
+      "unlinked": "Unlinked",
+      "employeeNumber": "Employee number",
+      "personId": "Person ID",
+      "userId": "User ID",
+      "rehireSource": "Previous employment",
+      "tabs": {
+        "label": "Employee record sections",
+        "overview": "Overview",
+        "branches": "Assignments",
+        "positions": "Positions",
+        "qualifications": "Qualifications",
+        "contracts": "Contracts",
+        "leave": "Leave",
+        "time": "Working time",
+        "equipment": "Equipment",
+        "reviews": "Reviews",
+        "documents": "Documents",
+        "offboarding": "Offboarding",
+        "restrictions": "Professional restrictions",
+        "noPermission": "You do not have permission to open this tab."
+      },
+      "overview": {
+        "employment": "Employment relationship",
+        "next": "360° record structure",
+        "nextDescription": "The tabs are defined now and will be enabled through the next frontend stories without changing the main record navigation.",
+        "identityNoteTitle": "Business identity",
+        "identityNote": "The Workforce backend currently exposes PersonId and UserId but not first/last name. The next story will enrich the record from the bounded context that owns person identity.",
+        "employmentDescription": "Employee number, linked account and employment period for this employee."
+      },
+      "actionError": "Action failed",
+      "actions": {
+        "editIdentity": "Edit employment relationship",
+        "startOnboarding": "Start onboarding",
+        "activate": "Activate",
+        "suspend": "Suspend",
+        "reactivate": "Reactivate",
+        "startTermination": "Prepare offboarding",
+        "rehire": "Rehire"
+      },
+      "lifecycle": {
+        "title": "HR lifecycle",
+        "description": "Available transitions depend on the current status and your permissions.",
+        "current": "Current status",
+        "offboardingStarted": "Offboarding process started",
+        "offboardingStartedDescription": "Final completion now goes through the offboarding checklist. The Offboarding tab will be enabled in a later story.",
+        "ended": "Employment relationship ended",
+        "endedDescription": "This employment period is historical and cannot be reactivated. A rehire creates a new employment period."
+      },
+      "history": {
+        "title": "Employment history",
+        "description": "All employment periods linked to the same person are preserved without reactivating historical records.",
+        "periods": "period(s)",
+        "current": "Ongoing",
+        "selectedPeriod": "Displayed period",
+        "openPeriod": "Open this period"
+      },
+      "drawers": {
+        "confirm": "Confirm",
+        "reason": "Reason",
+        "identity": {
+          "title": "Edit employment relationship",
+          "description": "Correct HR information for this employment period without modifying Person identity.",
+          "userIdHelp": "Leave empty when no AuthGate account should be linked to this employment period."
+        },
+        "onboarding": {
+          "title": "Start onboarding",
+          "description": "Move this employee from Draft to Onboarding.",
+          "confirmation": "This action officially starts HR onboarding. The employee will not yet be considered active."
+        },
+        "activate": {
+          "title": "Activate employee",
+          "description": "Complete onboarding and activate the employment relationship.",
+          "confirmation": "The employee will become Active and may be professionally available according to assignments, authorizations and restrictions."
+        },
+        "suspend": {
+          "title": "Suspend employment relationship",
+          "description": "Temporarily suspend this employee’s professional eligibility.",
+          "warning": "HR suspension blocks professional eligibility globally. For a targeted restriction (for example teaching category B only), use WFR-016 professional restrictions."
+        },
+        "reactivate": {
+          "title": "Reactivate employee",
+          "description": "Reactivate a currently suspended employment relationship.",
+          "confirmation": "The employment relationship returns to Active. Any professional restrictions or approved leave continue to apply independently."
+        },
+        "termination": {
+          "title": "Prepare offboarding",
+          "description": "Start employment termination and automatically create the offboarding process.",
+          "warning": "This action moves the employee to Ending and creates the offboarding checklist. It does not delete the user account or employment history.",
+          "plannedEndDate": "Planned end date"
+        },
+        "branchCreate": {
+          "title": "Add branch assignment",
+          "description": "Assign this employee to a branch for a defined period."
+        },
+        "branchEdit": {
+          "title": "Edit branch assignment",
+          "description": "Change the period or primary flag without rewriting history."
+        },
+        "branchEnd": {
+          "title": "End branch assignment",
+          "description": "Set the effective end date for this assignment.",
+          "warning": "Ending preserves history. It may be rejected when a branch-scoped job position still depends on this period."
+        },
+        "branchCancel": {
+          "title": "Cancel planned assignment",
+          "description": "Cancel an assignment that has not started yet.",
+          "warning": "An active or ended assignment cannot be cancelled; only a planned assignment can be cancelled."
+        },
+        "positionCreate": {
+          "title": "Assign job position",
+          "description": "Define the position, scope and effective period."
+        },
+        "positionEdit": {
+          "title": "Edit job-position assignment",
+          "description": "Position and branch remain fixed; only change the period or primary flag."
+        },
+        "positionEnd": {
+          "title": "End job position",
+          "description": "End this assignment on a specific date.",
+          "warning": "Ending preserves history and may affect authorizations requiring an active professional function."
+        },
+        "positionCancel": {
+          "title": "Cancel assignment",
+          "description": "Cancel a planned assignment that should no longer start.",
+          "warning": "This keeps the assignment history with Cancelled status."
+        },
+        "qualificationDeclare": {
+          "title": "Declare qualification",
+          "description": "Action performed in the side drawer with business auditability."
+        },
+        "qualificationVerify": {
+          "title": "Verify qualification",
+          "description": "Action performed in the side drawer with business auditability."
+        },
+        "qualificationReject": {
+          "title": "Reject qualification",
+          "description": "Action performed in the side drawer with business auditability."
+        },
+        "authorizationDeclare": {
+          "title": "Declare authorization",
+          "description": "Action performed in the side drawer with business auditability."
+        },
+        "authorizationVerify": {
+          "title": "Verify authorization",
+          "description": "Action performed in the side drawer with business auditability."
+        },
+        "authorizationReject": {
+          "title": "Reject authorization",
+          "description": "Action performed in the side drawer with business auditability."
+        },
+        "contractCreate": {
+          "title": "Add employment contract",
+          "description": "Define the initial HR terms of the contract."
+        },
+        "contractEdit": {
+          "title": "Edit employment contract",
+          "description": "Correct Draft terms before signature."
+        },
+        "contractDocument": {
+          "title": "Link contract document",
+          "description": "Associate the BC-06 document and, when available, its signature process."
+        },
+        "contractSigned": {
+          "title": "Confirm signature",
+          "description": "Record completion of the signature process."
+        },
+        "contractActivate": {
+          "title": "Activate contract",
+          "description": "Set the operational effective date for the signed contract."
+        },
+        "contractTerminate": {
+          "title": "Terminate contract",
+          "description": "Close the contract on a date without deleting its history."
+        },
+        "contractCancel": {
+          "title": "Cancel contract",
+          "description": "Cancel a Draft or Pending signature contract."
+        },
+        "leaveRequestCreate": {
+          "title": "New leave request",
+          "description": "Set the period, policy and optional evidence."
+        },
+        "leaveRequestEdit": {
+          "title": "Edit leave request",
+          "description": "Only Draft requests can be edited."
+        },
+        "leaveRequestSubmit": {
+          "title": "Submit leave request",
+          "description": "Send this request into the approval workflow."
+        },
+        "leaveRequestApprove": {
+          "title": "Approve leave request",
+          "description": "Approve this employee absence."
+        },
+        "leaveRequestReject": {
+          "title": "Reject leave request",
+          "description": "A rejection reason is required."
+        },
+        "leaveRequestCancel": {
+          "title": "Cancel leave request",
+          "description": "Cancel the request and remove its availability effect where applicable."
+        },
+        "leavePolicyCreate": {
+          "title": "New leave policy",
+          "description": "Define organizational rules for a leave category."
+        },
+        "leavePolicyEdit": {
+          "title": "Edit leave policy",
+          "description": "Existing requests retain the rules snapshotted when they were created."
+        },
+        "leavePolicyDeactivate": {
+          "title": "Deactivate leave policy",
+          "description": "Prevent this policy from being used for new requests."
+        },
+        "leavePolicyReactivate": {
+          "title": "Reactivate leave policy",
+          "description": "Make this policy available again."
+        },
+        "workingTimeCreate": {
+          "title": "Add policy",
+          "description": "Define the applicable contractual limits.",
+          "confirmation": "Define the applicable contractual limits."
+        },
+        "workingTimeEdit": {
+          "title": "Edit policy",
+          "description": "Edit the period and contractual limits.",
+          "confirmation": "Edit the period and contractual limits."
+        },
+        "workingTimeDeactivate": {
+          "title": "Deactivate policy",
+          "description": "Deactivation preserves history.",
+          "confirmation": "Deactivation preserves history."
+        },
+        "timesheetCreate": {
+          "title": "New timesheet",
+          "description": "Define the declaration period.",
+          "confirmation": "Define the declaration period."
+        },
+        "timesheetEntryCreate": {
+          "title": "Add entry",
+          "description": "Record an activity in the timesheet.",
+          "confirmation": "Record an activity in the timesheet."
+        },
+        "timesheetEntryEdit": {
+          "title": "Edit entry",
+          "description": "Correct the entry while the timesheet remains editable.",
+          "confirmation": "Correct the entry while the timesheet remains editable."
+        },
+        "timesheetEntryRemove": {
+          "title": "Remove entry",
+          "description": "This removes the entry from the timesheet.",
+          "confirmation": "This removes the entry from the timesheet."
+        },
+        "timesheetSubmit": {
+          "title": "Submit timesheet",
+          "description": "The timesheet will leave draft state.",
+          "confirmation": "The timesheet will leave draft state."
+        },
+        "timesheetReview": {
+          "title": "Start review",
+          "description": "The timesheet will enter review.",
+          "confirmation": "The timesheet will enter review."
+        },
+        "timesheetApprove": {
+          "title": "Approve timesheet",
+          "description": "Validate declared hours.",
+          "confirmation": "Validate declared hours."
+        },
+        "timesheetReject": {
+          "title": "Reject timesheet",
+          "description": "A reason is required.",
+          "confirmation": "A reason is required."
+        },
+        "timesheetLock": {
+          "title": "Lock timesheet",
+          "description": "A locked timesheet is terminal.",
+          "confirmation": "A locked timesheet is terminal."
+        },
+        "equipmentCreate": {
+          "title": "Assign equipment",
+          "description": "Plan a new resource entrusted to the employee."
+        },
+        "equipmentEdit": {
+          "title": "Edit assignment",
+          "description": "Change the dates of an assignment that is still planned."
+        },
+        "equipmentHandover": {
+          "title": "Confirm handover",
+          "description": "Record the resource condition when handed to the employee."
+        },
+        "equipmentReturn": {
+          "title": "Record return",
+          "description": "Record the return date and resource condition."
+        },
+        "equipmentCancel": {
+          "title": "Cancel assignment",
+          "description": "Cancel a planned assignment before handover."
+        },
+        "reviewCreate": {
+          "title": "New performance review",
+          "description": "Define the period, evaluator and title for this HR review."
+        },
+        "reviewStart": {
+          "title": "Start review",
+          "description": "Move this review into active evaluation.",
+          "confirmation": "This action officially starts the review."
+        },
+        "reviewCriterionAdd": {
+          "title": "Add criterion",
+          "description": "Add a criterion snapshot to this review. Later template changes will not rewrite this history."
+        },
+        "reviewCriterionRate": {
+          "title": "Rate criterion",
+          "description": "Assign a rating from 1 to 5 and optionally add a comment."
+        },
+        "reviewSummary": {
+          "title": "Review summary",
+          "description": "Write the overall assessment and progression objectives."
+        },
+        "reviewSubmit": {
+          "title": "Submit review",
+          "description": "Make sure every criterion is rated and an overall assessment is provided.",
+          "confirmation": "Submitting freezes the review so the employee can acknowledge it."
+        },
+        "reviewAcknowledge": {
+          "title": "Acknowledge review",
+          "description": "Record that the employee has seen the review and any optional comment."
+        },
+        "reviewComplete": {
+          "title": "Complete review",
+          "description": "Complete the review after the employee acknowledgement.",
+          "confirmation": "A completed review becomes historical and can no longer be edited."
+        },
+        "reviewCancel": {
+          "title": "Cancel review",
+          "description": "Provide the cancellation reason. The review history will be preserved."
+        },
+        "documentCreate": {
+          "title": "Register HR document",
+          "description": "Associate a BC-06 reference with the employee HR registry."
+        },
+        "documentEdit": {
+          "title": "Edit HR metadata",
+          "description": "Change classification and validity without altering the source file."
+        },
+        "documentVerify": {
+          "title": "Verify HR document",
+          "description": "Confirm HR verification of this document reference."
+        },
+        "documentReveal": {
+          "title": "Reveal protected reference",
+          "description": "Controlled access to a confidential or restricted reference."
+        },
+        "documentSupersede": {
+          "title": "Supersede HR document",
+          "description": "Close this registry entry in favour of a new reference."
+        },
+        "documentRevoke": {
+          "title": "Revoke HR document",
+          "description": "Invalidate this entry with an auditable reason."
+        },
+        "documentArchive": {
+          "title": "Archive HR document",
+          "description": "Permanently archive this HR registry entry."
+        },
+        "restrictionCreate": {
+          "title": "Add restriction",
+          "description": "Define the scope and period of the professional restriction."
+        },
+        "restrictionEdit": {
+          "title": "Edit restriction",
+          "description": "Only a planned restriction can be edited."
+        },
+        "restrictionActivate": {
+          "title": "Activate restriction",
+          "description": "Confirm activation of this professional restriction."
+        },
+        "restrictionLift": {
+          "title": "Lift restriction",
+          "description": "Provide the reason for lifting the active restriction."
+        },
+        "restrictionCancel": {
+          "title": "Cancel restriction",
+          "description": "Provide the reason for cancelling the planned restriction."
+        },
+        "offboardingRefresh": {
+          "title": "Refresh checklist",
+          "description": "Recompute automatic checks before continuing."
+        },
+        "offboardingCompleteItem": {
+          "title": "Complete manual item",
+          "description": "Confirm this exit step is complete."
+        },
+        "offboardingWaiveItem": {
+          "title": "Grant waiver",
+          "description": "Provide a precise reason for bypassing this item."
+        },
+        "offboardingComplete": {
+          "title": "Complete offboarding",
+          "description": "Permanently end this employment relationship."
+        },
+        "rehire": {
+          "title": "Rehire employee",
+          "description": "Create a new employment period from this ended employment relationship."
+        }
+      },
+      "branches": {
+        "title": "Branch assignments",
+        "description": "History of branches where this employee is professionally assigned. Periods are preserved and the primary branch is explicit.",
+        "add": "Add assignment",
+        "accessNote": "A Workforce assignment describes the HR reality. It does not automatically grant or revoke technical access in branch_user_assignments.",
+        "emptyTitle": "No branch assignment",
+        "emptyDescription": "Add the first assignment to define where this employee performs their work.",
+        "primary": "Primary branch",
+        "openEnded": "No end date",
+        "end": "End assignment",
+        "cancelAssignment": "Cancel assignment",
+        "fields": {
+          "branch": "Branch",
+          "selectBranch": "Select a branch",
+          "startDate": "Start date",
+          "endDate": "End date",
+          "primary": "Primary assignment",
+          "primaryHelp": "Only one primary assignment may cover the same period."
+        },
+        "edit": "Edit",
+        "noReadPermission": "You do not have permission to view branch assignments."
+      },
+      "positions": {
+        "title": "Job positions and functions",
+        "description": "History of positions held by the employee, including period, optional branch and primary position.",
+        "add": "Assign position",
+        "securityNote": "Job position and professional function describe HR reality. They never create AccessManager roles or permissions.",
+        "emptyTitle": "No assigned position",
+        "emptyDescription": "Assign a job position to describe the role performed by this employee.",
+        "primary": "Primary position",
+        "allBranches": "All branches / organization-wide",
+        "openEnded": "no end date",
+        "end": "End assignment",
+        "cancelAssignment": "Cancel assignment",
+        "fields": {
+          "position": "Job position",
+          "selectPosition": "Select a job position",
+          "branch": "Branch",
+          "branchHelp": "A branch can only be selected when a branch assignment covers the full job-position period. Leave blank for organization-wide scope.",
+          "startDate": "Start date",
+          "endDate": "End date",
+          "primary": "Primary position",
+          "primaryHelp": "Only one primary position can cover the same period."
+        },
+        "noReadPermission": "You do not have permission to view job positions and professional functions."
+      },
+      "qualifications": {
+        "title": "Qualifications & authorizations",
+        "description": "Professional qualifications and regulatory authorizations for this employee. They remain distinct from security roles and job positions.",
+        "subTabs": {
+          "qualifications": "Professional qualifications",
+          "authorizations": "Teaching authorizations"
+        },
+        "declare": "Declare qualification",
+        "verify": "Verify",
+        "reject": "Reject",
+        "expired": "Expired",
+        "emptyTitle": "No qualifications",
+        "emptyDescription": "No professional qualification has been declared.",
+        "noReadPermission": "You do not have permission to view qualifications.",
+        "noExpiry": "No expiry",
+        "verificationHelp": "Verification confirms that the information was checked using the stated method. It grants no application permission.",
+        "rejectionHelp": "Rejection keeps the declaration in history. A reason is required.",
+        "fields": {
+          "country": "Country (ISO-2)",
+          "type": "Qualification type",
+          "title": "Title",
+          "identifier": "Identifier / number",
+          "issuer": "Issuing authority",
+          "validity": "Validity",
+          "source": "Source",
+          "verificationMethod": "Verification method",
+          "decisionReasonOptional": "Verification note (optional)",
+          "reason": "Rejection reason"
+        }
+      },
+      "authorizations": {
+        "declare": "Declare authorization",
+        "category": "Category",
+        "scopeNote": "A teaching authorization is evaluated by country, licence category and validity period. It feeds Scheduling, Exams and regulatory integrations, including the Digital Training Record.",
+        "emptyTitle": "No teaching authorizations",
+        "emptyDescription": "No regulatory teaching authorization has been declared.",
+        "noReadPermission": "You do not have permission to view teaching authorizations.",
+        "instructorFunctionRequired": "A job position with the Instructor professional function must cover the relevant date before declaration.",
+        "fields": {
+          "identifier": "Authorization number",
+          "jurisdiction": "Jurisdiction / department"
+        }
+      },
+      "contracts": {
+        "title": "Employment contracts",
+        "description": "Manage HR employment terms and lifecycle. The signed document and signature evidence remain owned by Contracts & Documents.",
+        "add": "Add contract",
+        "boundaryNote": "Workforce stores HR terms and references only. File bytes, versions, hashes and signature evidence remain owned by BC-06 Contracts & Documents.",
+        "noReadPermission": "You do not have permission to view employment contracts.",
+        "emptyTitle": "No employment contract",
+        "emptyDescription": "Add the first HR employment contract for this employee.",
+        "openEnded": "open-ended",
+        "immutableHelp": "Terms are editable only while the contract is Draft. Once the signature flow starts, changes must use a new document or an appropriate amendment.",
+        "documentHelp": "Link the document reference managed by BC-06. Workforce does not store the file or signature evidence.",
+        "signatureOptionalHelp": "Leave empty until a signature process has been created.",
+        "signedHelp": "Confirm signature only after BC-06 has completed the corresponding signature process.",
+        "activationHelp": "Activation confirms that the signed contract becomes operational on the specified date.",
+        "terminationHelp": "Termination closes the HR contract on the specified date without deleting its history or signed document.",
+        "cancelHelp": "Cancellation is only available for Draft or Pending signature contracts and keeps the historical record.",
+        "fields": {
+          "type": "Contract type",
+          "period": "Period",
+          "startDate": "Start date",
+          "endDate": "End date",
+          "weeklyHours": "Contractual weekly hours",
+          "primaryPosition": "Primary position",
+          "document": "BC-06 document",
+          "documentId": "Contract document identifier",
+          "signatureProcess": "Signature process",
+          "signatureProcessId": "Signature process identifier",
+          "activationDate": "Activation date"
+        },
+        "actions": {
+          "linkDocument": "Link document",
+          "markSigned": "Mark signed",
+          "activate": "Activate",
+          "terminate": "Terminate"
+        }
+      },
+      "leave": {
+        "title": "Leave & absences",
+        "description": "Manage this employee’s leave requests and the organization policies that govern them.",
+        "subTabs": {
+          "requests": "Requests",
+          "policies": "Policies"
+        },
+        "requests": {
+          "create": "New request",
+          "emptyTitle": "No leave requests",
+          "emptyDescription": "This employee’s leave requests will appear here.",
+          "noReadPermission": "You do not have permission to read leave requests.",
+          "availabilityNote": "An approved request becomes the effective Workforce absence and blocks professional availability exposed to Scheduling. No duplicate absence record is created.",
+          "policy": "Leave policy",
+          "startDate": "Start date",
+          "endDate": "End date",
+          "startPortion": "Start portion",
+          "endPortion": "End portion",
+          "reason": "Reason / comment",
+          "evidence": "Evidence",
+          "evidenceDocumentId": "Evidence document reference",
+          "evidenceBoundary": "Workforce stores only the document reference; the file and evidence remain owned by BC-06 Contracts & Documents.",
+          "submit": "Submit",
+          "approve": "Approve",
+          "reject": "Reject",
+          "cancel": "Cancel request",
+          "decisionReason": "Decision reason (optional)",
+          "decisionReasonRequired": "Rejection reason",
+          "submitHelp": "The request will enter the approval workflow. If the policy does not require approval, the domain may approve it automatically."
+        },
+        "policies": {
+          "create": "New policy",
+          "emptyTitle": "No leave policies",
+          "noReadPermission": "You do not have permission to read leave policies.",
+          "scopeNote": "Policies are scoped to the organization and country. They configure the DriveOS workflow and do not replace national employment law.",
+          "paid": "Paid",
+          "approval": "Approval required",
+          "evidence": "Evidence required",
+          "halfDay": "Half-day allowed",
+          "notice": "Minimum notice (days)",
+          "maxDays": "Maximum consecutive days",
+          "country": "Country",
+          "code": "Code",
+          "name": "Name",
+          "category": "Category",
+          "deactivate": "Deactivate",
+          "reactivate": "Reactivate",
+          "deactivateHelp": "The policy will no longer be available for new requests. Existing requests keep their rule snapshot.",
+          "reactivateHelp": "The policy will become available for new requests again."
+        }
+      },
+      "time": {
+        "title": "Working time",
+        "description": "Compare contractual, planned, actually taught and approved leave hours. Timesheets remain an HR declaration distinct from training sessions.",
+        "subTabs": {
+          "summary": "Summary & policy",
+          "timesheets": "Timesheets"
+        },
+        "noReadPermission": "You do not have permission to view working time.",
+        "summary": {
+          "calculate": "Calculate",
+          "contractual": "Contractual",
+          "planned": "Planned",
+          "actualTeaching": "Actual teaching",
+          "leave": "Approved leave",
+          "variance": "Variance to contract"
+        },
+        "policy": {
+          "title": "Contractual policies",
+          "create": "Add policy",
+          "empty": "No working-time policy.",
+          "weekly": "Weekly hours",
+          "daily": "Daily hours",
+          "maxDays": "Max days/week",
+          "deactivate": "Deactivate",
+          "deactivateHelp": "The policy will become inactive. History is preserved."
+        },
+        "timesheets": {
+          "create": "New timesheet",
+          "emptyTitle": "No timesheets",
+          "emptyDescription": "Create a period then add activity entries.",
+          "noReadPermission": "You do not have permission to view timesheets.",
+          "entries": "entries",
+          "addEntry": "Add entry",
+          "submit": "Submit",
+          "startReview": "Start review",
+          "approve": "Approve",
+          "reject": "Reject",
+          "lock": "Lock",
+          "activity": "Activity",
+          "hours": "Hours",
+          "source": "Source",
+          "sourceReference": "Source reference",
+          "removeEntryHelp": "This entry will be removed from the timesheet.",
+          "sourceHelp": "Provenance is immutable. An entry created manually in this screen is recorded as “Manual”; Scheduling, Training Delivery and Leave sources are reserved for their corresponding projections/integrations.",
+          "removeEntry": "Delete"
+        },
+        "from": "From",
+        "to": "To",
+        "date": "Date",
+        "openEnded": "Open-ended",
+        "descriptionField": "Description",
+        "reason": "Reason"
+      },
+      "equipment": {
+        "title": "Assigned equipment",
+        "description": "Track resources entrusted to the employee, handover condition and return. Workforce owns the HR assignment only; resource master data stays in its owning bounded context.",
+        "create": "Assign equipment",
+        "empty": "No equipment assignment for this employee.",
+        "resource": "Resource",
+        "resourceType": "Resource type",
+        "resourceId": "Resource identifier",
+        "period": "Planned period",
+        "handover": "Handover",
+        "return": "Return",
+        "condition": {
+          "Unknown": "Unknown",
+          "New": "New",
+          "Good": "Good",
+          "Fair": "Fair",
+          "Damaged": "Damaged",
+          "Unusable": "Unusable"
+        },
+        "notes": "Notes",
+        "returnedOn": "Returned on",
+        "resourceBoundary": "The identifier references the owning resource context (Fleet, inventory, etc.). Workforce does not duplicate its name or technical data.",
+        "actions": {
+          "edit": "Edit plan",
+          "handover": "Hand over",
+          "return": "Return",
+          "cancel": "Cancel"
+        },
+        "status": {
+          "Planned": "Planned",
+          "Active": "In possession",
+          "Returned": "Returned",
+          "Cancelled": "Cancelled"
+        },
+        "resourceTypes": {
+          "Vehicle": "Vehicle",
+          "MobilePhone": "Mobile phone",
+          "Tablet": "Tablet",
+          "Computer": "Computer",
+          "Badge": "Badge",
+          "Keys": "Keys",
+          "TrainingEquipment": "Training equipment",
+          "Other": "Other"
+        },
+        "noReadPermission": "You do not have permission to view equipment assignments."
+      },
+      "reviews": {
+        "title": "Performance reviews",
+        "description": "Track the employee’s HR reviews, weighted criteria, management summary, objectives and employee acknowledgement.",
+        "create": "Create review",
+        "boundaryNote": "This review concerns employee performance and HR follow-up. It is separate from learner pedagogical assessments, which remain owned by Curriculum / Training Delivery.",
+        "noReadPermission": "You do not have permission to view performance reviews.",
+        "emptyTitle": "No performance reviews",
+        "emptyDescription": "Create the first review to start this employee’s HR review history.",
+        "evaluator": "Evaluator",
+        "weightedScore": "Weighted score",
+        "rate": "Rate",
+        "addCriterion": "Add criterion",
+        "editSummary": "Edit summary",
+        "start": "Start",
+        "submit": "Submit",
+        "acknowledge": "Acknowledge",
+        "complete": "Complete",
+        "cancel": "Cancel review",
+        "overallAssessment": "Overall assessment",
+        "objectives": "Objectives",
+        "employeeComment": "Employee comment",
+        "acknowledgeHelp": "Acknowledgement confirms that the employee has seen the review. It does not necessarily mean that they agree with its content.",
+        "fields": {
+          "title": "Title",
+          "evaluatorUserId": "Evaluator user",
+          "periodFrom": "Period from",
+          "periodTo": "Period to",
+          "code": "Criterion code",
+          "label": "Criterion label",
+          "weight": "Weight (%)",
+          "comment": "Comment",
+          "rating": "Rating (1 to 5)"
+        }
+      },
+      "documents": {
+        "title": "HR documents",
+        "description": "Employee HR document registry: classification, validity, confidentiality and verification.",
+        "create": "Register document",
+        "boundaryNote": "Workforce stores HR metadata and the document reference. The file, versions, hash and signature evidence remain owned by BC-06 Contracts & Documents.",
+        "noReadPermission": "You do not have permission to view HR documents.",
+        "emptyTitle": "No HR documents",
+        "emptyDescription": "No document has been registered for this employee yet.",
+        "expired": "Expired",
+        "noExpiry": "no expiry",
+        "protectedReference": "Protected reference — confidential permission required",
+        "verifiedAt": "Verified on",
+        "supersededBy": "Superseded by",
+        "referenceHelp": "Identifier of the document owned by BC-06. No file is copied into Workforce.",
+        "verifyHelp": "Verification confirms the HR compliance of this document reference. It does not alter the file in BC-06.",
+        "revealHelp": "This reference is protected because the document is Confidential or Restricted. Access requires Workforce.EmployeeDocuments.Confidential.Read.",
+        "supersedeHelp": "Enter the EmployeeDocument id of the new registry entry replacing this one.",
+        "archiveHelp": "Archiving makes this document entry terminal in the HR registry.",
+        "fields": {
+          "documentReferenceId": "BC-06 document reference",
+          "category": "Category",
+          "confidentiality": "Confidentiality",
+          "documentTypeCode": "Document type code",
+          "title": "Title",
+          "issuedOn": "Issued on",
+          "validFrom": "Valid from",
+          "expiresOn": "Expires on",
+          "validity": "Validity",
+          "issuer": "Issuer",
+          "referenceNumber": "Number / reference",
+          "replacementId": "Replacement HR document id"
+        },
+        "actions": {
+          "verify": "Verify",
+          "reveal": "Reveal reference",
+          "supersede": "Supersede",
+          "revoke": "Revoke",
+          "archive": "Archive"
+        }
+      },
+      "restrictions": {
+        "title": "Professional restrictions",
+        "description": "Targeted restrictions that temporarily limit an employee’s professional eligibility without changing employment status or account access.",
+        "create": "Add restriction",
+        "boundaryNote": "A professional restriction is distinct from employment suspension. It is consumed by eligibility checks in Scheduling, Exams and other relevant modules.",
+        "noReadPermission": "You do not have permission to view professional restrictions.",
+        "emptyTitle": "No professional restrictions",
+        "emptyDescription": "This employee currently has no recorded professional restriction.",
+        "openEnded": "no end date",
+        "allBranches": "All branches",
+        "documentBoundary": "Workforce stores only the document reference. The file and evidence remain owned by BC-06 Contracts & Documents.",
+        "activateHelp": "Activating this restriction makes it effective for professional eligibility checks. It may block assignments or bookings according to its scope.",
+        "liftReason": "Lift reason",
+        "cancellationReason": "Cancellation reason",
+        "actions": {
+          "activate": "Activate restriction",
+          "lift": "Lift restriction"
+        },
+        "fields": {
+          "activity": "Affected activity",
+          "source": "Source",
+          "startDate": "Start date",
+          "endDate": "End date",
+          "reason": "Reason",
+          "country": "Country",
+          "licenseCategory": "Licence category",
+          "branch": "Branch",
+          "document": "Document reference",
+          "period": "Period",
+          "scope": "Scope"
+        }
+      },
+      "offboarding": {
+        "title": "Offboarding",
+        "description": "Manage the employee exit without deleting history or the global account. Automatic checks are recalculated from authoritative Workforce data.",
+        "status": "Status",
+        "plannedEndDate": "Planned end date",
+        "progress": "Checklist",
+        "reason": "Exit reason",
+        "automatic": "Automatic",
+        "manual": "Manual",
+        "blockers": "{{count}} blocker(s)",
+        "waiverReason": "Waiver reason",
+        "lastEvaluated": "Last evaluated:",
+        "refresh": "Refresh checklist",
+        "refreshHelp": "DriveOS will reread branch assignments, positions, contracts, equipment, timesheets and professional restrictions to recompute automatic checks.",
+        "noReadPermission": "You do not have permission to view offboarding.",
+        "emptyTitle": "No offboarding in progress",
+        "emptyDescription": "The offboarding process is created automatically when termination is started from the HR lifecycle.",
+        "startHint": "To start offboarding, use “Prepare termination” from the employee overview.",
+        "boundaryNote": "Completing employment ends the employment relationship but does not delete Employee, Person, or the global user account. Technical access revocation remains a separate responsibility and must be prepared in the checklist.",
+        "completeItem": "Mark complete",
+        "manualItemHelp": "This item requires an explicit decision by an authorized manager.",
+        "note": "Note",
+        "waive": "Waive",
+        "waiveHelp": "A waiver explicitly bypasses this check. It must remain exceptional, justified and audited.",
+        "readyTitle": "Checklist complete",
+        "readyDescription": "All checks are completed or waived. Employment can now be closed.",
+        "completeEmployment": "Complete offboarding",
+        "completeHelp": "This action will end the employment relationship on the planned date. History is retained and the employee becomes Ended.",
+        "completionReason": "Completion reason"
+      },
+      "rehire": {
+        "title": "Rehire employee",
+        "description": "Rehiring creates a new employment relationship and a new EmployeeId. The previous employment remains ended and immutable.",
+        "reuseUser": "Reuse previous user account",
+        "warning": "No branch assignment, position, qualification, authorization, contract, or other HR data is copied automatically. The new employment starts in Draft."
+      },
+      "invalidEmployeeId": "The employee identifier is invalid."
+    },
+    "branchAssignmentStatus": {
+      "Planned": "Planned",
+      "Active": "Active",
+      "Ended": "Ended",
+      "Cancelled": "Cancelled"
+    },
+    "jobPositionStatus": {
+      "Active": "Active",
+      "Inactive": "Inactive"
+    },
+    "jobPositionAssignmentStatus": {
+      "Planned": "Planned",
+      "Active": "Active",
+      "Ended": "Ended",
+      "Cancelled": "Cancelled"
+    },
+    "professionalFunctions": {
+      "Instructor": "Instructor",
+      "PedagogicalManagement": "Pedagogical management",
+      "BranchManagement": "Branch management",
+      "Administration": "Administration",
+      "Finance": "Finance",
+      "Executive": "Executive",
+      "FleetManagement": "Fleet management",
+      "ExamCoordination": "Exam coordination",
+      "Sales": "Sales",
+      "HumanResources": "Human resources",
+      "Support": "Support",
+      "Other": "Other"
+    },
+    "jobPositions": {
+      "title": "Job position catalog",
+      "description": "Define organization job positions and their normalized professional function. A job position never grants application permissions.",
+      "add": "New position",
+      "search": "Search by code, name or function…",
+      "loadError": "Unable to load job positions",
+      "actionError": "Action failed",
+      "emptyTitle": "No job positions",
+      "emptyDescription": "Create the organization’s first job position.",
+      "professionalFunction": "Professional function",
+      "deactivate": "Deactivate",
+      "reactivate": "Reactivate",
+      "fields": {
+        "code": "Code",
+        "name": "Name",
+        "function": "Professional function",
+        "description": "Description"
+      },
+      "drawers": {
+        "description": "Changes affect the HR catalog only, never security roles or permissions.",
+        "create": {
+          "title": "Create job position"
+        },
+        "edit": {
+          "title": "Edit job position"
+        },
+        "deactivate": {
+          "title": "Deactivate job position",
+          "warning": "The position will no longer be available for new assignments. Historical assignments remain unchanged."
+        },
+        "reactivate": {
+          "title": "Reactivate job position",
+          "warning": "The position will be available for new assignments again."
+        }
+      }
+    },
+    "credentialStatus": {
+      "Declared": "Declared",
+      "Verified": "Verified",
+      "Rejected": "Rejected",
+      "Expired": "Expired",
+      "Superseded": "Superseded"
+    },
+    "qualificationSource": {
+      "Manual": "Manual entry",
+      "Import": "Import",
+      "ExternalProvider": "External provider"
+    },
+    "employmentContractType": {
+      "Permanent": "Permanent",
+      "FixedTerm": "Fixed term",
+      "Apprenticeship": "Apprenticeship",
+      "Professionalization": "Professionalization",
+      "Temporary": "Temporary",
+      "Internship": "Internship",
+      "Other": "Other"
+    },
+    "employmentContractStatus": {
+      "Draft": "Draft",
+      "PendingSignature": "Pending signature",
+      "Signed": "Signed",
+      "Active": "Active",
+      "Suspended": "Suspended",
+      "Ending": "Ending",
+      "Terminated": "Terminated",
+      "Completed": "Completed",
+      "Cancelled": "Cancelled"
+    },
+    "leaveRequestStatus": {
+      "Draft": "Draft",
+      "Submitted": "Submitted",
+      "Approved": "Approved",
+      "Rejected": "Rejected",
+      "Cancelled": "Cancelled"
+    },
+    "leavePolicyStatus": {
+      "Active": "Active",
+      "Inactive": "Inactive"
+    },
+    "leaveDayPortion": {
+      "FullDay": "Full day",
+      "Morning": "Morning",
+      "Afternoon": "Afternoon"
+    },
+    "leaveCategory": {
+      "PaidLeave": "Paid leave",
+      "UnpaidLeave": "Unpaid leave",
+      "SickLeave": "Sick leave",
+      "TrainingLeave": "Training leave",
+      "ParentalLeave": "Parental leave",
+      "CompensatoryLeave": "Compensatory leave",
+      "Other": "Other"
+    },
+    "workingTimePolicyStatus": {
+      "Active": "Active",
+      "Inactive": "Inactive"
+    },
+    "timesheetStatus": {
+      "Draft": "Draft",
+      "Submitted": "Submitted",
+      "UnderReview": "Under review",
+      "Approved": "Approved",
+      "Rejected": "Rejected",
+      "Locked": "Locked"
+    },
+    "timesheetActivityType": {
+      "Teaching": "Teaching",
+      "Exam": "Exam",
+      "Administrative": "Administrative",
+      "Travel": "Travel",
+      "Meeting": "Meeting",
+      "Training": "Training",
+      "Leave": "Leave",
+      "Other": "Other"
+    },
+    "timesheetEntrySource": {
+      "Manual": "Manual",
+      "Scheduling": "Scheduling",
+      "TrainingDelivery": "Training delivery",
+      "Leave": "Leave"
+    },
+    "workingTime": {
+      "errors": {
+        "invalidIdentifier": "Invalid working-time policy identifier.",
+        "invalidPeriod": "Invalid policy period.",
+        "invalidLimits": "Invalid working-time limits.",
+        "overlappingPolicy": "An active policy already overlaps this period.",
+        "notFound": "Working-time policy not found.",
+        "inactive": "This policy is inactive."
+      }
+    },
+    "performanceReviewStatus": {
+      "Draft": "Draft",
+      "InProgress": "In progress",
+      "Submitted": "Submitted",
+      "Acknowledged": "Acknowledged",
+      "Completed": "Completed",
+      "Cancelled": "Cancelled"
+    },
+    "employeeDocumentCategory": {
+      "Identity": "Identity",
+      "Employment": "Employment",
+      "Qualification": "Qualification",
+      "RegulatoryAuthorization": "Regulatory authorization",
+      "LeaveEvidence": "Leave evidence",
+      "OccupationalHealth": "Occupational health",
+      "Payroll": "Payroll",
+      "Administrative": "Administrative",
+      "Other": "Other"
+    },
+    "employeeDocumentConfidentiality": {
+      "Internal": "Internal",
+      "Confidential": "Confidential",
+      "Restricted": "Restricted"
+    },
+    "employeeDocumentStatus": {
+      "Registered": "Registered",
+      "Verified": "Verified",
+      "Superseded": "Superseded",
+      "Revoked": "Revoked",
+      "Archived": "Archived"
+    },
+    "professionalRestrictionActivity": {
+      "AllProfessionalDuties": "All professional duties",
+      "Teaching": "Teaching",
+      "ExamDuties": "Exam duties",
+      "VehicleOperation": "Vehicle operation"
+    },
+    "professionalRestrictionStatus": {
+      "Planned": "Planned",
+      "Active": "Active",
+      "Lifted": "Lifted",
+      "Cancelled": "Cancelled"
+    },
+    "professionalRestrictionSource": {
+      "InternalDecision": "Internal decision",
+      "RegulatoryAuthority": "Regulatory authority",
+      "OccupationalHealth": "Occupational health",
+      "QualificationIssue": "Qualification issue",
+      "Other": "Other"
+    },
+    "offboardingStatus": {
+      "InProgress": "In progress",
+      "ReadyToComplete": "Ready to complete",
+      "Completed": "Completed",
+      "Cancelled": "Cancelled"
+    },
+    "offboardingItemStatus": {
+      "Pending": "Pending",
+      "Completed": "Completed",
+      "Waived": "Waived"
+    },
+    "offboardingItemKind": {
+      "FutureSchedulingReviewed": "Future schedule reviewed",
+      "BranchAssignmentsClosed": "Branch assignments closed",
+      "JobPositionsClosed": "Job position assignments closed",
+      "EmploymentContractsClosed": "Employment contracts closed",
+      "EquipmentReturned": "Equipment returned",
+      "TimesheetsFinalized": "Timesheets finalized",
+      "ProfessionalRestrictionsReviewed": "Professional restrictions reviewed",
+      "AccessRevocationPrepared": "Access revocation prepared",
+      "EmployeeDocumentsReviewed": "HR documents reviewed"
+    },
+    "analytics": {
+      "title": "Workforce analytics",
+      "description": "Analyze headcount, movements, leave, working time, compliance and HR process quality over a selected period.",
+      "period": "Analysis period",
+      "loadError": "Unable to load Workforce analytics.",
+      "noPermissionTitle": "Restricted access",
+      "noPermission": "You do not have permission to view Workforce analytics.",
+      "empty": "No data is available for this period.",
+      "tabs": {
+        "label": "Workforce analytics sections",
+        "overview": "Overview",
+        "activity": "Activity & time",
+        "compliance": "Compliance & contracts",
+        "trends": "Trends"
+      },
+      "filters": {
+        "open": "Period",
+        "title": "Filter period",
+        "description": "Indicators are recalculated for the selected period.",
+        "from": "From",
+        "to": "To",
+        "apply": "Apply",
+        "limitTitle": "Period limit",
+        "limit": "The backend allows a maximum of 730 days per analysis."
+      },
+      "kpis": {
+        "headcountEnd": "End headcount",
+        "hires": "Hires",
+        "exits": "Exits",
+        "turnover": "Turnover",
+        "absenceRate": "Absence rate",
+        "validatedHours": "Validated hours",
+        "authorizationCoverage": "Authorization coverage",
+        "timesheetLockRate": "Locked timesheets"
+      },
+      "headcount": {
+        "title": "Headcount & movements",
+        "start": "Start headcount",
+        "end": "End headcount",
+        "rehires": "Rehires",
+        "averageTenure": "Average tenure"
+      },
+      "functions": {
+        "title": "Current headcount by professional function"
+      },
+      "workingTime": {
+        "title": "Validated time breakdown",
+        "contractual": "Contractual hours",
+        "validated": "Validated timesheet hours",
+        "teaching": "Teaching",
+        "exam": "Exams",
+        "administrative": "Administrative",
+        "travel": "Travel",
+        "meeting": "Meetings",
+        "training": "Training",
+        "leave": "Leave",
+        "other": "Other",
+        "validatedToContract": "Validated / contractual"
+      },
+      "absence": {
+        "title": "Approved leave",
+        "requests": "Approved requests",
+        "days": "Equivalent days",
+        "employees": "Employees concerned"
+      },
+      "timesheets": {
+        "title": "Timesheets",
+        "total": "Total",
+        "approved": "Approved",
+        "locked": "Locked",
+        "pendingReview": "Under review",
+        "rejected": "Rejected"
+      },
+      "compliance": {
+        "title": "Authorizations & restrictions",
+        "instructors": "Current instructors",
+        "verified": "With valid authorization",
+        "expired": "Expired authorizations",
+        "restrictions": "Active restrictions"
+      },
+      "contracts": {
+        "title": "Employment contracts",
+        "started": "Contracts started",
+        "ended": "Contracts ended",
+        "activeAtEnd": "Active at period end",
+        "fixedTerm": "Fixed-term active at end",
+        "pendingSignature": "Pending signature"
+      },
+      "trends": {
+        "title": "Monthly trend",
+        "description": "Evolution of hires, exits, approved leave and validated hours.",
+        "month": "Month"
+      },
+      "definitions": {
+        "title": "Metric definitions",
+        "description": "Definitions are supplied by the WFR-019 backend to preserve a stable business meaning for each metric.",
+        "turnoverRatePercent": "Exits during the period divided by the average headcount between period start and end.",
+        "averageTenureDaysAtEnd": "Average tenure, in days, of employees present at the end of the period.",
+        "approvedCalendarDayEquivalents": "Equivalent calendar days from approved leave requests, including half-days.",
+        "absenceRatePercent": "Approved leave days divided by theoretical employment days over the period.",
+        "contractualHours": "Contractual hours calculated from working-time policies applicable during the period.",
+        "validatedTimesheetHours": "Hours coming only from approved or locked timesheets.",
+        "validatedToContractPercent": "Ratio of validated timesheet hours to calculated contractual hours.",
+        "teachingAuthorizationCoveragePercent": "Share of current instructor employees with a verified and currently valid teaching authorization.",
+        "timesheetLockRatePercent": "Share of period timesheets that reached Locked status."
+      },
+      "units": {
+        "days": "{{value}} days"
+      },
+      "errors": {
+        "invalidPeriod": "The analytics period is invalid.",
+        "periodTooLarge": "The requested period exceeds the maximum limit of 730 days."
+      }
+    }
+  },
+  "offboarding": {
+    "blockers": {
+      "branchAssignments": "Branch assignments remain open.",
+      "jobPositions": "Job position assignments remain open.",
+      "employmentContracts": "Employment contracts remain open.",
+      "equipmentAssignments": "Equipment remains to be returned.",
+      "timesheets": "Timesheets remain to be finalized.",
+      "professionalRestrictions": "Professional restrictions remain to be reviewed."
     }
   }
 }

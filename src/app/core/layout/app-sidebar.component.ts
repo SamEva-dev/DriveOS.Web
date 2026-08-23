@@ -18,13 +18,14 @@ import { PEDAGOGY_PERMISSIONS } from '../../features/pedagogy/domain/pedagogy-pe
 import { EXAMS_PERMISSIONS } from '../../features/exams/domain/exams-permissions';
 import { SCHEDULING_PERMISSIONS } from '../../features/scheduling/domain/scheduling-permissions';
 import { TRAINING_DELIVERY_PERMISSIONS } from '../../features/training-delivery/domain/training-delivery-permissions';
+import { WORKFORCE_PERMISSIONS } from '../../features/workforce/domain/workforce-permissions';
 import { NavigationItem } from './navigation-item';
 
 interface NavigationGroup {
   readonly labelKey: string;
   readonly items: readonly NavigationItem[];
   readonly collapsible?: boolean;
-  readonly id?: 'crm' | 'students';
+  readonly id?: 'crm' | 'students' | 'workforce';
   readonly icon?: string;
 }
 
@@ -151,12 +152,17 @@ export class AppSidebarComponent {
     sessionStorage.getItem('driveos.sidebar.students.expanded') !== 'false' ||
       this.router.url.startsWith('/students'),
   );
+  readonly workforceExpanded = signal(
+    sessionStorage.getItem('driveos.sidebar.workforce.expanded') !== 'false' ||
+      this.router.url.startsWith('/workforce'),
+  );
 
   constructor() {
     effect(() => {
       const url = this.currentUrl().urlAfterRedirects;
       if (url.startsWith('/crm')) this.crmExpanded.set(true);
       if (url.startsWith('/students')) this.studentsExpanded.set(true);
+      if (url.startsWith('/workforce')) this.workforceExpanded.set(true);
     });
   }
 
@@ -172,11 +178,6 @@ export class AppSidebarComponent {
     { labelKey: 'navigation.planning', icon: 'ph ph-calendar-dots', routerLink: '/planning' },
     { labelKey: 'navigation.training', icon: 'ph ph-steering-wheel', routerLink: '/training' },
     { labelKey: 'navigation.exams', icon: 'ph ph-exam', routerLink: '/exams' },
-    {
-      labelKey: 'navigation.instructors',
-      icon: 'ph ph-identification-card',
-      routerLink: '/instructors',
-    },
     { labelKey: 'navigation.vehicles', icon: 'ph ph-car', routerLink: '/vehicles' },
     { labelKey: 'navigation.billing', icon: 'ph ph-wallet', routerLink: '/billing' },
     { labelKey: 'navigation.settings', icon: 'ph ph-gear', routerLink: '/settings' },
@@ -200,6 +201,30 @@ export class AppSidebarComponent {
       icon: 'ph ph-user-plus',
       routerLink: '/students/enrollments/new',
       exact: true,
+    },
+  ];
+
+  private readonly workforceItems: readonly NavigationItem[] = [
+    {
+      labelKey: 'navigation.workforce.dashboard',
+      icon: 'ph ph-squares-four',
+      routerLink: '/workforce/dashboard',
+      exact: true,
+    },
+    {
+      labelKey: 'navigation.workforce.employees',
+      icon: 'ph ph-users-three',
+      routerLink: '/workforce/employees',
+    },
+    {
+      labelKey: 'navigation.workforce.jobPositions',
+      icon: 'ph ph-briefcase',
+      routerLink: '/workforce/job-positions',
+    },
+    {
+      labelKey: 'navigation.workforce.analytics',
+      icon: 'ph ph-chart-line-up',
+      routerLink: '/workforce/analytics',
     },
   ];
 
@@ -318,6 +343,27 @@ export class AppSidebarComponent {
         collapsible: true,
       });
     }
+    const visibleWorkforceItems = this.workforceItems.filter((item) => {
+      if (item.routerLink === '/workforce/dashboard') {
+        return this.authorization.hasPermission(WORKFORCE_PERMISSIONS.dashboard.read);
+      }
+      if (item.routerLink === '/workforce/job-positions') {
+        return this.authorization.hasPermission(WORKFORCE_PERMISSIONS.jobPositions.read);
+      }
+      if (item.routerLink === '/workforce/analytics') {
+        return this.authorization.hasPermission(WORKFORCE_PERMISSIONS.analytics.read);
+      }
+      return this.authorization.hasPermission(WORKFORCE_PERMISSIONS.employees.read);
+    });
+    if (visibleWorkforceItems.length) {
+      groups.push({
+        id: 'workforce',
+        labelKey: 'navigation.workforce.label',
+        icon: 'ph ph-users-four',
+        items: visibleWorkforceItems,
+        collapsible: true,
+      });
+    }
     const visibleMainItems = this.mainItems.filter((item) => {
       if (item.routerLink === '/pedagogy') {
         return this.authorization.hasPermission(PEDAGOGY_PERMISSIONS.curricula.read);
@@ -356,6 +402,7 @@ export class AppSidebarComponent {
   isExpanded(group: NavigationGroup): boolean {
     if (group.id === 'crm') return this.crmExpanded();
     if (group.id === 'students') return this.studentsExpanded();
+    if (group.id === 'workforce') return this.workforceExpanded();
     return true;
   }
 
@@ -370,6 +417,12 @@ export class AppSidebarComponent {
       const expanded = !this.studentsExpanded();
       this.studentsExpanded.set(expanded);
       sessionStorage.setItem('driveos.sidebar.students.expanded', `${expanded}`);
+      return;
+    }
+    if (group.id === 'workforce') {
+      const expanded = !this.workforceExpanded();
+      this.workforceExpanded.set(expanded);
+      sessionStorage.setItem('driveos.sidebar.workforce.expanded', `${expanded}`);
     }
   }
 

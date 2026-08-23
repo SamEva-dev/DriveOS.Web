@@ -9,7 +9,11 @@ import {
   CreateLicenseCategoryRequest,
   LicenseCategoryListItem,
 } from '../models/curriculum.models';
-import { StudentPedagogyOverview } from '../models/student-pedagogy-overview.models';
+import {
+  StudentPedagogyOverview,
+  StudentRegulatoryTrainingRecordOverview,
+} from '../models/student-pedagogy-overview.models';
+
 @Injectable({ providedIn: 'root' })
 export class PedagogyApiService {
   private readonly http = inject(HttpClient);
@@ -79,4 +83,20 @@ export class PedagogyApiService {
       params,
     });
   }
+  getStudentRegulatoryTrainingRecordOverview(
+    studentId: string,
+    trainingPathId?: string | null,
+  ): Observable<StudentRegulatoryTrainingRecordOverview> {
+    const params: Record<string, string> = {
+      countryCode: 'FR',
+      providerCode: 'fr-livret-numerique',
+    };
+    if (trainingPathId) params['trainingPathId'] = trainingPathId;
+
+    return this.http.get<StudentRegulatoryTrainingRecordOverview>(
+      `${this.config.baseUrl}/regulatory-integrations/training-record-submissions/students/${studentId}/overview`,
+      { params },
+    );
+  }
+
 }

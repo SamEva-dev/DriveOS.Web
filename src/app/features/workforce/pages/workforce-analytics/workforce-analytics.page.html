@@ -1,0 +1,139 @@
+<section class="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
+  <drive-os-page-header
+    [kicker]="'workforce.label' | translate"
+    [title]="'workforce.analytics.title' | translate"
+    [description]="'workforce.analytics.description' | translate"
+    icon="ph ph-chart-line-up"
+  />
+
+  @if (!canRead()) {
+    <div class="mt-6">
+      <drive-os-form-alert tone="warning" [title]="'workforce.analytics.noPermissionTitle' | translate" [message]="'workforce.analytics.noPermission' | translate" />
+    </div>
+  } @else {
+    <div class="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4">
+      <div>
+        <p class="text-xs font-extrabold uppercase tracking-[.12em] text-[var(--driveos-text-tertiary)]">{{ 'workforce.analytics.period' | translate }}</p>
+        <p class="mt-1 font-black">{{ from() | date:'mediumDate' }} → {{ to() | date:'mediumDate' }}</p>
+      </div>
+      <div class="flex gap-2">
+        <drive-os-button variant="outline" icon="funnel" (pressed)="openFilters()">{{ 'workforce.analytics.filters.open' | translate }}</drive-os-button>
+        <drive-os-button variant="ghost" icon="arrows-clockwise" [loading]="loading()" (pressed)="load()">{{ 'common.actions.refresh' | translate }}</drive-os-button>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="flex min-h-72 items-center justify-center"><drive-os-spinner [label]="'common.loading' | translate" /></div>
+    } @else if (errors().length) {
+      <div class="mt-6 space-y-3">
+        @for (error of errors(); track error) {
+          <drive-os-form-alert tone="danger" [title]="'workforce.analytics.loadError' | translate" [message]="error" />
+        }
+      </div>
+    } @else if (analytics(); as data) {
+      <nav class="mt-5 overflow-x-auto rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-2" [attr.aria-label]="'workforce.analytics.tabs.label' | translate">
+        <div class="flex min-w-max gap-1">
+          @for (tab of tabs; track tab) {
+            <button type="button" class="rounded-xl px-4 py-2.5 text-sm font-bold transition" [ngClass]="activeTab()===tab ? 'bg-blue-800 text-white' : 'text-[var(--driveos-text-secondary)] hover:bg-[var(--driveos-surface-hover)]'" (click)="selectTab(tab)">
+              {{ ('workforce.analytics.tabs.' + tab) | translate }}
+            </button>
+          }
+        </div>
+      </nav>
+
+      @if (activeTab() === 'overview') {
+        <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <drive-os-stat-card [label]="'workforce.analytics.kpis.headcountEnd' | translate" [value]="data.headcount.headcountAtEnd" icon="ph ph-users-four" />
+          <drive-os-stat-card [label]="'workforce.analytics.kpis.hires' | translate" [value]="data.headcount.hires" icon="ph ph-user-plus" state="success" />
+          <drive-os-stat-card [label]="'workforce.analytics.kpis.exits' | translate" [value]="data.headcount.exits" icon="ph ph-user-minus" state="warning" />
+          <drive-os-stat-card [label]="'workforce.analytics.kpis.turnover' | translate" [value]="formatPercent(data.headcount.turnoverRatePercent)" icon="ph ph-arrows-left-right" />
+          <drive-os-stat-card [label]="'workforce.analytics.kpis.absenceRate' | translate" [value]="formatPercent(data.absence.absenceRatePercent)" icon="ph ph-calendar-x" />
+          <drive-os-stat-card [label]="'workforce.analytics.kpis.validatedHours' | translate" [value]="formatHours(data.workingTime.validatedTimesheetHours)" icon="ph ph-clock" />
+          <drive-os-stat-card [label]="'workforce.analytics.kpis.authorizationCoverage' | translate" [value]="formatPercent(data.compliance.teachingAuthorizationCoveragePercent)" icon="ph ph-shield-check" state="success" />
+          <drive-os-stat-card [label]="'workforce.analytics.kpis.timesheetLockRate' | translate" [value]="formatPercent(data.timesheets.lockRatePercent)" icon="ph ph-lock-key" />
+        </div>
+
+        <div class="mt-5 grid gap-5 xl:grid-cols-2">
+          <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+            <h2 class="text-lg font-black">{{ 'workforce.analytics.headcount.title' | translate }}</h2>
+            <dl class="mt-4 grid gap-4 sm:grid-cols-2">
+              <div><dt class="text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.analytics.headcount.start' | translate }}</dt><dd class="mt-1 text-2xl font-black">{{ data.headcount.headcountAtStart }}</dd></div>
+              <div><dt class="text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.analytics.headcount.end' | translate }}</dt><dd class="mt-1 text-2xl font-black">{{ data.headcount.headcountAtEnd }}</dd></div>
+              <div><dt class="text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.analytics.headcount.rehires' | translate }}</dt><dd class="mt-1 text-xl font-black">{{ data.headcount.rehires }}</dd></div>
+              <div><dt class="text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.analytics.headcount.averageTenure' | translate }}</dt><dd class="mt-1 text-xl font-black">{{ formatDays(data.headcount.averageTenureDaysAtEnd) }}</dd></div>
+            </dl>
+          </article>
+
+          <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+            <h2 class="text-lg font-black">{{ 'workforce.analytics.functions.title' | translate }}</h2>
+            @if (data.currentHeadcountByProfessionalFunction.length) {
+              <div class="mt-4 space-y-4">
+                @for (item of data.currentHeadcountByProfessionalFunction; track item.key) {
+                  <div>
+                    <div class="flex items-center justify-between gap-3 text-sm"><span class="font-bold">{{ functionLabel(item) }}</span><span class="font-black">{{ item.value }}</span></div>
+                    <div class="mt-2 h-2 overflow-hidden rounded-full bg-[var(--driveos-surface-subtle)]"><div class="h-full rounded-full bg-blue-800" [style.width.%]="functionWidth(item)"></div></div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="mt-4 text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.analytics.empty' | translate }}</p>
+            }
+          </article>
+        </div>
+      }
+
+      @if (activeTab() === 'activity') {
+        <div class="mt-5 grid gap-5 xl:grid-cols-3">
+          <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 xl:col-span-2">
+            <h2 class="text-lg font-black">{{ 'workforce.analytics.workingTime.title' | translate }}</h2>
+            <div class="mt-4 overflow-x-auto"><table class="w-full min-w-[620px] text-sm"><tbody class="divide-y divide-[var(--driveos-border)]">
+              <tr><td class="py-3">{{ 'workforce.analytics.workingTime.contractual' | translate }}</td><td class="py-3 text-right font-black">{{ formatHours(data.workingTime.contractualHours) }}</td></tr>
+              <tr><td class="py-3">{{ 'workforce.analytics.workingTime.validated' | translate }}</td><td class="py-3 text-right font-black">{{ formatHours(data.workingTime.validatedTimesheetHours) }}</td></tr>
+              <tr><td class="py-3">{{ 'workforce.analytics.workingTime.teaching' | translate }}</td><td class="py-3 text-right font-black">{{ formatHours(data.workingTime.teachingHours) }}</td></tr>
+              <tr><td class="py-3">{{ 'workforce.analytics.workingTime.exam' | translate }}</td><td class="py-3 text-right font-black">{{ formatHours(data.workingTime.examHours) }}</td></tr>
+              <tr><td class="py-3">{{ 'workforce.analytics.workingTime.administrative' | translate }}</td><td class="py-3 text-right font-black">{{ formatHours(data.workingTime.administrativeHours) }}</td></tr>
+              <tr><td class="py-3">{{ 'workforce.analytics.workingTime.travel' | translate }}</td><td class="py-3 text-right font-black">{{ formatHours(data.workingTime.travelHours) }}</td></tr>
+              <tr><td class="py-3">{{ 'workforce.analytics.workingTime.meeting' | translate }}</td><td class="py-3 text-right font-black">{{ formatHours(data.workingTime.meetingHours) }}</td></tr>
+              <tr><td class="py-3">{{ 'workforce.analytics.workingTime.training' | translate }}</td><td class="py-3 text-right font-black">{{ formatHours(data.workingTime.trainingHours) }}</td></tr>
+              <tr><td class="py-3">{{ 'workforce.analytics.workingTime.leave' | translate }}</td><td class="py-3 text-right font-black">{{ formatHours(data.workingTime.leaveHours) }}</td></tr>
+              <tr><td class="py-3">{{ 'workforce.analytics.workingTime.other' | translate }}</td><td class="py-3 text-right font-black">{{ formatHours(data.workingTime.otherHours) }}</td></tr>
+            </tbody></table></div>
+          </article>
+          <div class="space-y-5">
+            <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="font-black">{{ 'workforce.analytics.absence.title' | translate }}</h2><dl class="mt-4 space-y-3 text-sm"><div class="flex justify-between"><dt>{{ 'workforce.analytics.absence.requests' | translate }}</dt><dd class="font-black">{{ data.absence.approvedRequests }}</dd></div><div class="flex justify-between"><dt>{{ 'workforce.analytics.absence.days' | translate }}</dt><dd class="font-black">{{ data.absence.approvedCalendarDayEquivalents }}</dd></div><div class="flex justify-between"><dt>{{ 'workforce.analytics.absence.employees' | translate }}</dt><dd class="font-black">{{ data.absence.employeesWithApprovedLeave }}</dd></div></dl></article>
+            <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="font-black">{{ 'workforce.analytics.timesheets.title' | translate }}</h2><dl class="mt-4 space-y-3 text-sm"><div class="flex justify-between"><dt>{{ 'workforce.analytics.timesheets.total' | translate }}</dt><dd class="font-black">{{ data.timesheets.total }}</dd></div><div class="flex justify-between"><dt>{{ 'workforce.analytics.timesheets.approved' | translate }}</dt><dd class="font-black">{{ data.timesheets.approved }}</dd></div><div class="flex justify-between"><dt>{{ 'workforce.analytics.timesheets.locked' | translate }}</dt><dd class="font-black">{{ data.timesheets.locked }}</dd></div><div class="flex justify-between"><dt>{{ 'workforce.analytics.timesheets.pendingReview' | translate }}</dt><dd class="font-black">{{ data.timesheets.pendingReview }}</dd></div><div class="flex justify-between"><dt>{{ 'workforce.analytics.timesheets.rejected' | translate }}</dt><dd class="font-black">{{ data.timesheets.rejected }}</dd></div></dl></article>
+          </div>
+        </div>
+      }
+
+      @if (activeTab() === 'compliance') {
+        <div class="mt-5 grid gap-5 lg:grid-cols-2">
+          <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="text-lg font-black">{{ 'workforce.analytics.compliance.title' | translate }}</h2><dl class="mt-4 space-y-4 text-sm"><div class="flex justify-between"><dt>{{ 'workforce.analytics.compliance.instructors' | translate }}</dt><dd class="font-black">{{ data.compliance.currentInstructorEmployees }}</dd></div><div class="flex justify-between"><dt>{{ 'workforce.analytics.compliance.verified' | translate }}</dt><dd class="font-black">{{ data.compliance.withVerifiedCurrentTeachingAuthorization }}</dd></div><div class="flex justify-between"><dt>{{ 'workforce.analytics.compliance.expired' | translate }}</dt><dd class="font-black">{{ data.compliance.expiredTeachingAuthorizations }}</dd></div><div class="flex justify-between"><dt>{{ 'workforce.analytics.compliance.restrictions' | translate }}</dt><dd class="font-black">{{ data.compliance.activeProfessionalRestrictions }}</dd></div></dl></article>
+          <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="text-lg font-black">{{ 'workforce.analytics.contracts.title' | translate }}</h2><dl class="mt-4 space-y-4 text-sm"><div class="flex justify-between"><dt>{{ 'workforce.analytics.contracts.started' | translate }}</dt><dd class="font-black">{{ data.contracts.started }}</dd></div><div class="flex justify-between"><dt>{{ 'workforce.analytics.contracts.ended' | translate }}</dt><dd class="font-black">{{ data.contracts.ended }}</dd></div><div class="flex justify-between"><dt>{{ 'workforce.analytics.contracts.activeAtEnd' | translate }}</dt><dd class="font-black">{{ data.contracts.activeAtEnd }}</dd></div><div class="flex justify-between"><dt>{{ 'workforce.analytics.contracts.fixedTerm' | translate }}</dt><dd class="font-black">{{ data.contracts.fixedTermActiveAtEnd }}</dd></div><div class="flex justify-between"><dt>{{ 'workforce.analytics.contracts.pendingSignature' | translate }}</dt><dd class="font-black">{{ data.contracts.pendingSignatureAtEnd }}</dd></div></dl></article>
+        </div>
+      }
+
+      @if (activeTab() === 'trends') {
+        <div class="mt-5 space-y-5">
+          <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+            <h2 class="text-lg font-black">{{ 'workforce.analytics.trends.title' | translate }}</h2>
+            <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.analytics.trends.description' | translate }}</p>
+            @if (data.monthlyTrend.length) {
+              <div class="mt-5 overflow-x-auto"><table class="w-full min-w-[760px] text-sm"><thead class="text-left text-xs uppercase tracking-wide text-[var(--driveos-text-tertiary)]"><tr><th class="pb-3">{{ 'workforce.analytics.trends.month' | translate }}</th><th class="pb-3 text-right">{{ 'workforce.analytics.kpis.hires' | translate }}</th><th class="pb-3 text-right">{{ 'workforce.analytics.kpis.exits' | translate }}</th><th class="pb-3 text-right">{{ 'workforce.analytics.absence.days' | translate }}</th><th class="pb-3 pl-8">{{ 'workforce.analytics.workingTime.validated' | translate }}</th></tr></thead><tbody class="divide-y divide-[var(--driveos-border)]">@for (point of data.monthlyTrend; track point.year + '-' + point.month) {<tr><td class="py-3 font-bold">{{ monthLabel(point) }}</td><td class="py-3 text-right font-black">{{ point.hires }}</td><td class="py-3 text-right font-black">{{ point.exits }}</td><td class="py-3 text-right font-black">{{ point.approvedLeaveDayEquivalents }}</td><td class="py-3 pl-8"><div class="flex items-center gap-3"><div class="h-2 min-w-32 flex-1 overflow-hidden rounded-full bg-[var(--driveos-surface-subtle)]"><div class="h-full rounded-full bg-blue-800" [style.width.%]="monthlyHoursWidth(point)"></div></div><span class="w-20 text-right font-black">{{ formatHours(point.validatedTimesheetHours) }}</span></div></td></tr>}</tbody></table></div>
+            } @else {<p class="mt-4 text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.analytics.empty' | translate }}</p>}
+          </article>
+          <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h2 class="text-lg font-black">{{ 'workforce.analytics.definitions.title' | translate }}</h2><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.analytics.definitions.description' | translate }}</p><div class="mt-4 grid gap-3 md:grid-cols-2">@for (entry of data.metricDefinitions | keyvalue; track entry.key) {<div class="rounded-xl bg-[var(--driveos-surface-subtle)] p-4"><p class="text-xs font-black uppercase tracking-wide text-[var(--driveos-text-tertiary)]">{{ entry.key }}</p><p class="mt-1 text-sm">{{ metricDefinition(entry.key) }}</p></div>}</div></article>
+        </div>
+      }
+    }
+  }
+</section>
+
+<drive-os-drawer [open]="filterDrawerOpen()" [title]="'workforce.analytics.filters.title' | translate" [description]="'workforce.analytics.filters.description' | translate" (closeRequested)="closeFilters()">
+  <div class="space-y-5 p-1">
+    <label class="block"><span class="mb-2 block text-sm font-bold">{{ 'workforce.analytics.filters.from' | translate }}</span><input type="date" class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5" [ngModel]="draftFrom()" (ngModelChange)="draftFrom.set($event)" /></label>
+    <label class="block"><span class="mb-2 block text-sm font-bold">{{ 'workforce.analytics.filters.to' | translate }}</span><input type="date" class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5" [ngModel]="draftTo()" (ngModelChange)="draftTo.set($event)" /></label>
+    <drive-os-form-alert tone="info" [title]="'workforce.analytics.filters.limitTitle' | translate" [message]="'workforce.analytics.filters.limit' | translate" />
+    <div class="flex justify-end gap-2 border-t border-[var(--driveos-border)] pt-4"><drive-os-button variant="ghost" (pressed)="resetFilters()">{{ 'common.actions.reset' | translate }}</drive-os-button><drive-os-button icon="check" (pressed)="applyFilters()">{{ 'workforce.analytics.filters.apply' | translate }}</drive-os-button></div>
+  </div>
+</drive-os-drawer>

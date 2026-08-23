@@ -60,7 +60,9 @@
     "select": "Select",
     "verified": "Verified",
     "yes": "Oui",
-    "success": "Succès"
+    "success": "Succès",
+    "confirm": "Confirmer",
+    "edit": "Modifier"
   },
   "navigation": {
     "dashboard": "Tableau de bord",
@@ -99,7 +101,14 @@
     },
     "pedagogy": "Pédagogie",
     "training": "Séances",
-    "exams": "Examens"
+    "exams": "Examens",
+    "workforce": {
+      "label": "Équipe",
+      "dashboard": "Dashboard",
+      "employees": "Collaborateurs",
+      "jobPositions": "Postes",
+      "analytics": "Analytics"
+    }
   },
   "theme": {
     "label": "Thème",
@@ -966,6 +975,156 @@
     "exams": {
       "places": {
         "invalidImportJson": "Le contenu JSON à importer est invalide."
+      }
+    },
+    "workforce": {
+      "qualification": {
+        "invalidOwner": "Le propriétaire ou l’acteur est invalide.",
+        "invalid": "Les informations de qualification sont invalides.",
+        "invalidValidityPeriod": "La période de validité est invalide.",
+        "verificationMethodRequired": "La méthode de vérification est obligatoire.",
+        "decisionReasonRequired": "Le motif est obligatoire.",
+        "notCurrent": "Cette qualification n’est plus courante.",
+        "notFound": "Qualification introuvable."
+      },
+      "instructorAuthorization": {
+        "invalid": "Les informations de l’autorisation sont invalides.",
+        "instructorFunctionRequired": "Un poste Instructor doit couvrir la date de l’autorisation.",
+        "employeeNotEligible": "Le collaborateur n’est pas éligible à cette autorisation."
+      },
+      "employmentContract": {
+        "invalidIdentifier": "Identifiant de contrat de travail invalide.",
+        "invalidPeriod": "La période du contrat de travail est invalide.",
+        "invalidWeeklyHours": "La durée hebdomadaire contractuelle doit être supérieure à 0 et ne pas dépasser 168 heures.",
+        "invalidDocumentReference": "La référence du document de contrat est invalide.",
+        "invalidLifecycleTransition": "Cette transition n’est pas autorisée pour l’état actuel du contrat.",
+        "immutableAfterSignatureFlow": "Les termes du contrat ne peuvent plus être modifiés après le démarrage du processus de signature.",
+        "periodOverlap": "La période de ce contrat chevauche un autre contrat de travail en cours.",
+        "notFound": "Contrat de travail introuvable.",
+        "employeeEnded": "Impossible d’ajouter ou modifier un contrat pour un emploi terminé.",
+        "activationBeforeStartDate": "La date d’activation ne peut pas précéder la date de début du contrat."
+      },
+      "leavePolicy": {
+        "invalidIdentifier": "Identifiant de politique invalide.",
+        "invalidOrganization": "Organisation invalide.",
+        "invalidCountryCode": "Le code pays doit contenir deux caractères.",
+        "codeRequired": "Le code de la politique est obligatoire.",
+        "codeTooLong": "Le code de la politique est trop long.",
+        "nameRequired": "Le nom de la politique est obligatoire.",
+        "nameTooLong": "Le nom de la politique est trop long.",
+        "invalidRuleValue": "Une règle de congé contient une valeur invalide.",
+        "duplicateCode": "Une politique avec ce code existe déjà pour ce périmètre.",
+        "notFound": "Politique de congé introuvable.",
+        "alreadyInactive": "Cette politique est déjà inactive.",
+        "alreadyActive": "Cette politique est déjà active.",
+        "invalidStatus": "Statut de politique invalide.",
+        "invalidCategory": "Catégorie de congé invalide."
+      },
+      "leaveRequest": {
+        "invalidIdentifier": "Identifiant de demande invalide.",
+        "invalidReference": "Une référence de la demande est invalide.",
+        "invalidPolicySnapshot": "Les règles de la politique capturées sont invalides.",
+        "invalidPeriod": "La période de congé est invalide.",
+        "halfDayNotAllowed": "Cette politique n’autorise pas les demi-journées.",
+        "invalidDayPortion": "La portion de journée sélectionnée est invalide.",
+        "maximumDurationExceeded": "La durée maximale autorisée par la politique est dépassée.",
+        "minimumNoticeNotMet": "Le préavis minimum de la politique n’est pas respecté.",
+        "evidenceRequired": "Un justificatif est obligatoire pour cette demande.",
+        "onlyDraftCanBeEdited": "Seule une demande au statut Brouillon peut être modifiée.",
+        "invalidTransition": "Cette transition de statut n’est pas autorisée.",
+        "decisionReasonRequired": "Un motif de décision est obligatoire.",
+        "startedLeaveCannotBeCancelled": "Une absence approuvée déjà commencée ne peut plus être annulée.",
+        "overlappingRequest": "Cette demande chevauche une autre demande de congé.",
+        "policyInactive": "La politique sélectionnée est inactive.",
+        "employeeNotEligible": "Le collaborateur n’est pas éligible à cette demande.",
+        "periodOutsideEmployment": "La période demandée se situe hors de la période d’emploi.",
+        "notFound": "Demande de congé introuvable.",
+        "invalidStatus": "Statut de demande invalide."
+      },
+      "timesheet": {
+        "invalidIdentifier": "Identifiant de feuille de temps invalide.",
+        "invalidPeriod": "Période de feuille de temps invalide.",
+        "overlappingPeriod": "Une feuille de temps chevauche déjà cette période.",
+        "entryOutsidePeriod": "La ligne est en dehors de la période.",
+        "invalidHours": "Le nombre d’heures est invalide.",
+        "invalidText": "Le texte saisi est invalide.",
+        "empty": "Ajoutez au moins une ligne avant de soumettre.",
+        "notEditable": "Cette feuille de temps n’est plus modifiable.",
+        "invalidTransition": "Cette transition de feuille de temps est impossible.",
+        "decisionReasonRequired": "Un motif de décision est obligatoire.",
+        "entryNotFound": "Ligne de feuille de temps introuvable.",
+        "notFound": "Feuille de temps introuvable."
+      },
+      "equipmentAssignment": {
+        "invalidIdentifier": "Identifiant de matériel ou de collaborateur invalide.",
+        "invalidPeriod": "La période d’attribution est invalide.",
+        "invalidReturnDate": "La date de restitution ne peut pas précéder le début de l’attribution.",
+        "invalidNotes": "Les observations sont trop longues.",
+        "invalidTransition": "Cette action n’est pas autorisée dans l’état actuel de l’attribution.",
+        "notEditable": "Cette attribution n’est plus modifiable.",
+        "resourceAlreadyAssigned": "Cette ressource est déjà attribuée sur cette période.",
+        "cancellationReasonRequired": "Un motif est obligatoire pour annuler l’attribution.",
+        "notFound": "Attribution de matériel introuvable."
+      },
+      "performanceReview": {
+        "invalidIdentifier": "Identifiant d’évaluation invalide.",
+        "invalidPeriod": "La période d’évaluation est invalide.",
+        "invalidText": "Un texte de l’évaluation est invalide ou dépasse la longueur autorisée.",
+        "invalidWeight": "Le poids du critère doit être compris entre 1 et 100.",
+        "invalidRating": "La note doit être comprise entre 1 et 5.",
+        "duplicateCriterion": "Un critère portant ce code existe déjà dans cette évaluation.",
+        "criterionNotFound": "Le critère demandé est introuvable.",
+        "notEditable": "Cette évaluation n’est plus modifiable.",
+        "invalidTransition": "Cette transition n’est pas autorisée pour l’état actuel de l’évaluation.",
+        "incomplete": "Tous les critères doivent être notés et l’appréciation globale doit être renseignée avant soumission.",
+        "cancellationReasonRequired": "Un motif d’annulation est obligatoire.",
+        "overlappingPeriod": "Une autre évaluation du collaborateur couvre déjà cette période.",
+        "notFound": "L’évaluation professionnelle est introuvable."
+      },
+      "employeeDocument": {
+        "invalidIdentifier": "Identifiant de document RH invalide.",
+        "invalidMetadata": "Les métadonnées du document RH sont invalides.",
+        "invalidValidityPeriod": "La période de validité du document RH est invalide.",
+        "invalidTransition": "Cette transition de statut du document RH est impossible.",
+        "notEditable": "Ce document RH n’est plus modifiable.",
+        "duplicateDocumentReference": "Cette référence BC-06 est déjà enregistrée dans Workforce.",
+        "revocationReasonRequired": "Un motif de révocation est obligatoire.",
+        "notFound": "Document RH introuvable."
+      },
+      "professionalRestriction": {
+        "invalidIdentifier": "Identifiant de restriction professionnelle invalide.",
+        "invalidPeriod": "La période de restriction est invalide.",
+        "reasonRequired": "Un motif de restriction est requis.",
+        "liftReasonRequired": "Un motif de levée est requis.",
+        "cancellationReasonRequired": "Un motif d’annulation est requis.",
+        "invalidScope": "Le périmètre de la restriction est invalide.",
+        "invalidTransition": "Cette transition de restriction n’est pas autorisée.",
+        "notEditable": "Cette restriction ne peut plus être modifiée.",
+        "overlap": "Une restriction professionnelle incompatible se chevauche déjà sur cette période.",
+        "notFound": "Restriction professionnelle introuvable."
+      },
+      "offboarding": {
+        "invalidIdentifier": "Identifiant d’offboarding invalide.",
+        "reasonRequired": "Un motif est obligatoire.",
+        "waiverReasonRequired": "Le motif de dérogation est obligatoire.",
+        "notFound": "Aucun processus d’offboarding actif n’a été trouvé.",
+        "existingProcess": "Un processus d’offboarding est déjà actif pour ce collaborateur.",
+        "employeeMustBeEnding": "Le collaborateur doit être en cours de départ.",
+        "checklistIncomplete": "La checklist de départ n’est pas encore complète.",
+        "notEditable": "Ce processus d’offboarding n’est plus modifiable.",
+        "invalidTransition": "Cette transition d’offboarding est impossible.",
+        "itemNotFound": "L’élément de checklist est introuvable.",
+        "manualItemExpected": "Cet élément est automatique et ne peut pas être validé manuellement.",
+        "automaticItemExpected": "Cet élément nécessite une validation manuelle."
+      },
+      "employee": {
+        "invalidRehireUserSelection": "Le choix du compte utilisateur pour la réembauche est invalide.",
+        "rehireRequiresEndedEmployment": "Seule une période d’emploi terminée peut être réembauchée.",
+        "rehireMustStartAfterPreviousEmployment": "La nouvelle période doit commencer après la fin de l’emploi précédent.",
+        "rehireSourceMustBeLatestEmployment": "Seule la dernière période d’emploi terminée de cette personne peut servir de source de réembauche.",
+        "existingEmployment": "Une relation d’emploi existe déjà pour cette personne sur la période concernée.",
+        "userAlreadyLinked": "Ce compte utilisateur est déjà lié à une relation d’emploi incompatible.",
+        "duplicateEmployeeNumber": "Ce matricule est déjà utilisé par une relation d’emploi active."
       }
     }
   },
@@ -7749,7 +7908,16 @@
       "autonomy": "Autonomie observée",
       "reservationCodes": "Codes de réserve",
       "reservationCodesHint": "Ex. Stress, Observation",
-      "reservations": "Réserves"
+      "reservations": "Réserves",
+      "regulatory": {
+        "satisfied": "Livret numérique conforme",
+        "blocked": "Livret numérique bloquant",
+        "notApplicable": "Livret numérique non applicable",
+        "warning": "Livret numérique à vérifier",
+        "pending": "Synchronisation du livret numérique en attente",
+        "providerPending": "Connexion au livret numérique non configurée",
+        "unavailable": "État du livret numérique temporairement indisponible"
+      }
     },
     "places": {
       "kicker": "Capacité officielle",
@@ -8105,6 +8273,1276 @@
       "month": {
         "smallSample": "Petit échantillon : interprétation prudente requise"
       }
+    }
+  },
+  "workforce": {
+    "label": "Équipe & RH",
+    "status": {
+      "Draft": "Brouillon",
+      "Onboarding": "Intégration",
+      "Active": "Actif",
+      "Suspended": "Suspendu",
+      "OnLeave": "En absence",
+      "Ending": "Départ en cours",
+      "Ended": "Terminé"
+    },
+    "dashboard": {
+      "title": "Dashboard équipe",
+      "description": "Suivez les effectifs, absences, échéances RH et alertes opérationnelles.",
+      "loadError": "Impossible de charger le dashboard Workforce.",
+      "kpis": {
+        "current": "Effectif courant",
+        "active": "Actifs",
+        "onboarding": "En intégration",
+        "suspended": "Suspendus",
+        "onLeave": "En absence",
+        "ending": "Départs en cours",
+        "pendingApproval": "Demandes à approuver",
+        "activeToday": "Absents aujourd’hui",
+        "upcomingLeave": "Absences à venir",
+        "expiredAuthorizations": "Habilitations expirées",
+        "expiringAuthorizations": "Habilitations à échéance",
+        "expiredDocuments": "Documents expirés",
+        "timesheetsToReview": "Feuilles à traiter",
+        "equipmentOverdue": "Matériel en retard",
+        "pendingSignatures": "Contrats à signer"
+      },
+      "sections": {
+        "leave": "Absences",
+        "leaveTitle": "Congés & disponibilité",
+        "compliance": "Conformité",
+        "complianceTitle": "Habilitations & documents",
+        "operations": "Opérations",
+        "operationsTitle": "Temps, contrats & matériel"
+      },
+      "alerts": {
+        "title": "Alertes à traiter",
+        "description": "Échéances et anomalies détectées dans les {{days}} prochains jours.",
+        "dueDate": "Échéance",
+        "openEmployee": "Ouvrir le collaborateur",
+        "empty": "Aucune alerte Workforce à traiter",
+        "employmentEnding": "Fin d’emploi prévue dans {{days}} jour(s).",
+        "contractExpiring": "Contrat de travail arrivant à échéance dans {{days}} jour(s).",
+        "instructorAuthorizationExpired": "Autorisation d’enseignement expirée (catégorie {{category}}).",
+        "instructorAuthorizationExpiring": "Autorisation d’enseignement à renouveler dans {{days}} jour(s) (catégorie {{category}}).",
+        "employeeDocumentExpired": "Document RH expiré.",
+        "employeeDocumentExpiring": "Document RH arrivant à échéance dans {{days}} jour(s).",
+        "equipmentReturnOverdue": "Restitution de matériel en retard de {{days}} jour(s)."
+      },
+      "quickAccess": {
+        "title": "Accès rapides",
+        "description": "Accédez aux dossiers collaborateurs et aux opérations RH."
+      }
+    },
+    "employees": {
+      "title": "Collaborateurs",
+      "description": "Consultez les périodes d’emploi et l’état des collaborateurs du tenant.",
+      "searchPlaceholder": "Rechercher par matricule ou identifiant…",
+      "allStatuses": "Tous les statuts",
+      "loadError": "Impossible de charger les collaborateurs.",
+      "empty": "Aucun collaborateur",
+      "emptyDescription": "Aucun salarié ne correspond aux critères actuels.",
+      "openEnded": "En cours",
+      "linkedAccount": "Compte lié",
+      "noLinkedAccount": "Aucun compte lié",
+      "columns": {
+        "employee": "Collaborateur",
+        "status": "Statut",
+        "period": "Période d’emploi",
+        "account": "Compte",
+        "actions": "Actions"
+      }
+    },
+    "employeeDetail": {
+      "title": "Fiche collaborateur",
+      "back": "Retour aux collaborateurs",
+      "loadError": "Impossible de charger le collaborateur.",
+      "identityPending": "Identité détaillée à enrichir depuis le référentiel Person ; aucun nom n’est inventé côté UI.",
+      "startDate": "Début",
+      "endDate": "Fin",
+      "account": "Compte",
+      "linked": "Lié",
+      "unlinked": "Non lié",
+      "employeeNumber": "Matricule",
+      "personId": "Person ID",
+      "userId": "User ID",
+      "rehireSource": "Emploi précédent",
+      "tabs": {
+        "label": "Sections de la fiche collaborateur",
+        "overview": "Vue d’ensemble",
+        "branches": "Affectations",
+        "positions": "Postes",
+        "qualifications": "Qualifications",
+        "contracts": "Contrats",
+        "leave": "Congés",
+        "time": "Temps de travail",
+        "equipment": "Matériel",
+        "reviews": "Évaluations",
+        "documents": "Documents",
+        "offboarding": "Départ",
+        "restrictions": "Restrictions professionnelles",
+        "noPermission": "Vous ne disposez pas de la permission nécessaire pour ouvrir cet onglet."
+      },
+      "overview": {
+        "employment": "Relation d’emploi",
+        "next": "Structure de la fiche 360°",
+        "nextDescription": "Les onglets sont posés dès maintenant. Ils seront activés au fil des lots frontend suivants sans changer la navigation principale du dossier.",
+        "identityNoteTitle": "Identité métier",
+        "identityNote": "Le backend Workforce expose actuellement PersonId et UserId, mais pas le nom/prénom. Le prochain lot enrichira proprement la fiche depuis le bounded context propriétaire de la personne.",
+        "employmentDescription": "Matricule, compte lié et période d’emploi de ce collaborateur."
+      },
+      "actionError": "Action impossible",
+      "actions": {
+        "editIdentity": "Modifier la relation d’emploi",
+        "startOnboarding": "Démarrer l’intégration",
+        "activate": "Activer",
+        "suspend": "Suspendre",
+        "reactivate": "Réactiver",
+        "startTermination": "Préparer le départ",
+        "rehire": "Réembaucher"
+      },
+      "lifecycle": {
+        "title": "Cycle de vie RH",
+        "description": "Les transitions disponibles dépendent du statut actuel et de vos permissions.",
+        "current": "Statut actuel",
+        "offboardingStarted": "Processus de départ démarré",
+        "offboardingStartedDescription": "La clôture définitive passe maintenant par la checklist d’offboarding. L’onglet Départ sera activé dans un prochain lot.",
+        "ended": "Relation d’emploi terminée",
+        "endedDescription": "Cette période d’emploi est historique et ne peut plus être réactivée. Une réembauche crée une nouvelle période."
+      },
+      "history": {
+        "title": "Historique des emplois",
+        "description": "Toutes les périodes d’emploi rattachées à la même personne sont conservées sans réactiver les anciennes.",
+        "periods": "période(s)",
+        "current": "En cours",
+        "selectedPeriod": "Période affichée",
+        "openPeriod": "Ouvrir cette période"
+      },
+      "drawers": {
+        "confirm": "Confirmer",
+        "reason": "Motif",
+        "identity": {
+          "title": "Modifier la relation d’emploi",
+          "description": "Corrigez les informations RH de cette période sans toucher à l’identité Person.",
+          "userIdHelp": "Laissez vide si aucun compte AuthGate ne doit être lié à cette période d’emploi."
+        },
+        "onboarding": {
+          "title": "Démarrer l’intégration",
+          "description": "Faites passer ce collaborateur de Brouillon à Intégration.",
+          "confirmation": "Cette action démarre officiellement l’onboarding RH. Le collaborateur ne sera pas encore considéré comme actif."
+        },
+        "activate": {
+          "title": "Activer le collaborateur",
+          "description": "Validez la fin de l’intégration et activez la relation d’emploi.",
+          "confirmation": "Le collaborateur passera au statut Actif et pourra être considéré comme professionnellement disponible selon ses affectations, habilitations et restrictions."
+        },
+        "suspend": {
+          "title": "Suspendre la relation d’emploi",
+          "description": "Suspendez temporairement l’éligibilité professionnelle de ce collaborateur.",
+          "warning": "La suspension RH bloque globalement l’éligibilité professionnelle. Pour une interdiction ciblée (ex. enseigner uniquement la catégorie B), utilisez les restrictions professionnelles WFR-016."
+        },
+        "reactivate": {
+          "title": "Réactiver le collaborateur",
+          "description": "Réactivez une relation d’emploi actuellement suspendue.",
+          "confirmation": "La relation d’emploi repassera à Actif. Les restrictions professionnelles ou congés éventuels continueront toutefois à s’appliquer indépendamment."
+        },
+        "termination": {
+          "title": "Préparer le départ",
+          "description": "Démarrez la fin d’emploi et créez automatiquement le processus d’offboarding.",
+          "warning": "Cette action passe le collaborateur en Départ en cours et crée la checklist d’offboarding. Elle ne supprime ni le compte utilisateur ni l’historique.",
+          "plannedEndDate": "Date de fin prévue"
+        },
+        "branchCreate": {
+          "title": "Ajouter une affectation d’agence",
+          "description": "Affectez ce collaborateur à une agence sur une période donnée."
+        },
+        "branchEdit": {
+          "title": "Modifier l’affectation",
+          "description": "Modifiez la période ou le caractère principal sans réécrire l’historique."
+        },
+        "branchEnd": {
+          "title": "Clôturer l’affectation",
+          "description": "Fixez la date de fin effective de cette affectation.",
+          "warning": "La clôture conserve l’historique. Elle peut être refusée si un poste scoped à cette agence dépend encore de la période."
+        },
+        "branchCancel": {
+          "title": "Annuler l’affectation planifiée",
+          "description": "Annulez une affectation qui n’a pas encore commencé.",
+          "warning": "Une affectation active ou terminée ne peut pas être annulée ; seule une affectation planifiée peut l’être."
+        },
+        "positionCreate": {
+          "title": "Affecter un poste",
+          "description": "Définissez le poste, sa portée et sa période."
+        },
+        "positionEdit": {
+          "title": "Modifier l’affectation de poste",
+          "description": "Le poste et l’agence restent figés ; modifiez uniquement la période ou le caractère principal."
+        },
+        "positionEnd": {
+          "title": "Clôturer le poste",
+          "description": "Terminez cette affectation à une date déterminée.",
+          "warning": "La clôture conserve l’historique et peut avoir un impact sur les habilitations qui exigent une fonction professionnelle active."
+        },
+        "positionCancel": {
+          "title": "Annuler l’affectation",
+          "description": "Annulez une affectation planifiée qui ne doit finalement pas commencer.",
+          "warning": "Cette action conserve la trace de l’affectation avec le statut Annulé."
+        },
+        "qualificationDeclare": {
+          "title": "Déclarer une qualification",
+          "description": "Action réalisée dans le panneau latéral, avec traçabilité métier."
+        },
+        "qualificationVerify": {
+          "title": "Vérifier la qualification",
+          "description": "Action réalisée dans le panneau latéral, avec traçabilité métier."
+        },
+        "qualificationReject": {
+          "title": "Rejeter la qualification",
+          "description": "Action réalisée dans le panneau latéral, avec traçabilité métier."
+        },
+        "authorizationDeclare": {
+          "title": "Déclarer une autorisation",
+          "description": "Action réalisée dans le panneau latéral, avec traçabilité métier."
+        },
+        "authorizationVerify": {
+          "title": "Vérifier l’autorisation",
+          "description": "Action réalisée dans le panneau latéral, avec traçabilité métier."
+        },
+        "authorizationReject": {
+          "title": "Rejeter l’autorisation",
+          "description": "Action réalisée dans le panneau latéral, avec traçabilité métier."
+        },
+        "contractCreate": {
+          "title": "Ajouter un contrat de travail",
+          "description": "Définissez les termes RH initiaux du contrat."
+        },
+        "contractEdit": {
+          "title": "Modifier le contrat de travail",
+          "description": "Corrigez les termes du brouillon avant signature."
+        },
+        "contractDocument": {
+          "title": "Rattacher le document signé",
+          "description": "Associez le document et, si disponible, son processus de signature BC-06."
+        },
+        "contractSigned": {
+          "title": "Confirmer la signature",
+          "description": "Enregistrez la fin du processus de signature."
+        },
+        "contractActivate": {
+          "title": "Activer le contrat",
+          "description": "Définissez la date d’effet opérationnelle du contrat signé."
+        },
+        "contractTerminate": {
+          "title": "Terminer le contrat",
+          "description": "Clôturez le contrat à une date donnée sans supprimer son historique."
+        },
+        "contractCancel": {
+          "title": "Annuler le contrat",
+          "description": "Annulez un contrat encore en brouillon ou en cours de signature."
+        },
+        "leaveRequestCreate": {
+          "title": "Nouvelle demande de congé",
+          "description": "Préparez la période, la politique et le justificatif éventuel."
+        },
+        "leaveRequestEdit": {
+          "title": "Modifier la demande",
+          "description": "Seules les demandes au statut Brouillon sont modifiables."
+        },
+        "leaveRequestSubmit": {
+          "title": "Soumettre la demande",
+          "description": "Envoyez la demande dans le workflow d’approbation."
+        },
+        "leaveRequestApprove": {
+          "title": "Approuver la demande",
+          "description": "Validez cette absence pour le collaborateur."
+        },
+        "leaveRequestReject": {
+          "title": "Rejeter la demande",
+          "description": "Un motif est obligatoire pour le rejet."
+        },
+        "leaveRequestCancel": {
+          "title": "Annuler la demande",
+          "description": "Annulez la demande et retirez son effet de disponibilité lorsqu’il existe."
+        },
+        "leavePolicyCreate": {
+          "title": "Nouvelle politique de congé",
+          "description": "Définissez les règles organisationnelles applicables à un type de congé."
+        },
+        "leavePolicyEdit": {
+          "title": "Modifier la politique",
+          "description": "Les demandes existantes conservent les règles capturées à leur création."
+        },
+        "leavePolicyDeactivate": {
+          "title": "Désactiver la politique",
+          "description": "Empêchez son utilisation pour de nouvelles demandes."
+        },
+        "leavePolicyReactivate": {
+          "title": "Réactiver la politique",
+          "description": "Rendez la politique à nouveau disponible."
+        },
+        "workingTimeCreate": {
+          "title": "Ajouter une politique",
+          "description": "Définissez les limites contractuelles applicables.",
+          "confirmation": "Définissez les limites contractuelles applicables."
+        },
+        "workingTimeEdit": {
+          "title": "Modifier la politique",
+          "description": "Modifiez uniquement la période et les limites prévues.",
+          "confirmation": "Modifiez uniquement la période et les limites prévues."
+        },
+        "workingTimeDeactivate": {
+          "title": "Désactiver la politique",
+          "description": "La désactivation n’efface pas l’historique.",
+          "confirmation": "La désactivation n’efface pas l’historique."
+        },
+        "timesheetCreate": {
+          "title": "Nouvelle feuille de temps",
+          "description": "Définissez la période de déclaration.",
+          "confirmation": "Définissez la période de déclaration."
+        },
+        "timesheetEntryCreate": {
+          "title": "Ajouter une ligne",
+          "description": "Enregistrez une activité dans la feuille de temps.",
+          "confirmation": "Enregistrez une activité dans la feuille de temps."
+        },
+        "timesheetEntryEdit": {
+          "title": "Modifier la ligne",
+          "description": "Corrigez la ligne tant que la feuille reste éditable.",
+          "confirmation": "Corrigez la ligne tant que la feuille reste éditable."
+        },
+        "timesheetEntryRemove": {
+          "title": "Supprimer la ligne",
+          "description": "Cette action retire la ligne de la feuille.",
+          "confirmation": "Cette action retire la ligne de la feuille."
+        },
+        "timesheetSubmit": {
+          "title": "Soumettre la feuille",
+          "description": "La feuille quittera l’état brouillon.",
+          "confirmation": "La feuille quittera l’état brouillon."
+        },
+        "timesheetReview": {
+          "title": "Démarrer la revue",
+          "description": "La feuille passera en revue par un valideur.",
+          "confirmation": "La feuille passera en revue par un valideur."
+        },
+        "timesheetApprove": {
+          "title": "Approuver la feuille",
+          "description": "Validez les heures déclarées.",
+          "confirmation": "Validez les heures déclarées."
+        },
+        "timesheetReject": {
+          "title": "Rejeter la feuille",
+          "description": "Un motif est obligatoire.",
+          "confirmation": "Un motif est obligatoire."
+        },
+        "timesheetLock": {
+          "title": "Verrouiller la feuille",
+          "description": "Une feuille verrouillée devient terminale.",
+          "confirmation": "Une feuille verrouillée devient terminale."
+        },
+        "equipmentCreate": {
+          "title": "Attribuer du matériel",
+          "description": "Planifier une nouvelle ressource confiée au collaborateur."
+        },
+        "equipmentEdit": {
+          "title": "Modifier l’attribution",
+          "description": "Modifier uniquement la période d’une attribution encore planifiée."
+        },
+        "equipmentHandover": {
+          "title": "Confirmer la remise",
+          "description": "Enregistrer l’état du matériel au moment où il est remis au collaborateur."
+        },
+        "equipmentReturn": {
+          "title": "Enregistrer la restitution",
+          "description": "Conserver la date et l’état du matériel lors de son retour."
+        },
+        "equipmentCancel": {
+          "title": "Annuler l’attribution",
+          "description": "Annuler une attribution planifiée avant toute remise."
+        },
+        "reviewCreate": {
+          "title": "Nouvelle évaluation",
+          "description": "Définissez la période, l’évaluateur et l’intitulé de cette évaluation RH."
+        },
+        "reviewStart": {
+          "title": "Démarrer l’évaluation",
+          "description": "Passez cette évaluation en cours de réalisation.",
+          "confirmation": "Cette action démarre officiellement l’évaluation."
+        },
+        "reviewCriterionAdd": {
+          "title": "Ajouter un critère",
+          "description": "Ajoutez un critère figé dans cette évaluation. Les modifications futures d’un modèle n’altéreront pas cet historique."
+        },
+        "reviewCriterionRate": {
+          "title": "Noter le critère",
+          "description": "Attribuez une note de 1 à 5 et ajoutez si nécessaire un commentaire."
+        },
+        "reviewSummary": {
+          "title": "Synthèse de l’évaluation",
+          "description": "Rédigez l’appréciation globale et les objectifs de progression."
+        },
+        "reviewSubmit": {
+          "title": "Soumettre l’évaluation",
+          "description": "Vérifiez que tous les critères sont notés et qu’une appréciation globale est renseignée.",
+          "confirmation": "La soumission fige l’évaluation pour permettre sa prise de connaissance par le collaborateur."
+        },
+        "reviewAcknowledge": {
+          "title": "Accusé de réception",
+          "description": "Enregistrez la prise de connaissance du collaborateur et son commentaire éventuel."
+        },
+        "reviewComplete": {
+          "title": "Clôturer l’évaluation",
+          "description": "Clôturez l’évaluation après l’accusé de réception du collaborateur.",
+          "confirmation": "Une évaluation clôturée devient historique et ne peut plus être modifiée."
+        },
+        "reviewCancel": {
+          "title": "Annuler l’évaluation",
+          "description": "Indiquez le motif de l’annulation. L’historique de l’évaluation sera conservé."
+        },
+        "documentCreate": {
+          "title": "Référencer un document RH",
+          "description": "Associer une référence BC-06 au registre RH du collaborateur."
+        },
+        "documentEdit": {
+          "title": "Modifier les métadonnées RH",
+          "description": "Modifier la classification et la validité sans toucher au fichier source."
+        },
+        "documentVerify": {
+          "title": "Vérifier le document RH",
+          "description": "Confirmer la vérification RH de cette référence."
+        },
+        "documentReveal": {
+          "title": "Révéler la référence protégée",
+          "description": "Accès contrôlé à une référence confidentielle ou restreinte."
+        },
+        "documentSupersede": {
+          "title": "Remplacer le document RH",
+          "description": "Clôturer cette entrée au profit d’une nouvelle référence."
+        },
+        "documentRevoke": {
+          "title": "Révoquer le document RH",
+          "description": "Rendre cette entrée invalide avec un motif auditable."
+        },
+        "documentArchive": {
+          "title": "Archiver le document RH",
+          "description": "Archiver définitivement cette entrée du registre RH."
+        },
+        "restrictionCreate": {
+          "title": "Ajouter une restriction",
+          "description": "Définissez le périmètre et la période de la restriction professionnelle."
+        },
+        "restrictionEdit": {
+          "title": "Modifier la restriction",
+          "description": "Seule une restriction planifiée peut être modifiée."
+        },
+        "restrictionActivate": {
+          "title": "Activer la restriction",
+          "description": "Confirmez l’activation de cette restriction professionnelle."
+        },
+        "restrictionLift": {
+          "title": "Lever la restriction",
+          "description": "Indiquez le motif de la levée de la restriction active."
+        },
+        "restrictionCancel": {
+          "title": "Annuler la restriction",
+          "description": "Indiquez le motif d’annulation de la restriction planifiée."
+        },
+        "offboardingRefresh": {
+          "title": "Recalculer la checklist",
+          "description": "Recalculer les contrôles automatiques avant de poursuivre."
+        },
+        "offboardingCompleteItem": {
+          "title": "Valider un élément manuel",
+          "description": "Confirmez que cette étape de sortie est terminée."
+        },
+        "offboardingWaiveItem": {
+          "title": "Accorder une dérogation",
+          "description": "Motivez précisément la dérogation appliquée à cet élément."
+        },
+        "offboardingComplete": {
+          "title": "Clôturer le départ",
+          "description": "Terminez définitivement cette relation d’emploi."
+        },
+        "rehire": {
+          "title": "Réembaucher le collaborateur",
+          "description": "Créer une nouvelle période d’emploi à partir de cette ancienne relation clôturée."
+        }
+      },
+      "branches": {
+        "title": "Affectations d’agence",
+        "description": "Historique des agences dans lesquelles ce collaborateur est professionnellement affecté. Les périodes sont conservées et l’agence principale est explicite.",
+        "add": "Ajouter une affectation",
+        "accessNote": "Une affectation Workforce décrit la réalité RH. Elle ne crée ni ne retire automatiquement les droits techniques dans branch_user_assignments.",
+        "emptyTitle": "Aucune affectation d’agence",
+        "emptyDescription": "Ajoutez la première affectation pour préciser où ce collaborateur exerce son activité.",
+        "primary": "Agence principale",
+        "openEnded": "Sans date de fin",
+        "end": "Clôturer",
+        "cancelAssignment": "Annuler l’affectation",
+        "fields": {
+          "branch": "Agence",
+          "selectBranch": "Sélectionner une agence",
+          "startDate": "Date de début",
+          "endDate": "Date de fin",
+          "primary": "Affectation principale",
+          "primaryHelp": "Une seule affectation principale peut couvrir une même période."
+        },
+        "edit": "Modifier",
+        "noReadPermission": "Vous ne disposez pas de la permission de consulter les affectations d’agence."
+      },
+      "positions": {
+        "title": "Postes et fonctions",
+        "description": "Historique des postes occupés par le collaborateur, avec période, agence éventuelle et poste principal.",
+        "add": "Affecter un poste",
+        "securityNote": "Le poste et la fonction professionnelle décrivent la réalité RH. Ils ne créent aucun rôle ni aucune permission AccessManager.",
+        "emptyTitle": "Aucun poste affecté",
+        "emptyDescription": "Affectez un poste pour décrire la fonction exercée par ce collaborateur.",
+        "primary": "Poste principal",
+        "allBranches": "Toutes les agences / portée organisation",
+        "openEnded": "sans date de fin",
+        "end": "Clôturer",
+        "cancelAssignment": "Annuler l’affectation",
+        "fields": {
+          "position": "Poste",
+          "selectPosition": "Sélectionner un poste",
+          "branch": "Agence",
+          "branchHelp": "Une agence ne peut être choisie que si une affectation agence couvre toute la période du poste. Laissez vide pour une portée organisationnelle.",
+          "startDate": "Date de début",
+          "endDate": "Date de fin",
+          "primary": "Poste principal",
+          "primaryHelp": "Un seul poste principal peut couvrir une même période."
+        },
+        "noReadPermission": "Vous ne disposez pas de la permission de consulter les postes et fonctions professionnelles."
+      },
+      "qualifications": {
+        "title": "Qualifications & habilitations",
+        "description": "Qualifications professionnelles et autorisations réglementaires du collaborateur. Elles restent distinctes des rôles de sécurité et des postes métier.",
+        "subTabs": {
+          "qualifications": "Qualifications professionnelles",
+          "authorizations": "Autorisations d’enseignement"
+        },
+        "declare": "Déclarer une qualification",
+        "verify": "Vérifier",
+        "reject": "Rejeter",
+        "expired": "Expirée",
+        "emptyTitle": "Aucune qualification",
+        "emptyDescription": "Aucune qualification professionnelle déclarée.",
+        "noReadPermission": "Vous n’avez pas la permission de consulter les qualifications.",
+        "noExpiry": "Sans échéance",
+        "verificationHelp": "La vérification confirme le contrôle de l’information selon la méthode indiquée. Elle n’accorde aucune permission applicative.",
+        "rejectionHelp": "Le rejet conserve la déclaration dans l’historique. Un motif est obligatoire.",
+        "fields": {
+          "country": "Pays (ISO-2)",
+          "type": "Type de qualification",
+          "title": "Intitulé",
+          "identifier": "Identifiant / numéro",
+          "issuer": "Autorité émettrice",
+          "validity": "Validité",
+          "source": "Source",
+          "verificationMethod": "Méthode de vérification",
+          "decisionReasonOptional": "Observation de vérification (facultatif)",
+          "reason": "Motif du rejet"
+        }
+      },
+      "authorizations": {
+        "declare": "Déclarer une autorisation",
+        "category": "Catégorie",
+        "scopeNote": "Une autorisation d’enseignement est évaluée par pays, catégorie et période de validité. Elle alimente Scheduling, Exams et les intégrations réglementaires, dont le Livret Numérique.",
+        "emptyTitle": "Aucune autorisation d’enseignement",
+        "emptyDescription": "Aucune autorisation réglementaire déclarée.",
+        "noReadPermission": "Vous n’avez pas la permission de consulter les autorisations d’enseignement.",
+        "instructorFunctionRequired": "Un poste avec la fonction professionnelle Instructor doit couvrir la date concernée avant la déclaration.",
+        "fields": {
+          "identifier": "Numéro d’autorisation",
+          "jurisdiction": "Juridiction / département"
+        }
+      },
+      "contracts": {
+        "title": "Contrats de travail",
+        "description": "Gérez les termes RH du contrat de travail et son cycle de vie. Le document signé et ses preuves restent gérés par le module Contrats & Documents.",
+        "add": "Ajouter un contrat",
+        "boundaryNote": "Workforce conserve les termes RH et les références. Le fichier, les versions, le hash et les preuves de signature restent la propriété de BC-06 Contrats & Documents.",
+        "noReadPermission": "Vous ne disposez pas de la permission nécessaire pour consulter les contrats de travail.",
+        "emptyTitle": "Aucun contrat de travail",
+        "emptyDescription": "Ajoutez le premier contrat RH de ce collaborateur.",
+        "openEnded": "sans date de fin",
+        "immutableHelp": "Les termes restent modifiables uniquement tant que le contrat est en brouillon. Dès l’entrée dans le processus de signature, les modifications doivent passer par un nouveau document ou un avenant adapté.",
+        "documentHelp": "Rattachez ici la référence du document géré par BC-06. Aucun fichier ni preuve de signature n’est stocké dans Workforce.",
+        "signatureOptionalHelp": "Laissez vide tant que le processus de signature n’a pas encore été créé.",
+        "signedHelp": "Confirmez la signature uniquement lorsque BC-06 a terminé le processus de signature correspondant.",
+        "activationHelp": "L’activation confirme que le contrat signé devient opérationnel à la date indiquée.",
+        "terminationHelp": "La terminaison clôt le contrat RH à la date indiquée sans supprimer son historique ni le document signé.",
+        "cancelHelp": "L’annulation est réservée aux contrats encore en brouillon ou en signature. Cette action conserve la trace du contrat.",
+        "fields": {
+          "type": "Type de contrat",
+          "period": "Période",
+          "startDate": "Date de début",
+          "endDate": "Date de fin",
+          "weeklyHours": "Durée hebdomadaire contractuelle",
+          "primaryPosition": "Poste principal",
+          "document": "Document BC-06",
+          "documentId": "Identifiant du document de contrat",
+          "signatureProcess": "Processus de signature",
+          "signatureProcessId": "Identifiant du processus de signature",
+          "activationDate": "Date d’activation"
+        },
+        "actions": {
+          "linkDocument": "Rattacher le document",
+          "markSigned": "Marquer signé",
+          "activate": "Activer",
+          "terminate": "Terminer"
+        }
+      },
+      "leave": {
+        "title": "Congés & absences",
+        "description": "Gérez les demandes de congé du collaborateur et les politiques applicables à l’organisation.",
+        "subTabs": {
+          "requests": "Demandes",
+          "policies": "Politiques"
+        },
+        "requests": {
+          "create": "Nouvelle demande",
+          "emptyTitle": "Aucune demande de congé",
+          "emptyDescription": "Les demandes de ce collaborateur apparaîtront ici.",
+          "noReadPermission": "Vous ne disposez pas du droit de consulter les demandes de congé.",
+          "availabilityNote": "Une demande approuvée devient une absence effective pour Workforce et bloque la disponibilité professionnelle transmise au planning. Aucun doublon d’absence n’est créé.",
+          "policy": "Politique de congé",
+          "startDate": "Date de début",
+          "endDate": "Date de fin",
+          "startPortion": "Début de période",
+          "endPortion": "Fin de période",
+          "reason": "Motif / commentaire",
+          "evidence": "Justificatif",
+          "evidenceDocumentId": "Référence du justificatif",
+          "evidenceBoundary": "Workforce conserve uniquement la référence du document ; le fichier et ses preuves restent gérés par BC-06 Contracts & Documents.",
+          "submit": "Soumettre",
+          "approve": "Approuver",
+          "reject": "Rejeter",
+          "cancel": "Annuler la demande",
+          "decisionReason": "Motif de décision (facultatif)",
+          "decisionReasonRequired": "Motif du rejet",
+          "submitHelp": "La demande sera soumise au workflow d’approbation. Si la politique n’exige pas d’approbation, elle peut être approuvée automatiquement par le domaine."
+        },
+        "policies": {
+          "create": "Nouvelle politique",
+          "emptyTitle": "Aucune politique de congé",
+          "noReadPermission": "Vous ne disposez pas du droit de consulter les politiques de congé.",
+          "scopeNote": "Les politiques sont définies au niveau de l’organisation et du pays. Elles configurent le workflow DriveOS sans prétendre remplacer la réglementation nationale.",
+          "paid": "Rémunéré",
+          "approval": "Approbation requise",
+          "evidence": "Justificatif requis",
+          "halfDay": "Demi-journée autorisée",
+          "notice": "Préavis minimum (jours)",
+          "maxDays": "Durée maximale consécutive (jours)",
+          "country": "Pays",
+          "code": "Code",
+          "name": "Nom",
+          "category": "Catégorie",
+          "deactivate": "Désactiver",
+          "reactivate": "Réactiver",
+          "deactivateHelp": "La politique ne pourra plus être utilisée pour de nouvelles demandes. Les demandes existantes conservent leur snapshot de règles.",
+          "reactivateHelp": "La politique redeviendra disponible pour les nouvelles demandes."
+        }
+      },
+      "time": {
+        "title": "Temps de travail",
+        "description": "Compare les heures contractuelles, planifiées, réellement enseignées et les congés approuvés. Les feuilles de temps restent une déclaration RH distincte des séances pédagogiques.",
+        "subTabs": {
+          "summary": "Synthèse & politique",
+          "timesheets": "Feuilles de temps"
+        },
+        "noReadPermission": "Vous n'avez pas la permission de consulter le temps de travail.",
+        "summary": {
+          "calculate": "Calculer",
+          "contractual": "Contractuel",
+          "planned": "Planifié",
+          "actualTeaching": "Enseignement réalisé",
+          "leave": "Congés approuvés",
+          "variance": "Écart au contrat"
+        },
+        "policy": {
+          "title": "Politiques contractuelles",
+          "create": "Ajouter une politique",
+          "empty": "Aucune politique de temps de travail.",
+          "weekly": "Heures hebdomadaires",
+          "daily": "Heures journalières",
+          "maxDays": "Jours max./semaine",
+          "deactivate": "Désactiver",
+          "deactivateHelp": "La politique sera rendue inactive. Les historiques restent conservés."
+        },
+        "timesheets": {
+          "create": "Nouvelle feuille de temps",
+          "emptyTitle": "Aucune feuille de temps",
+          "emptyDescription": "Créez une période puis ajoutez ses lignes d’activité.",
+          "noReadPermission": "Vous n'avez pas la permission de consulter les feuilles de temps.",
+          "entries": "ligne(s)",
+          "addEntry": "Ajouter une ligne",
+          "submit": "Soumettre",
+          "startReview": "Démarrer la revue",
+          "approve": "Approuver",
+          "reject": "Rejeter",
+          "lock": "Verrouiller",
+          "activity": "Activité",
+          "hours": "Heures",
+          "source": "Source",
+          "sourceReference": "Référence source",
+          "removeEntryHelp": "Cette ligne sera supprimée de la feuille de temps.",
+          "sourceHelp": "La provenance est immuable. Une ligne créée manuellement dans cet écran est enregistrée comme « Manuel » ; les sources Planning, Training Delivery et Congé sont réservées aux projections/intégrations correspondantes.",
+          "removeEntry": "Supprimer"
+        },
+        "from": "Du",
+        "to": "Au",
+        "date": "Date",
+        "openEnded": "Sans date de fin",
+        "descriptionField": "Description",
+        "reason": "Motif"
+      },
+      "equipment": {
+        "title": "Matériel attribué",
+        "description": "Suivez les ressources confiées au collaborateur, leur remise, leur état et leur restitution. Workforce conserve l’affectation RH ; le référentiel de la ressource reste dans son bounded context propriétaire.",
+        "create": "Attribuer du matériel",
+        "empty": "Aucune attribution de matériel pour ce collaborateur.",
+        "resource": "Ressource",
+        "resourceType": "Type de ressource",
+        "resourceId": "Identifiant de la ressource",
+        "period": "Période prévue",
+        "handover": "Remise",
+        "return": "Restitution",
+        "condition": {
+          "Unknown": "Non renseigné",
+          "New": "Neuf",
+          "Good": "Bon",
+          "Fair": "Correct",
+          "Damaged": "Endommagé",
+          "Unusable": "Inutilisable"
+        },
+        "notes": "Observations",
+        "returnedOn": "Restitué le",
+        "resourceBoundary": "L’identifiant pointe vers la ressource propriétaire (Fleet, inventaire, etc.). Workforce ne duplique ni son nom, ni ses données techniques.",
+        "actions": {
+          "edit": "Modifier le planning",
+          "handover": "Remettre",
+          "return": "Restituer",
+          "cancel": "Annuler"
+        },
+        "status": {
+          "Planned": "Planifiée",
+          "Active": "En possession",
+          "Returned": "Restituée",
+          "Cancelled": "Annulée"
+        },
+        "resourceTypes": {
+          "Vehicle": "Véhicule",
+          "MobilePhone": "Téléphone mobile",
+          "Tablet": "Tablette",
+          "Computer": "Ordinateur",
+          "Badge": "Badge",
+          "Keys": "Clés",
+          "TrainingEquipment": "Matériel pédagogique",
+          "Other": "Autre"
+        },
+        "noReadPermission": "Vous ne disposez pas de la permission de consulter les attributions de matériel."
+      },
+      "reviews": {
+        "title": "Évaluations professionnelles",
+        "description": "Suivez les évaluations RH du collaborateur, leurs critères, la synthèse managériale, les objectifs et l’accusé de réception du salarié.",
+        "create": "Créer une évaluation",
+        "boundaryNote": "Cette évaluation concerne la performance et le suivi RH du collaborateur. Elle est distincte des évaluations pédagogiques des élèves, qui restent dans Curriculum / Training Delivery.",
+        "noReadPermission": "Vous n’avez pas la permission de consulter les évaluations professionnelles.",
+        "emptyTitle": "Aucune évaluation professionnelle",
+        "emptyDescription": "Créez une première évaluation pour démarrer le suivi RH de ce collaborateur.",
+        "evaluator": "Évaluateur",
+        "weightedScore": "Score pondéré",
+        "rate": "Noter",
+        "addCriterion": "Ajouter un critère",
+        "editSummary": "Rédiger la synthèse",
+        "start": "Démarrer",
+        "submit": "Soumettre",
+        "acknowledge": "Accuser réception",
+        "complete": "Clôturer",
+        "cancel": "Annuler",
+        "overallAssessment": "Appréciation globale",
+        "objectives": "Objectifs",
+        "employeeComment": "Commentaire du collaborateur",
+        "acknowledgeHelp": "L’accusé de réception confirme que le collaborateur a pris connaissance de l’évaluation. Il ne signifie pas nécessairement qu’il en approuve le contenu.",
+        "fields": {
+          "title": "Intitulé",
+          "evaluatorUserId": "Utilisateur évaluateur",
+          "periodFrom": "Début de période",
+          "periodTo": "Fin de période",
+          "code": "Code du critère",
+          "label": "Libellé du critère",
+          "weight": "Poids (%)",
+          "comment": "Commentaire",
+          "rating": "Note (1 à 5)"
+        }
+      },
+      "documents": {
+        "title": "Documents RH",
+        "description": "Registre documentaire RH du collaborateur : classification, validité, confidentialité et vérification.",
+        "create": "Référencer un document",
+        "boundaryNote": "Workforce conserve les métadonnées RH et la référence du document. Le fichier, ses versions, son empreinte et les preuves de signature restent la responsabilité de BC-06 Contracts & Documents.",
+        "noReadPermission": "Vous ne disposez pas du droit de consulter les documents RH.",
+        "emptyTitle": "Aucun document RH",
+        "emptyDescription": "Aucun document n’est encore référencé pour ce collaborateur.",
+        "expired": "Expiré",
+        "noExpiry": "sans expiration",
+        "protectedReference": "Référence protégée — autorisation confidentielle requise",
+        "verifiedAt": "Vérifié le",
+        "supersededBy": "Remplacé par",
+        "referenceHelp": "Identifiant du document détenu par BC-06. Aucun fichier n’est copié dans Workforce.",
+        "verifyHelp": "La vérification confirme la conformité RH de cette référence documentaire. Elle ne modifie pas le fichier dans BC-06.",
+        "revealHelp": "Cette référence est protégée car le document est Confidentiel ou Restreint. L’accès nécessite Workforce.EmployeeDocuments.Confidential.Read.",
+        "supersedeHelp": "Indiquez l’identifiant du nouvel enregistrement EmployeeDocument qui remplace celui-ci.",
+        "archiveHelp": "L’archivage rend cette entrée documentaire terminale dans le registre RH.",
+        "fields": {
+          "documentReferenceId": "Référence document BC-06",
+          "category": "Catégorie",
+          "confidentiality": "Confidentialité",
+          "documentTypeCode": "Code type de document",
+          "title": "Intitulé",
+          "issuedOn": "Date d’émission",
+          "validFrom": "Valide à partir du",
+          "expiresOn": "Expire le",
+          "validity": "Validité",
+          "issuer": "Émetteur",
+          "referenceNumber": "Numéro / référence",
+          "replacementId": "ID du document RH de remplacement"
+        },
+        "actions": {
+          "verify": "Vérifier",
+          "reveal": "Révéler la référence",
+          "supersede": "Remplacer",
+          "revoke": "Révoquer",
+          "archive": "Archiver"
+        }
+      },
+      "restrictions": {
+        "title": "Restrictions professionnelles",
+        "description": "Restrictions ciblées limitant temporairement l’éligibilité professionnelle du collaborateur sans modifier son statut d’emploi ni ses droits de connexion.",
+        "create": "Ajouter une restriction",
+        "boundaryNote": "Une restriction professionnelle est distincte d’une suspension du contrat de travail. Elle est consommée par les contrôles d’éligibilité de Scheduling, Exams et des autres modules concernés.",
+        "noReadPermission": "Vous ne disposez pas de la permission de consulter les restrictions professionnelles.",
+        "emptyTitle": "Aucune restriction professionnelle",
+        "emptyDescription": "Ce collaborateur ne possède actuellement aucune restriction professionnelle enregistrée.",
+        "openEnded": "sans date de fin",
+        "allBranches": "Toutes les agences",
+        "documentBoundary": "Workforce conserve uniquement la référence documentaire. Le fichier et ses preuves restent gérés par BC-06 Contracts & Documents.",
+        "activateHelp": "L’activation rend cette restriction effective pour les contrôles d’éligibilité professionnelle. Elle peut empêcher certaines affectations ou réservations selon son périmètre.",
+        "liftReason": "Motif de levée",
+        "cancellationReason": "Motif d’annulation",
+        "actions": {
+          "activate": "Activer la restriction",
+          "lift": "Lever la restriction"
+        },
+        "fields": {
+          "activity": "Activité concernée",
+          "source": "Origine",
+          "startDate": "Date de début",
+          "endDate": "Date de fin",
+          "reason": "Motif",
+          "country": "Pays",
+          "licenseCategory": "Catégorie de permis",
+          "branch": "Agence",
+          "document": "Référence documentaire",
+          "period": "Période",
+          "scope": "Périmètre"
+        }
+      },
+      "offboarding": {
+        "title": "Départ & offboarding",
+        "description": "Pilote la sortie du collaborateur sans supprimer son historique ni son compte global. Les contrôles automatiques sont recalculés depuis les données Workforce autoritatives.",
+        "status": "Statut",
+        "plannedEndDate": "Date de fin prévue",
+        "progress": "Checklist",
+        "reason": "Motif du départ",
+        "automatic": "Automatique",
+        "manual": "Manuel",
+        "blockers": "{{count}} élément(s) bloquant(s)",
+        "waiverReason": "Motif de dérogation",
+        "lastEvaluated": "Dernière évaluation :",
+        "refresh": "Recalculer la checklist",
+        "refreshHelp": "DriveOS relira les affectations, postes, contrats, matériel, feuilles de temps et restrictions professionnelles pour recalculer les contrôles automatiques.",
+        "noReadPermission": "Vous ne disposez pas de la permission de consulter l’offboarding.",
+        "emptyTitle": "Aucun départ en cours",
+        "emptyDescription": "Le processus d’offboarding est créé automatiquement lorsque le départ est préparé depuis le cycle de vie RH.",
+        "startHint": "Pour démarrer un offboarding, utilisez l’action « Préparer le départ » dans la vue d’ensemble du collaborateur.",
+        "boundaryNote": "La clôture du salarié retire la relation d’emploi mais ne supprime ni Employee, ni Person, ni le compte utilisateur global. La révocation technique des accès reste une responsabilité distincte et doit être préparée dans la checklist.",
+        "completeItem": "Marquer terminé",
+        "manualItemHelp": "Cet élément nécessite une validation explicite d’un responsable.",
+        "note": "Note",
+        "waive": "Dérogation",
+        "waiveHelp": "Une dérogation contourne explicitement ce contrôle. Elle doit rester exceptionnelle, motivée et auditée.",
+        "readyTitle": "Checklist complète",
+        "readyDescription": "Tous les contrôles sont terminés ou couverts par une dérogation. Le départ peut maintenant être clôturé.",
+        "completeEmployment": "Clôturer le départ",
+        "completeHelp": "Cette action terminera la relation d’emploi à la date prévue. L’historique sera conservé et le salarié passera au statut Ended.",
+        "completionReason": "Motif de clôture"
+      },
+      "rehire": {
+        "title": "Réembaucher le collaborateur",
+        "description": "La réembauche crée une nouvelle relation d’emploi et un nouvel EmployeeId. L’ancienne période reste clôturée et immuable.",
+        "reuseUser": "Réutiliser le compte utilisateur précédent",
+        "warning": "Aucune affectation, poste, qualification, autorisation, contrat ou autre donnée RH de l’ancien emploi n’est copiée automatiquement. La nouvelle période démarre en brouillon."
+      },
+      "invalidEmployeeId": "L’identifiant du collaborateur est invalide."
+    },
+    "branchAssignmentStatus": {
+      "Planned": "Planifiée",
+      "Active": "Active",
+      "Ended": "Terminée",
+      "Cancelled": "Annulée"
+    },
+    "jobPositionStatus": {
+      "Active": "Actif",
+      "Inactive": "Inactif"
+    },
+    "jobPositionAssignmentStatus": {
+      "Planned": "Planifié",
+      "Active": "Actif",
+      "Ended": "Terminé",
+      "Cancelled": "Annulé"
+    },
+    "professionalFunctions": {
+      "Instructor": "Enseignement",
+      "PedagogicalManagement": "Responsabilité pédagogique",
+      "BranchManagement": "Direction d’agence",
+      "Administration": "Administration",
+      "Finance": "Finance",
+      "Executive": "Direction",
+      "FleetManagement": "Gestion de flotte",
+      "ExamCoordination": "Coordination examens",
+      "Sales": "Commercial",
+      "HumanResources": "Ressources humaines",
+      "Support": "Support",
+      "Other": "Autre"
+    },
+    "jobPositions": {
+      "title": "Catalogue des postes",
+      "description": "Définissez les postes métier de l’organisation et leur fonction professionnelle normalisée. Un poste n’accorde aucune permission applicative.",
+      "add": "Nouveau poste",
+      "search": "Rechercher par code, nom ou fonction…",
+      "loadError": "Impossible de charger les postes",
+      "actionError": "Action impossible",
+      "emptyTitle": "Aucun poste",
+      "emptyDescription": "Créez le premier poste métier de l’organisation.",
+      "professionalFunction": "Fonction professionnelle",
+      "deactivate": "Désactiver",
+      "reactivate": "Réactiver",
+      "fields": {
+        "code": "Code",
+        "name": "Nom",
+        "function": "Fonction professionnelle",
+        "description": "Description"
+      },
+      "drawers": {
+        "description": "Les modifications concernent le catalogue RH, jamais les rôles ou permissions de sécurité.",
+        "create": {
+          "title": "Créer un poste"
+        },
+        "edit": {
+          "title": "Modifier le poste"
+        },
+        "deactivate": {
+          "title": "Désactiver le poste",
+          "warning": "Le poste ne pourra plus être attribué aux nouveaux collaborateurs. Les affectations historiques sont conservées."
+        },
+        "reactivate": {
+          "title": "Réactiver le poste",
+          "warning": "Le poste redeviendra disponible pour de nouvelles affectations."
+        }
+      }
+    },
+    "credentialStatus": {
+      "Declared": "Déclarée",
+      "Verified": "Vérifiée",
+      "Rejected": "Rejetée",
+      "Expired": "Expirée",
+      "Superseded": "Remplacée"
+    },
+    "qualificationSource": {
+      "Manual": "Saisie manuelle",
+      "Import": "Import",
+      "ExternalProvider": "Fournisseur externe"
+    },
+    "employmentContractType": {
+      "Permanent": "CDI / permanent",
+      "FixedTerm": "CDD / durée déterminée",
+      "Apprenticeship": "Apprentissage",
+      "Professionalization": "Professionnalisation",
+      "Temporary": "Travail temporaire",
+      "Internship": "Stage",
+      "Other": "Autre"
+    },
+    "employmentContractStatus": {
+      "Draft": "Brouillon",
+      "PendingSignature": "En signature",
+      "Signed": "Signé",
+      "Active": "Actif",
+      "Suspended": "Suspendu",
+      "Ending": "En fin",
+      "Terminated": "Terminé",
+      "Completed": "Clôturé",
+      "Cancelled": "Annulé"
+    },
+    "leaveRequestStatus": {
+      "Draft": "Brouillon",
+      "Submitted": "Soumise",
+      "Approved": "Approuvée",
+      "Rejected": "Rejetée",
+      "Cancelled": "Annulée"
+    },
+    "leavePolicyStatus": {
+      "Active": "Active",
+      "Inactive": "Inactive"
+    },
+    "leaveDayPortion": {
+      "FullDay": "Journée complète",
+      "Morning": "Matin",
+      "Afternoon": "Après-midi"
+    },
+    "leaveCategory": {
+      "PaidLeave": "Congés payés",
+      "UnpaidLeave": "Congé sans solde",
+      "SickLeave": "Arrêt / congé maladie",
+      "TrainingLeave": "Congé formation",
+      "ParentalLeave": "Congé parental",
+      "CompensatoryLeave": "Repos compensateur",
+      "Other": "Autre"
+    },
+    "workingTimePolicyStatus": {
+      "Active": "Active",
+      "Inactive": "Inactive"
+    },
+    "timesheetStatus": {
+      "Draft": "Brouillon",
+      "Submitted": "Soumise",
+      "UnderReview": "En revue",
+      "Approved": "Approuvée",
+      "Rejected": "Rejetée",
+      "Locked": "Verrouillée"
+    },
+    "timesheetActivityType": {
+      "Teaching": "Enseignement",
+      "Exam": "Examen",
+      "Administrative": "Administratif",
+      "Travel": "Déplacement",
+      "Meeting": "Réunion",
+      "Training": "Formation",
+      "Leave": "Congé",
+      "Other": "Autre"
+    },
+    "timesheetEntrySource": {
+      "Manual": "Manuel",
+      "Scheduling": "Planning",
+      "TrainingDelivery": "Séance réalisée",
+      "Leave": "Congé"
+    },
+    "workingTime": {
+      "errors": {
+        "invalidIdentifier": "Identifiant de politique invalide.",
+        "invalidPeriod": "Période de politique invalide.",
+        "invalidLimits": "Les limites de temps de travail sont invalides.",
+        "overlappingPolicy": "Une politique active chevauche déjà cette période.",
+        "notFound": "Politique de temps de travail introuvable.",
+        "inactive": "Cette politique est inactive."
+      }
+    },
+    "performanceReviewStatus": {
+      "Draft": "Brouillon",
+      "InProgress": "En cours",
+      "Submitted": "Soumise",
+      "Acknowledged": "Prise en compte",
+      "Completed": "Clôturée",
+      "Cancelled": "Annulée"
+    },
+    "employeeDocumentCategory": {
+      "Identity": "Identité",
+      "Employment": "Emploi",
+      "Qualification": "Qualification",
+      "RegulatoryAuthorization": "Autorisation réglementaire",
+      "LeaveEvidence": "Justificatif de congé",
+      "OccupationalHealth": "Santé au travail",
+      "Payroll": "Paie",
+      "Administrative": "Administratif",
+      "Other": "Autre"
+    },
+    "employeeDocumentConfidentiality": {
+      "Internal": "Interne",
+      "Confidential": "Confidentiel",
+      "Restricted": "Restreint"
+    },
+    "employeeDocumentStatus": {
+      "Registered": "Référencé",
+      "Verified": "Vérifié",
+      "Superseded": "Remplacé",
+      "Revoked": "Révoqué",
+      "Archived": "Archivé"
+    },
+    "professionalRestrictionActivity": {
+      "AllProfessionalDuties": "Toutes les fonctions professionnelles",
+      "Teaching": "Enseignement",
+      "ExamDuties": "Missions d’examen",
+      "VehicleOperation": "Conduite / utilisation de véhicule"
+    },
+    "professionalRestrictionStatus": {
+      "Planned": "Planifiée",
+      "Active": "Active",
+      "Lifted": "Levée",
+      "Cancelled": "Annulée"
+    },
+    "professionalRestrictionSource": {
+      "InternalDecision": "Décision interne",
+      "RegulatoryAuthority": "Autorité réglementaire",
+      "OccupationalHealth": "Santé au travail",
+      "QualificationIssue": "Problème de qualification",
+      "Other": "Autre"
+    },
+    "offboardingStatus": {
+      "InProgress": "En cours",
+      "ReadyToComplete": "Prêt à clôturer",
+      "Completed": "Clôturé",
+      "Cancelled": "Annulé"
+    },
+    "offboardingItemStatus": {
+      "Pending": "À traiter",
+      "Completed": "Terminé",
+      "Waived": "Dérogation"
+    },
+    "offboardingItemKind": {
+      "FutureSchedulingReviewed": "Planning futur revu",
+      "BranchAssignmentsClosed": "Affectations agence clôturées",
+      "JobPositionsClosed": "Affectations de poste clôturées",
+      "EmploymentContractsClosed": "Contrats de travail clôturés",
+      "EquipmentReturned": "Matériel restitué",
+      "TimesheetsFinalized": "Feuilles de temps finalisées",
+      "ProfessionalRestrictionsReviewed": "Restrictions professionnelles revues",
+      "AccessRevocationPrepared": "Révocation des accès préparée",
+      "EmployeeDocumentsReviewed": "Documents RH revus"
+    },
+    "analytics": {
+      "title": "Analytics Workforce",
+      "description": "Analysez les effectifs, mouvements, absences, temps de travail, conformité et qualité des processus RH sur une période donnée.",
+      "period": "Période analysée",
+      "loadError": "Impossible de charger les analytics Workforce.",
+      "noPermissionTitle": "Accès limité",
+      "noPermission": "Vous ne disposez pas de la permission nécessaire pour consulter les analytics Workforce.",
+      "empty": "Aucune donnée disponible pour cette période.",
+      "tabs": {
+        "label": "Sections des analytics Workforce",
+        "overview": "Vue d’ensemble",
+        "activity": "Activité & temps",
+        "compliance": "Conformité & contrats",
+        "trends": "Tendances"
+      },
+      "filters": {
+        "open": "Période",
+        "title": "Filtrer la période",
+        "description": "Les indicateurs sont recalculés sur la période sélectionnée.",
+        "from": "Du",
+        "to": "Au",
+        "apply": "Appliquer",
+        "limitTitle": "Limite de période",
+        "limit": "Le backend autorise au maximum 730 jours par analyse."
+      },
+      "kpis": {
+        "headcountEnd": "Effectif fin de période",
+        "hires": "Embauches",
+        "exits": "Départs",
+        "turnover": "Turnover",
+        "absenceRate": "Taux d’absence",
+        "validatedHours": "Heures validées",
+        "authorizationCoverage": "Couverture habilitations",
+        "timesheetLockRate": "Timesheets verrouillées"
+      },
+      "headcount": {
+        "title": "Effectifs & mouvements",
+        "start": "Effectif début de période",
+        "end": "Effectif fin de période",
+        "rehires": "Réembauches",
+        "averageTenure": "Ancienneté moyenne"
+      },
+      "functions": {
+        "title": "Effectif actuel par fonction professionnelle"
+      },
+      "workingTime": {
+        "title": "Répartition du temps validé",
+        "contractual": "Heures contractuelles",
+        "validated": "Heures timesheet validées",
+        "teaching": "Enseignement",
+        "exam": "Examens",
+        "administrative": "Administratif",
+        "travel": "Déplacements",
+        "meeting": "Réunions",
+        "training": "Formation",
+        "leave": "Congés / absences",
+        "other": "Autres",
+        "validatedToContract": "Validé / contractuel"
+      },
+      "absence": {
+        "title": "Absences approuvées",
+        "requests": "Demandes approuvées",
+        "days": "Jours équivalents",
+        "employees": "Collaborateurs concernés"
+      },
+      "timesheets": {
+        "title": "Feuilles de temps",
+        "total": "Total",
+        "approved": "Approuvées",
+        "locked": "Verrouillées",
+        "pendingReview": "En revue",
+        "rejected": "Rejetées"
+      },
+      "compliance": {
+        "title": "Habilitations & restrictions",
+        "instructors": "Enseignants actuels",
+        "verified": "Avec autorisation valide",
+        "expired": "Autorisations expirées",
+        "restrictions": "Restrictions actives"
+      },
+      "contracts": {
+        "title": "Contrats de travail",
+        "started": "Contrats démarrés",
+        "ended": "Contrats terminés",
+        "activeAtEnd": "Actifs en fin de période",
+        "fixedTerm": "CDD actifs en fin de période",
+        "pendingSignature": "En attente de signature"
+      },
+      "trends": {
+        "title": "Tendance mensuelle",
+        "description": "Évolution des embauches, départs, congés approuvés et heures validées.",
+        "month": "Mois"
+      },
+      "definitions": {
+        "title": "Définition des indicateurs",
+        "description": "Les définitions sont fournies par le backend WFR-019 afin de conserver un sens métier stable aux métriques.",
+        "turnoverRatePercent": "Départs sur la période rapportés à l’effectif moyen entre le début et la fin de période.",
+        "averageTenureDaysAtEnd": "Ancienneté moyenne, en jours, des collaborateurs présents à la fin de la période.",
+        "approvedCalendarDayEquivalents": "Nombre de jours calendaires équivalents provenant des demandes de congé approuvées, demi-journées incluses.",
+        "absenceRatePercent": "Jours de congé approuvés rapportés aux jours d’emploi théoriques sur la période.",
+        "contractualHours": "Heures contractuelles calculées à partir des politiques de temps de travail applicables sur la période.",
+        "validatedTimesheetHours": "Heures issues uniquement des feuilles de temps approuvées ou verrouillées.",
+        "validatedToContractPercent": "Rapport entre les heures de timesheet validées et les heures contractuelles calculées.",
+        "teachingAuthorizationCoveragePercent": "Part des collaborateurs enseignants actuels disposant d’une autorisation d’enseignement vérifiée et valide.",
+        "timesheetLockRatePercent": "Part des feuilles de temps de la période ayant atteint l’état Locked."
+      },
+      "units": {
+        "days": "{{value}} jours"
+      },
+      "errors": {
+        "invalidPeriod": "La période des analytics est invalide.",
+        "periodTooLarge": "La période demandée dépasse la limite maximale de 730 jours."
+      }
+    }
+  },
+  "offboarding": {
+    "blockers": {
+      "branchAssignments": "Des affectations agence restent ouvertes.",
+      "jobPositions": "Des affectations de poste restent ouvertes.",
+      "employmentContracts": "Des contrats de travail restent ouverts.",
+      "equipmentAssignments": "Du matériel reste à restituer.",
+      "timesheets": "Des feuilles de temps restent à finaliser.",
+      "professionalRestrictions": "Des restrictions professionnelles restent à traiter."
     }
   }
 }
