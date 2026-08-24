@@ -1115,7 +1115,10 @@
         "invalidTransition": "This offboarding transition is not allowed.",
         "itemNotFound": "The checklist item was not found.",
         "manualItemExpected": "This is an automatic item and cannot be completed manually.",
-        "automaticItemExpected": "This item requires manual completion."
+        "automaticItemExpected": "This item requires manual completion.",
+        "accessRevocationMustBeExecuted": "Access revocation must be executed through AuthGate and cannot be completed manually.",
+        "accessRevocationUnavailable": "The AuthGate access revocation service is not configured or available.",
+        "accessRevocationFailed": "Revoking DriveOS access in AuthGate failed."
       },
       "employee": {
         "invalidRehireUserSelection": "The user account selection for rehiring is invalid.",

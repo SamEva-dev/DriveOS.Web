@@ -1115,7 +1115,10 @@
         "invalidTransition": "Cette transition d’offboarding est impossible.",
         "itemNotFound": "L’élément de checklist est introuvable.",
         "manualItemExpected": "Cet élément est automatique et ne peut pas être validé manuellement.",
-        "automaticItemExpected": "Cet élément nécessite une validation manuelle."
+        "automaticItemExpected": "Cet élément nécessite une validation manuelle.",
+        "accessRevocationMustBeExecuted": "La révocation d’accès doit être exécutée via AuthGate et ne peut pas être validée manuellement.",
+        "accessRevocationUnavailable": "Le service de révocation des accès AuthGate n’est pas configuré ou disponible.",
+        "accessRevocationFailed": "La révocation de l’accès DriveOS dans AuthGate a échoué."
       },
       "employee": {
         "invalidRehireUserSelection": "Le choix du compte utilisateur pour la réembauche est invalide.",
