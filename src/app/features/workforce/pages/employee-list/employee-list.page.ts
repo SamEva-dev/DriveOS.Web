@@ -9,7 +9,10 @@ import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/dr
 import { DriveOsFormAlertComponent } from '../../../../shared/ui/form-alert/driveos-form-alert.component';
 import { DriveOsPageHeaderComponent } from '../../../../shared/ui/page-header/driveos-page-header.component';
 import { DriveOsSpinnerComponent } from '../../../../shared/ui/spinner/driveos-spinner.component';
-import { DriveOsStatusBadgeComponent, DriveOsStatusTone } from '../../../../shared/ui/status-badge/driveos-status-badge.component';
+import {
+  DriveOsStatusBadgeComponent,
+  DriveOsStatusTone,
+} from '../../../../shared/ui/status-badge/driveos-status-badge.component';
 import { WorkforceApiService } from '../../data-access/workforce-api.service';
 import { EmployeeSummary } from '../../models/workforce.models';
 
@@ -45,7 +48,8 @@ export class EmployeeListPage {
     const status = this.status();
     return this.employees().filter((employee) => {
       const matchesStatus = !status || employee.status === status;
-      const matchesSearch = !term ||
+      const matchesSearch =
+        !term ||
         employee.employeeNumber.toLowerCase().includes(term) ||
         employee.personId.toLowerCase().includes(term) ||
         (employee.userId ?? '').toLowerCase().includes(term);
@@ -53,7 +57,15 @@ export class EmployeeListPage {
     });
   });
 
-  readonly statuses = ['Draft', 'Onboarding', 'Active', 'Suspended', 'OnLeave', 'Ending', 'Ended'] as const;
+  readonly statuses = [
+    'Draft',
+    'Onboarding',
+    'Active',
+    'Suspended',
+    'OnLeave',
+    'Ending',
+    'Ended',
+  ] as const;
 
   constructor() {
     this.load();
@@ -76,12 +88,17 @@ export class EmployeeListPage {
 
   statusTone(status: string): DriveOsStatusTone {
     switch (status) {
-      case 'Active': return 'success';
-      case 'Onboarding': return 'info';
+      case 'Active':
+        return 'success';
+      case 'Onboarding':
+        return 'info';
       case 'Suspended':
-      case 'Ending': return 'warning';
-      case 'Ended': return 'neutral';
-      default: return 'neutral';
+      case 'Ending':
+        return 'warning';
+      case 'Ended':
+        return 'neutral';
+      default:
+        return 'neutral';
     }
   }
 }

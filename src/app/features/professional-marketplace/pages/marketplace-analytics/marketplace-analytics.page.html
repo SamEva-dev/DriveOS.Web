@@ -1,0 +1,728 @@
+<section class="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
+  <drive-os-page-header
+    [kicker]="'professionalMarketplace.label' | translate"
+    [title]="'professionalMarketplace.analytics.title' | translate"
+    [description]="'professionalMarketplace.analytics.description' | translate"
+    icon="ph ph-chart-line-up"
+  />
+
+  @if (!canRead()) {
+    <div class="mt-6">
+      <drive-os-form-alert
+        tone="warning"
+        [title]="'professionalMarketplace.analytics.noPermissionTitle' | translate"
+        [message]="'professionalMarketplace.analytics.noPermission' | translate"
+      />
+    </div>
+  } @else {
+    <div
+      class="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"
+    >
+      <div>
+        <p
+          class="text-xs font-extrabold uppercase tracking-[.12em] text-[var(--driveos-text-tertiary)]"
+        >
+          {{ 'professionalMarketplace.analytics.period' | translate }}
+        </p>
+        <p class="mt-1 font-black">
+          {{ from() | date: 'mediumDate' }} → {{ to() | date: 'mediumDate' }}
+        </p>
+        <p class="mt-1 text-xs text-[var(--driveos-text-tertiary)]">
+          {{
+            'professionalMarketplace.analytics.comparison.description'
+              | translate: { days: periodDays() }
+          }}
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <drive-os-button
+          variant="outline"
+          icon="funnel"
+          (pressed)="openFilters()"
+        >
+          {{ 'professionalMarketplace.analytics.filters.open' | translate }}
+        </drive-os-button>
+        <drive-os-button
+          variant="ghost"
+          icon="arrows-clockwise"
+          [loading]="loading()"
+          (pressed)="load()"
+        >
+          {{ 'common.actions.refresh' | translate }}
+        </drive-os-button>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="flex min-h-72 items-center justify-center">
+        <drive-os-spinner [label]="'common.loading' | translate" />
+      </div>
+    } @else if (errors().length) {
+      <div class="mt-6 space-y-3">
+        @for (error of errors(); track error) {
+          <drive-os-form-alert
+            tone="danger"
+            [title]="'professionalMarketplace.analytics.loadError' | translate"
+            [message]="error"
+          />
+        }
+      </div>
+    } @else if (analytics(); as data) {
+      <nav
+        class="mt-5 overflow-x-auto rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-2"
+        [attr.aria-label]="'professionalMarketplace.analytics.tabs.label' | translate"
+      >
+        <div class="flex min-w-max gap-1">
+          @for (tab of tabs; track tab) {
+            <button
+              type="button"
+              class="rounded-xl px-4 py-2.5 text-sm font-bold transition"
+              [ngClass]="
+                activeTab() === tab
+                  ? 'bg-blue-800 text-white'
+                  : 'text-[var(--driveos-text-secondary)] hover:bg-[var(--driveos-surface-hover)]'
+              "
+              (click)="selectTab(tab)"
+            >
+              {{ 'professionalMarketplace.analytics.tabs.' + tab | translate }}
+            </button>
+          }
+        </div>
+      </nav>
+
+      @if (data.advanced; as advanced) {
+        @if (activeTab() === 'integration') {
+          <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.invitationAcceptance' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">
+                {{ formatPercent(advanced.invitationAcceptanceRatePercent) }}
+              </p>
+              <p
+                class="mt-2 text-xs"
+                [ngClass]="
+                  deltaTone(
+                    advanced.invitationAcceptanceRatePercent,
+                    previousAnalytics()?.advanced?.invitationAcceptanceRatePercent ?? null
+                  )
+                "
+              >
+                {{
+                  delta(
+                    advanced.invitationAcceptanceRatePercent,
+                    previousAnalytics()?.advanced?.invitationAcceptanceRatePercent ?? null
+                  )
+                }}
+                {{ 'professionalMarketplace.analytics.comparison.vsPrevious' | translate }}
+              </p>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.invitationActivation' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">
+                {{ formatPercent(advanced.invitationToActivationRatePercent) }}
+              </p>
+              <p
+                class="mt-2 text-xs"
+                [ngClass]="
+                  deltaTone(
+                    advanced.invitationToActivationRatePercent,
+                    previousAnalytics()?.advanced?.invitationToActivationRatePercent ?? null
+                  )
+                "
+              >
+                {{
+                  delta(
+                    advanced.invitationToActivationRatePercent,
+                    previousAnalytics()?.advanced?.invitationToActivationRatePercent ?? null
+                  )
+                }}
+                {{ 'professionalMarketplace.analytics.comparison.vsPrevious' | translate }}
+              </p>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.profileCompletion' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">
+                {{ formatPercent(advanced.profileCompletionRatePercent) }}
+              </p>
+              <p class="mt-2 text-xs text-[var(--driveos-text-tertiary)]">
+                {{ advanced.completeProfiles }} / {{ advanced.profilesInScope }}
+              </p>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.signedContracts' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">
+                {{ formatPercent(advanced.signedContractRatePercent) }}
+              </p>
+              <p class="mt-2 text-xs text-[var(--driveos-text-tertiary)]">
+                {{ advanced.contractPreparedEngagements }}
+                {{ 'professionalMarketplace.analytics.metrics.contractsPrepared' | translate }}
+              </p>
+            </article>
+          </div>
+
+          <div class="mt-5 grid gap-5 lg:grid-cols-2">
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <h2 class="text-lg font-black">
+                {{ 'professionalMarketplace.analytics.integration.funnel' | translate }}
+              </h2>
+              <dl class="mt-4 space-y-4 text-sm">
+                <div class="flex justify-between gap-4">
+                  <dt>
+                    {{ 'professionalMarketplace.analytics.metrics.invitationsSent' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ advanced.invitationsSent }}</dd>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <dt>
+                    {{
+                      'professionalMarketplace.analytics.metrics.invitationsAccepted' | translate
+                    }}
+                  </dt>
+                  <dd class="font-black">{{ advanced.invitationsAccepted }}</dd>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <dt>
+                    {{
+                      'professionalMarketplace.analytics.metrics.invitationsActivated' | translate
+                    }}
+                  </dt>
+                  <dd class="font-black">{{ advanced.invitationsActivated }}</dd>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <dt>
+                    {{
+                      'professionalMarketplace.analytics.metrics.applicationsAccepted' | translate
+                    }}
+                  </dt>
+                  <dd class="font-black">
+                    {{ advanced.applicationsAccepted }} / {{ advanced.applicationsDecided }}
+                  </dd>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <dt>
+                    {{
+                      'professionalMarketplace.analytics.metrics.initialIntegrations' | translate
+                    }}
+                  </dt>
+                  <dd class="font-black">{{ advanced.initialIntegrationsCompleted }}</dd>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <dt>
+                    {{
+                      'professionalMarketplace.analytics.metrics.reliableRelationships' | translate
+                    }}
+                  </dt>
+                  <dd class="font-black">{{ advanced.reliableRelationships }}</dd>
+                </div>
+              </dl>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <h2 class="text-lg font-black">
+                {{ 'professionalMarketplace.analytics.integration.delays' | translate }}
+              </h2>
+              <dl class="mt-4 space-y-4 text-sm">
+                <div class="flex justify-between gap-4">
+                  <dt>
+                    {{
+                      'professionalMarketplace.analytics.metrics.invitationActivationDelay'
+                        | translate
+                    }}
+                  </dt>
+                  <dd class="font-black">
+                    {{ formatHours(advanced.averageInvitationToActivationDelayHours) }}
+                  </dd>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <dt>
+                    {{
+                      'professionalMarketplace.analytics.metrics.documentValidationDelay'
+                        | translate
+                    }}
+                  </dt>
+                  <dd class="font-black">
+                    {{ formatHours(advanced.averageDocumentValidationDelayHours) }}
+                  </dd>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <dt>
+                    {{
+                      'professionalMarketplace.analytics.metrics.applicationAcceptance' | translate
+                    }}
+                  </dt>
+                  <dd class="font-black">
+                    {{ formatPercent(advanced.applicationAcceptanceRatePercent) }}
+                  </dd>
+                </div>
+              </dl>
+            </article>
+          </div>
+        }
+
+        @if (activeTab() === 'operations') {
+          <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.plannedHours' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">{{ formatHours(advanced.plannedHours) }}</p>
+              <p
+                class="mt-2 text-xs"
+                [ngClass]="
+                  deltaTone(
+                    advanced.plannedHours,
+                    previousAnalytics()?.advanced?.plannedHours ?? null
+                  )
+                "
+              >
+                {{
+                  delta(advanced.plannedHours, previousAnalytics()?.advanced?.plannedHours ?? null)
+                }}
+                {{ 'professionalMarketplace.analytics.comparison.vsPrevious' | translate }}
+              </p>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.realizedHours' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">{{ formatHours(advanced.realizedHours) }}</p>
+              <p
+                class="mt-2 text-xs"
+                [ngClass]="
+                  deltaTone(
+                    advanced.realizedHours,
+                    previousAnalytics()?.advanced?.realizedHours ?? null
+                  )
+                "
+              >
+                {{
+                  delta(
+                    advanced.realizedHours,
+                    previousAnalytics()?.advanced?.realizedHours ?? null
+                  )
+                }}
+                {{ 'professionalMarketplace.analytics.comparison.vsPrevious' | translate }}
+              </p>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.occupancy' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">
+                {{ formatPercent(advanced.occupancyRatePercent) }}
+              </p>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.studentsHandled' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">{{ advanced.studentsHandled }}</p>
+            </article>
+          </div>
+          <div class="mt-5 grid gap-5 lg:grid-cols-2">
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <h2 class="text-lg font-black">
+                {{ 'professionalMarketplace.analytics.operations.capacity' | translate }}
+              </h2>
+              <dl class="mt-4 space-y-4 text-sm">
+                <div class="flex justify-between">
+                  <dt>{{ 'professionalMarketplace.dashboard.kpis.activeMissions' | translate }}</dt>
+                  <dd class="font-black">{{ data.kpis.activeMissions }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.analytics.metrics.cancelledMissions' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ advanced.cancelledMissions }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.analytics.metrics.cancellationRate' | translate }}
+                  </dt>
+                  <dd class="font-black">
+                    {{ formatPercent(advanced.missionCancellationRatePercent) }}
+                  </dd>
+                </div>
+              </dl>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <h2 class="text-lg font-black">
+                {{ 'professionalMarketplace.analytics.operations.serviceEntries' | translate }}
+              </h2>
+              <dl class="mt-4 space-y-4 text-sm">
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.analytics.metrics.reviewedEntries' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ advanced.reviewedServiceEntries }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.analytics.metrics.firstPassEntries' | translate }}
+                  </dt>
+                  <dd class="font-black">
+                    {{ advanced.serviceEntriesValidatedWithoutCorrection }}
+                  </dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>{{ 'professionalMarketplace.dashboard.kpis.pendingEntries' | translate }}</dt>
+                  <dd class="font-black">{{ data.kpis.pendingServiceEntries }}</dd>
+                </div>
+              </dl>
+            </article>
+          </div>
+        }
+
+        @if (activeTab() === 'quality') {
+          <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.firstPassValidation' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">
+                {{ formatPercent(advanced.firstPassValidationRatePercent) }}
+              </p>
+              <p
+                class="mt-2 text-xs"
+                [ngClass]="
+                  deltaTone(
+                    advanced.firstPassValidationRatePercent,
+                    previousAnalytics()?.advanced?.firstPassValidationRatePercent ?? null
+                  )
+                "
+              >
+                {{
+                  delta(
+                    advanced.firstPassValidationRatePercent,
+                    previousAnalytics()?.advanced?.firstPassValidationRatePercent ?? null
+                  )
+                }}
+                {{ 'professionalMarketplace.analytics.comparison.vsPrevious' | translate }}
+              </p>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.disputeRate' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">
+                {{ formatPercent(advanced.disputeRatePercent) }}
+              </p>
+              <p
+                class="mt-2 text-xs"
+                [ngClass]="
+                  deltaTone(
+                    advanced.disputeRatePercent,
+                    previousAnalytics()?.advanced?.disputeRatePercent ?? null,
+                    true
+                  )
+                "
+              >
+                {{
+                  delta(
+                    advanced.disputeRatePercent,
+                    previousAnalytics()?.advanced?.disputeRatePercent ?? null
+                  )
+                }}
+                {{ 'professionalMarketplace.analytics.comparison.vsPrevious' | translate }}
+              </p>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.validationDelay' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">
+                {{ formatHours(data.kpis.averageValidationDelayHours) }}
+              </p>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.dashboard.kpis.expiringCredentials' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">{{ data.kpis.expiringCredentials }}</p>
+            </article>
+          </div>
+          <div class="mt-5 grid gap-5 lg:grid-cols-2">
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <h2 class="text-lg font-black">
+                {{ 'professionalMarketplace.analytics.quality.disputes' | translate }}
+              </h2>
+              <dl class="mt-4 space-y-4 text-sm">
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.analytics.metrics.openDisputes' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ advanced.openDisputes }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.dashboard.kpis.disputedEntries' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ data.kpis.disputedServiceEntries }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.dashboard.kpis.openReviewReports' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ data.kpis.openReviewReports }}</dd>
+                </div>
+              </dl>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <h2 class="text-lg font-black">
+                {{ 'professionalMarketplace.analytics.quality.alerts' | translate }}
+              </h2>
+              @if (data.alerts.length) {
+                <div class="mt-4 space-y-2">
+                  @for (alert of data.alerts; track alert.code) {
+                    <div
+                      class="rounded-xl border p-3 text-sm"
+                      [ngClass]="alertTone(alert.severity)"
+                    >
+                      {{ alertMessage(alert) }}
+                    </div>
+                  }
+                </div>
+              } @else {
+                <p class="mt-4 text-sm text-[var(--driveos-text-secondary)]">
+                  {{ 'professionalMarketplace.analytics.quality.noAlerts' | translate }}
+                </p>
+              }
+            </article>
+          </div>
+        }
+
+        @if (activeTab() === 'finance') {
+          <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.invoicedAmount' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">
+                {{ formatMoney(advanced.invoicedAmount, advanced.invoicedCurrency) }}
+              </p>
+              <p
+                class="mt-2 text-xs"
+                [ngClass]="
+                  deltaTone(
+                    advanced.invoicedAmount,
+                    previousAnalytics()?.advanced?.invoicedAmount ?? null
+                  )
+                "
+              >
+                {{
+                  delta(
+                    advanced.invoicedAmount,
+                    previousAnalytics()?.advanced?.invoicedAmount ?? null
+                  )
+                }}
+                {{ 'professionalMarketplace.analytics.comparison.vsPrevious' | translate }}
+              </p>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.averageHourlyCost' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">
+                {{ formatMoney(advanced.averageHourlyCost, advanced.costCurrency) }}
+              </p>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.paymentDelay' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">
+                {{ formatHours(data.kpis.averagePaymentDelayHours) }}
+              </p>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <p class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.metrics.overdueInvoices' | translate }}
+              </p>
+              <p class="mt-2 text-3xl font-black">{{ advanced.overdueInvoices }}</p>
+            </article>
+          </div>
+          <div class="mt-5 grid gap-5 lg:grid-cols-2">
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <h2 class="text-lg font-black">
+                {{ 'professionalMarketplace.analytics.finance.invoices' | translate }}
+              </h2>
+              <dl class="mt-4 space-y-4 text-sm">
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.dashboard.kpis.pendingInvoices' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ data.kpis.pendingInvoices }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>{{ 'professionalMarketplace.dashboard.kpis.paidInvoices' | translate }}</dt>
+                  <dd class="font-black">{{ data.kpis.paidInvoices }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.dashboard.kpis.scheduledPayments' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ data.kpis.scheduledPayments }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.analytics.metrics.failedPayments' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ data.kpis.failedPayments }}</dd>
+                </div>
+              </dl>
+            </article>
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <h2 class="text-lg font-black">
+                {{ 'professionalMarketplace.analytics.finance.reading' | translate }}
+              </h2>
+              <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.analytics.finance.readingDescription' | translate }}
+              </p>
+            </article>
+          </div>
+        }
+      }
+    }
+  }
+</section>
+
+<drive-os-drawer
+  [open]="filterDrawerOpen()"
+  [title]="'professionalMarketplace.analytics.filters.title' | translate"
+  [description]="'professionalMarketplace.analytics.filters.description' | translate"
+  (closeRequested)="closeFilters()"
+>
+  <div class="space-y-5 p-1">
+    <div>
+      <p class="mb-2 text-sm font-bold">
+        {{ 'professionalMarketplace.analytics.filters.presets' | translate }}
+      </p>
+      <div class="grid grid-cols-3 gap-2">
+        <button
+          type="button"
+          class="rounded-xl border border-[var(--driveos-border)] px-3 py-2 text-sm font-bold hover:bg-[var(--driveos-surface-hover)]"
+          (click)="setPreset(30)"
+        >
+          30 j
+        </button>
+        <button
+          type="button"
+          class="rounded-xl border border-[var(--driveos-border)] px-3 py-2 text-sm font-bold hover:bg-[var(--driveos-surface-hover)]"
+          (click)="setPreset(90)"
+        >
+          90 j
+        </button>
+        <button
+          type="button"
+          class="rounded-xl border border-[var(--driveos-border)] px-3 py-2 text-sm font-bold hover:bg-[var(--driveos-surface-hover)]"
+          (click)="setPreset(365)"
+        >
+          1 an
+        </button>
+      </div>
+    </div>
+    <label class="block">
+      <span class="mb-2 block text-sm font-bold">
+        {{ 'professionalMarketplace.analytics.filters.from' | translate }}
+      </span>
+      <input
+        type="date"
+        class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5"
+        [ngModel]="draftFrom()"
+        (ngModelChange)="draftFrom.set($event)"
+      />
+    </label>
+    <label class="block">
+      <span class="mb-2 block text-sm font-bold">
+        {{ 'professionalMarketplace.analytics.filters.to' | translate }}
+      </span>
+      <input
+        type="date"
+        class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5"
+        [ngModel]="draftTo()"
+        (ngModelChange)="draftTo.set($event)"
+      />
+    </label>
+    @if (draftFrom() && draftTo() && draftFrom() > draftTo()) {
+      <drive-os-form-alert
+        tone="warning"
+        [title]="'professionalMarketplace.analytics.filters.invalidTitle' | translate"
+        [message]="'professionalMarketplace.analytics.filters.invalid' | translate"
+      />
+    }
+    <drive-os-form-alert
+      tone="info"
+      [title]="'professionalMarketplace.analytics.comparison.title' | translate"
+      [message]="'professionalMarketplace.analytics.comparison.help' | translate"
+    />
+    <div class="flex justify-end gap-2 border-t border-[var(--driveos-border)] pt-4">
+      <drive-os-button
+        variant="ghost"
+        (pressed)="closeFilters()"
+      >
+        {{ 'common.actions.cancel' | translate }}
+      </drive-os-button>
+      <drive-os-button
+        icon="check"
+        (pressed)="applyFilters()"
+      >
+        {{ 'professionalMarketplace.analytics.filters.apply' | translate }}
+      </drive-os-button>
+    </div>
+  </div>
+</drive-os-drawer>

@@ -1,0 +1,284 @@
+<section class="grid gap-4">
+  <div
+    class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"
+  >
+    <div>
+      <p class="text-xs font-bold uppercase text-[var(--driveos-text-tertiary)]">
+        {{ 'professionalMarketplace.compliance.globalStatus' | translate }}
+      </p>
+      <strong class="text-lg">{{ data()?.status || '—' }}</strong>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      @if (canManage()) {
+        <button
+          type="button"
+          class="rounded-lg border border-[var(--driveos-border)] px-3 py-2 text-xs font-bold"
+          (click)="openDocument()"
+        >
+          {{ 'professionalMarketplace.compliance.actions.addDocument' | translate }}
+        </button>
+        <button
+          type="button"
+          class="rounded-lg border border-[var(--driveos-border)] px-3 py-2 text-xs font-bold"
+          (click)="openCredential()"
+        >
+          {{ 'professionalMarketplace.compliance.actions.addCredential' | translate }}
+        </button>
+      }
+      @if (canVerify()) {
+        <button
+          type="button"
+          class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+          [disabled]="loading()"
+          (click)="reevaluate()"
+        >
+          {{ 'professionalMarketplace.compliance.actions.reevaluate' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+  @if (actionErrors().length) {
+    <div class="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+      @for (e of actionErrors(); track e) {
+        <div>{{ e }}</div>
+      }
+    </div>
+  }
+  <div class="grid gap-3">
+    <h3 class="font-extrabold">{{ 'professionalMarketplace.compliance.documents' | translate }}</h3>
+    @for (doc of data()?.documents || []; track doc.id) {
+      <article
+        class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"
+      >
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <strong>{{ doc.documentTypeCode }}</strong>
+            <p class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ doc.countryCode }} · {{ doc.documentReferenceId }}
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span
+              class="rounded-full px-2 py-1 text-[11px] font-bold"
+              [class]="badge(doc.status)"
+            >
+              {{ doc.status }}
+            </span>
+            @if (canVerify() && doc.status === 'PendingReview') {
+              <button
+                class="rounded-lg border px-3 py-1 text-xs font-bold"
+                (click)="reviewDocument(doc)"
+              >
+                {{ 'professionalMarketplace.compliance.actions.review' | translate }}
+              </button>
+            }
+          </div>
+        </div>
+        <div class="mt-3 grid grid-cols-3 gap-3 text-xs max-md:grid-cols-1">
+          <span>
+            {{ 'professionalMarketplace.compliance.issueDate' | translate }}:
+            {{ doc.issueDate || '—' }}
+          </span>
+          <span>
+            {{ 'professionalMarketplace.compliance.expirationDate' | translate }}:
+            {{ doc.expirationDate || '—' }}
+          </span>
+          <span>
+            {{ 'professionalMarketplace.compliance.mandatory' | translate }}:
+            {{ (doc.mandatory ? 'common.yes' : 'common.no') | translate }}
+          </span>
+        </div>
+        @if (doc.rejectionReason) {
+          <p class="mt-3 rounded-lg bg-red-50 p-2 text-xs text-red-800">
+            {{ doc.rejectionReason }}
+          </p>
+        }
+      </article>
+    } @empty {
+      <p class="text-sm text-[var(--driveos-text-secondary)]">
+        {{ 'professionalMarketplace.compliance.emptyDocuments' | translate }}
+      </p>
+    }
+  </div>
+  <div class="grid gap-3">
+    <h3 class="font-extrabold">
+      {{ 'professionalMarketplace.compliance.credentials' | translate }}
+    </h3>
+    @for (c of data()?.credentials || []; track c.id) {
+      <article
+        class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"
+      >
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <strong>{{ c.credentialTypeCode }}</strong>
+            <p class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ c.issuingAuthority }} · {{ c.referenceNumber || '—' }}
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span
+              class="rounded-full px-2 py-1 text-[11px] font-bold"
+              [class]="badge(c.status)"
+            >
+              {{ c.status }}
+            </span>
+            @if (canVerify() && c.status === 'PendingVerification') {
+              <button
+                class="rounded-lg border px-3 py-1 text-xs font-bold"
+                (click)="reviewCredential(c)"
+              >
+                {{ 'professionalMarketplace.compliance.actions.review' | translate }}
+              </button>
+            }
+          </div>
+        </div>
+        <p class="mt-3 text-xs">
+          {{ c.validFrom }} → {{ c.validUntil || '—' }} · {{ c.categoryCodes.join(', ') }}
+        </p>
+        @if (c.rejectionReason) {
+          <p class="mt-3 rounded-lg bg-red-50 p-2 text-xs text-red-800">{{ c.rejectionReason }}</p>
+        }
+      </article>
+    } @empty {
+      <p class="text-sm text-[var(--driveos-text-secondary)]">
+        {{ 'professionalMarketplace.compliance.emptyCredentials' | translate }}
+      </p>
+    }
+  </div>
+</section>
+<drive-os-drawer
+  [open]="drawer() !== null"
+  size="lg"
+  [title]="'professionalMarketplace.compliance.drawerTitle' | translate"
+  (closeRequested)="close()"
+>
+  <div class="grid gap-4 p-5">
+    @if (drawer() === 'document') {
+      <input
+        [(ngModel)]="documentReferenceId"
+        class="rounded-xl border bg-transparent px-3 py-2"
+        [placeholder]="'professionalMarketplace.compliance.documentReferenceId' | translate"
+      />
+      <input
+        [(ngModel)]="documentTypeCode"
+        class="rounded-xl border bg-transparent px-3 py-2"
+        [placeholder]="'professionalMarketplace.compliance.documentType' | translate"
+      />
+      <input
+        [(ngModel)]="countryCode"
+        class="rounded-xl border bg-transparent px-3 py-2"
+      />
+      <div class="grid grid-cols-2 gap-3">
+        <input
+          type="date"
+          [(ngModel)]="issueDate"
+          class="rounded-xl border bg-transparent px-3 py-2"
+        />
+        <input
+          type="date"
+          [(ngModel)]="expirationDate"
+          class="rounded-xl border bg-transparent px-3 py-2"
+        />
+      </div>
+      <label class="flex gap-2">
+        <input
+          type="checkbox"
+          [(ngModel)]="mandatory"
+        />
+        {{ 'professionalMarketplace.compliance.mandatory' | translate }}
+      </label>
+      <button
+        class="rounded-xl bg-blue-800 px-4 py-3 font-bold text-white"
+        [disabled]="loading()"
+        (click)="saveDocument()"
+      >
+        {{ 'common.actions.save' | translate }}
+      </button>
+    }
+    @if (drawer() === 'credential') {
+      <input
+        [(ngModel)]="credentialTypeCode"
+        class="rounded-xl border bg-transparent px-3 py-2"
+        [placeholder]="'professionalMarketplace.compliance.credentialType' | translate"
+      />
+      <input
+        [(ngModel)]="issuingAuthority"
+        class="rounded-xl border bg-transparent px-3 py-2"
+        [placeholder]="'professionalMarketplace.compliance.issuer' | translate"
+      />
+      <input
+        [(ngModel)]="referenceNumber"
+        class="rounded-xl border bg-transparent px-3 py-2"
+        [placeholder]="'professionalMarketplace.compliance.referenceNumber' | translate"
+      />
+      <div class="grid grid-cols-2 gap-3">
+        <input
+          type="date"
+          [(ngModel)]="validFrom"
+          class="rounded-xl border bg-transparent px-3 py-2"
+        />
+        <input
+          type="date"
+          [(ngModel)]="validUntil"
+          class="rounded-xl border bg-transparent px-3 py-2"
+        />
+      </div>
+      <input
+        [(ngModel)]="categoryCodes"
+        class="rounded-xl border bg-transparent px-3 py-2"
+        [placeholder]="'professionalMarketplace.compliance.categories' | translate"
+      />
+      <input
+        [(ngModel)]="evidenceDocumentId"
+        class="rounded-xl border bg-transparent px-3 py-2"
+        [placeholder]="'professionalMarketplace.compliance.evidenceDocumentId' | translate"
+      />
+      <button
+        class="rounded-xl bg-blue-800 px-4 py-3 font-bold text-white"
+        [disabled]="loading()"
+        (click)="saveCredential()"
+      >
+        {{ 'common.actions.save' | translate }}
+      </button>
+    }
+    @if (drawer() === 'documentReview' || drawer() === 'credentialReview') {
+      <div class="rounded-xl bg-[var(--driveos-surface-hover)] p-4 text-sm">
+        {{
+          drawer() === 'documentReview'
+            ? selectedDocument()?.documentTypeCode
+            : selectedCredential()?.credentialTypeCode
+        }}
+      </div>
+      @if (rejecting()) {
+        <textarea
+          [(ngModel)]="rejectionReason"
+          rows="4"
+          class="rounded-xl border bg-transparent p-3"
+          [placeholder]="'professionalMarketplace.compliance.rejectionReason' | translate"
+        ></textarea>
+        <button
+          class="rounded-xl bg-red-700 px-4 py-3 font-bold text-white"
+          (click)="drawer() === 'documentReview' ? rejectDocument() : rejectCredential()"
+        >
+          {{ 'professionalMarketplace.compliance.actions.confirmReject' | translate }}
+        </button>
+      } @else {
+        <div class="flex gap-2">
+          <button
+            class="flex-1 rounded-xl bg-emerald-700 px-4 py-3 font-bold text-white"
+            [disabled]="loading()"
+            (click)="drawer() === 'documentReview' ? approveDocument() : verifyCredential()"
+          >
+            {{ 'professionalMarketplace.compliance.actions.approve' | translate }}
+          </button>
+          <button
+            class="flex-1 rounded-xl border border-red-300 px-4 py-3 font-bold text-red-700"
+            (click)="rejecting.set(true)"
+          >
+            {{ 'professionalMarketplace.compliance.actions.reject' | translate }}
+          </button>
+        </div>
+      }
+    }
+  </div>
+</drive-os-drawer>

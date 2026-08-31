@@ -1,28 +1,630 @@
 <section class="driveos-page mx-auto max-w-[1600px]">
-  <div class="driveos-page-header"><div><p class="driveos-kicker">{{'exams.places.kicker'|translate}}</p><h2 class="driveos-page-title">{{'exams.places.title'|translate}}</h2><p class="driveos-page-subtitle">{{'exams.places.description'|translate}}</p></div></div>
+  <div class="driveos-page-header">
+    <div>
+      <p class="driveos-kicker">{{ 'exams.places.kicker' | translate }}</p>
+      <h2 class="driveos-page-title">{{ 'exams.places.title' | translate }}</h2>
+      <p class="driveos-page-subtitle">{{ 'exams.places.description' | translate }}</p>
+    </div>
+  </div>
   <nav class="mt-6 flex gap-2 overflow-x-auto border-b border-[var(--driveos-border)] pb-2">
-    <button type="button" [class]="'shrink-0 rounded-t-xl border-b-2 px-4 py-3 text-sm font-bold '+(activeTab()==='availability'?'border-blue-800 bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-200':'border-transparent text-[var(--driveos-text-secondary)]')" (click)="activeTab.set('availability')">{{'exams.places.tabs.availability'|translate}}</button>
-    @if(canWatch()){<button type="button" [class]="'shrink-0 rounded-t-xl border-b-2 px-4 py-3 text-sm font-bold '+(activeTab()==='watches'?'border-blue-800 bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-200':'border-transparent text-[var(--driveos-text-secondary)]')" (click)="activeTab.set('watches')">{{'exams.places.tabs.watches'|translate}}</button>}
-    @if(canProviders()){<button type="button" [class]="'shrink-0 rounded-t-xl border-b-2 px-4 py-3 text-sm font-bold '+(activeTab()==='providers'?'border-blue-800 bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-200':'border-transparent text-[var(--driveos-text-secondary)]')" (click)="activeTab.set('providers')">{{'exams.places.tabs.providers'|translate}}</button>}
+    <button
+      type="button"
+      [class]="
+        'shrink-0 rounded-t-xl border-b-2 px-4 py-3 text-sm font-bold ' +
+        (activeTab() === 'availability'
+          ? 'border-blue-800 bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-200'
+          : 'border-transparent text-[var(--driveos-text-secondary)]')
+      "
+      (click)="activeTab.set('availability')"
+    >
+      {{ 'exams.places.tabs.availability' | translate }}
+    </button>
+    @if (canWatch()) {
+      <button
+        type="button"
+        [class]="
+          'shrink-0 rounded-t-xl border-b-2 px-4 py-3 text-sm font-bold ' +
+          (activeTab() === 'watches'
+            ? 'border-blue-800 bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-200'
+            : 'border-transparent text-[var(--driveos-text-secondary)]')
+        "
+        (click)="activeTab.set('watches')"
+      >
+        {{ 'exams.places.tabs.watches' | translate }}
+      </button>
+    }
+    @if (canProviders()) {
+      <button
+        type="button"
+        [class]="
+          'shrink-0 rounded-t-xl border-b-2 px-4 py-3 text-sm font-bold ' +
+          (activeTab() === 'providers'
+            ? 'border-blue-800 bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-200'
+            : 'border-transparent text-[var(--driveos-text-secondary)]')
+        "
+        (click)="activeTab.set('providers')"
+      >
+        {{ 'exams.places.tabs.providers' | translate }}
+      </button>
+    }
   </nav>
-  @if(messages().length){<div class="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">@for(m of messages();track m){<p>{{m}}</p>}</div>}
-  @if(activeTab()==='availability'){
-    <div class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><div class="grid gap-3 md:grid-cols-4"><label class="grid gap-2 text-sm font-bold">{{'exams.places.from'|translate}}<input type="datetime-local" class="driveos-input" [(ngModel)]="fromUtc"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.to'|translate}}<input type="datetime-local" class="driveos-input" [(ngModel)]="toUtc"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.licenseCategory'|translate}}<input class="driveos-input" [(ngModel)]="licenseCategory"/></label><div class="flex items-end gap-2"><drive-os-button [loading]="loading()" (pressed)="loadAvailability()">{{'common.actions.refresh'|translate}}</drive-os-button>@if(canManage()){<drive-os-button variant="outline" (pressed)="open('center')">{{'exams.places.actions.center'|translate}}</drive-os-button><drive-os-button variant="outline" (pressed)="open('place')">{{'exams.places.actions.place'|translate}}</drive-os-button>}@if(canImport()){<drive-os-button variant="outline" (pressed)="open('sync')">{{'exams.places.actions.sync'|translate}}</drive-os-button><drive-os-button variant="outline" (pressed)="open('import')">{{'exams.places.actions.import'|translate}}</drive-os-button>}</div></div></div>
-    @if(places().length){<div class="mt-5 grid gap-4 lg:grid-cols-2 xl:grid-cols-3">@for(p of places();track p.id){<article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><div class="flex items-start justify-between gap-3"><div><strong>{{p.examType}} · {{p.licenseCategory}}</strong><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{p.startsAtUtc|date:'medium'}}</p></div><span class="rounded-full bg-[var(--driveos-surface-hover)] px-2.5 py-1 text-xs font-bold">{{p.status}}</span></div><p class="mt-4 text-xs text-[var(--driveos-text-secondary)]">{{p.id}}</p></article>}</div>}@else if(!loading()){<div class="mt-5"><drive-os-empty-state icon="ph ph-calendar-x" [title]="'exams.places.empty'|translate"/></div>}
+  @if (messages().length) {
+    <div class="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+      @for (m of messages(); track m) {
+        <p>{{ m }}</p>
+      }
+    </div>
   }
-  @if(activeTab()==='watches' && canWatch()){
-    <div class="mt-5 flex justify-end"><drive-os-button icon="ph ph-plus" (pressed)="open('watch')">{{'exams.places.actions.watch'|translate}}</drive-os-button></div>
-    <div class="mt-4 grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px]"><div class="space-y-3">@for(w of watches();track w.id){<article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><div class="flex flex-wrap items-start justify-between gap-3"><button type="button" class="text-left" (click)="selectWatch(w.id)"><strong>{{w.providerCode}} · {{w.examCategory||'—'}}</strong><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{w.windowFromUtc|date:'short'}} → {{w.windowToUtc|date:'short'}}</p></button><span class="rounded-full bg-[var(--driveos-surface-hover)] px-2.5 py-1 text-xs font-bold">{{w.status}}</span></div><div class="mt-4 flex flex-wrap gap-2"><drive-os-button size="sm" variant="outline" (pressed)="watchAction(w.id,'scan')">{{'exams.places.scan'|translate}}</drive-os-button>@if(w.status==='Active'){<drive-os-button size="sm" variant="outline" (pressed)="watchAction(w.id,'pause')">{{'exams.places.pause'|translate}}</drive-os-button>}@else{<drive-os-button size="sm" variant="outline" (pressed)="watchAction(w.id,'resume')">{{'exams.places.resume'|translate}}</drive-os-button>}</div></article>}</div><aside class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h3 class="font-black">{{'exams.places.scans'|translate}}</h3>@if(scans().length){<div class="mt-4 space-y-3">@for(s of scans();track s.id){<div class="rounded-xl bg-[var(--driveos-surface-hover)] p-4 text-sm"><div class="flex justify-between gap-2"><strong>{{s.isSuccess?('common.success'|translate):('common.error'|translate)}}</strong><span>{{s.startedAtUtc|date:'short'}}</span></div><p class="mt-2">{{s.externalSlotsRead}} / +{{s.newAvailabilitiesDetected}}</p></div>}</div>}@else{<p class="mt-4 text-sm text-[var(--driveos-text-secondary)]">{{'exams.places.noScans'|translate}}</p>}</aside></div>
+  @if (activeTab() === 'availability') {
+    <div
+      class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+    >
+      <div class="grid gap-3 md:grid-cols-4">
+        <label class="grid gap-2 text-sm font-bold">
+          {{ 'exams.places.from' | translate }}
+          <input
+            type="datetime-local"
+            class="driveos-input"
+            [(ngModel)]="fromUtc"
+          />
+        </label>
+        <label class="grid gap-2 text-sm font-bold">
+          {{ 'exams.places.to' | translate }}
+          <input
+            type="datetime-local"
+            class="driveos-input"
+            [(ngModel)]="toUtc"
+          />
+        </label>
+        <label class="grid gap-2 text-sm font-bold">
+          {{ 'exams.places.licenseCategory' | translate }}
+          <input
+            class="driveos-input"
+            [(ngModel)]="licenseCategory"
+          />
+        </label>
+        <div class="flex items-end gap-2">
+          <drive-os-button
+            [loading]="loading()"
+            (pressed)="loadAvailability()"
+          >
+            {{ 'common.actions.refresh' | translate }}
+          </drive-os-button>
+          @if (canManage()) {
+            <drive-os-button
+              variant="outline"
+              (pressed)="open('center')"
+            >
+              {{ 'exams.places.actions.center' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              variant="outline"
+              (pressed)="open('place')"
+            >
+              {{ 'exams.places.actions.place' | translate }}
+            </drive-os-button>
+          }
+          @if (canImport()) {
+            <drive-os-button
+              variant="outline"
+              (pressed)="open('sync')"
+            >
+              {{ 'exams.places.actions.sync' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              variant="outline"
+              (pressed)="open('import')"
+            >
+              {{ 'exams.places.actions.import' | translate }}
+            </drive-os-button>
+          }
+        </div>
+      </div>
+    </div>
+    @if (places().length) {
+      <div class="mt-5 grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+        @for (p of places(); track p.id) {
+          <article
+            class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <strong>{{ p.examType }} · {{ p.licenseCategory }}</strong>
+                <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                  {{ p.startsAtUtc | date: 'medium' }}
+                </p>
+              </div>
+              <span
+                class="rounded-full bg-[var(--driveos-surface-hover)] px-2.5 py-1 text-xs font-bold"
+              >
+                {{ p.status }}
+              </span>
+            </div>
+            <p class="mt-4 text-xs text-[var(--driveos-text-secondary)]">{{ p.id }}</p>
+          </article>
+        }
+      </div>
+    } @else if (!loading()) {
+      <div class="mt-5">
+        <drive-os-empty-state
+          icon="ph ph-calendar-x"
+          [title]="'exams.places.empty' | translate"
+        />
+      </div>
+    }
   }
-  @if(activeTab()==='providers' && canProviders()){
-    <div class="mt-5 flex justify-end"><drive-os-button icon="ph ph-plugs-connected" (pressed)="open('connection')">{{'exams.places.actions.connection'|translate}}</drive-os-button></div><div class="mt-4 grid gap-5 xl:grid-cols-2"><div><h3 class="mb-3 font-black">{{'exams.places.providerCatalog'|translate}}</h3><div class="space-y-3">@for(p of providers();track p.code){<article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><div class="flex justify-between gap-3"><strong>{{p.code}}</strong><span class="text-xs font-bold">{{p.connectionStatus||'—'}}</span></div><p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{p.countryCode}} · {{p.kind}}</p></article>}</div></div><div><h3 class="mb-3 font-black">{{'exams.places.connections'|translate}}</h3><div class="space-y-3">@for(c of connections();track c.id){<article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><div class="flex justify-between gap-3"><div><strong>{{c.displayName}}</strong><p class="text-sm text-[var(--driveos-text-secondary)]">{{c.providerCode}} · {{c.authenticationMode}}</p></div><span class="text-xs font-bold">{{c.status}}</span></div><div class="mt-4 flex flex-wrap gap-2"><drive-os-button size="sm" variant="outline" (pressed)="connectionAction(c.id,'test')">{{'exams.places.test'|translate}}</drive-os-button><drive-os-button size="sm" variant="outline" (pressed)="connectionAction(c.id,'suspend')">{{'exams.places.suspend'|translate}}</drive-os-button><drive-os-button size="sm" variant="outline" (pressed)="connectionAction(c.id,'revoke')">{{'exams.places.revoke'|translate}}</drive-os-button></div></article>}</div></div></div>
+  @if (activeTab() === 'watches' && canWatch()) {
+    <div class="mt-5 flex justify-end">
+      <drive-os-button
+        icon="ph ph-plus"
+        (pressed)="open('watch')"
+      >
+        {{ 'exams.places.actions.watch' | translate }}
+      </drive-os-button>
+    </div>
+    <div class="mt-4 grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px]">
+      <div class="space-y-3">
+        @for (w of watches(); track w.id) {
+          <article
+            class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+          >
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <button
+                type="button"
+                class="text-left"
+                (click)="selectWatch(w.id)"
+              >
+                <strong>{{ w.providerCode }} · {{ w.examCategory || '—' }}</strong>
+                <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                  {{ w.windowFromUtc | date: 'short' }} → {{ w.windowToUtc | date: 'short' }}
+                </p>
+              </button>
+              <span
+                class="rounded-full bg-[var(--driveos-surface-hover)] px-2.5 py-1 text-xs font-bold"
+              >
+                {{ w.status }}
+              </span>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <drive-os-button
+                size="sm"
+                variant="outline"
+                (pressed)="watchAction(w.id, 'scan')"
+              >
+                {{ 'exams.places.scan' | translate }}
+              </drive-os-button>
+              @if (w.status === 'Active') {
+                <drive-os-button
+                  size="sm"
+                  variant="outline"
+                  (pressed)="watchAction(w.id, 'pause')"
+                >
+                  {{ 'exams.places.pause' | translate }}
+                </drive-os-button>
+              } @else {
+                <drive-os-button
+                  size="sm"
+                  variant="outline"
+                  (pressed)="watchAction(w.id, 'resume')"
+                >
+                  {{ 'exams.places.resume' | translate }}
+                </drive-os-button>
+              }
+            </div>
+          </article>
+        }
+      </div>
+      <aside
+        class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
+        <h3 class="font-black">{{ 'exams.places.scans' | translate }}</h3>
+        @if (scans().length) {
+          <div class="mt-4 space-y-3">
+            @for (s of scans(); track s.id) {
+              <div class="rounded-xl bg-[var(--driveos-surface-hover)] p-4 text-sm">
+                <div class="flex justify-between gap-2">
+                  <strong>
+                    {{
+                      s.isSuccess ? ('common.success' | translate) : ('common.error' | translate)
+                    }}
+                  </strong>
+                  <span>{{ s.startedAtUtc | date: 'short' }}</span>
+                </div>
+                <p class="mt-2">{{ s.externalSlotsRead }} / +{{ s.newAvailabilitiesDetected }}</p>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="mt-4 text-sm text-[var(--driveos-text-secondary)]">
+            {{ 'exams.places.noScans' | translate }}
+          </p>
+        }
+      </aside>
+    </div>
   }
-  <drive-os-drawer [open]="drawerMode()!==null" [title]="'exams.places.drawerTitle'|translate" size="lg" (closeRequested)="close()"><div class="space-y-4 p-5">
-    @if(drawerMode()==='center'){<div class="grid gap-4 md:grid-cols-2"><label class="grid gap-2 text-sm font-bold">{{'exams.places.name'|translate}}<input class="driveos-input" [(ngModel)]="centerForm.name"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.country'|translate}}<input class="driveos-input" [(ngModel)]="centerForm.countryCode"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.timeZone'|translate}}<input class="driveos-input" [(ngModel)]="centerForm.timeZoneId"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.area'|translate}}<input class="driveos-input" [(ngModel)]="centerForm.administrativeAreaCode"/></label></div><label class="grid gap-2 text-sm font-bold">{{'exams.places.address'|translate}}<input class="driveos-input" [(ngModel)]="centerForm.address"/></label><div class="flex justify-end"><drive-os-button [loading]="saving()" (pressed)="createCenter()">{{'common.actions.create'|translate}}</drive-os-button></div>}
-    @if(drawerMode()==='place'){<div class="grid gap-4 md:grid-cols-2"><label class="grid gap-2 text-sm font-bold">{{'exams.places.center'|translate}}<select class="driveos-input" [(ngModel)]="placeForm.examCenterId"><option value=""></option>@for(c of centers();track c.id){<option [value]="c.id">{{c.name}}</option>}</select></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.examType'|translate}}<input class="driveos-input" [(ngModel)]="placeForm.examType"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.licenseCategory'|translate}}<input class="driveos-input" [(ngModel)]="placeForm.licenseCategory"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.provider'|translate}}<input class="driveos-input" [(ngModel)]="placeForm.providerCode"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.from'|translate}}<input type="datetime-local" class="driveos-input" [(ngModel)]="placeForm.startsAtUtc"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.to'|translate}}<input type="datetime-local" class="driveos-input" [(ngModel)]="placeForm.endsAtUtc"/></label></div><div class="flex justify-end"><drive-os-button [loading]="saving()" (pressed)="createPlace()">{{'common.actions.create'|translate}}</drive-os-button></div>}
-    @if(drawerMode()==='watch'){<div class="grid gap-4 md:grid-cols-2"><label class="grid gap-2 text-sm font-bold">{{'exams.places.provider'|translate}}<input class="driveos-input" [(ngModel)]="watchForm.providerCode"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.country'|translate}}<input class="driveos-input" [(ngModel)]="watchForm.countryCode"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.from'|translate}}<input type="datetime-local" class="driveos-input" [(ngModel)]="watchForm.windowFromUtc"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.to'|translate}}<input type="datetime-local" class="driveos-input" [(ngModel)]="watchForm.windowToUtc"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.licenseCategory'|translate}}<input class="driveos-input" [(ngModel)]="watchForm.examCategory"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.interval'|translate}}<input type="number" class="driveos-input" [(ngModel)]="watchForm.checkIntervalMinutes"/></label></div><div class="flex justify-end"><drive-os-button [loading]="saving()" (pressed)="createWatch()">{{'common.actions.create'|translate}}</drive-os-button></div>}
-    @if(drawerMode()==='sync'){<div class="grid gap-4 md:grid-cols-2"><label class="grid gap-2 text-sm font-bold">{{'exams.places.provider'|translate}}<input class="driveos-input" [(ngModel)]="syncForm.providerCode"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.country'|translate}}<input class="driveos-input" [(ngModel)]="syncForm.countryCode"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.from'|translate}}<input type="datetime-local" class="driveos-input" [(ngModel)]="syncForm.fromUtc"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.to'|translate}}<input type="datetime-local" class="driveos-input" [(ngModel)]="syncForm.toUtc"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.licenseCategory'|translate}}<input class="driveos-input" [(ngModel)]="syncForm.examCategory"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.area'|translate}}<input class="driveos-input" [(ngModel)]="syncForm.administrativeAreaCode"/></label></div><div class="flex justify-end"><drive-os-button [loading]="saving()" (pressed)="synchronizePlaces()">{{'exams.places.actions.sync'|translate}}</drive-os-button></div>}
-    @if(drawerMode()==='import'){<label class="grid gap-2 text-sm font-bold">{{'exams.places.provider'|translate}}<input class="driveos-input" [(ngModel)]="importProviderCode"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.importRows'|translate}}<textarea rows="14" class="driveos-input font-mono text-xs" [(ngModel)]="importRowsJson"></textarea></label><p class="text-xs text-[var(--driveos-text-secondary)]">{{'exams.places.importHint'|translate}}</p><div class="flex justify-end"><drive-os-button [loading]="saving()" (pressed)="importPlaces()">{{'exams.places.actions.import'|translate}}</drive-os-button></div>}
-    @if(drawerMode()==='connection'){<div class="grid gap-4 md:grid-cols-2"><label class="grid gap-2 text-sm font-bold">{{'exams.places.provider'|translate}}<input class="driveos-input" [(ngModel)]="connectionForm.providerCode"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.displayName'|translate}}<input class="driveos-input" [(ngModel)]="connectionForm.displayName"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.country'|translate}}<input class="driveos-input" [(ngModel)]="connectionForm.countryCode"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.places.authMode'|translate}}<input class="driveos-input" [(ngModel)]="connectionForm.authenticationMode"/></label><label class="grid gap-2 text-sm font-bold md:col-span-2">{{'exams.places.baseUrl'|translate}}<input class="driveos-input" [(ngModel)]="connectionForm.baseUrl"/></label><label class="grid gap-2 text-sm font-bold md:col-span-2">{{'exams.places.credentialReference'|translate}}<input class="driveos-input" [(ngModel)]="connectionForm.credentialReference"/></label></div><div class="flex justify-end"><drive-os-button [loading]="saving()" (pressed)="createConnection()">{{'common.actions.create'|translate}}</drive-os-button></div>}
-  </div></drive-os-drawer>
+  @if (activeTab() === 'providers' && canProviders()) {
+    <div class="mt-5 flex justify-end">
+      <drive-os-button
+        icon="ph ph-plugs-connected"
+        (pressed)="open('connection')"
+      >
+        {{ 'exams.places.actions.connection' | translate }}
+      </drive-os-button>
+    </div>
+    <div class="mt-4 grid gap-5 xl:grid-cols-2">
+      <div>
+        <h3 class="mb-3 font-black">{{ 'exams.places.providerCatalog' | translate }}</h3>
+        <div class="space-y-3">
+          @for (p of providers(); track p.code) {
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <div class="flex justify-between gap-3">
+                <strong>{{ p.code }}</strong>
+                <span class="text-xs font-bold">{{ p.connectionStatus || '—' }}</span>
+              </div>
+              <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+                {{ p.countryCode }} · {{ p.kind }}
+              </p>
+            </article>
+          }
+        </div>
+      </div>
+      <div>
+        <h3 class="mb-3 font-black">{{ 'exams.places.connections' | translate }}</h3>
+        <div class="space-y-3">
+          @for (c of connections(); track c.id) {
+            <article
+              class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            >
+              <div class="flex justify-between gap-3">
+                <div>
+                  <strong>{{ c.displayName }}</strong>
+                  <p class="text-sm text-[var(--driveos-text-secondary)]">
+                    {{ c.providerCode }} · {{ c.authenticationMode }}
+                  </p>
+                </div>
+                <span class="text-xs font-bold">{{ c.status }}</span>
+              </div>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <drive-os-button
+                  size="sm"
+                  variant="outline"
+                  (pressed)="connectionAction(c.id, 'test')"
+                >
+                  {{ 'exams.places.test' | translate }}
+                </drive-os-button>
+                <drive-os-button
+                  size="sm"
+                  variant="outline"
+                  (pressed)="connectionAction(c.id, 'suspend')"
+                >
+                  {{ 'exams.places.suspend' | translate }}
+                </drive-os-button>
+                <drive-os-button
+                  size="sm"
+                  variant="outline"
+                  (pressed)="connectionAction(c.id, 'revoke')"
+                >
+                  {{ 'exams.places.revoke' | translate }}
+                </drive-os-button>
+              </div>
+            </article>
+          }
+        </div>
+      </div>
+    </div>
+  }
+  <drive-os-drawer
+    [open]="drawerMode() !== null"
+    [title]="'exams.places.drawerTitle' | translate"
+    size="lg"
+    (closeRequested)="close()"
+  >
+    <div class="space-y-4 p-5">
+      @if (drawerMode() === 'center') {
+        <div class="grid gap-4 md:grid-cols-2">
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.name' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="centerForm.name"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.country' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="centerForm.countryCode"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.timeZone' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="centerForm.timeZoneId"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.area' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="centerForm.administrativeAreaCode"
+            />
+          </label>
+        </div>
+        <label class="grid gap-2 text-sm font-bold">
+          {{ 'exams.places.address' | translate }}
+          <input
+            class="driveos-input"
+            [(ngModel)]="centerForm.address"
+          />
+        </label>
+        <div class="flex justify-end">
+          <drive-os-button
+            [loading]="saving()"
+            (pressed)="createCenter()"
+          >
+            {{ 'common.actions.create' | translate }}
+          </drive-os-button>
+        </div>
+      }
+      @if (drawerMode() === 'place') {
+        <div class="grid gap-4 md:grid-cols-2">
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.center' | translate }}
+            <select
+              class="driveos-input"
+              [(ngModel)]="placeForm.examCenterId"
+            >
+              <option value=""></option>
+              @for (c of centers(); track c.id) {
+                <option [value]="c.id">{{ c.name }}</option>
+              }
+            </select>
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.examType' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="placeForm.examType"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.licenseCategory' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="placeForm.licenseCategory"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.provider' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="placeForm.providerCode"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.from' | translate }}
+            <input
+              type="datetime-local"
+              class="driveos-input"
+              [(ngModel)]="placeForm.startsAtUtc"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.to' | translate }}
+            <input
+              type="datetime-local"
+              class="driveos-input"
+              [(ngModel)]="placeForm.endsAtUtc"
+            />
+          </label>
+        </div>
+        <div class="flex justify-end">
+          <drive-os-button
+            [loading]="saving()"
+            (pressed)="createPlace()"
+          >
+            {{ 'common.actions.create' | translate }}
+          </drive-os-button>
+        </div>
+      }
+      @if (drawerMode() === 'watch') {
+        <div class="grid gap-4 md:grid-cols-2">
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.provider' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="watchForm.providerCode"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.country' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="watchForm.countryCode"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.from' | translate }}
+            <input
+              type="datetime-local"
+              class="driveos-input"
+              [(ngModel)]="watchForm.windowFromUtc"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.to' | translate }}
+            <input
+              type="datetime-local"
+              class="driveos-input"
+              [(ngModel)]="watchForm.windowToUtc"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.licenseCategory' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="watchForm.examCategory"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.interval' | translate }}
+            <input
+              type="number"
+              class="driveos-input"
+              [(ngModel)]="watchForm.checkIntervalMinutes"
+            />
+          </label>
+        </div>
+        <div class="flex justify-end">
+          <drive-os-button
+            [loading]="saving()"
+            (pressed)="createWatch()"
+          >
+            {{ 'common.actions.create' | translate }}
+          </drive-os-button>
+        </div>
+      }
+      @if (drawerMode() === 'sync') {
+        <div class="grid gap-4 md:grid-cols-2">
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.provider' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="syncForm.providerCode"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.country' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="syncForm.countryCode"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.from' | translate }}
+            <input
+              type="datetime-local"
+              class="driveos-input"
+              [(ngModel)]="syncForm.fromUtc"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.to' | translate }}
+            <input
+              type="datetime-local"
+              class="driveos-input"
+              [(ngModel)]="syncForm.toUtc"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.licenseCategory' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="syncForm.examCategory"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.area' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="syncForm.administrativeAreaCode"
+            />
+          </label>
+        </div>
+        <div class="flex justify-end">
+          <drive-os-button
+            [loading]="saving()"
+            (pressed)="synchronizePlaces()"
+          >
+            {{ 'exams.places.actions.sync' | translate }}
+          </drive-os-button>
+        </div>
+      }
+      @if (drawerMode() === 'import') {
+        <label class="grid gap-2 text-sm font-bold">
+          {{ 'exams.places.provider' | translate }}
+          <input
+            class="driveos-input"
+            [(ngModel)]="importProviderCode"
+          />
+        </label>
+        <label class="grid gap-2 text-sm font-bold">
+          {{ 'exams.places.importRows' | translate }}
+          <textarea
+            rows="14"
+            class="driveos-input font-mono text-xs"
+            [(ngModel)]="importRowsJson"
+          ></textarea>
+        </label>
+        <p class="text-xs text-[var(--driveos-text-secondary)]">
+          {{ 'exams.places.importHint' | translate }}
+        </p>
+        <div class="flex justify-end">
+          <drive-os-button
+            [loading]="saving()"
+            (pressed)="importPlaces()"
+          >
+            {{ 'exams.places.actions.import' | translate }}
+          </drive-os-button>
+        </div>
+      }
+      @if (drawerMode() === 'connection') {
+        <div class="grid gap-4 md:grid-cols-2">
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.provider' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="connectionForm.providerCode"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.displayName' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="connectionForm.displayName"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.country' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="connectionForm.countryCode"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.places.authMode' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="connectionForm.authenticationMode"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold md:col-span-2">
+            {{ 'exams.places.baseUrl' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="connectionForm.baseUrl"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold md:col-span-2">
+            {{ 'exams.places.credentialReference' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="connectionForm.credentialReference"
+            />
+          </label>
+        </div>
+        <div class="flex justify-end">
+          <drive-os-button
+            [loading]="saving()"
+            (pressed)="createConnection()"
+          >
+            {{ 'common.actions.create' | translate }}
+          </drive-os-button>
+        </div>
+      }
+    </div>
+  </drive-os-drawer>
 </section>

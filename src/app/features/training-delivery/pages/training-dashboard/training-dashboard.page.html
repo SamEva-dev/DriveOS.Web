@@ -4,7 +4,9 @@
       <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-orange-600">
         {{ 'training.dashboard.kicker' | translate }}
       </p>
-      <h2 class="mt-1 text-2xl font-black tracking-tight text-[var(--driveos-text-primary)] sm:text-3xl">
+      <h2
+        class="mt-1 text-2xl font-black tracking-tight text-[var(--driveos-text-primary)] sm:text-3xl"
+      >
         {{ 'training.dashboard.title' | translate }}
       </h2>
       <p class="mt-2 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">
@@ -12,13 +14,23 @@
       </p>
     </div>
 
-    <drive-os-button variant="secondary" icon="arrows-clockwise" [disabled]="loading()" (pressed)="load()">
+    <drive-os-button
+      variant="secondary"
+      icon="arrows-clockwise"
+      [disabled]="loading()"
+      (pressed)="load()"
+    >
       {{ 'training.actions.refresh' | translate }}
     </drive-os-button>
   </div>
 
   @if (translatedErrors().length) {
-    <drive-os-state-banner class="mt-5" tone="danger" icon="ph ph-warning-circle" [title]="'training.dashboard.loadError' | translate">
+    <drive-os-state-banner
+      class="mt-5"
+      tone="danger"
+      icon="ph ph-warning-circle"
+      [title]="'training.dashboard.loadError' | translate"
+    >
       <div class="space-y-1">
         @for (message of translatedErrors(); track message) {
           <p>{{ message }}</p>
@@ -59,18 +71,29 @@
               [class.bg-blue-50]="kpi.emphasis === 'primary'"
               [class.text-blue-800]="kpi.emphasis === 'primary'"
             >
-              <i [class]="kpi.icon + ' text-xl'" aria-hidden="true"></i>
+              <i
+                [class]="kpi.icon + ' text-xl'"
+                aria-hidden="true"
+              ></i>
             </span>
-            <i class="ph ph-arrow-up-right text-sm text-[var(--driveos-text-tertiary)] transition group-hover:text-blue-800"></i>
+            <i
+              class="ph ph-arrow-up-right text-sm text-[var(--driveos-text-tertiary)] transition group-hover:text-blue-800"
+            ></i>
           </div>
           <strong class="mt-4 block text-3xl font-black text-[var(--driveos-text-primary)]">
-            @if (kpi.value !== null) { {{ kpi.value }} } @else { — }
+            @if (kpi.value !== null) {
+              {{ kpi.value }}
+            } @else {
+              —
+            }
           </strong>
           <span class="mt-1 block text-sm font-semibold text-[var(--driveos-text-secondary)]">
             {{ kpi.labelKey | translate }}
           </span>
           @if (kpi.kind === 'syncFailures' && kpi.value === null) {
-            <span class="mt-2 inline-flex rounded-full bg-slate-100 px-2 py-1 text-[0.68rem] font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+            <span
+              class="mt-2 inline-flex rounded-full bg-slate-100 px-2 py-1 text-[0.68rem] font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+            >
               {{ 'training.dashboard.kpis.notAvailableYet' | translate }}
             </span>
           }
@@ -78,15 +101,23 @@
       }
     </div>
 
-    <div class="mt-6 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-1 shadow-sm">
-      <div class="flex gap-1 overflow-x-auto" role="tablist" [attr.aria-label]="'training.dashboard.tabs.navigation' | translate">
+    <div
+      class="mt-6 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-1 shadow-sm"
+    >
+      <div
+        class="flex gap-1 overflow-x-auto"
+        role="tablist"
+        [attr.aria-label]="'training.dashboard.tabs.navigation' | translate"
+      >
         <button
           type="button"
           role="tab"
           [attr.aria-selected]="activeTab() === 'operations'"
-          [class]="activeTab() === 'operations'
-            ? 'flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-blue-800 px-4 text-sm font-bold text-white transition'
-            : 'flex min-h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-sm font-bold text-[var(--driveos-text-secondary)] transition hover:bg-[var(--driveos-surface-hover)]'"
+          [class]="
+            activeTab() === 'operations'
+              ? 'flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-blue-800 px-4 text-sm font-bold text-white transition'
+              : 'flex min-h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-sm font-bold text-[var(--driveos-text-secondary)] transition hover:bg-[var(--driveos-surface-hover)]'
+          "
           (click)="setTab('operations')"
         >
           <i class="ph ph-activity"></i>
@@ -96,15 +127,19 @@
           type="button"
           role="tab"
           [attr.aria-selected]="activeTab() === 'attention'"
-          [class]="activeTab() === 'attention'
-            ? 'flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-blue-800 px-4 text-sm font-bold text-white transition'
-            : 'flex min-h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-sm font-bold text-[var(--driveos-text-secondary)] transition hover:bg-[var(--driveos-surface-hover)]'"
+          [class]="
+            activeTab() === 'attention'
+              ? 'flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-blue-800 px-4 text-sm font-bold text-white transition'
+              : 'flex min-h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-sm font-bold text-[var(--driveos-text-secondary)] transition hover:bg-[var(--driveos-surface-hover)]'
+          "
           (click)="setTab('attention')"
         >
           <i class="ph ph-warning-diamond"></i>
           {{ 'training.dashboard.tabs.attention' | translate }}
           @if (attentionSessions().length + criticalIncidents().length > 0) {
-            <span class="rounded-full bg-orange-500 px-2 py-0.5 text-[0.68rem] font-black text-white">
+            <span
+              class="rounded-full bg-orange-500 px-2 py-0.5 text-[0.68rem] font-black text-white"
+            >
               {{ attentionSessions().length + criticalIncidents().length }}
             </span>
           }
@@ -113,9 +148,11 @@
           type="button"
           role="tab"
           [attr.aria-selected]="activeTab() === 'quality'"
-          [class]="activeTab() === 'quality'
-            ? 'flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-blue-800 px-4 text-sm font-bold text-white transition'
-            : 'flex min-h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-sm font-bold text-[var(--driveos-text-secondary)] transition hover:bg-[var(--driveos-surface-hover)]'"
+          [class]="
+            activeTab() === 'quality'
+              ? 'flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-blue-800 px-4 text-sm font-bold text-white transition'
+              : 'flex min-h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-sm font-bold text-[var(--driveos-text-secondary)] transition hover:bg-[var(--driveos-surface-hover)]'
+          "
           (click)="setTab('quality')"
         >
           <i class="ph ph-chart-line-up"></i>
@@ -126,11 +163,19 @@
 
     @if (activeTab() === 'operations') {
       <div class="mt-5 grid gap-5 2xl:grid-cols-[minmax(0,1.45fr)_minmax(22rem,0.75fr)]">
-        <section class="overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm">
-          <header class="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--driveos-border)] px-5 py-4">
+        <section
+          class="overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"
+        >
+          <header
+            class="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--driveos-border)] px-5 py-4"
+          >
             <div>
-              <h3 class="text-lg font-black text-[var(--driveos-text-primary)]">{{ 'training.dashboard.today.title' | translate }}</h3>
-              <p class="text-sm text-[var(--driveos-text-secondary)]">{{ 'training.dashboard.today.description' | translate }}</p>
+              <h3 class="text-lg font-black text-[var(--driveos-text-primary)]">
+                {{ 'training.dashboard.today.title' | translate }}
+              </h3>
+              <p class="text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'training.dashboard.today.description' | translate }}
+              </p>
             </div>
             <span class="text-xs font-bold text-[var(--driveos-text-tertiary)]">
               {{ dashboard.generatedAtUtc | date: 'HH:mm' }}
@@ -149,38 +194,57 @@
                     <strong class="block text-base font-black text-blue-800 dark:text-blue-300">
                       {{ session.plannedStartAtUtc | date: 'HH:mm' }}
                     </strong>
-                    <span class="text-xs text-[var(--driveos-text-tertiary)]">{{ session.plannedEndAtUtc | date: 'HH:mm' }}</span>
+                    <span class="text-xs text-[var(--driveos-text-tertiary)]">
+                      {{ session.plannedEndAtUtc | date: 'HH:mm' }}
+                    </span>
                   </div>
                   <div class="min-w-0">
                     <div class="flex flex-wrap items-center gap-2">
-                      <p class="truncate font-bold text-[var(--driveos-text-primary)]">{{ session.studentDisplayName }}</p>
+                      <p class="truncate font-bold text-[var(--driveos-text-primary)]">
+                        {{ session.studentDisplayName }}
+                      </p>
                       @if (session.hasCriticalIncident) {
-                        <span class="rounded-full bg-red-100 px-2 py-0.5 text-[0.68rem] font-black text-red-700 dark:bg-red-950/40 dark:text-red-300">
+                        <span
+                          class="rounded-full bg-red-100 px-2 py-0.5 text-[0.68rem] font-black text-red-700 dark:bg-red-950/40 dark:text-red-300"
+                        >
                           {{ 'training.dashboard.flags.criticalIncident' | translate }}
                         </span>
                       } @else if (session.hasOpenIncident) {
-                        <span class="rounded-full bg-orange-100 px-2 py-0.5 text-[0.68rem] font-black text-orange-700 dark:bg-orange-950/40 dark:text-orange-300">
+                        <span
+                          class="rounded-full bg-orange-100 px-2 py-0.5 text-[0.68rem] font-black text-orange-700 dark:bg-orange-950/40 dark:text-orange-300"
+                        >
                           {{ 'training.dashboard.flags.incident' | translate }}
                         </span>
                       }
                     </div>
                     <p class="mt-1 truncate text-xs text-[var(--driveos-text-secondary)]">
-                      {{ session.trainingCategory || ('training.dashboard.session.categoryFallback' | translate) }}
-                      @if (session.meetingPoint) { · {{ session.meetingPoint }} }
+                      {{
+                        session.trainingCategory ||
+                          ('training.dashboard.session.categoryFallback' | translate)
+                      }}
+                      @if (session.meetingPoint) {
+                        · {{ session.meetingPoint }}
+                      }
                     </p>
                   </div>
                   <div class="flex flex-wrap items-center justify-end gap-2">
                     @if (isLateStart(session)) {
-                      <span class="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
+                      <span
+                        class="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-800 dark:bg-amber-950/40 dark:text-amber-200"
+                      >
                         {{ 'training.dashboard.flags.lateStart' | translate }}
                       </span>
                     }
                     @if (isMissingReport(session)) {
-                      <span class="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-bold text-orange-800 dark:bg-orange-950/40 dark:text-orange-200">
+                      <span
+                        class="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-bold text-orange-800 dark:bg-orange-950/40 dark:text-orange-200"
+                      >
                         {{ 'training.dashboard.flags.missingReport' | translate }}
                       </span>
                     }
-                    <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                    <span
+                      class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                    >
                       {{ statusKey(session.status) | translate }}
                     </span>
                   </div>
@@ -197,13 +261,23 @@
           }
         </section>
 
-        <section class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm">
+        <section
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm"
+        >
           <div class="flex items-start justify-between gap-3">
             <div>
-              <h3 class="font-black text-[var(--driveos-text-primary)]">{{ 'training.dashboard.incidents.title' | translate }}</h3>
-              <p class="text-sm text-[var(--driveos-text-secondary)]">{{ 'training.dashboard.incidents.description' | translate }}</p>
+              <h3 class="font-black text-[var(--driveos-text-primary)]">
+                {{ 'training.dashboard.incidents.title' | translate }}
+              </h3>
+              <p class="text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'training.dashboard.incidents.description' | translate }}
+              </p>
             </div>
-            <button type="button" class="text-sm font-bold text-blue-800 hover:underline dark:text-blue-300" (click)="openKpi('openIncidents')">
+            <button
+              type="button"
+              class="text-sm font-bold text-blue-800 hover:underline dark:text-blue-300"
+              (click)="openKpi('openIncidents')"
+            >
               {{ 'training.actions.viewAll' | translate }}
             </button>
           </div>
@@ -220,10 +294,18 @@
                 >
                   <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
-                      <p class="truncate text-sm font-black text-[var(--driveos-text-primary)]">{{ incident.studentDisplayName }}</p>
-                      <p class="mt-1 line-clamp-2 text-xs leading-5 text-[var(--driveos-text-secondary)]">{{ incident.description }}</p>
+                      <p class="truncate text-sm font-black text-[var(--driveos-text-primary)]">
+                        {{ incident.studentDisplayName }}
+                      </p>
+                      <p
+                        class="mt-1 line-clamp-2 text-xs leading-5 text-[var(--driveos-text-secondary)]"
+                      >
+                        {{ incident.description }}
+                      </p>
                     </div>
-                    <span class="shrink-0 rounded-full bg-white/70 px-2 py-1 text-[0.68rem] font-black text-[var(--driveos-text-secondary)] dark:bg-slate-900/50">
+                    <span
+                      class="shrink-0 rounded-full bg-white/70 px-2 py-1 text-[0.68rem] font-black text-[var(--driveos-text-secondary)] dark:bg-slate-900/50"
+                    >
                       {{ incidentSeverityKey(incident.severity) | translate }}
                     </span>
                   </div>
@@ -231,8 +313,11 @@
               }
             </div>
           } @else {
-            <div class="mt-5 rounded-xl bg-emerald-50 p-4 text-sm font-semibold text-emerald-800 dark:bg-emerald-950/25 dark:text-emerald-200">
-              <i class="ph ph-check-circle mr-2"></i>{{ 'training.dashboard.incidents.empty' | translate }}
+            <div
+              class="mt-5 rounded-xl bg-emerald-50 p-4 text-sm font-semibold text-emerald-800 dark:bg-emerald-950/25 dark:text-emerald-200"
+            >
+              <i class="ph ph-check-circle mr-2"></i>
+              {{ 'training.dashboard.incidents.empty' | translate }}
             </div>
           }
         </section>
@@ -241,23 +326,63 @@
 
     @if (activeTab() === 'attention') {
       <div class="mt-5 grid gap-5 xl:grid-cols-2">
-        <section class="overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm">
+        <section
+          class="overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"
+        >
           <header class="border-b border-[var(--driveos-border)] px-5 py-4">
-            <h3 class="font-black text-[var(--driveos-text-primary)]">{{ 'training.dashboard.attention.sessionsTitle' | translate }}</h3>
-            <p class="text-sm text-[var(--driveos-text-secondary)]">{{ 'training.dashboard.attention.sessionsDescription' | translate }}</p>
+            <h3 class="font-black text-[var(--driveos-text-primary)]">
+              {{ 'training.dashboard.attention.sessionsTitle' | translate }}
+            </h3>
+            <p class="text-sm text-[var(--driveos-text-secondary)]">
+              {{ 'training.dashboard.attention.sessionsDescription' | translate }}
+            </p>
           </header>
           @if (attentionSessions().length) {
             <div class="divide-y divide-[var(--driveos-border)]">
               @for (session of attentionSessions(); track session.id) {
-                <button type="button" class="flex w-full items-start justify-between gap-4 px-5 py-4 text-left hover:bg-[var(--driveos-surface-hover)]" (click)="openSession(session)">
+                <button
+                  type="button"
+                  class="flex w-full items-start justify-between gap-4 px-5 py-4 text-left hover:bg-[var(--driveos-surface-hover)]"
+                  (click)="openSession(session)"
+                >
                   <div class="min-w-0">
-                    <p class="font-bold text-[var(--driveos-text-primary)]">{{ session.studentDisplayName }}</p>
-                    <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">{{ session.plannedStartAtUtc | date: 'HH:mm' }}–{{ session.plannedEndAtUtc | date: 'HH:mm' }}</p>
+                    <p class="font-bold text-[var(--driveos-text-primary)]">
+                      {{ session.studentDisplayName }}
+                    </p>
+                    <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                      {{ session.plannedStartAtUtc | date: 'HH:mm' }}–{{
+                        session.plannedEndAtUtc | date: 'HH:mm'
+                      }}
+                    </p>
                     <div class="mt-2 flex flex-wrap gap-1.5">
-                      @if (isLateStart(session)) { <span class="rounded-full bg-amber-100 px-2 py-1 text-[0.68rem] font-bold text-amber-800">{{ 'training.dashboard.flags.lateStart' | translate }}</span> }
-                      @if (isMissingReport(session)) { <span class="rounded-full bg-orange-100 px-2 py-1 text-[0.68rem] font-bold text-orange-800">{{ 'training.dashboard.flags.missingReport' | translate }}</span> }
-                      @if (hasDurationVariance(session)) { <span class="rounded-full bg-violet-100 px-2 py-1 text-[0.68rem] font-bold text-violet-800">{{ 'training.dashboard.flags.durationVariance' | translate }}</span> }
-                      @if (session.hasOpenIncident) { <span class="rounded-full bg-red-100 px-2 py-1 text-[0.68rem] font-bold text-red-800">{{ 'training.dashboard.flags.incident' | translate }}</span> }
+                      @if (isLateStart(session)) {
+                        <span
+                          class="rounded-full bg-amber-100 px-2 py-1 text-[0.68rem] font-bold text-amber-800"
+                        >
+                          {{ 'training.dashboard.flags.lateStart' | translate }}
+                        </span>
+                      }
+                      @if (isMissingReport(session)) {
+                        <span
+                          class="rounded-full bg-orange-100 px-2 py-1 text-[0.68rem] font-bold text-orange-800"
+                        >
+                          {{ 'training.dashboard.flags.missingReport' | translate }}
+                        </span>
+                      }
+                      @if (hasDurationVariance(session)) {
+                        <span
+                          class="rounded-full bg-violet-100 px-2 py-1 text-[0.68rem] font-bold text-violet-800"
+                        >
+                          {{ 'training.dashboard.flags.durationVariance' | translate }}
+                        </span>
+                      }
+                      @if (session.hasOpenIncident) {
+                        <span
+                          class="rounded-full bg-red-100 px-2 py-1 text-[0.68rem] font-bold text-red-800"
+                        >
+                          {{ 'training.dashboard.flags.incident' | translate }}
+                        </span>
+                      }
                     </div>
                   </div>
                   <i class="ph ph-caret-right mt-1 text-[var(--driveos-text-tertiary)]"></i>
@@ -265,30 +390,58 @@
               }
             </div>
           } @else {
-            <drive-os-empty-state class="block p-7" icon="ph-duotone ph-check-circle" [title]="'training.dashboard.attention.empty' | translate" [description]="'training.dashboard.attention.emptyDescription' | translate" />
+            <drive-os-empty-state
+              class="block p-7"
+              icon="ph-duotone ph-check-circle"
+              [title]="'training.dashboard.attention.empty' | translate"
+              [description]="'training.dashboard.attention.emptyDescription' | translate"
+            />
           }
         </section>
 
-        <section class="overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm">
+        <section
+          class="overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] shadow-sm"
+        >
           <header class="border-b border-[var(--driveos-border)] px-5 py-4">
-            <h3 class="font-black text-[var(--driveos-text-primary)]">{{ 'training.dashboard.attention.incidentsTitle' | translate }}</h3>
-            <p class="text-sm text-[var(--driveos-text-secondary)]">{{ 'training.dashboard.attention.incidentsDescription' | translate }}</p>
+            <h3 class="font-black text-[var(--driveos-text-primary)]">
+              {{ 'training.dashboard.attention.incidentsTitle' | translate }}
+            </h3>
+            <p class="text-sm text-[var(--driveos-text-secondary)]">
+              {{ 'training.dashboard.attention.incidentsDescription' | translate }}
+            </p>
           </header>
           @if (criticalIncidents().length) {
             <div class="divide-y divide-[var(--driveos-border)]">
               @for (incident of criticalIncidents(); track incident.id) {
                 <article class="px-5 py-4">
                   <div class="flex items-center justify-between gap-3">
-                    <p class="font-black text-red-800 dark:text-red-300">{{ incident.studentDisplayName }}</p>
-                    <span class="rounded-full bg-red-100 px-2 py-1 text-[0.68rem] font-black text-red-800 dark:bg-red-950/40 dark:text-red-200">{{ incidentSeverityKey(incident.severity) | translate }}</span>
+                    <p class="font-black text-red-800 dark:text-red-300">
+                      {{ incident.studentDisplayName }}
+                    </p>
+                    <span
+                      class="rounded-full bg-red-100 px-2 py-1 text-[0.68rem] font-black text-red-800 dark:bg-red-950/40 dark:text-red-200"
+                    >
+                      {{ incidentSeverityKey(incident.severity) | translate }}
+                    </span>
                   </div>
-                  <p class="mt-2 text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ incident.description }}</p>
-                  <p class="mt-2 text-xs font-semibold text-[var(--driveos-text-tertiary)]">{{ incident.occurredAtUtc | date: 'dd/MM/yyyy HH:mm' }}</p>
+                  <p class="mt-2 text-sm leading-6 text-[var(--driveos-text-secondary)]">
+                    {{ incident.description }}
+                  </p>
+                  <p class="mt-2 text-xs font-semibold text-[var(--driveos-text-tertiary)]">
+                    {{ incident.occurredAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+                  </p>
                 </article>
               }
             </div>
           } @else {
-            <drive-os-empty-state class="block p-7" icon="ph-duotone ph-shield-check" [title]="'training.dashboard.attention.noCriticalIncident' | translate" [description]="'training.dashboard.attention.noCriticalIncidentDescription' | translate" />
+            <drive-os-empty-state
+              class="block p-7"
+              icon="ph-duotone ph-shield-check"
+              [title]="'training.dashboard.attention.noCriticalIncident' | translate"
+              [description]="
+                'training.dashboard.attention.noCriticalIncidentDescription' | translate
+              "
+            />
           }
         </section>
       </div>
@@ -296,27 +449,69 @@
 
     @if (activeTab() === 'quality') {
       <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm">
-          <span class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]">{{ 'training.dashboard.quality.reportCompletion' | translate }}</span>
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm"
+        >
+          <span
+            class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]"
+          >
+            {{ 'training.dashboard.quality.reportCompletion' | translate }}
+          </span>
           <strong class="mt-3 block text-3xl font-black text-[var(--driveos-text-primary)]">
-            @if (reportCompletionRate() !== null) { {{ reportCompletionRate() | number: '1.0-0' }}% } @else { — }
+            @if (reportCompletionRate() !== null) {
+              {{ reportCompletionRate() | number: '1.0-0' }}%
+            } @else {
+              —
+            }
           </strong>
-          <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{ 'training.dashboard.quality.reportCompletionDescription' | translate }}</p>
+          <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+            {{ 'training.dashboard.quality.reportCompletionDescription' | translate }}
+          </p>
         </article>
-        <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm">
-          <span class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]">{{ 'training.dashboard.quality.withoutObjectives' | translate }}</span>
-          <strong class="mt-3 block text-3xl font-black text-[var(--driveos-text-primary)]">{{ completedWithoutObjectives() }}</strong>
-          <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{ 'training.dashboard.quality.withoutObjectivesDescription' | translate }}</p>
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm"
+        >
+          <span
+            class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]"
+          >
+            {{ 'training.dashboard.quality.withoutObjectives' | translate }}
+          </span>
+          <strong class="mt-3 block text-3xl font-black text-[var(--driveos-text-primary)]">
+            {{ completedWithoutObjectives() }}
+          </strong>
+          <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+            {{ 'training.dashboard.quality.withoutObjectivesDescription' | translate }}
+          </p>
         </article>
-        <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm">
-          <span class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]">{{ 'training.dashboard.quality.withoutAssessments' | translate }}</span>
-          <strong class="mt-3 block text-3xl font-black text-[var(--driveos-text-primary)]">{{ completedWithoutAssessments() }}</strong>
-          <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{ 'training.dashboard.quality.withoutAssessmentsDescription' | translate }}</p>
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm"
+        >
+          <span
+            class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]"
+          >
+            {{ 'training.dashboard.quality.withoutAssessments' | translate }}
+          </span>
+          <strong class="mt-3 block text-3xl font-black text-[var(--driveos-text-primary)]">
+            {{ completedWithoutAssessments() }}
+          </strong>
+          <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+            {{ 'training.dashboard.quality.withoutAssessmentsDescription' | translate }}
+          </p>
         </article>
-        <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm">
-          <span class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]">{{ 'training.dashboard.quality.durationVariances' | translate }}</span>
-          <strong class="mt-3 block text-3xl font-black text-[var(--driveos-text-primary)]">{{ durationVariances() }}</strong>
-          <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{ 'training.dashboard.quality.durationVariancesDescription' | translate }}</p>
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5 shadow-sm"
+        >
+          <span
+            class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]"
+          >
+            {{ 'training.dashboard.quality.durationVariances' | translate }}
+          </span>
+          <strong class="mt-3 block text-3xl font-black text-[var(--driveos-text-primary)]">
+            {{ durationVariances() }}
+          </strong>
+          <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+            {{ 'training.dashboard.quality.durationVariancesDescription' | translate }}
+          </p>
         </article>
       </div>
     }
@@ -336,47 +531,107 @@
         <div class="rounded-2xl bg-blue-50 p-5 dark:bg-blue-950/25">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p class="text-xs font-extrabold uppercase tracking-wider text-blue-700 dark:text-blue-300">{{ 'training.dashboard.drawerSession.student' | translate }}</p>
-              <h3 class="mt-1 text-xl font-black text-slate-950 dark:text-white">{{ session.studentDisplayName }}</h3>
-              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">{{ session.plannedStartAtUtc | date: 'dd/MM/yyyy HH:mm' }}–{{ session.plannedEndAtUtc | date: 'HH:mm' }}</p>
+              <p
+                class="text-xs font-extrabold uppercase tracking-wider text-blue-700 dark:text-blue-300"
+              >
+                {{ 'training.dashboard.drawerSession.student' | translate }}
+              </p>
+              <h3 class="mt-1 text-xl font-black text-slate-950 dark:text-white">
+                {{ session.studentDisplayName }}
+              </h3>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                {{ session.plannedStartAtUtc | date: 'dd/MM/yyyy HH:mm' }}–{{
+                  session.plannedEndAtUtc | date: 'HH:mm'
+                }}
+              </p>
             </div>
-            <span class="rounded-full bg-white px-3 py-1.5 text-xs font-black text-blue-800 shadow-sm dark:bg-slate-900 dark:text-blue-200">{{ statusKey(session.status) | translate }}</span>
+            <span
+              class="rounded-full bg-white px-3 py-1.5 text-xs font-black text-blue-800 shadow-sm dark:bg-slate-900 dark:text-blue-200"
+            >
+              {{ statusKey(session.status) | translate }}
+            </span>
           </div>
         </div>
 
         <div class="grid gap-3 sm:grid-cols-2">
           <div class="rounded-xl border border-[var(--driveos-border)] p-4">
-            <span class="text-xs font-bold text-[var(--driveos-text-tertiary)]">{{ 'training.dashboard.drawerSession.category' | translate }}</span>
-            <p class="mt-1 font-bold text-[var(--driveos-text-primary)]">{{ session.trainingCategory || '—' }}</p>
+            <span class="text-xs font-bold text-[var(--driveos-text-tertiary)]">
+              {{ 'training.dashboard.drawerSession.category' | translate }}
+            </span>
+            <p class="mt-1 font-bold text-[var(--driveos-text-primary)]">
+              {{ session.trainingCategory || '—' }}
+            </p>
           </div>
           <div class="rounded-xl border border-[var(--driveos-border)] p-4">
-            <span class="text-xs font-bold text-[var(--driveos-text-tertiary)]">{{ 'training.dashboard.drawerSession.attendance' | translate }}</span>
-            <p class="mt-1 font-bold text-[var(--driveos-text-primary)]">{{ attendanceKey(session.attendanceStatus) | translate }}</p>
+            <span class="text-xs font-bold text-[var(--driveos-text-tertiary)]">
+              {{ 'training.dashboard.drawerSession.attendance' | translate }}
+            </span>
+            <p class="mt-1 font-bold text-[var(--driveos-text-primary)]">
+              {{ attendanceKey(session.attendanceStatus) | translate }}
+            </p>
           </div>
           <div class="rounded-xl border border-[var(--driveos-border)] p-4">
-            <span class="text-xs font-bold text-[var(--driveos-text-tertiary)]">{{ 'training.dashboard.drawerSession.plannedDuration' | translate }}</span>
-            <p class="mt-1 font-bold text-[var(--driveos-text-primary)]">{{ plannedDurationMinutes(session) }} min</p>
+            <span class="text-xs font-bold text-[var(--driveos-text-tertiary)]">
+              {{ 'training.dashboard.drawerSession.plannedDuration' | translate }}
+            </span>
+            <p class="mt-1 font-bold text-[var(--driveos-text-primary)]">
+              {{ plannedDurationMinutes(session) }} min
+            </p>
           </div>
           <div class="rounded-xl border border-[var(--driveos-border)] p-4">
-            <span class="text-xs font-bold text-[var(--driveos-text-tertiary)]">{{ 'training.dashboard.drawerSession.actualDuration' | translate }}</span>
-            <p class="mt-1 font-bold text-[var(--driveos-text-primary)]">@if (session.deliveredDurationMinutes !== null) { {{ session.deliveredDurationMinutes }} min } @else { — }</p>
+            <span class="text-xs font-bold text-[var(--driveos-text-tertiary)]">
+              {{ 'training.dashboard.drawerSession.actualDuration' | translate }}
+            </span>
+            <p class="mt-1 font-bold text-[var(--driveos-text-primary)]">
+              @if (session.deliveredDurationMinutes !== null) {
+                {{ session.deliveredDurationMinutes }} min
+              } @else {
+                —
+              }
+            </p>
           </div>
         </div>
 
         <section class="rounded-2xl border border-[var(--driveos-border)] p-5">
-          <h4 class="font-black text-[var(--driveos-text-primary)]">{{ 'training.dashboard.drawerSession.objectives' | translate }}</h4>
-          <p class="mt-2 whitespace-pre-line text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ session.objectives || ('training.dashboard.drawerSession.noObjectives' | translate) }}</p>
+          <h4 class="font-black text-[var(--driveos-text-primary)]">
+            {{ 'training.dashboard.drawerSession.objectives' | translate }}
+          </h4>
+          <p
+            class="mt-2 whitespace-pre-line text-sm leading-6 text-[var(--driveos-text-secondary)]"
+          >
+            {{
+              session.objectives || ('training.dashboard.drawerSession.noObjectives' | translate)
+            }}
+          </p>
         </section>
 
         <div class="grid gap-2">
           @if (session.hasOpenIncident) {
-            <div class="rounded-xl bg-red-50 p-3 text-sm font-semibold text-red-800 dark:bg-red-950/25 dark:text-red-200"><i class="ph ph-warning-octagon mr-2"></i>{{ 'training.dashboard.drawerSession.openIncident' | translate }}</div>
+            <div
+              class="rounded-xl bg-red-50 p-3 text-sm font-semibold text-red-800 dark:bg-red-950/25 dark:text-red-200"
+            >
+              <i class="ph ph-warning-octagon mr-2"></i>
+              {{ 'training.dashboard.drawerSession.openIncident' | translate }}
+            </div>
           }
           @if (isMissingReport(session)) {
-            <div class="rounded-xl bg-orange-50 p-3 text-sm font-semibold text-orange-800 dark:bg-orange-950/25 dark:text-orange-200"><i class="ph ph-clipboard-text mr-2"></i>{{ 'training.dashboard.drawerSession.missingReport' | translate }}</div>
+            <div
+              class="rounded-xl bg-orange-50 p-3 text-sm font-semibold text-orange-800 dark:bg-orange-950/25 dark:text-orange-200"
+            >
+              <i class="ph ph-clipboard-text mr-2"></i>
+              {{ 'training.dashboard.drawerSession.missingReport' | translate }}
+            </div>
           }
           @if (hasDurationVariance(session)) {
-            <div class="rounded-xl bg-violet-50 p-3 text-sm font-semibold text-violet-800 dark:bg-violet-950/25 dark:text-violet-200"><i class="ph ph-timer mr-2"></i>{{ 'training.dashboard.drawerSession.durationVariance' | translate: { minutes: durationDifferenceMinutes(session) } }}</div>
+            <div
+              class="rounded-xl bg-violet-50 p-3 text-sm font-semibold text-violet-800 dark:bg-violet-950/25 dark:text-violet-200"
+            >
+              <i class="ph ph-timer mr-2"></i>
+              {{
+                'training.dashboard.drawerSession.durationVariance'
+                  | translate: { minutes: durationDifferenceMinutes(session) }
+              }}
+            </div>
           }
         </div>
       </div>
@@ -387,41 +642,84 @@
             <article class="rounded-2xl border border-[var(--driveos-border)] p-4">
               <div class="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p class="font-black text-[var(--driveos-text-primary)]">{{ incident.studentDisplayName }}</p>
-                  <p class="mt-1 text-xs text-[var(--driveos-text-tertiary)]">{{ incident.occurredAtUtc | date: 'dd/MM/yyyy HH:mm' }}</p>
+                  <p class="font-black text-[var(--driveos-text-primary)]">
+                    {{ incident.studentDisplayName }}
+                  </p>
+                  <p class="mt-1 text-xs text-[var(--driveos-text-tertiary)]">
+                    {{ incident.occurredAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+                  </p>
                 </div>
-                <span class="rounded-full bg-red-100 px-2.5 py-1 text-xs font-black text-red-800 dark:bg-red-950/40 dark:text-red-200">{{ incidentSeverityKey(incident.severity) | translate }}</span>
+                <span
+                  class="rounded-full bg-red-100 px-2.5 py-1 text-xs font-black text-red-800 dark:bg-red-950/40 dark:text-red-200"
+                >
+                  {{ incidentSeverityKey(incident.severity) | translate }}
+                </span>
               </div>
-              <p class="mt-3 text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ incident.description }}</p>
-              <p class="mt-3 text-xs font-bold text-[var(--driveos-text-tertiary)]">{{ incidentStatusKey(incident.status) | translate }}</p>
+              <p class="mt-3 text-sm leading-6 text-[var(--driveos-text-secondary)]">
+                {{ incident.description }}
+              </p>
+              <p class="mt-3 text-xs font-bold text-[var(--driveos-text-tertiary)]">
+                {{ incidentStatusKey(incident.status) | translate }}
+              </p>
             </article>
           }
         </div>
       } @else {
-        <drive-os-empty-state icon="ph-duotone ph-shield-check" [title]="'training.dashboard.incidents.empty' | translate" [description]="'training.dashboard.incidents.emptyDescription' | translate" />
+        <drive-os-empty-state
+          icon="ph-duotone ph-shield-check"
+          [title]="'training.dashboard.incidents.empty' | translate"
+          [description]="'training.dashboard.incidents.emptyDescription' | translate"
+        />
       }
     } @else if (drawerKind() === 'syncFailures') {
-      <drive-os-empty-state icon="ph-duotone ph-cloud-arrow-up" [title]="'training.dashboard.sync.pendingTitle' | translate" [description]="'training.dashboard.sync.pendingDescription' | translate" />
+      <drive-os-empty-state
+        icon="ph-duotone ph-cloud-arrow-up"
+        [title]="'training.dashboard.sync.pendingTitle' | translate"
+        [description]="'training.dashboard.sync.pendingDescription' | translate"
+      />
     } @else {
       @if (drawerSessions().length) {
         <div class="space-y-2">
           @for (session of drawerSessions(); track session.id) {
-            <button type="button" class="flex w-full items-center justify-between gap-4 rounded-xl border border-[var(--driveos-border)] p-4 text-left transition hover:bg-[var(--driveos-surface-hover)]" (click)="openSession(session)">
+            <button
+              type="button"
+              class="flex w-full items-center justify-between gap-4 rounded-xl border border-[var(--driveos-border)] p-4 text-left transition hover:bg-[var(--driveos-surface-hover)]"
+              (click)="openSession(session)"
+            >
               <div class="min-w-0">
-                <p class="truncate font-bold text-[var(--driveos-text-primary)]">{{ session.studentDisplayName }}</p>
-                <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">{{ session.plannedStartAtUtc | date: 'HH:mm' }}–{{ session.plannedEndAtUtc | date: 'HH:mm' }} · {{ statusKey(session.status) | translate }}</p>
+                <p class="truncate font-bold text-[var(--driveos-text-primary)]">
+                  {{ session.studentDisplayName }}
+                </p>
+                <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                  {{ session.plannedStartAtUtc | date: 'HH:mm' }}–{{
+                    session.plannedEndAtUtc | date: 'HH:mm'
+                  }}
+                  · {{ statusKey(session.status) | translate }}
+                </p>
               </div>
               <i class="ph ph-caret-right text-[var(--driveos-text-tertiary)]"></i>
             </button>
           }
         </div>
       } @else {
-        <drive-os-empty-state icon="ph-duotone ph-check-circle" [title]="'training.dashboard.drawers.empty' | translate" [description]="'training.dashboard.drawers.emptyDescription' | translate" />
+        <drive-os-empty-state
+          icon="ph-duotone ph-check-circle"
+          [title]="'training.dashboard.drawers.empty' | translate"
+          [description]="'training.dashboard.drawers.emptyDescription' | translate"
+        />
       }
     }
   </div>
 
-  <div driveOsDrawerFooter class="flex justify-end">
-    <drive-os-button variant="secondary" (pressed)="closeDrawer()">{{ 'training.actions.close' | translate }}</drive-os-button>
+  <div
+    driveOsDrawerFooter
+    class="flex justify-end"
+  >
+    <drive-os-button
+      variant="secondary"
+      (pressed)="closeDrawer()"
+    >
+      {{ 'training.actions.close' | translate }}
+    </drive-os-button>
   </div>
 </drive-os-drawer>

@@ -1,0 +1,373 @@
+<section class="grid gap-4">
+  <header class="flex flex-wrap items-center justify-between gap-3">
+    <nav class="flex gap-1 rounded-lg border border-[var(--driveos-border)] p-1">
+      <button
+        class="rounded-md px-3 py-2 text-xs font-bold"
+        [class.bg-blue-800]="activeTab() === 'reputation'"
+        [class.text-white]="activeTab() === 'reputation'"
+        (click)="activeTab.set('reputation')"
+      >
+        {{ 'professionalMarketplace.reviews.tabs.reputation' | translate }}
+      </button>
+      @if (canModerate()) {
+        <button
+          class="rounded-md px-3 py-2 text-xs font-bold"
+          [class.bg-blue-800]="activeTab() === 'moderation'"
+          [class.text-white]="activeTab() === 'moderation'"
+          (click)="activeTab.set('moderation')"
+        >
+          {{ 'professionalMarketplace.reviews.tabs.moderation' | translate }}
+        </button>
+      }
+    </nav>
+    <div class="flex gap-2">
+      @if (canCreate() && completedEngagements().length) {
+        <button
+          class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+          (click)="openCreate()"
+        >
+          <i class="ph ph-star"></i>
+          {{ 'professionalMarketplace.reviews.actions.create' | translate }}
+        </button>
+      }
+      <button
+        class="rounded-lg border px-3 py-2 text-xs font-bold"
+        [disabled]="loading()"
+        (click)="load()"
+      >
+        <i class="ph ph-arrows-clockwise"></i>
+      </button>
+    </div>
+  </header>
+  @if (messages().length) {
+    <div class="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+      @for (m of messages(); track m) {
+        <p>{{ m }}</p>
+      }
+    </div>
+  }
+  @if (activeTab() === 'reputation' && reputation(); as rep) {
+    <section class="grid grid-cols-5 gap-3 max-xl:grid-cols-3 max-md:grid-cols-2">
+      <article class="col-span-1 rounded-xl border bg-[var(--driveos-surface-card)] p-4">
+        <div class="text-3xl font-black">{{ rep.averageScore }}</div>
+        <div class="text-xs text-[var(--driveos-text-secondary)]">
+          {{ rep.reviewCount }} {{ 'professionalMarketplace.reviews.reviewCount' | translate }}
+        </div>
+      </article>
+      @for (
+        metric of [
+          { k: 'reliability', v: rep.reliabilityAverage },
+          { k: 'pedagogy', v: rep.pedagogyAverage },
+          { k: 'communication', v: rep.communicationAverage },
+          { k: 'punctuality', v: rep.punctualityAverage },
+        ];
+        track metric.k
+      ) {
+        <article class="rounded-xl border bg-[var(--driveos-surface-card)] p-4">
+          <div class="text-xs text-[var(--driveos-text-secondary)]">
+            {{ 'professionalMarketplace.reviews.metrics.' + metric.k | translate }}
+          </div>
+          <strong class="text-xl">{{ metric.v }} / 5</strong>
+        </article>
+      }
+    </section>
+    <section class="grid gap-3">
+      @for (r of rep.reviews; track r.id) {
+        <article class="rounded-xl border bg-[var(--driveos-surface-card)] p-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="flex gap-1">
+                @for (on of stars(r.overallScore); track $index) {
+                  <i
+                    class="ph-fill ph-star"
+                    [class.text-amber-500]="on"
+                    [class.text-slate-300]="!on"
+                  ></i>
+                }
+              </div>
+              <div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                {{ r.createdAtUtc | date: 'mediumDate' }} · {{ r.overallScore }}/5
+              </div>
+            </div>
+            <div class="flex gap-2">
+              @if (canRespond()) {
+                <button
+                  class="rounded-lg border px-2 py-1 text-xs font-bold"
+                  (click)="openRespond(r)"
+                >
+                  {{ 'professionalMarketplace.reviews.actions.respond' | translate }}
+                </button>
+              }
+              @if (canReport()) {
+                <button
+                  class="rounded-lg border border-amber-300 px-2 py-1 text-xs font-bold text-amber-800"
+                  (click)="openReport(r)"
+                >
+                  {{ 'professionalMarketplace.reviews.actions.report' | translate }}
+                </button>
+              }
+            </div>
+          </div>
+          @if (r.comment) {
+            <p class="mt-3 text-sm">{{ r.comment }}</p>
+          }
+          @if (r.professionalResponse) {
+            <div class="mt-3 rounded-lg bg-blue-50 p-3 text-sm">
+              <strong>
+                {{ 'professionalMarketplace.reviews.professionalResponse' | translate }}
+              </strong>
+              <p class="mt-1">{{ r.professionalResponse }}</p>
+            </div>
+          }
+        </article>
+      } @empty {
+        <div
+          class="rounded-xl border border-dashed p-8 text-center text-sm text-[var(--driveos-text-secondary)]"
+        >
+          {{ 'professionalMarketplace.reviews.empty' | translate }}
+        </div>
+      }
+    </section>
+  }
+  @if (activeTab() === 'moderation' && moderation(); as mod) {
+    <section class="grid gap-3">
+      @for (r of mod.reviews; track r.id) {
+        <article class="rounded-xl border bg-[var(--driveos-surface-card)] p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="font-extrabold">{{ r.overallScore }} / 5 · {{ r.status }}</div>
+              <div class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ r.createdAtUtc | date: 'medium' }} · {{ r.reports.length }}
+                {{ 'professionalMarketplace.reviews.reports' | translate }}
+              </div>
+            </div>
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="openModerate(r)"
+            >
+              {{ 'professionalMarketplace.reviews.actions.moderate' | translate }}
+            </button>
+          </div>
+          @if (r.moderationReason) {
+            <p class="mt-2 rounded-lg bg-amber-50 p-2 text-xs">{{ r.moderationReason }}</p>
+          }
+        </article>
+      } @empty {
+        <div
+          class="rounded-xl border border-dashed p-8 text-center text-sm text-[var(--driveos-text-secondary)]"
+        >
+          {{ 'professionalMarketplace.reviews.emptyModeration' | translate }}
+        </div>
+      }
+    </section>
+  }
+</section>
+
+<drive-os-drawer
+  [open]="drawerOpen()"
+  [title]="'professionalMarketplace.reviews.drawer.' + drawerMode() | translate"
+  size="md"
+  (closeRequested)="close()"
+>
+  <div class="grid gap-4 p-5">
+    @if (drawerMode() === 'create') {
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'professionalMarketplace.reviews.fields.engagement' | translate }}
+        <select
+          class="rounded-lg border px-3 py-2 text-sm"
+          [(ngModel)]="engagementId"
+        >
+          @for (e of completedEngagements(); track e.id) {
+            <option [value]="e.id">
+              {{ e.terms.startsOn }} → {{ e.terms.endsOn }} · {{ e.status }}
+            </option>
+          }
+        </select>
+      </label>
+      <div class="grid grid-cols-2 gap-3">
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.reviews.metrics.overall' | translate }}
+          <select
+            class="rounded-lg border px-3 py-2"
+            [(ngModel)]="overall"
+          >
+            @for (n of [1, 2, 3, 4, 5]; track n) {
+              <option [ngValue]="n">{{ n }} / 5</option>
+            }
+          </select>
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.reviews.metrics.reliability' | translate }}
+          <select
+            class="rounded-lg border px-3 py-2"
+            [(ngModel)]="reliability"
+          >
+            @for (n of [1, 2, 3, 4, 5]; track n) {
+              <option [ngValue]="n">{{ n }} / 5</option>
+            }
+          </select>
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.reviews.metrics.pedagogy' | translate }}
+          <select
+            class="rounded-lg border px-3 py-2"
+            [(ngModel)]="pedagogy"
+          >
+            @for (n of [1, 2, 3, 4, 5]; track n) {
+              <option [ngValue]="n">{{ n }} / 5</option>
+            }
+          </select>
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.reviews.metrics.communication' | translate }}
+          <select
+            class="rounded-lg border px-3 py-2"
+            [(ngModel)]="communication"
+          >
+            @for (n of [1, 2, 3, 4, 5]; track n) {
+              <option [ngValue]="n">{{ n }} / 5</option>
+            }
+          </select>
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.reviews.metrics.punctuality' | translate }}
+          <select
+            class="rounded-lg border px-3 py-2"
+            [(ngModel)]="punctuality"
+          >
+            @for (n of [1, 2, 3, 4, 5]; track n) {
+              <option [ngValue]="n">{{ n }} / 5</option>
+            }
+          </select>
+        </label>
+      </div>
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'professionalMarketplace.reviews.fields.comment' | translate }}
+        <textarea
+          class="min-h-28 rounded-lg border px-3 py-2 text-sm"
+          [(ngModel)]="comment"
+        ></textarea>
+      </label>
+    }
+    @if (drawerMode() === 'respond') {
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'professionalMarketplace.reviews.fields.response' | translate }}
+        <textarea
+          class="min-h-32 rounded-lg border px-3 py-2 text-sm"
+          [(ngModel)]="response"
+        ></textarea>
+      </label>
+    }
+    @if (drawerMode() === 'report') {
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'professionalMarketplace.reviews.fields.reason' | translate }}
+        <select
+          class="rounded-lg border px-3 py-2 text-sm"
+          [(ngModel)]="reasonCode"
+        >
+          <option value="INAPPROPRIATE_CONTENT">
+            {{ 'professionalMarketplace.reviews.reportReasons.inappropriate' | translate }}
+          </option>
+          <option value="FALSE_INFORMATION">
+            {{ 'professionalMarketplace.reviews.reportReasons.falseInformation' | translate }}
+          </option>
+          <option value="PERSONAL_DATA">
+            {{ 'professionalMarketplace.reviews.reportReasons.personalData' | translate }}
+          </option>
+          <option value="OTHER">{{ 'common.other' | translate }}</option>
+        </select>
+      </label>
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'professionalMarketplace.reviews.fields.details' | translate }}
+        <textarea
+          class="min-h-28 rounded-lg border px-3 py-2 text-sm"
+          [(ngModel)]="details"
+        ></textarea>
+      </label>
+    }
+    @if (drawerMode() === 'moderate' && selectedReview(); as selected) {
+      <section class="rounded-xl border p-4 text-sm">
+        <strong>{{ selected.overallScore }} / 5 · {{ $any(selected).status }}</strong>
+        <p class="mt-2">{{ selected.comment || '—' }}</p>
+      </section>
+      @if ($any(selected).status === 'Published' && canHide()) {
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.reviews.fields.moderationReason' | translate }}
+          <textarea
+            class="min-h-20 rounded-lg border px-3 py-2"
+            [(ngModel)]="moderationReason"
+          ></textarea>
+          <button
+            class="mt-2 justify-self-start rounded-lg bg-red-700 px-3 py-2 text-xs font-bold text-white"
+            [disabled]="busy()"
+            (click)="hide()"
+          >
+            {{ 'professionalMarketplace.reviews.actions.hide' | translate }}
+          </button>
+        </label>
+      }
+      @if ($any(selected).status === 'Hidden' && canManageModeration()) {
+        <button
+          class="justify-self-start rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+          [disabled]="busy()"
+          (click)="restore()"
+        >
+          {{ 'professionalMarketplace.reviews.actions.restore' | translate }}
+        </button>
+      }
+      <section class="grid gap-2">
+        <h4 class="font-extrabold">{{ 'professionalMarketplace.reviews.reports' | translate }}</h4>
+        @for (report of $any(selected).reports; track report.id) {
+          <article class="rounded-lg border p-3 text-sm">
+            <div class="flex justify-between">
+              <strong>{{ report.reasonCode }}</strong>
+              <span>{{ report.status }}</span>
+            </div>
+            <p class="mt-1">{{ report.details || '—' }}</p>
+            @if (report.resolution) {
+              <p class="mt-2 rounded bg-emerald-50 p-2">{{ report.resolution }}</p>
+            }
+            @if (report.status === 'Open' && canResolveReport()) {
+              <div class="mt-2 grid gap-2">
+                <textarea
+                  class="rounded-lg border px-3 py-2"
+                  [(ngModel)]="resolution"
+                  [placeholder]="'professionalMarketplace.reviews.fields.resolution' | translate"
+                ></textarea>
+                <button
+                  class="justify-self-start rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+                  [disabled]="busy()"
+                  (click)="resolveReport(report.id)"
+                >
+                  {{ 'professionalMarketplace.reviews.actions.resolve' | translate }}
+                </button>
+              </div>
+            }
+          </article>
+        } @empty {
+          <p class="text-xs text-[var(--driveos-text-secondary)]">
+            {{ 'professionalMarketplace.reviews.noReports' | translate }}
+          </p>
+        }
+      </section>
+    }
+    @if (messages().length) {
+      <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+        @for (m of messages(); track m) {
+          <p>{{ m }}</p>
+        }
+      </div>
+    }
+    @if (drawerMode() !== 'moderate') {
+      <footer class="flex justify-end border-t pt-4">
+        <button
+          class="rounded-lg bg-blue-800 px-4 py-2 text-xs font-bold text-white"
+          [disabled]="busy()"
+          (click)="submit()"
+        >
+          {{ 'common.actions.confirm' | translate }}
+        </button>
+      </footer>
+    }
+  </div>
+</drive-os-drawer>

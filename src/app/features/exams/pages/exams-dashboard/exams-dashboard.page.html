@@ -1,80 +1,384 @@
 <section class="driveos-page mx-auto max-w-[1600px]">
   <div class="driveos-page-header gap-4">
-    <div><p class="driveos-kicker">{{ 'exams.dashboard.kicker' | translate }}</p><h2 class="driveos-page-title">{{ 'exams.dashboard.title' | translate }}</h2><p class="driveos-page-subtitle">{{ 'exams.dashboard.description' | translate }}</p></div>
-    <drive-os-button variant="outline" icon="ph ph-arrows-clockwise" [loading]="loading()" (pressed)="load()">{{ 'common.actions.refresh' | translate }}</drive-os-button>
+    <div>
+      <p class="driveos-kicker">{{ 'exams.dashboard.kicker' | translate }}</p>
+      <h2 class="driveos-page-title">{{ 'exams.dashboard.title' | translate }}</h2>
+      <p class="driveos-page-subtitle">{{ 'exams.dashboard.description' | translate }}</p>
+    </div>
+    <drive-os-button
+      variant="outline"
+      icon="ph ph-arrows-clockwise"
+      [loading]="loading()"
+      (pressed)="load()"
+    >
+      {{ 'common.actions.refresh' | translate }}
+    </drive-os-button>
   </div>
 
-  <section class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 sm:p-5">
+  <section
+    class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 sm:p-5"
+  >
     <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-      <label class="grid gap-1.5 text-sm font-bold"><span>{{'exams.dashboard.filters.from'|translate}}</span><input dosInput type="date" [(ngModel)]="fromDate"></label>
-      <label class="grid gap-1.5 text-sm font-bold"><span>{{'exams.dashboard.filters.to'|translate}}</span><input dosInput type="date" [(ngModel)]="toDate"></label>
-      <label class="grid gap-1.5 text-sm font-bold"><span>{{'exams.dashboard.filters.examType'|translate}}</span><input dosInput [(ngModel)]="examType" [placeholder]="'exams.dashboard.filters.examTypePlaceholder'|translate"></label>
-      <label class="grid gap-1.5 text-sm font-bold"><span>{{'exams.dashboard.filters.license'|translate}}</span><input dosInput [(ngModel)]="licenseCategory" [placeholder]="'exams.dashboard.filters.licensePlaceholder'|translate"></label>
-      <div class="flex items-end gap-2"><drive-os-button class="flex-1" icon="ph ph-funnel" [loading]="loading()" (pressed)="load()">{{'exams.dashboard.filters.apply'|translate}}</drive-os-button><drive-os-button variant="ghost" icon="ph ph-x" (pressed)="resetFilters()">{{'exams.dashboard.filters.reset'|translate}}</drive-os-button></div>
+      <label class="grid gap-1.5 text-sm font-bold">
+        <span>{{ 'exams.dashboard.filters.from' | translate }}</span>
+        <input
+          dosInput
+          type="date"
+          [(ngModel)]="fromDate"
+        />
+      </label>
+      <label class="grid gap-1.5 text-sm font-bold">
+        <span>{{ 'exams.dashboard.filters.to' | translate }}</span>
+        <input
+          dosInput
+          type="date"
+          [(ngModel)]="toDate"
+        />
+      </label>
+      <label class="grid gap-1.5 text-sm font-bold">
+        <span>{{ 'exams.dashboard.filters.examType' | translate }}</span>
+        <input
+          dosInput
+          [(ngModel)]="examType"
+          [placeholder]="'exams.dashboard.filters.examTypePlaceholder' | translate"
+        />
+      </label>
+      <label class="grid gap-1.5 text-sm font-bold">
+        <span>{{ 'exams.dashboard.filters.license' | translate }}</span>
+        <input
+          dosInput
+          [(ngModel)]="licenseCategory"
+          [placeholder]="'exams.dashboard.filters.licensePlaceholder' | translate"
+        />
+      </label>
+      <div class="flex items-end gap-2">
+        <drive-os-button
+          class="flex-1"
+          icon="ph ph-funnel"
+          [loading]="loading()"
+          (pressed)="load()"
+        >
+          {{ 'exams.dashboard.filters.apply' | translate }}
+        </drive-os-button>
+        <drive-os-button
+          variant="ghost"
+          icon="ph ph-x"
+          (pressed)="resetFilters()"
+        >
+          {{ 'exams.dashboard.filters.reset' | translate }}
+        </drive-os-button>
+      </div>
     </div>
   </section>
 
-  @if(messages().length){<drive-os-state-banner class="mt-5 block" tone="warning" icon="ph ph-warning-circle" [title]="'exams.common.loadError' | translate"><ul class="mt-2 list-disc pl-5">@for(message of messages();track message){<li>{{message}}</li>}</ul></drive-os-state-banner>}
-  @if(loading()&&!data()){<div class="grid min-h-[24rem] place-items-center"><drive-os-spinner size="lg" [label]="'exams.common.loading' | translate" /></div>}
-  @else if(data();as report){
-    @if(report.contextWarnings.length){<drive-os-state-banner class="mt-5 block" tone="info" icon="ph ph-info" [title]="'exams.dashboard.context.title'|translate"><ul class="mt-2 list-disc pl-5">@for(warning of report.contextWarnings;track warning){<li>{{warning|translate}}</li>}</ul></drive-os-state-banner>}
-
-    <div class="mt-5 flex gap-1 overflow-x-auto border-b border-[var(--driveos-border)]">
-      <button type="button" class="shrink-0 border-b-2 px-4 py-3 text-sm font-extrabold" [class.border-blue-800]="activeTab()==='overview'" [class.text-blue-800]="activeTab()==='overview'" [class.border-transparent]="activeTab()!=='overview'" (click)="setTab('overview')">{{'exams.dashboard.tabs.overview'|translate}}</button>
-      <button type="button" class="shrink-0 border-b-2 px-4 py-3 text-sm font-extrabold" [class.border-blue-800]="activeTab()==='performance'" [class.text-blue-800]="activeTab()==='performance'" [class.border-transparent]="activeTab()!=='performance'" (click)="setTab('performance')">{{'exams.dashboard.tabs.performance'|translate}}</button>
-      <button type="button" class="shrink-0 border-b-2 px-4 py-3 text-sm font-extrabold" [class.border-blue-800]="activeTab()==='quality'" [class.text-blue-800]="activeTab()==='quality'" [class.border-transparent]="activeTab()!=='quality'" (click)="setTab('quality')">{{'exams.dashboard.tabs.quality'|translate}} <span class="ml-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs text-orange-800">{{report.alerts.length}}</span></button>
+  @if (messages().length) {
+    <drive-os-state-banner
+      class="mt-5 block"
+      tone="warning"
+      icon="ph ph-warning-circle"
+      [title]="'exams.common.loadError' | translate"
+    >
+      <ul class="mt-2 list-disc pl-5">
+        @for (message of messages(); track message) {
+          <li>{{ message }}</li>
+        }
+      </ul>
+    </drive-os-state-banner>
+  }
+  @if (loading() && !data()) {
+    <div class="grid min-h-[24rem] place-items-center">
+      <drive-os-spinner
+        size="lg"
+        [label]="'exams.common.loading' | translate"
+      />
     </div>
-
-    @if(activeTab()==='overview'){
-      <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><span class="text-sm font-bold text-[var(--driveos-text-secondary)]">{{'exams.dashboard.kpis.scheduled'|translate}}</span><strong class="mt-3 block text-3xl font-black">{{report.kpis.scheduledAttempts}}</strong></article>
-        <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><span class="text-sm font-bold text-[var(--driveos-text-secondary)]">{{'exams.dashboard.kpis.presented'|translate}}</span><strong class="mt-3 block text-3xl font-black">{{report.kpis.presentedAttempts}}</strong></article>
-        <article class="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-5 dark:border-emerald-900 dark:bg-emerald-950/20"><span class="text-sm font-bold">{{'exams.dashboard.kpis.passRate'|translate}}</span><strong class="mt-3 block text-3xl font-black">{{report.kpis.passRatePercent===null?'—':(report.kpis.passRatePercent|number:'1.0-1')+'%'}}</strong></article>
-        <article class="rounded-2xl border border-orange-200 bg-orange-50/70 p-5 dark:border-orange-900 dark:bg-orange-950/20"><span class="text-sm font-bold">{{'exams.dashboard.kpis.absenceRate'|translate}}</span><strong class="mt-3 block text-3xl font-black">{{report.kpis.absenceRatePercent===null?'—':(report.kpis.absenceRatePercent|number:'1.0-1')+'%'}}</strong></article>
-        <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><span class="text-sm font-bold text-[var(--driveos-text-secondary)]">{{'exams.dashboard.kpis.finalized'|translate}}</span><strong class="mt-3 block text-3xl font-black">{{report.kpis.finalizedResults}}</strong><p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">{{report.kpis.passed}} {{'exams.dashboard.kpis.passed'|translate}} · {{report.kpis.failed}} {{'exams.dashboard.kpis.failed'|translate}}</p></article>
-        <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><span class="text-sm font-bold text-[var(--driveos-text-secondary)]">{{'exams.dashboard.kpis.firstAttempt'|translate}}</span><strong class="mt-3 block text-3xl font-black">{{report.kpis.firstAttemptPassRatePercent===null?'—':(report.kpis.firstAttemptPassRatePercent|number:'1.0-1')+'%'}}</strong></article>
-        <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><span class="text-sm font-bold text-[var(--driveos-text-secondary)]">{{'exams.dashboard.kpis.averageAttempt'|translate}}</span><strong class="mt-3 block text-3xl font-black">{{report.kpis.averageAttemptNumber===null?'—':(report.kpis.averageAttemptNumber|number:'1.0-1')}}</strong></article>
-        <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><span class="text-sm font-bold text-[var(--driveos-text-secondary)]">{{'exams.dashboard.kpis.remediation'|translate}}</span><strong class="mt-3 block text-3xl font-black">{{report.kpis.remediationRequired}}</strong><p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">{{report.kpis.remediationValidatedForRePresentation}} {{'exams.dashboard.kpis.revalidated'|translate}}</p></article>
-      </div>
-      <section class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><div class="flex items-center justify-between"><div><h3 class="text-lg font-black">{{'exams.dashboard.trend'|translate}}</h3><p class="text-sm text-[var(--driveos-text-secondary)]">{{report.fromUtc|date:'mediumDate'}} → {{report.toUtc|date:'mediumDate'}}</p></div></div>@if(report.monthlyTrend.length){<div class="mt-4 space-y-3">@for(point of report.monthlyTrend;track point.key){<div class="grid grid-cols-[1fr_auto] items-center gap-4 border-b border-[var(--driveos-border)] pb-3"><div><p class="font-bold">{{point.key}}</p><p class="text-xs text-[var(--driveos-text-secondary)]">{{point.presented}} {{'exams.dashboard.presentedSamples'|translate}}</p></div><div class="text-right"><strong>{{point.passRatePercent===null?'—':(point.passRatePercent|number:'1.0-1')+'%'}}</strong>@if(point.isSmallSample){<p class="text-xs text-orange-700">{{'exams.dashboard.smallSample'|translate}}</p>}</div></div>}</div>}@else{<drive-os-empty-state icon="ph-duotone ph-chart-line" [title]="'exams.dashboard.emptyTrend'|translate" />}</section>
+  } @else if (data(); as report) {
+    @if (report.contextWarnings.length) {
+      <drive-os-state-banner
+        class="mt-5 block"
+        tone="info"
+        icon="ph ph-info"
+        [title]="'exams.dashboard.context.title' | translate"
+      >
+        <ul class="mt-2 list-disc pl-5">
+          @for (warning of report.contextWarnings; track warning) {
+            <li>{{ warning | translate }}</li>
+          }
+        </ul>
+      </drive-os-state-banner>
     }
 
-    @if(activeTab()==='performance'){
-      <div class="mt-6 flex flex-wrap gap-2">@for(item of [['branch','exams.dashboard.dimensions.branch'],['license','exams.dashboard.dimensions.license'],['type','exams.dashboard.dimensions.type'],['center','exams.dashboard.dimensions.center'],['instructor','exams.dashboard.dimensions.instructor']];track item[0]){<button type="button" class="rounded-xl border px-3 py-2 text-sm font-bold" [class.border-blue-800]="dimension()===item[0]" [class.bg-blue-50]="dimension()===item[0]" (click)="setDimension($any(item[0]))">{{item[1]|translate}}</button>}</div>
-      <div class="mt-4 overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]">
+    <div class="mt-5 flex gap-1 overflow-x-auto border-b border-[var(--driveos-border)]">
+      <button
+        type="button"
+        class="shrink-0 border-b-2 px-4 py-3 text-sm font-extrabold"
+        [class.border-blue-800]="activeTab() === 'overview'"
+        [class.text-blue-800]="activeTab() === 'overview'"
+        [class.border-transparent]="activeTab() !== 'overview'"
+        (click)="setTab('overview')"
+      >
+        {{ 'exams.dashboard.tabs.overview' | translate }}
+      </button>
+      <button
+        type="button"
+        class="shrink-0 border-b-2 px-4 py-3 text-sm font-extrabold"
+        [class.border-blue-800]="activeTab() === 'performance'"
+        [class.text-blue-800]="activeTab() === 'performance'"
+        [class.border-transparent]="activeTab() !== 'performance'"
+        (click)="setTab('performance')"
+      >
+        {{ 'exams.dashboard.tabs.performance' | translate }}
+      </button>
+      <button
+        type="button"
+        class="shrink-0 border-b-2 px-4 py-3 text-sm font-extrabold"
+        [class.border-blue-800]="activeTab() === 'quality'"
+        [class.text-blue-800]="activeTab() === 'quality'"
+        [class.border-transparent]="activeTab() !== 'quality'"
+        (click)="setTab('quality')"
+      >
+        {{ 'exams.dashboard.tabs.quality' | translate }}
+        <span class="ml-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs text-orange-800">
+          {{ report.alerts.length }}
+        </span>
+      </button>
+    </div>
+
+    @if (activeTab() === 'overview') {
+      <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <span class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+            {{ 'exams.dashboard.kpis.scheduled' | translate }}
+          </span>
+          <strong class="mt-3 block text-3xl font-black">
+            {{ report.kpis.scheduledAttempts }}
+          </strong>
+        </article>
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <span class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+            {{ 'exams.dashboard.kpis.presented' | translate }}
+          </span>
+          <strong class="mt-3 block text-3xl font-black">
+            {{ report.kpis.presentedAttempts }}
+          </strong>
+        </article>
+        <article
+          class="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-5 dark:border-emerald-900 dark:bg-emerald-950/20"
+        >
+          <span class="text-sm font-bold">{{ 'exams.dashboard.kpis.passRate' | translate }}</span>
+          <strong class="mt-3 block text-3xl font-black">
+            {{
+              report.kpis.passRatePercent === null
+                ? '—'
+                : (report.kpis.passRatePercent | number: '1.0-1') + '%'
+            }}
+          </strong>
+        </article>
+        <article
+          class="rounded-2xl border border-orange-200 bg-orange-50/70 p-5 dark:border-orange-900 dark:bg-orange-950/20"
+        >
+          <span class="text-sm font-bold">
+            {{ 'exams.dashboard.kpis.absenceRate' | translate }}
+          </span>
+          <strong class="mt-3 block text-3xl font-black">
+            {{
+              report.kpis.absenceRatePercent === null
+                ? '—'
+                : (report.kpis.absenceRatePercent | number: '1.0-1') + '%'
+            }}
+          </strong>
+        </article>
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <span class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+            {{ 'exams.dashboard.kpis.finalized' | translate }}
+          </span>
+          <strong class="mt-3 block text-3xl font-black">{{ report.kpis.finalizedResults }}</strong>
+          <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+            {{ report.kpis.passed }} {{ 'exams.dashboard.kpis.passed' | translate }} ·
+            {{ report.kpis.failed }} {{ 'exams.dashboard.kpis.failed' | translate }}
+          </p>
+        </article>
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <span class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+            {{ 'exams.dashboard.kpis.firstAttempt' | translate }}
+          </span>
+          <strong class="mt-3 block text-3xl font-black">
+            {{
+              report.kpis.firstAttemptPassRatePercent === null
+                ? '—'
+                : (report.kpis.firstAttemptPassRatePercent | number: '1.0-1') + '%'
+            }}
+          </strong>
+        </article>
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <span class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+            {{ 'exams.dashboard.kpis.averageAttempt' | translate }}
+          </span>
+          <strong class="mt-3 block text-3xl font-black">
+            {{
+              report.kpis.averageAttemptNumber === null
+                ? '—'
+                : (report.kpis.averageAttemptNumber | number: '1.0-1')
+            }}
+          </strong>
+        </article>
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <span class="text-sm font-bold text-[var(--driveos-text-secondary)]">
+            {{ 'exams.dashboard.kpis.remediation' | translate }}
+          </span>
+          <strong class="mt-3 block text-3xl font-black">
+            {{ report.kpis.remediationRequired }}
+          </strong>
+          <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+            {{ report.kpis.remediationValidatedForRePresentation }}
+            {{ 'exams.dashboard.kpis.revalidated' | translate }}
+          </p>
+        </article>
+      </div>
+      <section
+        class="mt-5 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-black">{{ 'exams.dashboard.trend' | translate }}</h3>
+            <p class="text-sm text-[var(--driveos-text-secondary)]">
+              {{ report.fromUtc | date: 'mediumDate' }} → {{ report.toUtc | date: 'mediumDate' }}
+            </p>
+          </div>
+        </div>
+        @if (report.monthlyTrend.length) {
+          <div class="mt-4 space-y-3">
+            @for (point of report.monthlyTrend; track point.key) {
+              <div
+                class="grid grid-cols-[1fr_auto] items-center gap-4 border-b border-[var(--driveos-border)] pb-3"
+              >
+                <div>
+                  <p class="font-bold">{{ point.key }}</p>
+                  <p class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ point.presented }} {{ 'exams.dashboard.presentedSamples' | translate }}
+                  </p>
+                </div>
+                <div class="text-right">
+                  <strong>
+                    {{
+                      point.passRatePercent === null
+                        ? '—'
+                        : (point.passRatePercent | number: '1.0-1') + '%'
+                    }}
+                  </strong>
+                  @if (point.isSmallSample) {
+                    <p class="text-xs text-orange-700">
+                      {{ 'exams.dashboard.smallSample' | translate }}
+                    </p>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <drive-os-empty-state
+            icon="ph-duotone ph-chart-line"
+            [title]="'exams.dashboard.emptyTrend' | translate"
+          />
+        }
+      </section>
+    }
+
+    @if (activeTab() === 'performance') {
+      <div class="mt-6 flex flex-wrap gap-2">
+        @for (
+          item of [
+            ['branch', 'exams.dashboard.dimensions.branch'],
+            ['license', 'exams.dashboard.dimensions.license'],
+            ['type', 'exams.dashboard.dimensions.type'],
+            ['center', 'exams.dashboard.dimensions.center'],
+            ['instructor', 'exams.dashboard.dimensions.instructor'],
+          ];
+          track item[0]
+        ) {
+          <button
+            type="button"
+            class="rounded-xl border px-3 py-2 text-sm font-bold"
+            [class.border-blue-800]="dimension() === item[0]"
+            [class.bg-blue-50]="dimension() === item[0]"
+            (click)="setDimension($any(item[0]))"
+          >
+            {{ item[1] | translate }}
+          </button>
+        }
+      </div>
+      <div
+        class="mt-4 overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]"
+      >
         <div class="overflow-x-auto">
           <table class="w-full min-w-[680px] text-sm">
             <thead class="bg-[var(--driveos-surface-muted)] text-left">
               <tr>
-                <th class="px-4 py-3">{{'exams.dashboard.table.dimension'|translate}}</th>
-                <th class="px-4 py-3 text-right">{{'exams.dashboard.table.sample'|translate}}</th>
-                <th class="px-4 py-3 text-right">{{'exams.dashboard.table.presented'|translate}}</th>
-                <th class="px-4 py-3 text-right">{{'exams.dashboard.table.passed'|translate}}</th>
-                <th class="px-4 py-3 text-right">{{'exams.dashboard.table.failed'|translate}}</th>
-                <th class="px-4 py-3 text-right">{{'exams.dashboard.table.rate'|translate}}</th>
+                <th class="px-4 py-3">{{ 'exams.dashboard.table.dimension' | translate }}</th>
+                <th class="px-4 py-3 text-right">
+                  {{ 'exams.dashboard.table.sample' | translate }}
+                </th>
+                <th class="px-4 py-3 text-right">
+                  {{ 'exams.dashboard.table.presented' | translate }}
+                </th>
+                <th class="px-4 py-3 text-right">
+                  {{ 'exams.dashboard.table.passed' | translate }}
+                </th>
+                <th class="px-4 py-3 text-right">
+                  {{ 'exams.dashboard.table.failed' | translate }}
+                </th>
+                <th class="px-4 py-3 text-right">{{ 'exams.dashboard.table.rate' | translate }}</th>
               </tr>
             </thead>
             <tbody>
-              @if(dimensionSeries().length){
-                @for(point of dimensionSeries();track point.key){
+              @if (dimensionSeries().length) {
+                @for (point of dimensionSeries(); track point.key) {
                   <tr class="border-t border-[var(--driveos-border)]">
                     <td class="px-4 py-3 font-bold">
-                      {{point.key}}
-                      @if(point.isSmallSample){
-                        <span class="ml-2 rounded-full bg-orange-100 px-2 py-0.5 text-xs text-orange-800">{{'exams.dashboard.smallSample'|translate}}</span>
+                      {{ point.key }}
+                      @if (point.isSmallSample) {
+                        <span
+                          class="ml-2 rounded-full bg-orange-100 px-2 py-0.5 text-xs text-orange-800"
+                        >
+                          {{ 'exams.dashboard.smallSample' | translate }}
+                        </span>
                       }
                     </td>
-                    <td class="px-4 py-3 text-right">{{point.sampleSize}}</td>
-                    <td class="px-4 py-3 text-right">{{point.presented}}</td>
-                    <td class="px-4 py-3 text-right">{{point.passed}}</td>
-                    <td class="px-4 py-3 text-right">{{point.failed}}</td>
-                    <td class="px-4 py-3 text-right font-black">{{point.passRatePercent===null?'—':(point.passRatePercent|number:'1.0-1')+'%'}}</td>
+                    <td class="px-4 py-3 text-right">{{ point.sampleSize }}</td>
+                    <td class="px-4 py-3 text-right">{{ point.presented }}</td>
+                    <td class="px-4 py-3 text-right">{{ point.passed }}</td>
+                    <td class="px-4 py-3 text-right">{{ point.failed }}</td>
+                    <td class="px-4 py-3 text-right font-black">
+                      {{
+                        point.passRatePercent === null
+                          ? '—'
+                          : (point.passRatePercent | number: '1.0-1') + '%'
+                      }}
+                    </td>
                   </tr>
                 }
               } @else {
                 <tr>
-                  <td colspan="6" class="p-8">
-                    <drive-os-empty-state icon="ph-duotone ph-chart-bar" [title]="'exams.dashboard.emptyDimension'|translate" />
+                  <td
+                    colspan="6"
+                    class="p-8"
+                  >
+                    <drive-os-empty-state
+                      icon="ph-duotone ph-chart-bar"
+                      [title]="'exams.dashboard.emptyDimension' | translate"
+                    />
                   </td>
                 </tr>
               }
@@ -83,42 +387,132 @@
         </div>
       </div>
       <div class="mt-5 grid gap-5 xl:grid-cols-2">
-        <section class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
-          <h3 class="text-lg font-black">{{'exams.dashboard.attemptDistribution'|translate}}</h3>
+        <section
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <h3 class="text-lg font-black">
+            {{ 'exams.dashboard.attemptDistribution' | translate }}
+          </h3>
           <div class="mt-4 space-y-3">
-            @if(report.byAttemptNumber.length){
-              @for(point of report.byAttemptNumber;track point.attemptNumber){
-                <div class="flex items-center justify-between border-b border-[var(--driveos-border)] pb-3">
-                  <span class="font-bold">#{{point.attemptNumber}} · {{point.finalizedResults}} {{'exams.dashboard.samples'|translate}}</span>
-                  <strong>{{point.passRatePercent===null?'—':(point.passRatePercent|number:'1.0-1')+'%'}}</strong>
+            @if (report.byAttemptNumber.length) {
+              @for (point of report.byAttemptNumber; track point.attemptNumber) {
+                <div
+                  class="flex items-center justify-between border-b border-[var(--driveos-border)] pb-3"
+                >
+                  <span class="font-bold">
+                    #{{ point.attemptNumber }} · {{ point.finalizedResults }}
+                    {{ 'exams.dashboard.samples' | translate }}
+                  </span>
+                  <strong>
+                    {{
+                      point.passRatePercent === null
+                        ? '—'
+                        : (point.passRatePercent | number: '1.0-1') + '%'
+                    }}
+                  </strong>
                 </div>
               }
             } @else {
-              <p class="text-sm text-[var(--driveos-text-secondary)]">{{'exams.dashboard.noData'|translate}}</p>
+              <p class="text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'exams.dashboard.noData' | translate }}
+              </p>
             }
           </div>
         </section>
 
-        <section class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
-          <h3 class="text-lg font-black">{{'exams.dashboard.failureReasons'|translate}}</h3>
+        <section
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <h3 class="text-lg font-black">{{ 'exams.dashboard.failureReasons' | translate }}</h3>
           <div class="mt-4 space-y-3">
-            @if(report.failureReasons.length){
-              @for(reason of report.failureReasons;track reason.reasonCode){
-                <div class="flex items-center justify-between border-b border-[var(--driveos-border)] pb-3">
-                  <span class="font-bold">{{reason.reasonCode}}</span>
-                  <span><strong>{{reason.count}}</strong> · {{reason.percentageOfFailures|number:'1.0-1'}}%</span>
+            @if (report.failureReasons.length) {
+              @for (reason of report.failureReasons; track reason.reasonCode) {
+                <div
+                  class="flex items-center justify-between border-b border-[var(--driveos-border)] pb-3"
+                >
+                  <span class="font-bold">{{ reason.reasonCode }}</span>
+                  <span>
+                    <strong>{{ reason.count }}</strong>
+                    · {{ reason.percentageOfFailures | number: '1.0-1' }}%
+                  </span>
                 </div>
               }
             } @else {
-              <p class="text-sm text-[var(--driveos-text-secondary)]">{{'exams.dashboard.noData'|translate}}</p>
+              <p class="text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'exams.dashboard.noData' | translate }}
+              </p>
             }
           </div>
         </section>
       </div>
     }
 
-    @if(activeTab()==='quality'){
-      <div class="mt-6 grid gap-4 xl:grid-cols-[1.2fr_.8fr]"><section class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h3 class="text-lg font-black">{{'exams.dashboard.alerts'|translate}}</h3>@if(report.alerts.length){<div class="mt-4 space-y-3">@for(alert of report.alerts;track alert.code + (alert.dimensionKey ?? '')){<article class="rounded-xl border p-4" [class.border-orange-200]="alert.severity.toLowerCase()==='warning'" [class.bg-orange-50]="alert.severity.toLowerCase()==='warning'" [class.border-blue-200]="alert.severity.toLowerCase()!=='warning'" [class.bg-blue-50]="alert.severity.toLowerCase()!=='warning'"><div class="flex flex-wrap items-start justify-between gap-2"><div><p class="font-black">{{alert.messageKey|translate}}</p><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{'exams.dashboard.alertMeta'|translate:{dimension:alert.dimension,key:(alert.dimensionKey ?? '—'),sample:alert.sampleSize} }}</p></div><span class="rounded-full bg-white/70 px-2 py-1 text-xs font-extrabold dark:bg-black/20">{{alert.severity}}</span></div></article>}</div>}@else{<drive-os-empty-state icon="ph-duotone ph-shield-check" [title]="'exams.dashboard.noAlerts'|translate" />}</section><aside class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h3 class="text-lg font-black">{{'exams.dashboard.context.title'|translate}}</h3><p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{'exams.dashboard.context.description'|translate}}</p>@if(report.kpis.isSmallSample){<div class="mt-4 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm dark:border-orange-900 dark:bg-orange-950/20">{{'exams.dashboard.context.smallOverallSample'|translate}}</div>}@if(report.kpis.contextNote){<p class="mt-4 text-sm font-semibold">{{report.kpis.contextNote|translate}}</p>}</aside></div>
+    @if (activeTab() === 'quality') {
+      <div class="mt-6 grid gap-4 xl:grid-cols-[1.2fr_.8fr]">
+        <section
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <h3 class="text-lg font-black">{{ 'exams.dashboard.alerts' | translate }}</h3>
+          @if (report.alerts.length) {
+            <div class="mt-4 space-y-3">
+              @for (alert of report.alerts; track alert.code + (alert.dimensionKey ?? '')) {
+                <article
+                  class="rounded-xl border p-4"
+                  [class.border-orange-200]="alert.severity.toLowerCase() === 'warning'"
+                  [class.bg-orange-50]="alert.severity.toLowerCase() === 'warning'"
+                  [class.border-blue-200]="alert.severity.toLowerCase() !== 'warning'"
+                  [class.bg-blue-50]="alert.severity.toLowerCase() !== 'warning'"
+                >
+                  <div class="flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                      <p class="font-black">{{ alert.messageKey | translate }}</p>
+                      <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                        {{
+                          'exams.dashboard.alertMeta'
+                            | translate
+                              : {
+                                  dimension: alert.dimension,
+                                  key: alert.dimensionKey ?? '—',
+                                  sample: alert.sampleSize,
+                                }
+                        }}
+                      </p>
+                    </div>
+                    <span
+                      class="rounded-full bg-white/70 px-2 py-1 text-xs font-extrabold dark:bg-black/20"
+                    >
+                      {{ alert.severity }}
+                    </span>
+                  </div>
+                </article>
+              }
+            </div>
+          } @else {
+            <drive-os-empty-state
+              icon="ph-duotone ph-shield-check"
+              [title]="'exams.dashboard.noAlerts' | translate"
+            />
+          }
+        </section>
+        <aside
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <h3 class="text-lg font-black">{{ 'exams.dashboard.context.title' | translate }}</h3>
+          <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+            {{ 'exams.dashboard.context.description' | translate }}
+          </p>
+          @if (report.kpis.isSmallSample) {
+            <div
+              class="mt-4 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm dark:border-orange-900 dark:bg-orange-950/20"
+            >
+              {{ 'exams.dashboard.context.smallOverallSample' | translate }}
+            </div>
+          }
+          @if (report.kpis.contextNote) {
+            <p class="mt-4 text-sm font-semibold">{{ report.kpis.contextNote | translate }}</p>
+          }
+        </aside>
+      </div>
     }
   }
 </section>

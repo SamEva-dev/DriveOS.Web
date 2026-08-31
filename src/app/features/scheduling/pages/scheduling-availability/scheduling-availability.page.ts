@@ -85,15 +85,25 @@ export class SchedulingAvailabilityPage {
   readonly prefIntensive = signal(false);
   readonly prefGeo = signal(false);
 
-  readonly canManage = computed(() => this.authorization.hasPermission(SCHEDULING_PERMISSIONS.availability.manage));
-  readonly selectedResource = computed(() => this.resources().find((x) => x.id === this.selectedResourceId()) ?? null);
-  readonly contextResources = computed(() => this.resources().filter((resource) => this.matchesContext(resource)));
+  readonly canManage = computed(() =>
+    this.authorization.hasPermission(SCHEDULING_PERMISSIONS.availability.manage),
+  );
+  readonly selectedResource = computed(
+    () => this.resources().find((x) => x.id === this.selectedResourceId()) ?? null,
+  );
+  readonly contextResources = computed(() =>
+    this.resources().filter((resource) => this.matchesContext(resource)),
+  );
   readonly activePlan = computed(() => this.plans().find((x) => x.status === 'Active') ?? null);
   readonly draftPlan = computed(() => this.plans().find((x) => x.status === 'Draft') ?? null);
-  readonly selectedPlan = computed(() => this.draftPlan() ?? this.activePlan() ?? this.plans()[0] ?? null);
+  readonly selectedPlan = computed(
+    () => this.draftPlan() ?? this.activePlan() ?? this.plans()[0] ?? null,
+  );
   readonly materialContext = computed(() => this.context() === 'resources');
   readonly studentContext = computed(() => this.context() === 'students');
-  readonly instructorResources = computed(() => this.resources().filter((resource) => this.resourceTypeCode(resource.resourceType) === '2'));
+  readonly instructorResources = computed(() =>
+    this.resources().filter((resource) => this.resourceTypeCode(resource.resourceType) === '2'),
+  );
   readonly instructorContext = computed(() => this.context() === 'instructors');
   readonly weekdays = [
     { value: 1, key: 'scheduling.availability.weekdays.monday' },
@@ -106,14 +116,19 @@ export class SchedulingAvailabilityPage {
   ] as const;
 
   constructor() {
-    const dataContext = this.route.snapshot.data['availabilityContext'] as AvailabilityContext | undefined;
-    const queryContext = this.route.snapshot.queryParamMap.get('context') as AvailabilityContext | null;
-    const resourceId = this.route.snapshot.paramMap.get('resourceId')
-      ?? this.route.snapshot.paramMap.get('instructorId')
-      ?? this.route.snapshot.paramMap.get('studentId')
-      ?? this.route.snapshot.queryParamMap.get('resourceId');
+    const dataContext = this.route.snapshot.data['availabilityContext'] as
+      AvailabilityContext | undefined;
+    const queryContext = this.route.snapshot.queryParamMap.get(
+      'context',
+    ) as AvailabilityContext | null;
+    const resourceId =
+      this.route.snapshot.paramMap.get('resourceId') ??
+      this.route.snapshot.paramMap.get('instructorId') ??
+      this.route.snapshot.paramMap.get('studentId') ??
+      this.route.snapshot.queryParamMap.get('resourceId');
     if (dataContext) this.context.set(dataContext);
-    else if (queryContext && ['instructors', 'students', 'resources'].includes(queryContext)) this.context.set(queryContext);
+    else if (queryContext && ['instructors', 'students', 'resources'].includes(queryContext))
+      this.context.set(queryContext);
     if (resourceId) this.selectedResourceId.set(resourceId);
     this.loadResources();
   }
@@ -146,13 +161,22 @@ export class SchedulingAvailabilityPage {
       else this.ruleSource.set(2);
     }
     if (mode === 'exception') {
-      if (this.materialContext()) { this.exceptionType.set(10); this.exceptionSource.set(null); }
-      else if (this.studentContext()) { this.exceptionType.set(2); this.exceptionSource.set(7); }
-      else { this.exceptionType.set(2); this.exceptionSource.set(2); }
+      if (this.materialContext()) {
+        this.exceptionType.set(10);
+        this.exceptionSource.set(null);
+      } else if (this.studentContext()) {
+        this.exceptionType.set(2);
+        this.exceptionSource.set(7);
+      } else {
+        this.exceptionType.set(2);
+        this.exceptionSource.set(2);
+      }
     }
   }
 
-  closeDrawer(): void { if (!this.saving()) this.drawerMode.set(null); }
+  closeDrawer(): void {
+    if (!this.saving()) this.drawerMode.set(null);
+  }
 
   loadResources(): void {
     this.loading.set(true);
@@ -161,24 +185,39 @@ export class SchedulingAvailabilityPage {
         this.resources.set(resources);
         const requestedId = this.selectedResourceId();
         const matched = requestedId
-          ? this.contextResources().find((x) => x.id === requestedId || x.externalResourceId === requestedId)
+          ? this.contextResources().find(
+              (x) => x.id === requestedId || x.externalResourceId === requestedId,
+            )
           : null;
         if (matched) this.selectedResourceId.set(matched.id);
         else this.selectedResourceId.set(this.contextResources()[0]?.id ?? null);
         if (this.selectedResourceId()) this.loadPlans();
         else this.loading.set(false);
       },
-      error: (error: HttpErrorResponse) => { this.errors.set(this.apiErrors.getMessages(error)); this.loading.set(false); },
+      error: (error: HttpErrorResponse) => {
+        this.errors.set(this.apiErrors.getMessages(error));
+        this.loading.set(false);
+      },
     });
   }
 
   loadPlans(): void {
     const resourceId = this.selectedResourceId();
-    if (!resourceId) { this.plans.set([]); this.loading.set(false); return; }
+    if (!resourceId) {
+      this.plans.set([]);
+      this.loading.set(false);
+      return;
+    }
     this.loading.set(true);
     this.api.getAvailabilityPlans(resourceId).subscribe({
-      next: (plans) => { this.plans.set(plans); this.loading.set(false); },
-      error: (error: HttpErrorResponse) => { this.errors.set(this.apiErrors.getMessages(error)); this.loading.set(false); },
+      next: (plans) => {
+        this.plans.set(plans);
+        this.loading.set(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.errors.set(this.apiErrors.getMessages(error));
+        this.loading.set(false);
+      },
     });
   }
 
@@ -186,7 +225,10 @@ export class SchedulingAvailabilityPage {
     const resourceId = this.selectedResourceId();
     if (!resourceId) return;
     this.runSave(
-      this.api.createAvailabilityPlan(resourceId, { effectiveFrom: this.planFrom(), effectiveTo: this.planTo() || null }),
+      this.api.createAvailabilityPlan(resourceId, {
+        effectiveFrom: this.planFrom(),
+        effectiveTo: this.planTo() || null,
+      }),
       'scheduling.availability.messages.planCreated',
     );
   }
@@ -194,76 +236,145 @@ export class SchedulingAvailabilityPage {
   addRule(): void {
     const plan = this.draftPlan();
     if (!plan) return;
-    this.runSave(this.api.addAvailabilityRule(plan.id, {
-      dayOfWeek: this.ruleDay(),
-      startTime: this.ruleStart(),
-      endTime: this.ruleEnd(),
-      capacity: this.materialContext() ? this.ruleCapacity() : 1,
-      type: this.ruleType(),
-      source: this.ruleSource(),
-      priority: this.rulePriority(),
-      branchId: this.ruleBranchId() || null,
-      trainingCategory: this.ruleTrainingCategory().trim() || null,
-      serviceArea: this.ruleServiceArea().trim() || null,
-    }), 'scheduling.availability.messages.ruleAdded');
+    this.runSave(
+      this.api.addAvailabilityRule(plan.id, {
+        dayOfWeek: this.ruleDay(),
+        startTime: this.ruleStart(),
+        endTime: this.ruleEnd(),
+        capacity: this.materialContext() ? this.ruleCapacity() : 1,
+        type: this.ruleType(),
+        source: this.ruleSource(),
+        priority: this.rulePriority(),
+        branchId: this.ruleBranchId() || null,
+        trainingCategory: this.ruleTrainingCategory().trim() || null,
+        serviceArea: this.ruleServiceArea().trim() || null,
+      }),
+      'scheduling.availability.messages.ruleAdded',
+    );
   }
 
   addException(): void {
     const plan = this.selectedPlan();
     if (!plan) return;
     const available = this.exceptionType() === 1;
-    this.saving.set(true); this.errors.set([]); this.successKey.set(null);
-    this.api.addAvailabilityException(plan.id, {
-      date: this.exceptionDate(),
-      startTime: this.exceptionStart(),
-      endTime: this.exceptionEnd(),
-      type: this.exceptionType(),
-      capacity: available ? (this.materialContext() ? this.exceptionCapacity() ?? this.selectedResource()?.capacity ?? 1 : 1) : null,
-      reason: this.exceptionReason().trim() || null,
-      source: this.exceptionSource(),
-      priority: this.exceptionPriority(),
-    }).subscribe({
-      next: (result) => {
-        this.lastImpact.set(result);
-        this.saving.set(false); this.drawerMode.set(null); this.successKey.set('scheduling.availability.messages.exceptionAdded'); this.loadPlans();
-      },
-      error: (error: HttpErrorResponse) => { this.saving.set(false); this.errors.set(this.apiErrors.getMessages(error)); },
-    });
+    this.saving.set(true);
+    this.errors.set([]);
+    this.successKey.set(null);
+    this.api
+      .addAvailabilityException(plan.id, {
+        date: this.exceptionDate(),
+        startTime: this.exceptionStart(),
+        endTime: this.exceptionEnd(),
+        type: this.exceptionType(),
+        capacity: available
+          ? this.materialContext()
+            ? (this.exceptionCapacity() ?? this.selectedResource()?.capacity ?? 1)
+            : 1
+          : null,
+        reason: this.exceptionReason().trim() || null,
+        source: this.exceptionSource(),
+        priority: this.exceptionPriority(),
+      })
+      .subscribe({
+        next: (result) => {
+          this.lastImpact.set(result);
+          this.saving.set(false);
+          this.drawerMode.set(null);
+          this.successKey.set('scheduling.availability.messages.exceptionAdded');
+          this.loadPlans();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.saving.set(false);
+          this.errors.set(this.apiErrors.getMessages(error));
+        },
+      });
   }
 
   savePreferences(): void {
     const plan = this.selectedPlan();
     if (!plan) return;
-    this.runSave(this.api.updateAvailabilityPreferences(plan.id, {
-      preferredMeetingPoint: this.prefMeetingPoint().trim() || null,
-      maximumTravelDistanceKm: this.prefMaxDistance(),
-      minimumNoticeMinutes: this.prefMinimumNotice(),
-      trainingFrequencyPerWeek: this.prefFrequency(),
-      preferredInstructorId: this.prefInstructorId() || null,
-      intensiveRhythm: this.prefIntensive(),
-      oneTimeGeolocationAllowed: this.prefGeo(),
-    }), 'scheduling.availability.messages.preferencesSaved');
+    this.runSave(
+      this.api.updateAvailabilityPreferences(plan.id, {
+        preferredMeetingPoint: this.prefMeetingPoint().trim() || null,
+        maximumTravelDistanceKm: this.prefMaxDistance(),
+        minimumNoticeMinutes: this.prefMinimumNotice(),
+        trainingFrequencyPerWeek: this.prefFrequency(),
+        preferredInstructorId: this.prefInstructorId() || null,
+        intensiveRhythm: this.prefIntensive(),
+        oneTimeGeolocationAllowed: this.prefGeo(),
+      }),
+      'scheduling.availability.messages.preferencesSaved',
+    );
   }
 
-  activate(plan: AvailabilityPlan): void { this.runSave(this.api.activateAvailabilityPlan(plan.id), 'scheduling.availability.messages.planActivated'); }
-  archive(plan: AvailabilityPlan): void { this.runSave(this.api.archiveAvailabilityPlan(plan.id), 'scheduling.availability.messages.planArchived'); }
-  removeRule(plan: AvailabilityPlan, rule: AvailabilityRule): void { this.runSave(this.api.removeAvailabilityRule(plan.id, rule.id), 'scheduling.availability.messages.ruleRemoved'); }
-  removeException(plan: AvailabilityPlan, exceptionId: string): void { this.runSave(this.api.removeAvailabilityException(plan.id, exceptionId), 'scheduling.availability.messages.exceptionRemoved'); }
+  activate(plan: AvailabilityPlan): void {
+    this.runSave(
+      this.api.activateAvailabilityPlan(plan.id),
+      'scheduling.availability.messages.planActivated',
+    );
+  }
+  archive(plan: AvailabilityPlan): void {
+    this.runSave(
+      this.api.archiveAvailabilityPlan(plan.id),
+      'scheduling.availability.messages.planArchived',
+    );
+  }
+  removeRule(plan: AvailabilityPlan, rule: AvailabilityRule): void {
+    this.runSave(
+      this.api.removeAvailabilityRule(plan.id, rule.id),
+      'scheduling.availability.messages.ruleRemoved',
+    );
+  }
+  removeException(plan: AvailabilityPlan, exceptionId: string): void {
+    this.runSave(
+      this.api.removeAvailabilityException(plan.id, exceptionId),
+      'scheduling.availability.messages.exceptionRemoved',
+    );
+  }
 
   rulesForDay(day: number): readonly AvailabilityRule[] {
-    const name = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][day];
-    return (this.selectedPlan()?.rules ?? []).filter((x) => x.dayOfWeek === name).sort((a, b) => a.startTime.localeCompare(b.startTime));
+    const name = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][
+      day
+    ];
+    return (this.selectedPlan()?.rules ?? [])
+      .filter((x) => x.dayOfWeek === name)
+      .sort((a, b) => a.startTime.localeCompare(b.startTime));
   }
 
   resourceTypeCode(type: string | number): string {
     const value = String(type);
-    return ({ Student: '1', Instructor: '2', Vehicle: '3', Room: '4', Branch: '5', Simulator: '6', Equipment: '7', ExamVehicle: '8', PartnerResource: '9', Other: '99' } as Record<string, string>)[value] ?? value;
+    return (
+      (
+        {
+          Student: '1',
+          Instructor: '2',
+          Vehicle: '3',
+          Room: '4',
+          Branch: '5',
+          Simulator: '6',
+          Equipment: '7',
+          ExamVehicle: '8',
+          PartnerResource: '9',
+          Other: '99',
+        } as Record<string, string>
+      )[value] ?? value
+    );
   }
-  resourceTypeKey(type: string | number): string { return `scheduling.resources.type.${this.resourceTypeCode(type)}`; }
-  ruleTypeKey(type: string): string { return `scheduling.availability.ruleTypes.${type}`; }
-  sourceKey(source: string): string { return `scheduling.availability.sources.${source}`; }
-  exceptionTypeKey(type: string): string { return `scheduling.availability.exceptionTypes.${type}`; }
-  planStatusKey(status: string): string { return `scheduling.availability.planStatus.${status}`; }
+  resourceTypeKey(type: string | number): string {
+    return `scheduling.resources.type.${this.resourceTypeCode(type)}`;
+  }
+  ruleTypeKey(type: string): string {
+    return `scheduling.availability.ruleTypes.${type}`;
+  }
+  sourceKey(source: string): string {
+    return `scheduling.availability.sources.${source}`;
+  }
+  exceptionTypeKey(type: string): string {
+    return `scheduling.availability.exceptionTypes.${type}`;
+  }
+  planStatusKey(status: string): string {
+    return `scheduling.availability.planStatus.${status}`;
+  }
 
   private matchesContext(resource: CalendarResource): boolean {
     const code = this.resourceTypeCode(resource.resourceType);
@@ -284,10 +395,20 @@ export class SchedulingAvailabilityPage {
   }
 
   private runSave(observable: Observable<unknown>, successKey: string): void {
-    this.saving.set(true); this.errors.set([]); this.successKey.set(null);
+    this.saving.set(true);
+    this.errors.set([]);
+    this.successKey.set(null);
     observable.subscribe({
-      next: () => { this.saving.set(false); this.drawerMode.set(null); this.successKey.set(successKey); this.loadPlans(); },
-      error: (error: HttpErrorResponse) => { this.saving.set(false); this.errors.set(this.apiErrors.getMessages(error)); },
+      next: () => {
+        this.saving.set(false);
+        this.drawerMode.set(null);
+        this.successKey.set(successKey);
+        this.loadPlans();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.saving.set(false);
+        this.errors.set(this.apiErrors.getMessages(error));
+      },
     });
   }
 

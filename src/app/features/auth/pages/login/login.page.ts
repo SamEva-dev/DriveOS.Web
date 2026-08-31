@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ApiErrorService } from '../../../../core/errors/api-error.service';
 import { AuthShellComponent } from '../../components/auth-shell.component';
 
 @Component({
@@ -16,6 +17,7 @@ export class LoginPage {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly apiErrors = inject(ApiErrorService);
 
   readonly step = signal<'email' | 'password'>('email');
   readonly showPassword = signal(false);
@@ -40,10 +42,7 @@ export class LoginPage {
       if (result.nextStep === 'Password') this.step.set('password');
       else this.error.set(result.error ?? 'Une erreur est survenue.');
     } catch (error) {
-      this.error.set(
-        this.auth.getBackendErrorMessage(error) ??
-          'Impossible de contacter le service d’authentification.',
-      );
+      this.error.set(this.apiErrors.getMessages(error)[0]);
     } finally {
       this.loading.set(false);
     }
@@ -62,7 +61,7 @@ export class LoginPage {
       this.error.set(
         message === 'MFA_REQUIRED'
           ? 'La vérification à deux facteurs sera intégrée dans AUTH-02.'
-          : (message ?? 'Identifiants invalides.'),
+          : (message ?? this.apiErrors.getMessages(error)[0]),
       );
     } finally {
       this.loading.set(false);

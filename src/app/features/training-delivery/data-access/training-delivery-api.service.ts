@@ -2,11 +2,19 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_CONFIG, ApiConfig } from '../../../core/config/api-config';
-import { TrainingDeliveryDashboard, TrainingDeliveryPendingReportsResponse } from '../models/training-delivery.models';
+import {
+  TrainingDeliveryDashboard,
+  TrainingDeliveryPendingReportsResponse,
+} from '../models/training-delivery.models';
 import { GroupTrainingSession } from '../models/group-training-session.models';
-import { TrainingIncidentDetail, TrainingSessionDetail, TrainingSessionInternalNote, TrainingSessionReportReview,
-  TrainingSessionReportRevision, TrainingSessionPreparation } from '../models/training-session-detail.models';
-
+import {
+  TrainingIncidentDetail,
+  TrainingSessionDetail,
+  TrainingSessionInternalNote,
+  TrainingSessionReportReview,
+  TrainingSessionReportRevision,
+  TrainingSessionPreparation,
+} from '../models/training-session-detail.models';
 
 export interface CorrectTrainingSessionAttendanceRequest {
   readonly operationId: string;
@@ -39,7 +47,6 @@ export interface RecordTrainingSessionObservationRequest {
   readonly isInternal: boolean;
 }
 
-
 export interface RecordTrainingSessionMarkerRequest {
   readonly operationId: string;
   readonly type: number;
@@ -64,7 +71,6 @@ export interface ResumeTrainingSessionRequest {
   readonly resumedAtUtc: string;
 }
 
-
 export interface RecordTrainingSessionOdometerRequest {
   readonly operationId: string;
   readonly odometerKilometers: number;
@@ -87,7 +93,6 @@ export interface FinishTrainingSessionRequest {
   readonly actualEndAtUtc: string;
   readonly endEnergyLevelPercent: number | null;
 }
-
 
 export interface SaveTrainingSessionReportDraftRequest {
   readonly operationId: string;
@@ -124,7 +129,10 @@ export class TrainingDeliveryApiService {
 
   getPendingReports(mineOnly: boolean): Observable<TrainingDeliveryPendingReportsResponse> {
     const params = new HttpParams().set('mineOnly', mineOnly);
-    return this.http.get<TrainingDeliveryPendingReportsResponse>(`${this.baseUrl}/pending-reports`, { params });
+    return this.http.get<TrainingDeliveryPendingReportsResponse>(
+      `${this.baseUrl}/pending-reports`,
+      { params },
+    );
   }
 
   getMyDay(startAtUtc: string, endAtUtc: string): Observable<TrainingDeliveryDashboard> {
@@ -137,108 +145,289 @@ export class TrainingDeliveryApiService {
   }
 
   prepareSession(sessionId: string): Observable<TrainingSessionPreparation> {
-    return this.http.post<TrainingSessionPreparation>(`${this.baseUrl}/sessions/${sessionId}/prepare`, {});
+    return this.http.post<TrainingSessionPreparation>(
+      `${this.baseUrl}/sessions/${sessionId}/prepare`,
+      {},
+    );
   }
 
   startSession(sessionId: string): Observable<TrainingSessionDetail> {
-    return this.http.post<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/start`, { operationId: crypto.randomUUID(), startedAtUtc: new Date().toISOString() });
+    return this.http.post<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/start`, {
+      operationId: crypto.randomUUID(),
+      startedAtUtc: new Date().toISOString(),
+    });
   }
 
-
-  correctAttendance(sessionId: string, request: CorrectTrainingSessionAttendanceRequest): Observable<TrainingSessionDetail> {
-    return this.http.post<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/attendance/correct`, request);
+  correctAttendance(
+    sessionId: string,
+    request: CorrectTrainingSessionAttendanceRequest,
+  ): Observable<TrainingSessionDetail> {
+    return this.http.post<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/attendance/correct`,
+      request,
+    );
   }
 
-  overrideAttendance(sessionId: string, request: CorrectTrainingSessionAttendanceRequest): Observable<TrainingSessionDetail> {
-    return this.http.post<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/attendance/override`, request);
+  overrideAttendance(
+    sessionId: string,
+    request: CorrectTrainingSessionAttendanceRequest,
+  ): Observable<TrainingSessionDetail> {
+    return this.http.post<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/attendance/override`,
+      request,
+    );
   }
 
-  recordIntervention(sessionId: string, request: RecordTrainingSessionInterventionRequest): Observable<TrainingSessionDetail> {
-    return this.http.post<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/interventions`, request);
+  recordIntervention(
+    sessionId: string,
+    request: RecordTrainingSessionInterventionRequest,
+  ): Observable<TrainingSessionDetail> {
+    return this.http.post<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/interventions`,
+      request,
+    );
   }
 
-  recordObservation(sessionId: string, request: RecordTrainingSessionObservationRequest): Observable<TrainingSessionDetail> {
-    return this.http.post<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/observations`, request);
+  recordObservation(
+    sessionId: string,
+    request: RecordTrainingSessionObservationRequest,
+  ): Observable<TrainingSessionDetail> {
+    return this.http.post<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/observations`,
+      request,
+    );
   }
 
-  recordMarker(sessionId: string, request: RecordTrainingSessionMarkerRequest): Observable<TrainingSessionDetail> {
-    return this.http.post<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/markers`, request);
+  recordMarker(
+    sessionId: string,
+    request: RecordTrainingSessionMarkerRequest,
+  ): Observable<TrainingSessionDetail> {
+    return this.http.post<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/markers`,
+      request,
+    );
   }
 
-  interruptSession(sessionId: string, request: InterruptTrainingSessionRequest): Observable<TrainingSessionDetail> {
-    return this.http.post<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/interrupt`, request);
+  interruptSession(
+    sessionId: string,
+    request: InterruptTrainingSessionRequest,
+  ): Observable<TrainingSessionDetail> {
+    return this.http.post<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/interrupt`,
+      request,
+    );
   }
 
-  resumeSession(sessionId: string, request: ResumeTrainingSessionRequest): Observable<TrainingSessionDetail> {
-    return this.http.post<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/resume`, request);
+  resumeSession(
+    sessionId: string,
+    request: ResumeTrainingSessionRequest,
+  ): Observable<TrainingSessionDetail> {
+    return this.http.post<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/resume`,
+      request,
+    );
   }
 
-  recordOdometer(sessionId: string, request: RecordTrainingSessionOdometerRequest): Observable<TrainingSessionDetail> {
-    return this.http.post<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/odometer`, request);
+  recordOdometer(
+    sessionId: string,
+    request: RecordTrainingSessionOdometerRequest,
+  ): Observable<TrainingSessionDetail> {
+    return this.http.post<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/odometer`,
+      request,
+    );
   }
 
-  recordEnergy(sessionId: string, request: RecordTrainingSessionEnergyRequest): Observable<TrainingSessionDetail> {
-    return this.http.post<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/energy`, request);
+  recordEnergy(
+    sessionId: string,
+    request: RecordTrainingSessionEnergyRequest,
+  ): Observable<TrainingSessionDetail> {
+    return this.http.post<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/energy`,
+      request,
+    );
   }
 
-  finishSession(sessionId: string, request: FinishTrainingSessionRequest): Observable<TrainingSessionDetail> {
-    return this.http.post<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/finish`, request);
+  finishSession(
+    sessionId: string,
+    request: FinishTrainingSessionRequest,
+  ): Observable<TrainingSessionDetail> {
+    return this.http.post<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/finish`,
+      request,
+    );
   }
 
-
-  saveReportDraft(sessionId: string, request: SaveTrainingSessionReportDraftRequest): Observable<TrainingSessionDetail> {
-    return this.http.put<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/report/draft`, request);
+  saveReportDraft(
+    sessionId: string,
+    request: SaveTrainingSessionReportDraftRequest,
+  ): Observable<TrainingSessionDetail> {
+    return this.http.put<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/report/draft`,
+      request,
+    );
   }
 
-  updateSharedComment(sessionId: string, request: { operationId: string; expectedVersion: number; content: string | null }): Observable<TrainingSessionDetail> {
-    return this.http.put<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/report/shared-comment`, request);
+  updateSharedComment(
+    sessionId: string,
+    request: { operationId: string; expectedVersion: number; content: string | null },
+  ): Observable<TrainingSessionDetail> {
+    return this.http.put<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/report/shared-comment`,
+      request,
+    );
   }
 
-  updateInternalNote(sessionId: string, request: { operationId: string; expectedVersion: number; content: string | null }): Observable<TrainingSessionDetail> {
-    return this.http.put<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/report/internal-note`, request);
+  updateInternalNote(
+    sessionId: string,
+    request: { operationId: string; expectedVersion: number; content: string | null },
+  ): Observable<TrainingSessionDetail> {
+    return this.http.put<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/report/internal-note`,
+      request,
+    );
   }
 
   getInternalNote(sessionId: string): Observable<TrainingSessionInternalNote> {
-    return this.http.get<TrainingSessionInternalNote>(`${this.baseUrl}/sessions/${sessionId}/report/internal-note`);
+    return this.http.get<TrainingSessionInternalNote>(
+      `${this.baseUrl}/sessions/${sessionId}/report/internal-note`,
+    );
   }
 
   getReportReview(sessionId: string): Observable<TrainingSessionReportReview> {
-    return this.http.get<TrainingSessionReportReview>(`${this.baseUrl}/sessions/${sessionId}/report/review`);
+    return this.http.get<TrainingSessionReportReview>(
+      `${this.baseUrl}/sessions/${sessionId}/report/review`,
+    );
   }
 
   markReportReady(sessionId: string, expectedVersion: number): Observable<TrainingSessionDetail> {
-    return this.http.post<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/report/ready`, { operationId: crypto.randomUUID(), expectedVersion });
+    return this.http.post<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/report/ready`,
+      { operationId: crypto.randomUUID(), expectedVersion },
+    );
   }
 
-  submitReport(sessionId: string, expectedVersion: number, requestSupervisorReview: boolean): Observable<TrainingSessionDetail> {
-    return this.http.post<TrainingSessionDetail>(`${this.baseUrl}/sessions/${sessionId}/report/submit`, { operationId: crypto.randomUUID(), expectedVersion, requestSupervisorReview });
+  submitReport(
+    sessionId: string,
+    expectedVersion: number,
+    requestSupervisorReview: boolean,
+  ): Observable<TrainingSessionDetail> {
+    return this.http.post<TrainingSessionDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/report/submit`,
+      { operationId: crypto.randomUUID(), expectedVersion, requestSupervisorReview },
+    );
   }
 
   getReportRevisions(sessionId: string): Observable<readonly TrainingSessionReportRevision[]> {
-    return this.http.get<readonly TrainingSessionReportRevision[]>(`${this.baseUrl}/sessions/${sessionId}/report/revisions`);
+    return this.http.get<readonly TrainingSessionReportRevision[]>(
+      `${this.baseUrl}/sessions/${sessionId}/report/revisions`,
+    );
   }
 
-  requestReportRevision(sessionId: string, request: { operationId: string; expectedVersion: number; scenario: number; fieldCode: string; currentValue: string; proposedValue: string; reason: string; hasFinancialImpact: boolean; approvalRequired: boolean }): Observable<TrainingSessionReportRevision> {
-    return this.http.post<TrainingSessionReportRevision>(`${this.baseUrl}/sessions/${sessionId}/report/revisions`, request);
+  requestReportRevision(
+    sessionId: string,
+    request: {
+      operationId: string;
+      expectedVersion: number;
+      scenario: number;
+      fieldCode: string;
+      currentValue: string;
+      proposedValue: string;
+      reason: string;
+      hasFinancialImpact: boolean;
+      approvalRequired: boolean;
+    },
+  ): Observable<TrainingSessionReportRevision> {
+    return this.http.post<TrainingSessionReportRevision>(
+      `${this.baseUrl}/sessions/${sessionId}/report/revisions`,
+      request,
+    );
   }
 
-  decideReportRevision(sessionId: string, revisionId: string, approve: boolean, decisionReason: string | null): Observable<TrainingSessionReportRevision> {
-    return this.http.post<TrainingSessionReportRevision>(`${this.baseUrl}/sessions/${sessionId}/report/revisions/${revisionId}/decision`, { approve, decisionReason });
+  decideReportRevision(
+    sessionId: string,
+    revisionId: string,
+    approve: boolean,
+    decisionReason: string | null,
+  ): Observable<TrainingSessionReportRevision> {
+    return this.http.post<TrainingSessionReportRevision>(
+      `${this.baseUrl}/sessions/${sessionId}/report/revisions/${revisionId}/decision`,
+      { approve, decisionReason },
+    );
   }
 
+  getGroupSession(sessionId: string): Observable<GroupTrainingSession> {
+    return this.http.get<GroupTrainingSession>(`${this.baseUrl}/group-sessions/${sessionId}`);
+  }
+  addGroupParticipant(sessionId: string, studentId: string): Observable<GroupTrainingSession> {
+    return this.http.post<GroupTrainingSession>(
+      `${this.baseUrl}/group-sessions/${sessionId}/participants`,
+      { studentId, operationId: crypto.randomUUID() },
+    );
+  }
+  recordGroupAttendance(
+    sessionId: string,
+    studentId: string,
+    status: number,
+    method: number,
+  ): Observable<GroupTrainingSession> {
+    return this.http.post<GroupTrainingSession>(
+      `${this.baseUrl}/group-sessions/${sessionId}/attendance`,
+      {
+        studentId,
+        status,
+        method,
+        checkInAtUtc: status === 1 || status === 3 ? new Date().toISOString() : null,
+        checkOutAtUtc: null,
+        operationId: crypto.randomUUID(),
+      },
+    );
+  }
+  recordGroupAssessment(
+    sessionId: string,
+    request: {
+      studentId: string;
+      competencyId: string | null;
+      level: number | null;
+      quizScore: number | null;
+      observation: string | null;
+    },
+  ): Observable<GroupTrainingSession> {
+    return this.http.post<GroupTrainingSession>(
+      `${this.baseUrl}/group-sessions/${sessionId}/assessments`,
+      { ...request, operationId: crypto.randomUUID() },
+    );
+  }
+  saveGroupReport(
+    sessionId: string,
+    report: string,
+    sharedObjectives: string | null,
+  ): Observable<GroupTrainingSession> {
+    return this.http.put<GroupTrainingSession>(
+      `${this.baseUrl}/group-sessions/${sessionId}/report`,
+      { report, sharedObjectives, operationId: crypto.randomUUID() },
+    );
+  }
+  prepareGroupCertificate(sessionId: string, studentId: string): Observable<GroupTrainingSession> {
+    return this.http.post<GroupTrainingSession>(
+      `${this.baseUrl}/group-sessions/${sessionId}/certificates/prepare`,
+      { studentId, operationId: crypto.randomUUID() },
+    );
+  }
 
-  getGroupSession(sessionId: string): Observable<GroupTrainingSession> { return this.http.get<GroupTrainingSession>(`${this.baseUrl}/group-sessions/${sessionId}`); }
-  addGroupParticipant(sessionId: string, studentId: string): Observable<GroupTrainingSession> { return this.http.post<GroupTrainingSession>(`${this.baseUrl}/group-sessions/${sessionId}/participants`, { studentId, operationId: crypto.randomUUID() }); }
-  recordGroupAttendance(sessionId: string, studentId: string, status: number, method: number): Observable<GroupTrainingSession> { return this.http.post<GroupTrainingSession>(`${this.baseUrl}/group-sessions/${sessionId}/attendance`, { studentId, status, method, checkInAtUtc: status === 1 || status === 3 ? new Date().toISOString() : null, checkOutAtUtc: null, operationId: crypto.randomUUID() }); }
-  recordGroupAssessment(sessionId: string, request: { studentId: string; competencyId: string | null; level: number | null; quizScore: number | null; observation: string | null }): Observable<GroupTrainingSession> { return this.http.post<GroupTrainingSession>(`${this.baseUrl}/group-sessions/${sessionId}/assessments`, { ...request, operationId: crypto.randomUUID() }); }
-  saveGroupReport(sessionId: string, report: string, sharedObjectives: string | null): Observable<GroupTrainingSession> { return this.http.put<GroupTrainingSession>(`${this.baseUrl}/group-sessions/${sessionId}/report`, { report, sharedObjectives, operationId: crypto.randomUUID() }); }
-  prepareGroupCertificate(sessionId: string, studentId: string): Observable<GroupTrainingSession> { return this.http.post<GroupTrainingSession>(`${this.baseUrl}/group-sessions/${sessionId}/certificates/prepare`, { studentId, operationId: crypto.randomUUID() }); }
-
-  reportIncident(sessionId: string, request: ReportTrainingIncidentRequest): Observable<TrainingIncidentDetail> {
-    return this.http.post<TrainingIncidentDetail>(`${this.baseUrl}/sessions/${sessionId}/incidents`, request);
+  reportIncident(
+    sessionId: string,
+    request: ReportTrainingIncidentRequest,
+  ): Observable<TrainingIncidentDetail> {
+    return this.http.post<TrainingIncidentDetail>(
+      `${this.baseUrl}/sessions/${sessionId}/incidents`,
+      request,
+    );
   }
 
   getSessionIncidents(sessionId: string): Observable<readonly TrainingIncidentDetail[]> {
-    return this.http.get<readonly TrainingIncidentDetail[]>(`${this.baseUrl}/sessions/${sessionId}/incidents`);
+    return this.http.get<readonly TrainingIncidentDetail[]>(
+      `${this.baseUrl}/sessions/${sessionId}/incidents`,
+    );
   }
 }

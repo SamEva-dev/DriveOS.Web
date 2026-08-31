@@ -1,0 +1,172 @@
+<drive-os-drawer
+  [open]="open()"
+  [title]="
+    (mode() === 'create'
+      ? 'professionalMarketplace.accessGrants.drawer.createTitle'
+      : 'professionalMarketplace.accessGrants.drawer.detailTitle'
+    ) | translate
+  "
+  size="lg"
+  (closeRequested)="close()"
+>
+  <div class="grid gap-4 p-5">
+    @if (mode() === 'create') {
+      <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
+        {{ 'professionalMarketplace.accessGrants.drawer.securityNotice' | translate }}
+      </div>
+      <label class="grid gap-1 text-sm">
+        <span class="font-bold">
+          {{ 'professionalMarketplace.accessGrants.fields.resourceType' | translate }}
+        </span>
+        <select
+          class="rounded-lg border bg-white px-3 py-2"
+          [(ngModel)]="resourceType"
+        >
+          @for (t of resourceTypes; track t) {
+            <option [ngValue]="t">
+              {{ 'professionalMarketplace.accessGrants.resourceType.' + t | translate }}
+            </option>
+          }
+        </select>
+      </label>
+      <label class="grid gap-1 text-sm">
+        <span class="font-bold">
+          {{ 'professionalMarketplace.accessGrants.fields.resourceId' | translate }}
+        </span>
+        <select
+          class="rounded-lg border bg-white px-3 py-2"
+          [(ngModel)]="resourceId"
+        >
+          <option value="">
+            {{ 'professionalMarketplace.accessGrants.fields.selectMission' | translate }}
+          </option>
+          @for (m of missions(); track m.id) {
+            <option [value]="m.id">{{ m.title }} · {{ m.startsOn }} → {{ m.endsOn }}</option>
+          }
+        </select>
+      </label>
+      <label class="grid gap-1 text-sm">
+        <span class="font-bold">
+          {{ 'professionalMarketplace.accessGrants.fields.permission' | translate }}
+        </span>
+        <input
+          class="rounded-lg border bg-[var(--driveos-surface-muted)] px-3 py-2"
+          [(ngModel)]="permission"
+          readonly
+        />
+      </label>
+      <div class="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+        <label class="grid gap-1 text-sm">
+          <span class="font-bold">
+            {{ 'professionalMarketplace.accessGrants.fields.startDate' | translate }}
+          </span>
+          <input
+            type="date"
+            class="rounded-lg border px-3 py-2"
+            [(ngModel)]="startDate"
+          />
+        </label>
+        <label class="grid gap-1 text-sm">
+          <span class="font-bold">
+            {{ 'professionalMarketplace.accessGrants.fields.endDate' | translate }}
+          </span>
+          <input
+            type="date"
+            class="rounded-lg border px-3 py-2"
+            [(ngModel)]="endDate"
+          />
+        </label>
+      </div>
+      <div class="flex justify-end">
+        <button
+          class="rounded-lg bg-blue-800 px-4 py-2 text-xs font-bold text-white"
+          [disabled]="busy() || !canManage()"
+          (click)="create()"
+        >
+          {{ 'professionalMarketplace.accessGrants.actions.create' | translate }}
+        </button>
+      </div>
+    } @else if (grant(); as g) {
+      <section class="grid gap-3 rounded-xl border p-4">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <strong>
+              {{
+                'professionalMarketplace.accessGrants.resourceType.' + g.resourceType | translate
+              }}
+            </strong>
+            <p class="font-mono text-xs text-[var(--driveos-text-secondary)]">{{ g.resourceId }}</p>
+          </div>
+          <span class="rounded-full border px-2 py-1 text-[11px] font-bold">
+            {{ 'professionalMarketplace.accessGrants.status.' + g.status | translate }}
+          </span>
+        </div>
+        <dl class="grid grid-cols-2 gap-3 text-sm max-sm:grid-cols-1">
+          <div>
+            <dt class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'professionalMarketplace.accessGrants.fields.permission' | translate }}
+            </dt>
+            <dd class="font-bold">{{ g.permission }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'professionalMarketplace.accessGrants.fields.origin' | translate }}
+            </dt>
+            <dd class="font-bold">
+              {{ 'professionalMarketplace.accessGrants.origin.' + g.originCode | translate }}
+            </dd>
+          </div>
+          <div>
+            <dt class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'professionalMarketplace.accessGrants.fields.period' | translate }}
+            </dt>
+            <dd>{{ g.startDate }} → {{ g.endDate }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'professionalMarketplace.accessGrants.fields.createdAt' | translate }}
+            </dt>
+            <dd>{{ g.createdAtUtc }}</dd>
+          </div>
+        </dl>
+      </section>
+      @if (g.status === 'Revoked') {
+        <section class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm">
+          <strong>
+            {{ 'professionalMarketplace.accessGrants.fields.revocation' | translate }}
+          </strong>
+          <p class="mt-1">{{ g.revocationReason || '—' }}</p>
+          <p class="mt-1 text-xs">{{ g.revokedAtUtc }}</p>
+        </section>
+      }
+      @if (g.status === 'Active' && canRevoke()) {
+        <section class="grid gap-2 rounded-xl border border-red-200 p-4">
+          <strong class="text-sm text-red-700">
+            {{ 'professionalMarketplace.accessGrants.actions.revoke' | translate }}
+          </strong>
+          <textarea
+            class="min-h-20 rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="revokeReason"
+            [placeholder]="
+              'professionalMarketplace.accessGrants.fields.revocationReason' | translate
+            "
+          ></textarea>
+          <button
+            class="justify-self-end rounded-lg border border-red-300 px-3 py-2 text-xs font-bold text-red-700"
+            [disabled]="busy()"
+            (click)="revoke()"
+          >
+            {{ 'professionalMarketplace.accessGrants.actions.revoke' | translate }}
+          </button>
+        </section>
+      }
+    }
+    @if (formErrors().length) {
+      <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+        @for (err of formErrors(); track err) {
+          <p>{{ err }}</p>
+        }
+      </div>
+    }
+  </div>
+</drive-os-drawer>

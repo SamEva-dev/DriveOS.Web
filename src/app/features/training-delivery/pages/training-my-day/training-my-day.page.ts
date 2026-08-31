@@ -10,7 +10,10 @@ import { DriveOsEmptyStateComponent } from '../../../../shared/ui/empty-state/dr
 import { DriveOsSpinnerComponent } from '../../../../shared/ui/spinner/driveos-spinner.component';
 import { DriveOsStateBannerComponent } from '../../../../shared/ui/state-banner/driveos-state-banner.component';
 import { TrainingDeliveryApiService } from '../../data-access/training-delivery-api.service';
-import { TrainingDeliveryDashboard, TrainingDeliveryDashboardSession } from '../../models/training-delivery.models';
+import {
+  TrainingDeliveryDashboard,
+  TrainingDeliveryDashboardSession,
+} from '../../models/training-delivery.models';
 
 @Component({
   selector: 'driveos-training-my-day-page',
@@ -40,25 +43,37 @@ export class TrainingMyDayPage {
 
   readonly sessions = computed(() => this.data()?.sessions ?? []);
   readonly completedCount = computed(() => this.sessions().filter((x) => x.status === 4).length);
-  readonly remainingCount = computed(() => this.sessions().filter((x) => ![4, 5].includes(x.status)).length);
-  readonly attentionCount = computed(() => this.sessions().filter((x) => this.requiresAttention(x)).length);
-  readonly deliveredMinutes = computed(() => this.sessions().reduce((sum, x) => sum + (x.deliveredDurationMinutes ?? 0), 0));
+  readonly remainingCount = computed(
+    () => this.sessions().filter((x) => ![4, 5].includes(x.status)).length,
+  );
+  readonly attentionCount = computed(
+    () => this.sessions().filter((x) => this.requiresAttention(x)).length,
+  );
+  readonly deliveredMinutes = computed(() =>
+    this.sessions().reduce((sum, x) => sum + (x.deliveredDurationMinutes ?? 0), 0),
+  );
 
   readonly activeSession = computed(() => {
     const inProgress = this.sessions().find((x) => x.status === 3 || x.status === 6);
     if (inProgress) return inProgress;
 
     const now = Date.now();
-    return this.sessions().find((x) => {
-      const start = new Date(x.plannedStartAtUtc).getTime();
-      const end = new Date(x.plannedEndAtUtc).getTime();
-      return start <= now && now < end && ![4, 5].includes(x.status);
-    }) ?? null;
+    return (
+      this.sessions().find((x) => {
+        const start = new Date(x.plannedStartAtUtc).getTime();
+        const end = new Date(x.plannedEndAtUtc).getTime();
+        return start <= now && now < end && ![4, 5].includes(x.status);
+      }) ?? null
+    );
   });
 
   readonly nextSession = computed(() => {
     const now = Date.now();
-    return this.sessions().find((x) => new Date(x.plannedStartAtUtc).getTime() > now && ![4, 5].includes(x.status)) ?? null;
+    return (
+      this.sessions().find(
+        (x) => new Date(x.plannedStartAtUtc).getTime() > now && ![4, 5].includes(x.status),
+      ) ?? null
+    );
   });
 
   constructor() {
@@ -114,19 +129,35 @@ export class TrainingMyDayPage {
   }
 
   attendanceKey(status: number | null): string {
-    return status === null ? 'training.statuses.attendance.none' : `training.statuses.attendance.${status}`;
+    return status === null
+      ? 'training.statuses.attendance.none'
+      : `training.statuses.attendance.${status}`;
   }
 
   plannedDurationMinutes(session: TrainingDeliveryDashboardSession): number {
-    return Math.max(0, Math.round((new Date(session.plannedEndAtUtc).getTime() - new Date(session.plannedStartAtUtc).getTime()) / 60_000));
+    return Math.max(
+      0,
+      Math.round(
+        (new Date(session.plannedEndAtUtc).getTime() -
+          new Date(session.plannedStartAtUtc).getTime()) /
+          60_000,
+      ),
+    );
   }
 
   isLate(session: TrainingDeliveryDashboardSession): boolean {
-    return new Date(session.plannedStartAtUtc).getTime() < Date.now() && (session.status === 1 || session.status === 2);
+    return (
+      new Date(session.plannedStartAtUtc).getTime() < Date.now() &&
+      (session.status === 1 || session.status === 2)
+    );
   }
 
   requiresAttention(session: TrainingDeliveryDashboardSession): boolean {
-    return this.isLate(session) || session.hasOpenIncident || (session.status === 4 && !session.hasReport);
+    return (
+      this.isLate(session) ||
+      session.hasOpenIncident ||
+      (session.status === 4 && !session.hasReport)
+    );
   }
 
   isToday(): boolean {

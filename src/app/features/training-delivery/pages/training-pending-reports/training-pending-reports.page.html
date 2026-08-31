@@ -1,39 +1,92 @@
 <div class="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 lg:py-8">
   <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
     <div>
-      <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-orange-600">{{ 'training.pendingReports.kicker' | translate }}</p>
-      <h2 class="mt-1 text-2xl font-black tracking-tight text-[var(--driveos-text-primary)] sm:text-3xl">{{ 'training.pendingReports.title' | translate }}</h2>
-      <p class="mt-2 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'training.pendingReports.description' | translate }}</p>
+      <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-orange-600">
+        {{ 'training.pendingReports.kicker' | translate }}
+      </p>
+      <h2
+        class="mt-1 text-2xl font-black tracking-tight text-[var(--driveos-text-primary)] sm:text-3xl"
+      >
+        {{ 'training.pendingReports.title' | translate }}
+      </h2>
+      <p class="mt-2 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">
+        {{ 'training.pendingReports.description' | translate }}
+      </p>
     </div>
     <div class="flex flex-wrap gap-2">
       @if (canMonitorAll()) {
-        <div class="flex rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-1">
-          <button type="button" class="rounded-lg px-3 py-2 text-xs font-extrabold" [class.bg-blue-800]="!mineOnly()" [class.text-white]="!mineOnly()" (click)="setMineOnly(false)">{{ 'training.pendingReports.scope.all' | translate }}</button>
-          <button type="button" class="rounded-lg px-3 py-2 text-xs font-extrabold" [class.bg-blue-800]="mineOnly()" [class.text-white]="mineOnly()" (click)="setMineOnly(true)">{{ 'training.pendingReports.scope.mine' | translate }}</button>
+        <div
+          class="flex rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-1"
+        >
+          <button
+            type="button"
+            class="rounded-lg px-3 py-2 text-xs font-extrabold"
+            [class.bg-blue-800]="!mineOnly()"
+            [class.text-white]="!mineOnly()"
+            (click)="setMineOnly(false)"
+          >
+            {{ 'training.pendingReports.scope.all' | translate }}
+          </button>
+          <button
+            type="button"
+            class="rounded-lg px-3 py-2 text-xs font-extrabold"
+            [class.bg-blue-800]="mineOnly()"
+            [class.text-white]="mineOnly()"
+            (click)="setMineOnly(true)"
+          >
+            {{ 'training.pendingReports.scope.mine' | translate }}
+          </button>
         </div>
       }
-      <drive-os-button variant="secondary" icon="arrows-clockwise" [disabled]="loading()" (pressed)="load()">{{ 'training.actions.refresh' | translate }}</drive-os-button>
+      <drive-os-button
+        variant="secondary"
+        icon="arrows-clockwise"
+        [disabled]="loading()"
+        (pressed)="load()"
+      >
+        {{ 'training.actions.refresh' | translate }}
+      </drive-os-button>
     </div>
   </div>
 
   @if (errors().length) {
-    <drive-os-state-banner class="mt-5" tone="danger" icon="ph ph-warning-circle" [title]="'training.pendingReports.loadError' | translate">
-      @for (error of errors(); track error) { <p>{{ error }}</p> }
+    <drive-os-state-banner
+      class="mt-5"
+      tone="danger"
+      icon="ph ph-warning-circle"
+      [title]="'training.pendingReports.loadError' | translate"
+    >
+      @for (error of errors(); track error) {
+        <p>{{ error }}</p>
+      }
     </drive-os-state-banner>
   }
 
   @if (data(); as reportData) {
     <div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
-      @for (summary of [
-        ['all', 'total', reportData.summary.total],
-        ['drafts', 'drafts', reportData.summary.drafts],
-        ['complete', 'toComplete', reportData.summary.toComplete],
-        ['correct', 'toCorrect', reportData.summary.toCorrect],
-        ['validate', 'toValidate', reportData.summary.toValidate],
-        ['overdue', 'overdue', reportData.summary.overdue]
-      ]; track summary[0]) {
-        <button type="button" class="rounded-2xl border p-4 text-left transition" [class.border-blue-700]="category() === summary[0]" [class.bg-blue-50]="category() === summary[0]" [class.border-[var(--driveos-border)]]="category() !== summary[0]" [class.bg-[var(--driveos-surface-card)]]="category() !== summary[0]" (click)="setCategory($any(summary[0]))">
-          <p class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]">{{ ('training.pendingReports.summary.' + summary[1]) | translate }}</p>
+      @for (
+        summary of [
+          ['all', 'total', reportData.summary.total],
+          ['drafts', 'drafts', reportData.summary.drafts],
+          ['complete', 'toComplete', reportData.summary.toComplete],
+          ['correct', 'toCorrect', reportData.summary.toCorrect],
+          ['validate', 'toValidate', reportData.summary.toValidate],
+          ['overdue', 'overdue', reportData.summary.overdue],
+        ];
+        track summary[0]
+      ) {
+        <button
+          type="button"
+          class="rounded-2xl border p-4 text-left transition"
+          [class.border-blue-700]="category() === summary[0]"
+          [class.bg-blue-50]="category() === summary[0]"
+          [class.border-[var(--driveos-border)]]="category() !== summary[0]"
+          [class.bg-[var(--driveos-surface-card)]]="category() !== summary[0]"
+          (click)="setCategory($any(summary[0]))"
+        >
+          <p class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]">
+            {{ 'training.pendingReports.summary.' + summary[1] | translate }}
+          </p>
           <p class="mt-2 text-3xl font-black">{{ summary[2] }}</p>
         </button>
       }
@@ -41,49 +94,161 @@
   }
 
   <div class="mt-4 flex gap-2 overflow-x-auto pb-1">
-    @for (tab of ['all','drafts','complete','sync','correct','validate','overdue']; track tab) {
-      <button type="button" class="shrink-0 rounded-full border px-3.5 py-2 text-xs font-extrabold" [class.border-blue-700]="category() === tab" [class.bg-blue-800]="category() === tab" [class.text-white]="category() === tab" [class.border-[var(--driveos-border)]]="category() !== tab" (click)="setCategory($any(tab))">{{ ('training.pendingReports.categories.' + tab) | translate }}</button>
+    @for (
+      tab of ['all', 'drafts', 'complete', 'sync', 'correct', 'validate', 'overdue'];
+      track tab
+    ) {
+      <button
+        type="button"
+        class="shrink-0 rounded-full border px-3.5 py-2 text-xs font-extrabold"
+        [class.border-blue-700]="category() === tab"
+        [class.bg-blue-800]="category() === tab"
+        [class.text-white]="category() === tab"
+        [class.border-[var(--driveos-border)]]="category() !== tab"
+        (click)="setCategory($any(tab))"
+      >
+        {{ 'training.pendingReports.categories.' + tab | translate }}
+      </button>
     }
   </div>
 
   <div class="mt-5">
     @if (loading()) {
-      <div class="grid min-h-72 place-items-center rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]"><drive-os-spinner /></div>
+      <div
+        class="grid min-h-72 place-items-center rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]"
+      >
+        <drive-os-spinner />
+      </div>
     } @else if (!items().length) {
-      <drive-os-empty-state class="block rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-10" icon="ph-duotone ph-clipboard-text" [title]="'training.pendingReports.empty.title' | translate" [description]="'training.pendingReports.empty.description' | translate" />
+      <drive-os-empty-state
+        class="block rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-10"
+        icon="ph-duotone ph-clipboard-text"
+        [title]="'training.pendingReports.empty.title' | translate"
+        [description]="'training.pendingReports.empty.description' | translate"
+      />
     } @else {
       <div class="grid gap-4 xl:grid-cols-2">
         @for (item of items(); track item.sessionId) {
-          <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5" [class.ring-2]="item.isOverdue || item.hasCriticalIncident" [class.ring-orange-300]="item.isOverdue && !item.hasCriticalIncident" [class.ring-red-300]="item.hasCriticalIncident">
+          <article
+            class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+            [class.ring-2]="item.isOverdue || item.hasCriticalIncident"
+            [class.ring-orange-300]="item.isOverdue && !item.hasCriticalIncident"
+            [class.ring-red-300]="item.hasCriticalIncident"
+          >
             <div class="flex items-start justify-between gap-4">
               <div class="min-w-0">
                 <h3 class="truncate text-lg font-black">{{ item.studentDisplayName }}</h3>
-                <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ item.plannedStartAtUtc | date:'dd MMM yyyy' }} · {{ item.plannedStartAtUtc | date:'HH:mm' }}–{{ item.plannedEndAtUtc | date:'HH:mm' }}</p>
+                <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                  {{ item.plannedStartAtUtc | date: 'dd MMM yyyy' }} ·
+                  {{ item.plannedStartAtUtc | date: 'HH:mm' }}–{{
+                    item.plannedEndAtUtc | date: 'HH:mm'
+                  }}
+                </p>
               </div>
-              <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-800 dark:bg-blue-950/30 dark:text-blue-200">{{ statusKey(item) | translate }}</span>
+              <span
+                class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-800 dark:bg-blue-950/30 dark:text-blue-200"
+              >
+                {{ statusKey(item) | translate }}
+              </span>
             </div>
 
             <div class="mt-4">
-              <div class="flex items-center justify-between text-xs font-bold"><span>{{ 'training.pendingReports.progress' | translate }}</span><span>{{ item.completionPercent }} %</span></div>
-              <div class="mt-2 h-2 overflow-hidden rounded-full bg-[var(--driveos-surface-subtle)]"><div class="h-full rounded-full bg-blue-700" [style.width.%]="item.completionPercent"></div></div>
+              <div class="flex items-center justify-between text-xs font-bold">
+                <span>{{ 'training.pendingReports.progress' | translate }}</span>
+                <span>{{ item.completionPercent }} %</span>
+              </div>
+              <div class="mt-2 h-2 overflow-hidden rounded-full bg-[var(--driveos-surface-subtle)]">
+                <div
+                  class="h-full rounded-full bg-blue-700"
+                  [style.width.%]="item.completionPercent"
+                ></div>
+              </div>
             </div>
 
             <div class="mt-4 grid gap-2 sm:grid-cols-2">
-              <div class="rounded-xl bg-[var(--driveos-surface-subtle)] p-3 text-sm"><span class="text-[var(--driveos-text-tertiary)]">{{ 'training.pendingReports.sync.label' | translate }}</span><div class="mt-1 font-bold" [class.text-orange-700]="isSyncPending(item)">{{ (isSyncPending(item) ? 'training.pendingReports.sync.pending' : 'training.pendingReports.sync.current') | translate }}</div></div>
-              <div class="rounded-xl bg-[var(--driveos-surface-subtle)] p-3 text-sm"><span class="text-[var(--driveos-text-tertiary)]">{{ 'training.pendingReports.due.label' | translate }}</span><div class="mt-1 font-bold" [class.text-red-700]="item.isOverdue">{{ dueKey(item) | translate }} · {{ item.dueAtUtc | date:'dd/MM HH:mm' }}</div></div>
+              <div class="rounded-xl bg-[var(--driveos-surface-subtle)] p-3 text-sm">
+                <span class="text-[var(--driveos-text-tertiary)]">
+                  {{ 'training.pendingReports.sync.label' | translate }}
+                </span>
+                <div
+                  class="mt-1 font-bold"
+                  [class.text-orange-700]="isSyncPending(item)"
+                >
+                  {{
+                    (isSyncPending(item)
+                      ? 'training.pendingReports.sync.pending'
+                      : 'training.pendingReports.sync.current'
+                    ) | translate
+                  }}
+                </div>
+              </div>
+              <div class="rounded-xl bg-[var(--driveos-surface-subtle)] p-3 text-sm">
+                <span class="text-[var(--driveos-text-tertiary)]">
+                  {{ 'training.pendingReports.due.label' | translate }}
+                </span>
+                <div
+                  class="mt-1 font-bold"
+                  [class.text-red-700]="item.isOverdue"
+                >
+                  {{ dueKey(item) | translate }} · {{ item.dueAtUtc | date: 'dd/MM HH:mm' }}
+                </div>
+              </div>
             </div>
 
             <div class="mt-4 flex flex-wrap gap-2 text-xs font-bold">
-              @if (item.hasCriticalIncident) { <span class="rounded-full bg-red-50 px-2.5 py-1 text-red-800 dark:bg-red-950/25 dark:text-red-200"><i class="ph ph-warning-octagon mr-1"></i>{{ 'training.pendingReports.priority.criticalIncident' | translate }}</span> }
-              @else if (item.hasOpenIncident) { <span class="rounded-full bg-orange-50 px-2.5 py-1 text-orange-800 dark:bg-orange-950/25 dark:text-orange-200">{{ 'training.pendingReports.priority.incident' | translate }}</span> }
-              @if (item.isRejectedForCorrection) { <span class="rounded-full bg-violet-50 px-2.5 py-1 text-violet-800 dark:bg-violet-950/25 dark:text-violet-200">{{ 'training.pendingReports.priority.rejected' | translate }}</span> }
-              @if (item.isOverdue) { <span class="rounded-full bg-red-50 px-2.5 py-1 text-red-800 dark:bg-red-950/25 dark:text-red-200">{{ 'training.pendingReports.priority.overdue' | translate }}</span> }
+              @if (item.hasCriticalIncident) {
+                <span
+                  class="rounded-full bg-red-50 px-2.5 py-1 text-red-800 dark:bg-red-950/25 dark:text-red-200"
+                >
+                  <i class="ph ph-warning-octagon mr-1"></i>
+                  {{ 'training.pendingReports.priority.criticalIncident' | translate }}
+                </span>
+              } @else if (item.hasOpenIncident) {
+                <span
+                  class="rounded-full bg-orange-50 px-2.5 py-1 text-orange-800 dark:bg-orange-950/25 dark:text-orange-200"
+                >
+                  {{ 'training.pendingReports.priority.incident' | translate }}
+                </span>
+              }
+              @if (item.isRejectedForCorrection) {
+                <span
+                  class="rounded-full bg-violet-50 px-2.5 py-1 text-violet-800 dark:bg-violet-950/25 dark:text-violet-200"
+                >
+                  {{ 'training.pendingReports.priority.rejected' | translate }}
+                </span>
+              }
+              @if (item.isOverdue) {
+                <span
+                  class="rounded-full bg-red-50 px-2.5 py-1 text-red-800 dark:bg-red-950/25 dark:text-red-200"
+                >
+                  {{ 'training.pendingReports.priority.overdue' | translate }}
+                </span>
+              }
             </div>
 
             <div class="mt-5 flex flex-wrap gap-2">
-              @if (isSyncPending(item)) { <drive-os-button icon="cloud-arrow-up" (pressed)="sync(item)">{{ 'training.pendingReports.actions.sync' | translate }}</drive-os-button> }
-              @else if (!item.isWaitingForValidation) { <drive-os-button icon="arrow-right" (pressed)="resume(item)">{{ 'training.pendingReports.actions.continue' | translate }}</drive-os-button> }
-              <drive-os-button variant="secondary" icon="info" (pressed)="openDetails(item)">{{ 'training.pendingReports.actions.details' | translate }}</drive-os-button>
+              @if (isSyncPending(item)) {
+                <drive-os-button
+                  icon="cloud-arrow-up"
+                  (pressed)="sync(item)"
+                >
+                  {{ 'training.pendingReports.actions.sync' | translate }}
+                </drive-os-button>
+              } @else if (!item.isWaitingForValidation) {
+                <drive-os-button
+                  icon="arrow-right"
+                  (pressed)="resume(item)"
+                >
+                  {{ 'training.pendingReports.actions.continue' | translate }}
+                </drive-os-button>
+              }
+              <drive-os-button
+                variant="secondary"
+                icon="info"
+                (pressed)="openDetails(item)"
+              >
+                {{ 'training.pendingReports.actions.details' | translate }}
+              </drive-os-button>
             </div>
           </article>
         }
@@ -92,24 +257,65 @@
   </div>
 </div>
 
-<drive-os-drawer [open]="detailsOpen()" [title]="'training.pendingReports.drawer.title' | translate" [description]="'training.pendingReports.drawer.description' | translate" (closeRequested)="closeDetails()">
+<drive-os-drawer
+  [open]="detailsOpen()"
+  [title]="'training.pendingReports.drawer.title' | translate"
+  [description]="'training.pendingReports.drawer.description' | translate"
+  (closeRequested)="closeDetails()"
+>
   @if (selected(); as item) {
     <div class="space-y-5 p-1">
-      <div class="rounded-2xl border border-blue-100 bg-blue-50/70 p-4 dark:border-blue-900 dark:bg-blue-950/25">
-        <p class="text-xs font-extrabold uppercase tracking-wider text-blue-700 dark:text-blue-300">{{ 'training.pendingReports.drawer.student' | translate }}</p>
+      <div
+        class="rounded-2xl border border-blue-100 bg-blue-50/70 p-4 dark:border-blue-900 dark:bg-blue-950/25"
+      >
+        <p class="text-xs font-extrabold uppercase tracking-wider text-blue-700 dark:text-blue-300">
+          {{ 'training.pendingReports.drawer.student' | translate }}
+        </p>
         <p class="mt-1 text-xl font-black">{{ item.studentDisplayName }}</p>
-        <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{ item.plannedStartAtUtc | date:'fullDate' }} · {{ item.plannedStartAtUtc | date:'HH:mm' }}–{{ item.plannedEndAtUtc | date:'HH:mm' }}</p>
+        <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+          {{ item.plannedStartAtUtc | date: 'fullDate' }} ·
+          {{ item.plannedStartAtUtc | date: 'HH:mm' }}–{{ item.plannedEndAtUtc | date: 'HH:mm' }}
+        </p>
       </div>
       <div class="grid grid-cols-2 gap-3 text-sm">
-        <div class="rounded-xl border border-[var(--driveos-border)] p-3"><p class="text-xs font-bold text-[var(--driveos-text-tertiary)]">{{ 'training.pendingReports.progress' | translate }}</p><p class="mt-1 font-black">{{ item.completionPercent }} %</p></div>
-        <div class="rounded-xl border border-[var(--driveos-border)] p-3"><p class="text-xs font-bold text-[var(--driveos-text-tertiary)]">{{ 'training.pendingReports.drawer.resumeStep' | translate }}</p><p class="mt-1 font-black">{{ resumeStep(item) }}/9</p></div>
+        <div class="rounded-xl border border-[var(--driveos-border)] p-3">
+          <p class="text-xs font-bold text-[var(--driveos-text-tertiary)]">
+            {{ 'training.pendingReports.progress' | translate }}
+          </p>
+          <p class="mt-1 font-black">{{ item.completionPercent }} %</p>
+        </div>
+        <div class="rounded-xl border border-[var(--driveos-border)] p-3">
+          <p class="text-xs font-bold text-[var(--driveos-text-tertiary)]">
+            {{ 'training.pendingReports.drawer.resumeStep' | translate }}
+          </p>
+          <p class="mt-1 font-black">{{ resumeStep(item) }}/9</p>
+        </div>
       </div>
       @if (item.isRejectedForCorrection) {
-        <drive-os-state-banner tone="warning" icon="ph ph-pencil-simple-line" [title]="'training.pendingReports.drawer.correctionRequired' | translate">{{ 'training.pendingReports.drawer.correctionDetailPending' | translate }}</drive-os-state-banner>
+        <drive-os-state-banner
+          tone="warning"
+          icon="ph ph-pencil-simple-line"
+          [title]="'training.pendingReports.drawer.correctionRequired' | translate"
+        >
+          {{ 'training.pendingReports.drawer.correctionDetailPending' | translate }}
+        </drive-os-state-banner>
       }
       <div class="flex flex-wrap gap-2">
-        @if (!item.isWaitingForValidation) { <drive-os-button icon="arrow-right" (pressed)="resume(item)">{{ 'training.pendingReports.actions.continue' | translate }}</drive-os-button> }
-        <drive-os-button variant="secondary" icon="arrow-square-out" (pressed)="openSession(item)">{{ 'training.pendingReports.actions.openSession' | translate }}</drive-os-button>
+        @if (!item.isWaitingForValidation) {
+          <drive-os-button
+            icon="arrow-right"
+            (pressed)="resume(item)"
+          >
+            {{ 'training.pendingReports.actions.continue' | translate }}
+          </drive-os-button>
+        }
+        <drive-os-button
+          variant="secondary"
+          icon="arrow-square-out"
+          (pressed)="openSession(item)"
+        >
+          {{ 'training.pendingReports.actions.openSession' | translate }}
+        </drive-os-button>
       </div>
     </div>
   }

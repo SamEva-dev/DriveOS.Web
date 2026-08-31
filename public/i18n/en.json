@@ -62,7 +62,8 @@
     "yes": "Yes",
     "success": "Success",
     "confirm": "Confirm",
-    "edit": "Edit"
+    "edit": "Edit",
+    "other": "Other"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -75,7 +76,9 @@
     "settings": "Settings",
     "groups": {
       "operations": "Operations",
-      "platform": "DriveOS"
+      "platform": "Platform",
+      "pilotage": "Management",
+      "management": "Administration"
     },
     "crm": {
       "label": "CRM & Admissions",
@@ -94,7 +97,7 @@
       "analytics": "Analytics"
     },
     "studentsMenu": {
-      "label": "Students",
+      "label": "Students & enrollments",
       "dashboard": "Dashboard",
       "list": "Student list",
       "newEnrollment": "New enrollment"
@@ -1115,10 +1118,7 @@
         "invalidTransition": "This offboarding transition is not allowed.",
         "itemNotFound": "The checklist item was not found.",
         "manualItemExpected": "This is an automatic item and cannot be completed manually.",
-        "automaticItemExpected": "This item requires manual completion.",
-        "accessRevocationMustBeExecuted": "Access revocation must be executed through AuthGate and cannot be completed manually.",
-        "accessRevocationUnavailable": "The AuthGate access revocation service is not configured or available.",
-        "accessRevocationFailed": "Revoking DriveOS access in AuthGate failed."
+        "automaticItemExpected": "This item requires manual completion."
       },
       "employee": {
         "invalidRehireUserSelection": "The user account selection for rehiring is invalid.",
@@ -1129,7 +1129,334 @@
         "userAlreadyLinked": "This user account is already linked to an incompatible employment relationship.",
         "duplicateEmployeeNumber": "This employee number is already used by an active employment relationship."
       }
-    }
+    },
+    "professionalMarketplace": {
+      "compliance": {
+        "invalidIdentifier": "Invalid professional compliance identifier.",
+        "invalidDocumentMetadata": "The professional document metadata is invalid.",
+        "invalidCredentialMetadata": "The professional credential metadata is invalid.",
+        "invalidValidityPeriod": "The validity period is invalid.",
+        "invalidDocumentTransition": "This professional document status transition is not allowed.",
+        "invalidCredentialTransition": "This professional credential status transition is not allowed.",
+        "documentExpired": "The document is expired and cannot be approved.",
+        "credentialNotCurrentlyValid": "The credential is not currently valid.",
+        "rejectionReasonRequired": "A rejection reason is required.",
+        "documentNotFound": "Professional document not found.",
+        "credentialNotFound": "Professional credential not found.",
+        "duplicateDocumentReference": "This document is already attached to the profile.",
+        "duplicateCredential": "This credential already exists for this profile.",
+        "invalidRequirement": "The professional compliance requirement is invalid.",
+        "invalidRequirementTransition": "This compliance requirement transition is not allowed.",
+        "duplicateRequirementVersion": "This compliance requirement version already exists.",
+        "profileNotFound": "Professional profile not found."
+      },
+      "profile": {
+        "verifiedProfileRequiredForVisibility": "The profile must be compliant and verified before it can be visible on the marketplace.",
+        "invalidServiceAreas": "The professional service areas are invalid.",
+        "invalidAvailabilityPolicy": "The marketplace availability policy is invalid.",
+        "overlappingAvailabilityRules": "Recurring availability time ranges overlap.",
+        "invalidProfessionalRates": "The professional rates are invalid.",
+        "overlappingProfessionalRates": "Two validity periods for the same rate overlap.",
+        "invalidComplianceEnforcement": "The compliance operational restriction is invalid.",
+        "alreadyActive": "The professional profile is already active.",
+        "archived": "The professional profile is archived and can no longer be changed.",
+        "complianceRequired": "Professional profile compliance must be approved before this action.",
+        "incomplete": "The professional profile is incomplete.",
+        "invalidBusinessIdentity": "The business identity information is invalid.",
+        "invalidEngagementPreferences": "The engagement preferences are invalid.",
+        "invalidIdentifier": "The professional profile identifier is invalid.",
+        "invalidLanguages": "The language list is invalid.",
+        "invalidPerson": "The person linked to the professional profile is invalid.",
+        "invalidPresentation": "The professional profile presentation is invalid.",
+        "invalidProviderOrganization": "The provider organization linked to the profile is invalid.",
+        "invalidServiceArea": "The service area is invalid.",
+        "invalidTeachingCapabilities": "The teaching capabilities are invalid.",
+        "invalidTeachingCategories": "The teaching categories are invalid.",
+        "invalidVehicleInformation": "The vehicle information is invalid.",
+        "notFound": "Professional profile not found.",
+        "personAlreadyLinked": "This person is already linked to a professional profile.",
+        "suspendReasonRequired": "A suspension reason is required."
+      },
+      "opportunities": {
+        "notFound": "Professional opportunity not found.",
+        "invalidIdentifier": "Invalid opportunity identifier.",
+        "invalidContent": "The opportunity content is invalid.",
+        "invalidRequirements": "The opportunity requirements are invalid.",
+        "invalidLocation": "The opportunity location is invalid.",
+        "invalidTimeWindows": "The opportunity time windows are invalid or overlap.",
+        "invalidBudget": "The opportunity budget is invalid.",
+        "invalidTransition": "This opportunity status transition is not allowed.",
+        "opportunityExpired": "An expired opportunity cannot be published.",
+        "notYetExpired": "The opportunity has not expired yet.",
+        "closureReasonRequired": "A cancellation reason is required."
+      },
+      "applications": {
+        "notFound": "Professional application not found.",
+        "invalidIdentifier": "Invalid application identifier.",
+        "duplicateApplication": "This professional has already applied to this opportunity.",
+        "opportunityNotOpen": "This opportunity is not open for applications.",
+        "profileNotEligible": "The professional profile is not eligible for this opportunity.",
+        "invalidMessage": "The application message is invalid.",
+        "invalidRate": "The proposed rate is invalid.",
+        "invalidAvailability": "The proposed availability period is invalid.",
+        "invalidTransition": "This application status transition is not allowed.",
+        "decisionReasonRequired": "A decision reason is required."
+      },
+      "proposals": {
+        "notFound": "Professional proposal not found.",
+        "invalidIdentifier": "Invalid proposal identifier.",
+        "duplicateOpenProposal": "An active proposal already exists for this professional and need.",
+        "profileNotEligible": "The professional profile is not eligible for a direct proposal.",
+        "invalidContent": "The proposal content is invalid.",
+        "invalidRequirements": "The proposal requirements are incompatible with the profile.",
+        "invalidRate": "The proposed rate is invalid.",
+        "invalidExpiration": "The proposal expiration date is invalid.",
+        "invalidTransition": "This proposal status transition is not allowed.",
+        "proposalExpired": "The proposal has expired.",
+        "counterNotAllowed": "A counter proposal is not allowed for this proposal.",
+        "notYetExpired": "The proposal has not expired yet."
+      },
+      "commercialOffers": {
+        "notFound": "Commercial offer not found.",
+        "invalidIdentifier": "Invalid commercial offer identifier.",
+        "invalidSource": "The commercial offer source is invalid or not accepted.",
+        "invalidTerms": "The commercial terms are invalid.",
+        "invalidTransition": "This commercial offer status transition is not allowed.",
+        "bilateralAcceptanceRequired": "Both parties must accept the same revision before finalization.",
+        "cancellationReasonRequired": "A cancellation reason is required.",
+        "activeOfferExists": "An active commercial offer already exists for this source."
+      },
+      "engagements": {
+        "notFound": "Professional engagement not found.",
+        "invalidIdentifier": "Invalid professional engagement identifier.",
+        "finalizedOfferRequired": "A finalized commercial offer is required to create the engagement.",
+        "duplicateEngagement": "An engagement already exists for this commercial offer.",
+        "invalidTransition": "This professional engagement status transition is not allowed.",
+        "invalidPreparationStep": "The preparation step is invalid.",
+        "preparationIncomplete": "All mandatory preparation steps must be completed before activation.",
+        "outsideEngagementPeriod": "The engagement cannot be activated outside its contractual period.",
+        "statusReasonRequired": "A reason is required for this operation.",
+        "engagementNotEndedYet": "The professional engagement period has not ended yet.",
+        "professionalUserRequired": "The professional profile must be linked to a user account before scheduling preparation.",
+        "schedulingCategoryMismatch": "The engagement categories no longer match the professional profile.",
+        "schedulingTimeZoneRequired": "An availability time zone is required before scheduling preparation.",
+        "schedulingPreparationMustBeValidated": "Scheduling preparation must be performed by the dedicated validation flow and cannot be toggled manually.",
+        "contractPreparationMustBeValidated": "Contract preparation must be validated from an actually signed contract.",
+        "compliancePreparationMustBeValidated": "Compliance preparation must be validated from the actual profile state.",
+        "signedProfessionalContractRequired": "A signed professional service contract is required before activation.",
+        "compliantActiveProfessionalRequired": "The professional must be active and compliant before relationship activation."
+      },
+      "reviews": {
+        "notFound": "Professional review not found.",
+        "invalidIdentifier": "Invalid review identifier.",
+        "duplicateReview": "A review already exists for this collaboration.",
+        "completedCollaborationRequired": "A review can only be published after a collaboration was activated and then closed.",
+        "invalidRatings": "All ratings must be between 1 and 5.",
+        "invalidComment": "The review comment is invalid.",
+        "invalidResponse": "The professional response is invalid.",
+        "reviewNotRespondable": "This review cannot receive a response in its current state.",
+        "invalidTransition": "This review status transition is not allowed.",
+        "moderationReasonRequired": "A moderation reason is required.",
+        "invalidReport": "The review report is invalid.",
+        "duplicateOpenReport": "An open report already exists for this review and user.",
+        "reportNotFound": "Review report not found.",
+        "invalidReportResolution": "The report resolution is invalid.",
+        "profileAccessDenied": "You can only respond to reviews on your own professional profile.",
+        "organizationMismatch": "This organization cannot report this review."
+      },
+      "missions": {
+        "notFound": "Professional mission not found.",
+        "invalidIdentifier": "Invalid mission identifier.",
+        "activeEngagementRequired": "An active and operational professional engagement is required.",
+        "invalidContent": "The mission content is invalid.",
+        "outsideEngagementPeriod": "The mission must be fully contained within the engagement period.",
+        "invalidTeachingCategories": "The mission teaching categories are not covered by the engagement.",
+        "invalidEstimatedWorkload": "The estimated mission workload is invalid.",
+        "branchMismatch": "The mission branch is incompatible with the engagement branch.",
+        "invalidTimeWindows": "The mission time windows are invalid or overlap.",
+        "invalidTransition": "This mission status transition is not allowed.",
+        "outsideMissionPeriod": "The mission cannot be activated or resumed outside its period.",
+        "statusReasonRequired": "A reason is required for this operation.",
+        "missionNotEndedYet": "The mission period has not ended yet."
+      },
+      "accessGrants": {
+        "notFound": "External access grant not found.",
+        "invalidIdentifier": "Invalid external access grant identifier.",
+        "invalidGrant": "The external access scope or period is invalid.",
+        "outsideEngagementPeriod": "The access grant period must remain within the engagement period.",
+        "duplicateGrant": "An identical active access grant already exists.",
+        "invalidTransition": "This external access grant transition is not allowed.",
+        "revocationReasonRequired": "A revocation reason is required.",
+        "notYetExpired": "The access grant has not expired yet.",
+        "activeEngagementRequired": "An active professional engagement is required.",
+        "accessPreparationMustBeValidated": "Access preparation must be performed by the dedicated validation flow and cannot be toggled manually.",
+        "professionalUserRequired": "The professional profile must be linked to a user account before access preparation.",
+        "outsideResourcePeriod": "The access grant period must remain within the target resource period."
+      },
+      "serviceEntries": {
+        "notFound": "Service entry not found.",
+        "invalidIdentifier": "Invalid service entry identifier.",
+        "invalidService": "The service entry data is invalid.",
+        "outsideEngagementPeriod": "The service entry must fall within the engagement period.",
+        "duplicateSource": "A service entry already exists for this source.",
+        "invalidTransition": "This service entry transition is not allowed.",
+        "reasonRequired": "A reason is required.",
+        "activeEngagementRequired": "The professional relationship must allow service recording."
+      },
+      "serviceStatements": {
+        "notFound": "Service statement not found.",
+        "invalidIdentifier": "Invalid service statement identifier.",
+        "invalidPeriod": "The service statement period is invalid.",
+        "noEntries": "No service entries can be included in this statement.",
+        "unsubmittedEntries": "All service entries in the statement must have been submitted.",
+        "mixedCurrencies": "A service statement cannot mix currencies.",
+        "duplicatePeriod": "A statement already exists for this engagement and period.",
+        "invalidTransition": "This service statement status transition is not allowed.",
+        "reasonRequired": "A reason is required.",
+        "invoiceNotAllowed": "The statement does not contain an approved invoiceable amount."
+      },
+      "invoices": {
+        "notFound": "Professional invoice not found.",
+        "invalidIdentifier": "Invalid professional invoice identifier.",
+        "approvedStatementRequired": "The service statement must be approved or partially approved before invoicing.",
+        "noApprovedAmount": "There is no approved amount available for invoicing.",
+        "invalidAmounts": "The invoice amounts or dates are invalid.",
+        "invalidCurrency": "The invoice currency is invalid.",
+        "invoiceNumberRequired": "The freelancer invoice number is required in this mode.",
+        "duplicateStatement": "An active invoice already exists for this service statement.",
+        "invalidTransition": "This invoice transition is not allowed.",
+        "immutableAfterValidation": "The invoice can no longer be edited after validation.",
+        "immutableAfterRequest": "The invoice cannot be cancelled after it has been sent to Finance.",
+        "invalidFinanceReference": "The Finance supplier invoice reference is invalid or could not be found."
+      },
+      "dashboard": {
+        "invalidPeriod": "The selected dashboard period is invalid."
+      },
+      "studentAssignments": {
+        "notFound": "Student assignment not found.",
+        "invalidIdentifier": "Invalid student assignment identifier.",
+        "outsideMissionPeriod": "The assignment must remain within the mission period.",
+        "invalidScope": "The assignment scope is invalid.",
+        "duplicateAssignment": "This student is already assigned to this mission.",
+        "invalidTransition": "This assignment transition is not allowed.",
+        "revocationReasonRequired": "A revocation reason is required.",
+        "studentNotFound": "The student does not exist in this organization.",
+        "activeMissionRequired": "The mission must be active before a student can be assigned.",
+        "assignmentReasonRequired": "A student assignment reason is required."
+      },
+      "invitations": {
+        "notFound": "Invitation not found or link invalid.",
+        "invalidIdentifier": "Invalid invitation identifier.",
+        "recipientRequired": "An invitation recipient is required.",
+        "invalidExpiration": "The invitation expiration date is invalid.",
+        "invalidToken": "The invitation link is invalid.",
+        "expired": "This invitation has expired.",
+        "invalidTransition": "This invitation transition is not allowed.",
+        "authenticationRequired": "Sign in or create your account before accepting the invitation.",
+        "invitedUserMismatch": "This invitation is intended for another DriveOS account.",
+        "duplicatePending": "An active invitation already exists for this recipient and mission."
+      },
+      "disputes": {
+        "notFound": "Dispute not found.",
+        "invalidIdentifier": "Invalid dispute identifier.",
+        "invalidDescription": "The dispute description is invalid.",
+        "invalidEvidence": "The dispute evidence is invalid.",
+        "invalidMessage": "The dispute message is invalid.",
+        "duplicateOpenDispute": "An open dispute already exists for this service entry.",
+        "closed": "This dispute is already closed.",
+        "resolutionRequired": "A detailed resolution is required.",
+        "escalationReasonRequired": "An escalation reason is required."
+      },
+      "compliancePolicies": {
+        "notFound": "Compliance criticality policy not found.",
+        "invalidPolicy": "The compliance criticality policy is invalid.",
+        "invalidPeriod": "The policy effective period is invalid.",
+        "duplicatePolicy": "This policy version already exists.",
+        "invalidTransition": "This policy transition is not allowed."
+      },
+      "complianceWaivers": {
+        "notFound": "Compliance waiver not found.",
+        "invalidWaiver": "The compliance waiver is invalid.",
+        "invalidPeriod": "The waiver period is invalid.",
+        "duplicateWaiver": "An active waiver already overlaps this period.",
+        "invalidTransition": "This waiver transition is not allowed.",
+        "reasonRequired": "A reason is required.",
+        "notYetExpired": "The waiver has not expired yet."
+      }
+    },
+    "communication": {
+      "conversation": {
+        "notFound": "Conversation not found.",
+        "invalidIdentifier": "Invalid conversation identifier.",
+        "invalidRelatedEntity": "The conversation business context is invalid.",
+        "invalidParticipants": "The conversation participants are invalid.",
+        "participantNotFound": "Conversation participant not found.",
+        "closed": "This conversation is closed."
+      },
+      "message": {
+        "empty": "The message must contain text or at least one attachment.",
+        "tooLong": "The message is too long.",
+        "senderNotAuthorized": "You are not authorized to send a message in this conversation."
+      },
+      "notifications": {
+        "notFound": "Notification not found.",
+        "invalidIdentifier": "Invalid notification identifier.",
+        "invalidContent": "The notification content is invalid.",
+        "invalidTransition": "This notification transition is not allowed."
+      },
+      "notificationPreferences": {
+        "notFound": "Notification preference not found.",
+        "invalidIdentifier": "Invalid notification preference identifier.",
+        "invalidCategory": "The notification category is invalid."
+      },
+      "surveys": {
+        "invalidIdentifier": "Invalid survey request identifier.",
+        "invalidContent": "The survey request is invalid."
+      }
+    },
+    "finance": {
+      "supplierInvoices": {
+        "notFound": "Supplier invoice not found.",
+        "invalidIdentifier": "Invalid supplier invoice identifier.",
+        "invalidAmounts": "The supplier invoice amounts or dates are invalid.",
+        "invalidCurrency": "The supplier invoice currency is invalid.",
+        "duplicateSource": "A supplier invoice already exists for this source.",
+        "invalidTransition": "This supplier invoice status transition is not allowed.",
+        "reasonRequired": "A reason is required for this decision.",
+        "paymentNotAllowed": "Payment cannot be scheduled or recorded before the required approvals.",
+        "invalidSettlementAmount": "The supplier settlement amount is invalid.",
+        "invalidRefundAmount": "The supplier refund amount is invalid."
+      },
+      "supplierPayments": {
+        "notFound": "Supplier payment attempt not found.",
+        "invalidIdentifier": "Invalid supplier payment attempt identifier.",
+        "invalidAmount": "The supplier payment amount is invalid.",
+        "invalidCurrency": "The supplier payment currency is invalid.",
+        "invalidPaymentMethod": "The supplier payment method is invalid.",
+        "invalidTransition": "This supplier payment attempt transition is not allowed.",
+        "failureReasonRequired": "A payment failure reason is required.",
+        "activeAttemptExists": "An active payment attempt already exists for this supplier invoice.",
+        "invoiceNotApproved": "The supplier invoice must be approved before payment can be scheduled.",
+        "mixedCurrenciesNotAllowed": "A supplier payment batch cannot mix currencies."
+      }
+    },
+    "contracts": {
+      "professionalServiceContract": {
+        "notFound": "Professional service contract not found.",
+        "invalid": "The professional service contract is invalid.",
+        "duplicate": "A contract already exists for this relationship.",
+        "invalidTransition": "This contract transition is not allowed.",
+        "invalidDocument": "The generated contract document is invalid.",
+        "documentHashMismatch": "The document hash does not match the version being signed.",
+        "signatoryNotFound": "The signatory does not belong to this contract.",
+        "alreadySigned": "This signatory has already signed this version.",
+        "signingOrderViolation": "The contract signing order is not respected.",
+        "invalidSignatureEvidence": "The signature evidence is invalid.",
+        "reasonRequired": "A reason is required.",
+        "revisionRequiresSignature": "A new contract version can only be created after at least one signature."
+      }
+    },
+    "technicalUnavailable": "The service is temporarily unavailable. We could not reach the server. Please try again in a few moments."
   },
   "organizations": {
     "title": "My organizations",
@@ -2311,6 +2638,11 @@
       "payment": {
         "title": "Track payments",
         "description": "View installments, collections and overdue balances."
+      },
+      "permitAppointment": {
+        "title": "Driving licence appointment",
+        "description": "Open the schedule to create or find an appointment related to the driving licence journey.",
+        "badge": "Schedule"
       }
     },
     "metrics": {
@@ -5415,7 +5747,8 @@
       "tabs": {
         "instructors": "Instructors",
         "resources": "Resources",
-        "students": "Students"
+        "students": "Students",
+        "services": "Services"
       },
       "title": "Availability",
       "weekdays": {
@@ -5567,7 +5900,8 @@
           "global": "Global",
           "instructors": "Instructors",
           "vehicles": "Vehicles",
-          "students": "Students"
+          "students": "Students",
+          "services": "Services"
         },
         "global": {
           "title": "Global schedule",
@@ -9552,6 +9886,1421 @@
       "equipmentAssignments": "Equipment remains to be returned.",
       "timesheets": "Timesheets remain to be finalized.",
       "professionalRestrictions": "Professional restrictions remain to be reviewed."
+    }
+  },
+  "professionalMarketplace": {
+    "label": "Professional Marketplace",
+    "navigation": {
+      "label": "Marketplace",
+      "dashboard": "Dashboard",
+      "professionals": "Find a professional",
+      "missions": "Missions",
+      "serviceStatements": "Service statements",
+      "opportunities": "Opportunities",
+      "myMissions": "My missions",
+      "myStudents": "My students",
+      "myServiceEntries": "My services",
+      "myDashboard": "My dashboard",
+      "analytics": "Analytics"
+    },
+    "dashboard": {
+      "title": "Professional Marketplace",
+      "description": "Monitor freelancer onboarding, missions, services and supplier financial flows.",
+      "loadError": "Unable to load the marketplace dashboard.",
+      "missingOrganization": "No active organization is associated with the current session.",
+      "sections": {
+        "integration": "Onboarding",
+        "integrationTitle": "Activation and compliance",
+        "operations": "Operations",
+        "operationsTitle": "Missions and activity",
+        "finance": "Finance",
+        "financeTitle": "Services and payments"
+      },
+      "kpis": {
+        "activeEngagements": "Active relationships",
+        "activeMissions": "Active missions",
+        "pendingEntries": "Pending service entries",
+        "disputedEntries": "Disputed entries",
+        "pendingInvoices": "Pending invoices",
+        "expiringCredentials": "Expiring credentials",
+        "profileCompletion": "Complete profiles",
+        "invitationAcceptance": "Invitation acceptance",
+        "signedContractRate": "Signed contracts",
+        "reliableRelationships": "Reliable relationships",
+        "plannedHours": "Planned hours",
+        "realizedHours": "Realized hours",
+        "occupancy": "Occupancy rate",
+        "studentsHandled": "Students handled",
+        "invoicedAmount": "Invoiced amount",
+        "overdueInvoices": "Overdue invoices",
+        "averagePaymentDelay": "Average payment delay",
+        "averageHourlyCost": "Average hourly cost",
+        "pendingStatements": "Pending statements",
+        "scheduledPayments": "Scheduled payments",
+        "paidInvoices": "Paid invoices",
+        "openReviewReports": "Open review reports",
+        "averageValidationDelay": "Average validation delay",
+        "failedPayments": "Failed payments",
+        "firstPassValidation": "First-pass validation",
+        "initialIntegrationsCompleted": "Initial integrations completed",
+        "openDisputes": "Open disputes"
+      },
+      "alerts": {
+        "title": "Alerts and attention points",
+        "description": "BC-13 items requiring action or monitoring.",
+        "empty": "No active marketplace alert.",
+        "fallback": "Marketplace alert: {{code}}",
+        "disputedServiceEntries": "Some service entries are currently disputed.",
+        "failedPayments": "One or more supplier payments have failed.",
+        "expiringCredentials": "Professional credentials are approaching expiration.",
+        "pendingServiceEntries": "Service entries are awaiting validation.",
+        "pendingInvoices": "Supplier invoices are awaiting processing.",
+        "overdueInvoices": "Supplier invoices are overdue.",
+        "openDisputes": "Supplier disputes remain open."
+      },
+      "quickAccess": {
+        "title": "Operational status",
+        "description": "Additional summary of current flows."
+      }
+    },
+    "search": {
+      "title": "Professional directory",
+      "description": "Find available professionals by skills, service area, availability and pricing conditions.",
+      "filters": {
+        "country": "Country",
+        "category": "Teaching category",
+        "language": "Language",
+        "specialization": "Specialization",
+        "area": "Service area",
+        "radius": "Radius (km)",
+        "date": "Available on",
+        "from": "From",
+        "to": "To",
+        "maxRate": "Maximum rate",
+        "currency": "Currency",
+        "rateUnit": "Rate unit",
+        "verifiedOnly": "Show verified profiles only",
+        "latitude": "Latitude",
+        "longitude": "Longitude"
+      },
+      "actions": {
+        "search": "Search",
+        "openProfile": "Open profile"
+      },
+      "results": {
+        "count": "{{count}} professional(s)",
+        "page": "Page {{page}}",
+        "empty": "No professional matches these criteria.",
+        "verified": "Verified",
+        "negotiable": "Negotiable"
+      },
+      "errors": {
+        "load": "Unable to load the professional directory."
+      }
+    },
+    "rateUnits": {
+      "Hour": "/ hour",
+      "HalfDay": "/ half-day",
+      "Day": "/ day",
+      "Session": "/ session",
+      "Mission": "/ mission"
+    },
+    "professionalTypes": {
+      "DrivingInstructor": "Driving instructor",
+      "InstructorTrainer": "Instructor trainer",
+      "AdministrativeContractor": "Administrative contractor",
+      "ComplianceConsultant": "Compliance consultant",
+      "Other": "Other professional"
+    },
+    "profile360": {
+      "eyebrow": "Professional marketplace",
+      "title": "Freelancer profile",
+      "complete": "Profile complete",
+      "noBiography": "No presentation provided.",
+      "yearsExperience": "years of experience",
+      "identity": "Professional identity",
+      "contact": "Contact details",
+      "primaryArea": "Primary area",
+      "deferredReadModel": "This section will be enabled with its dedicated read endpoint in the next BC-13 batches.",
+      "errors": {
+        "load": "Unable to load the professional profile."
+      },
+      "tabs": {
+        "overview": "Overview",
+        "profile": "Profile",
+        "capabilities": "Qualifications",
+        "availability": "Availability",
+        "areas": "Areas",
+        "rates": "Rates",
+        "compliance": "Compliance",
+        "missions": "Missions",
+        "students": "Students",
+        "services": "Services",
+        "invoices": "Invoices",
+        "reviews": "Reviews"
+      },
+      "cards": {
+        "categories": "Teaching categories",
+        "areas": "Service areas",
+        "rates": "Rate schedules",
+        "vehicle": "Personal vehicle"
+      },
+      "fields": {
+        "legalName": "Legal name",
+        "tradeName": "Trade name",
+        "registration": "Registration",
+        "tax": "Tax / VAT number"
+      },
+      "availability": {
+        "notice": "Minimum notice: {{hours}} h",
+        "daily": "Daily maximum: {{minutes}} min"
+      },
+      "rate": {
+        "code": "Rate",
+        "category": "Category",
+        "amount": "Amount",
+        "unit": "Unit",
+        "negotiable": "Negotiable"
+      },
+      "empty": {
+        "capabilities": "No detailed qualifications.",
+        "availability": "No recurring availability provided.",
+        "areas": "No service area provided.",
+        "rates": "No rates provided."
+      }
+    },
+    "invitations": {
+      "drawer": {
+        "title": "Invite a freelancer",
+        "description": "Create and send a secure invitation without leaving your current workspace."
+      },
+      "actions": {
+        "invite": "Invite",
+        "createAndSend": "Create and send"
+      },
+      "sections": {
+        "recipient": "Recipient",
+        "recipientHelp": "Provide an email or phone number unless a DriveOS professional profile is already selected.",
+        "scope": "Collaboration scope",
+        "scopeHelp": "You can link the invitation to an existing branch or mission."
+      },
+      "form": {
+        "email": "Email",
+        "phone": "Phone",
+        "branchId": "Branch ID",
+        "missionId": "Mission ID",
+        "invitedUserId": "DriveOS user ID",
+        "expirationDate": "Expiration date",
+        "message": "Message",
+        "messagePlaceholder": "Describe the need, period and main proposed terms.",
+        "linkedProfile": "Selected DriveOS profile"
+      },
+      "success": {
+        "title": "Invitation sent",
+        "expires": "The link remains valid until {{date}}.",
+        "secureLink": "Secure link"
+      },
+      "errors": {
+        "permission": "You need both invitation create and send permissions.",
+        "organization": "No active organization was found.",
+        "recipientRequired": "Provide an email, phone number, or select a professional profile.",
+        "expirationRequired": "The expiration date is required."
+      }
+    },
+    "compliance": {
+      "globalStatus": "Overall compliance status",
+      "documents": "Professional documents",
+      "credentials": "Credentials and qualifications",
+      "emptyDocuments": "No professional document recorded.",
+      "emptyCredentials": "No credential or qualification recorded.",
+      "issueDate": "Issue date",
+      "expirationDate": "Expiration date",
+      "mandatory": "Mandatory",
+      "drawerTitle": "Professional compliance",
+      "documentReferenceId": "BC-06 document reference (GUID)",
+      "documentType": "Document type",
+      "credentialType": "Credential type",
+      "issuer": "Issuing authority",
+      "referenceNumber": "Reference number",
+      "categories": "Categories (comma separated)",
+      "evidenceDocumentId": "Associated evidence document (GUID)",
+      "rejectionReason": "Rejection reason",
+      "actions": {
+        "addDocument": "Add document",
+        "addCredential": "Add credential",
+        "reevaluate": "Re-evaluate compliance",
+        "review": "Review",
+        "approve": "Approve",
+        "reject": "Reject",
+        "confirmReject": "Confirm rejection"
+      }
+    },
+    "opportunities": {
+      "title": "Opportunities & staffing needs",
+      "subtitle": "Centralize professional staffing needs, publish them and manage their lifecycle without leaving this screen.",
+      "tabs": {
+        "active": "Active",
+        "drafts": "Drafts",
+        "closed": "Closed"
+      },
+      "empty": "No opportunity in this tab.",
+      "noBudget": "No budget specified",
+      "budgetSection": "Indicative budget",
+      "drawer": {
+        "createTitle": "Create opportunity",
+        "createDescription": "Define the need before publishing. New opportunities are created as drafts.",
+        "detailTitle": "Opportunity details",
+        "detailDescription": "Review the need and manage its lifecycle from this drawer.",
+        "tabs": {
+          "details": "Details",
+          "matching": "Matching"
+        }
+      },
+      "actions": {
+        "new": "New opportunity",
+        "create": "Create draft",
+        "publish": "Publish",
+        "pause": "Pause",
+        "fill": "Mark as filled",
+        "cancel": "Cancel",
+        "confirmCancel": "Confirm cancellation"
+      },
+      "cancel": {
+        "reason": "Cancellation reason"
+      },
+      "fields": {
+        "title": "Title",
+        "branchId": "Branch (ID)",
+        "description": "Description",
+        "professionalType": "Professional type",
+        "categories": "Teaching categories",
+        "languages": "Required languages",
+        "specializations": "Required specializations",
+        "country": "Country",
+        "areaCode": "Area code",
+        "area": "Area",
+        "radius": "Radius (km)",
+        "startsOn": "Start",
+        "endsOn": "End",
+        "engagement": "Engagement type",
+        "vehicle": "Vehicle",
+        "estimatedMinutes": "Estimated volume (minutes)",
+        "budget": "Budget",
+        "currency": "Currency",
+        "budgetUnit": "Unit",
+        "negotiable": "Negotiable budget",
+        "closureReason": "Closure reason"
+      },
+      "status": {
+        "Draft": "Draft",
+        "Published": "Published",
+        "Paused": "Paused",
+        "Filled": "Filled",
+        "Expired": "Expired",
+        "Cancelled": "Cancelled"
+      },
+      "errors": {
+        "load": "Unable to load opportunities.",
+        "organization": "No active organization found.",
+        "required": "Title, description, country, period and at least one category are required.",
+        "cancelReason": "A cancellation reason is required."
+      }
+    },
+    "matching": {
+      "title": "Professional matching",
+      "subtitle": "Ranked professionals compatible with this opportunity.",
+      "publishedOnly": "Matching is available only for published opportunities.",
+      "noRunPermission": "You can view matching but do not have permission to run the calculation.",
+      "loadError": "Unable to load matches.",
+      "loading": "Calculating compatible professionals…",
+      "empty": "No compatible professional found.",
+      "eligible": "Eligible",
+      "notEligible": "Not eligible",
+      "years": "years of experience",
+      "startingRate": "Starting rate",
+      "breakdown": "Score breakdown",
+      "reasons": {
+        "COMPLIANCE_NOT_VERIFIED": "Compliance not verified",
+        "PROFESSIONAL_TYPE_MISMATCH": "Professional type mismatch",
+        "NO_TEACHING_CATEGORY_MATCH": "No matching teaching category",
+        "REQUIRED_LANGUAGE_MISSING": "Required language missing",
+        "REQUIRED_SPECIALIZATION_MISSING": "Required specialization missing",
+        "OUTSIDE_ORGANIZATION_RADIUS": "Outside requested radius",
+        "OUTSIDE_PROFESSIONAL_RADIUS": "Outside professional service radius",
+        "COMMERCIAL_AVAILABILITY_MISMATCH": "Availability mismatch",
+        "PROFESSIONAL_VEHICLE_REQUIRED": "Professional vehicle required"
+      },
+      "criteria": {
+        "category": "Category",
+        "language": "Languages",
+        "specialization": "Specialization",
+        "distance": "Distance",
+        "availability": "Availability",
+        "vehicle": "Vehicle",
+        "rate": "Rate",
+        "compliance": "Compliance"
+      }
+    },
+    "applications": {
+      "tab": "Applications",
+      "years": "years experience",
+      "empty": "No applications for this opportunity.",
+      "status": {
+        "Submitted": "Submitted",
+        "UnderReview": "Under review",
+        "Shortlisted": "Shortlisted",
+        "Accepted": "Accepted",
+        "Rejected": "Rejected",
+        "Withdrawn": "Withdrawn"
+      },
+      "detail": {
+        "title": "Application details",
+        "application": "Application",
+        "rate": "Proposed rate",
+        "availability": "Stated availability",
+        "decisionReason": "Decision reason",
+        "rejectReason": "Rejection reason"
+      },
+      "actions": {
+        "review": "Start review",
+        "shortlist": "Shortlist",
+        "accept": "Accept",
+        "reject": "Reject"
+      },
+      "errors": {
+        "load": "Unable to load applications.",
+        "rejectReason": "A rejection reason is required."
+      },
+      "tabs": {
+        "application": "Application",
+        "negotiation": "Negotiation",
+        "commercialOffer": "Commercial offer",
+        "engagement": "Engagement"
+      }
+    },
+    "proposals": {
+      "sectionTitle": "Proposals and negotiation",
+      "sectionHint": "Keep all commercial proposals linked to this application here.",
+      "empty": "No proposal for this application.",
+      "create": {
+        "title": "New proposal",
+        "defaultSubject": "Collaboration proposal — {{name}}"
+      },
+      "detail": {
+        "title": "Commercial proposal"
+      },
+      "tabs": {
+        "terms": "Terms",
+        "history": "History"
+      },
+      "fields": {
+        "subject": "Subject",
+        "message": "Message",
+        "startsOn": "Start",
+        "endsOn": "End",
+        "period": "Period",
+        "engagement": "Engagement type",
+        "vehicle": "Vehicle",
+        "rate": "Proposed rate",
+        "negotiable": "Negotiable",
+        "expiresOn": "Valid until"
+      },
+      "actions": {
+        "new": "New proposal",
+        "send": "Send proposal",
+        "counter": "Counter",
+        "accept": "Accept",
+        "reject": "Reject",
+        "withdraw": "Withdraw"
+      },
+      "status": {
+        "Sent": "Sent",
+        "Countered": "Countered",
+        "Accepted": "Accepted",
+        "Rejected": "Rejected",
+        "Withdrawn": "Withdrawn",
+        "Expired": "Expired"
+      },
+      "history": {
+        "actor": "Author",
+        "empty": "No history available."
+      },
+      "errors": {
+        "load": "Unable to load proposals.",
+        "required": "Complete all required fields.",
+        "reason": "A reason is required.",
+        "rate": "The proposed rate is invalid."
+      }
+    },
+    "commercialOffers": {
+      "sectionTitle": "Final commercial offer",
+      "sectionHint": "Freeze the final terms here before creating the engagement and service contract.",
+      "offer": "Commercial offer",
+      "current": "current version",
+      "empty": "No commercial offer has been created yet.",
+      "drawer": {
+        "title": "Commercial offer"
+      },
+      "tabs": {
+        "terms": "Terms",
+        "history": "History"
+      },
+      "status": {
+        "Draft": "Draft",
+        "Sent": "Sent",
+        "PartiallyAccepted": "Partially accepted",
+        "Accepted": "Accepted",
+        "Finalized": "Finalized",
+        "Cancelled": "Cancelled"
+      },
+      "actions": {
+        "new": "Create offer",
+        "create": "Create offer",
+        "revise": "Revise",
+        "saveRevision": "Save revision",
+        "send": "Send",
+        "acceptByOrganization": "Accept as driving school",
+        "finalize": "Finalize",
+        "cancel": "Cancel",
+        "confirmCancel": "Confirm cancellation"
+      },
+      "fields": {
+        "period": "Period",
+        "startsOn": "Start",
+        "endsOn": "End",
+        "rate": "Rate",
+        "rateAmount": "Rate",
+        "currency": "Currency",
+        "rateUnit": "Rate unit",
+        "engagementType": "Engagement type",
+        "vehicle": "Vehicle provision",
+        "estimatedMinutes": "Estimated volume (minutes)",
+        "mileageRate": "Mileage rate",
+        "vehicleAllowance": "Vehicle allowance",
+        "minimumGuaranteed": "Minimum guaranteed",
+        "categories": "Teaching categories",
+        "clauses": "Clauses / contract codes",
+        "cancelReason": "Cancellation reason"
+      },
+      "errors": {
+        "load": "Unable to load commercial offers.",
+        "acceptedSourceRequired": "An accepted application or proposal is required.",
+        "invalidTerms": "The offer terms are incomplete or invalid.",
+        "cancelReason": "A cancellation reason is required."
+      }
+    },
+    "engagements": {
+      "title": "Professional engagement",
+      "sectionTitle": "Professional engagement / relationship",
+      "sectionHint": "Manage activation and the collaboration lifecycle from one workspace.",
+      "ready": "Ready to activate",
+      "preparing": "Preparation in progress",
+      "emptyReady": "A finalized commercial offer is available. Create the engagement to start operational preparation.",
+      "emptyOfferRequired": "Finalize a commercial offer before creating the professional relationship.",
+      "drawer": {
+        "title": "Professional engagement"
+      },
+      "tabs": {
+        "summary": "Summary",
+        "preparation": "Preparation",
+        "contract": "Contract",
+        "access": "Access",
+        "missions": "Missions",
+        "services": "Services",
+        "billing": "Billing",
+        "messages": "Messages"
+      },
+      "status": {
+        "PendingActivation": "Pending activation",
+        "Active": "Active",
+        "Suspended": "Suspended",
+        "Ended": "Ended",
+        "Terminated": "Terminated"
+      },
+      "fields": {
+        "period": "Period",
+        "rate": "Rate",
+        "offerRevision": "Offer revision",
+        "categories": "Teaching categories"
+      },
+      "preparation": {
+        "ready": "requirements completed",
+        "compliance": "Compliance",
+        "contract": "Signed contract",
+        "access": "External access",
+        "scheduling": "Scheduling and capacity",
+        "internalApproval": "Internal approval",
+        "done": "Completed",
+        "pending": "Pending"
+      },
+      "actions": {
+        "create": "Create engagement",
+        "validateCompliance": "Validate compliance",
+        "validateContract": "Validate signed contract",
+        "prepareAccess": "Prepare access",
+        "prepareScheduling": "Prepare scheduling",
+        "internalApproval": "Approve internally",
+        "activate": "Activate",
+        "suspend": "Suspend",
+        "resume": "Resume",
+        "complete": "Complete",
+        "terminate": "Terminate"
+      },
+      "contract": {
+        "signatures": "required signatures",
+        "none": "No service contract is attached to this engagement yet.",
+        "owner": "Contract lifecycle and signature evidence remain owned by BC-06 Contracts & Documents.",
+        "manage": "Manage contract"
+      },
+      "access": {
+        "title": "Contextual external access",
+        "description": "Freelance access must remain limited to the relationship, missions, resources and their validity period."
+      },
+      "deferred": {
+        "missions": "Missions will be connected in MKT-FE-014 without adding another page.",
+        "services": "Services and statements will be connected in their dedicated increments.",
+        "billing": "Supplier invoicing and payments from BC-07 will be displayed here."
+      },
+      "errors": {
+        "reason": "A reason of at least 2 characters is required."
+      }
+    },
+    "serviceContract": {
+      "title": "Service contract",
+      "tabs": {
+        "summary": "Summary",
+        "signatories": "Signatories",
+        "versions": "Versions"
+      },
+      "fields": {
+        "signatureOrder": "Signature order",
+        "signatures": "Signatures",
+        "document": "Document",
+        "number": "Contract number",
+        "type": "Contract type",
+        "role": "Signatory role",
+        "documentReference": "Document reference",
+        "reason": "Reason",
+        "signatureMethod": "Signature method",
+        "authenticationMethod": "Authentication method",
+        "provider": "Signature provider",
+        "providerReference": "Provider reference",
+        "certificateReference": "Certificate reference"
+      },
+      "actions": {
+        "create": "Create contract",
+        "generate": "Generate / attach document",
+        "send": "Send for signature",
+        "recordSignature": "Record signature",
+        "revise": "Create new version",
+        "terminate": "Terminate contract",
+        "addSignatory": "Add signatory"
+      },
+      "none": "No service contract has been created for this engagement yet.",
+      "signed": "Signed",
+      "pending": "Pending",
+      "noVersions": "No previous versions.",
+      "errors": {
+        "required": "Complete all required fields and provide at least two signatories.",
+        "document": "A document reference is required and SHA-256 must contain exactly 64 hexadecimal characters.",
+        "revision": "A valid new document and a revision reason are required.",
+        "reason": "A reason of at least 2 characters is required."
+      },
+      "status": {
+        "Draft": "Draft",
+        "Generated": "Generated",
+        "SentForSignature": "Sent for signature",
+        "PartiallySigned": "Partially signed",
+        "Signed": "Signed",
+        "Rejected": "Rejected",
+        "Expired": "Expired",
+        "Cancelled": "Cancelled",
+        "Terminated": "Terminated"
+      },
+      "signatureOrderValues": {
+        "Sequential": "Sequential",
+        "Parallel": "Parallel"
+      }
+    },
+    "missions": {
+      "title": "Missions",
+      "subtitle": "Operational missions under this engagement.",
+      "empty": "No mission for this engagement.",
+      "drawer": {
+        "create": "New mission",
+        "title": "Mission"
+      },
+      "tabs": {
+        "details": "Details",
+        "schedule": "Time windows",
+        "students": "Assigned students",
+        "history": "History"
+      },
+      "fields": {
+        "title": "Title",
+        "description": "Description",
+        "startsOn": "Start",
+        "endsOn": "End",
+        "categories": "Teaching categories",
+        "minutes": "Estimated workload (minutes)",
+        "vehicle": "Vehicle"
+      },
+      "vehicle": {
+        "NotApplicable": "Not applicable",
+        "ClientProvided": "Provided by school",
+        "ProfessionalProvided": "Provided by professional",
+        "Either": "Either"
+      },
+      "status": {
+        "Draft": "Draft",
+        "Proposed": "Proposed",
+        "Accepted": "Accepted",
+        "Declined": "Declined",
+        "Active": "Active",
+        "Paused": "Paused",
+        "Completed": "Completed",
+        "Cancelled": "Cancelled"
+      },
+      "actions": {
+        "create": "Create mission",
+        "propose": "Propose",
+        "activate": "Activate",
+        "pause": "Pause",
+        "resume": "Resume",
+        "complete": "Complete",
+        "cancel": "Cancel"
+      },
+      "schedule": {
+        "title": "Recurring time windows",
+        "help": "Define the preferred time windows for this mission. They remain distinct from BC-09 bookings.",
+        "add": "Add time window",
+        "empty": "No recurring time window defined."
+      },
+      "history": {
+        "proposed": "Proposed at",
+        "responded": "Responded at",
+        "activated": "Activated at",
+        "completed": "Completed at"
+      },
+      "errors": {
+        "required": "Provide a title, period and at least one category.",
+        "reason": "A reason is required."
+      },
+      "days": {
+        "0": "Sunday",
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday"
+      }
+    },
+    "studentAssignments": {
+      "title": "Assigned students",
+      "help": "Freelance access is restricted to students assigned to this mission and to the defined period.",
+      "empty": "No student is assigned to this mission.",
+      "search": "Search students…",
+      "revokeReason": "Revocation reason",
+      "drawer": {
+        "create": "Assign a student",
+        "title": "Assignment details"
+      },
+      "fields": {
+        "student": "Student",
+        "startsOn": "Start",
+        "endsOn": "End",
+        "period": "Period",
+        "scope": "Scope",
+        "reason": "Assignment reason"
+      },
+      "actions": {
+        "assign": "Assign student",
+        "revoke": "Revoke assignment"
+      },
+      "status": {
+        "Active": "Active",
+        "Revoked": "Revoked",
+        "Completed": "Completed"
+      },
+      "scopes": {
+        "PEDAGOGICAL": "Pedagogical follow-up",
+        "SESSION": "Sessions",
+        "EXAM_PREPARATION": "Exam preparation",
+        "TEMPORARY_REPLACEMENT": "Temporary replacement"
+      },
+      "errors": {
+        "required": "Select a student and complete the period, scope and reason.",
+        "reason": "A revocation reason is required."
+      }
+    },
+    "accessGrants": {
+      "title": "External access",
+      "subtitle": "Who can see what, on which resource, and for how long.",
+      "noReadPermission": "You do not have permission to view external access grants.",
+      "empty": "No external access grant is recorded for this engagement.",
+      "kpi": {
+        "total": "Access grants",
+        "active": "Active",
+        "prepared": "Preparation"
+      },
+      "drawer": {
+        "createTitle": "Add external access",
+        "detailTitle": "Access details",
+        "securityNotice": "External access is limited to a resource, a permission and a time period. It never creates an internal tenant membership."
+      },
+      "fields": {
+        "resourceType": "Resource type",
+        "resourceId": "Resource identifier",
+        "permission": "Permission",
+        "startDate": "Start",
+        "endDate": "End",
+        "period": "Period",
+        "origin": "Origin",
+        "createdAt": "Created at",
+        "revocation": "Revocation",
+        "revocationReason": "Revocation reason",
+        "selectMission": "Select a mission"
+      },
+      "actions": {
+        "create": "Add access",
+        "revoke": "Revoke access"
+      },
+      "status": {
+        "Active": "Active",
+        "Revoked": "Revoked",
+        "Expired": "Expired"
+      },
+      "origin": {
+        "ENGAGEMENT_PREPARATION": "Engagement preparation",
+        "STUDENT_ASSIGNMENT": "Student assignment",
+        "MISSION_SCOPE": "Mission scope",
+        "MANUAL": "Manual access"
+      },
+      "resourceType": {
+        "Engagement": "Engagement",
+        "Mission": "Mission",
+        "Student": "Student",
+        "Session": "Session",
+        "Vehicle": "Vehicle",
+        "ContractDocument": "Contract document",
+        "ServiceStatement": "Service statement",
+        "Invoice": "Invoice",
+        "Payment": "Payment"
+      },
+      "errors": {
+        "required": "Resource and permission are required.",
+        "reason": "The revocation reason must contain at least 2 characters."
+      }
+    },
+    "myMissions": {
+      "eyebrow": "Professional portal",
+      "title": "My missions",
+      "subtitle": "Track your missions and respond to new proposals.",
+      "drawerEyebrow": "Professional mission",
+      "empty": "No missions in this view.",
+      "tabs": {
+        "pending": "To respond",
+        "active": "In progress",
+        "closed": "Closed",
+        "details": "Details",
+        "schedule": "Schedule",
+        "history": "History",
+        "students": "Students",
+        "services": "Services"
+      },
+      "fields": {
+        "client": "Client organization"
+      },
+      "actions": {
+        "accept": "Accept mission",
+        "decline": "Decline",
+        "confirmDecline": "Confirm decline"
+      },
+      "declinePlaceholder": "Reason for declining…",
+      "errors": {
+        "load": "Unable to load your missions.",
+        "reason": "A decline reason is required."
+      }
+    },
+    "myServiceEntries": {
+      "title": "My services",
+      "subtitle": "Review services generated from your missions, submit them and track validation.",
+      "drawerEyebrow": "Professional service",
+      "search": "Search services",
+      "loadError": "Unable to load your service entries.",
+      "empty": "No service entries in this view.",
+      "emptyForMission": "No service entry is linked to this mission yet.",
+      "tabs": {
+        "toSubmit": "To submit",
+        "review": "Under review",
+        "closed": "Closed",
+        "summary": "Summary",
+        "amounts": "Amounts",
+        "history": "History"
+      },
+      "status": {
+        "Recorded": "Recorded",
+        "Submitted": "Submitted",
+        "Approved": "Approved",
+        "Rejected": "Rejected",
+        "Disputed": "Disputed"
+      },
+      "source": {
+        "TrainingSession": "Training session",
+        "MissionActivity": "Mission activity",
+        "ManualAdjustment": "Manual adjustment"
+      },
+      "fields": {
+        "description": "Description",
+        "source": "Source",
+        "client": "Client organization",
+        "unitRate": "Hourly rate",
+        "base": "Base amount",
+        "expenses": "Expenses",
+        "indemnities": "Allowances",
+        "discount": "Discount",
+        "total": "Total",
+        "reviewReason": "Review reason",
+        "createdAt": "Created at",
+        "submittedAt": "Submitted at",
+        "reviewedAt": "Reviewed at"
+      },
+      "actions": {
+        "submit": "Submit service"
+      },
+      "mainTabs": {
+        "entries": "Service entries",
+        "statements": "Statements",
+        "disputes": "Disputes"
+      }
+    },
+    "myStudents": {
+      "title": "My assigned students",
+      "subtitle": "Only students covered by an active assignment and an effective access grant.",
+      "search": "Search students",
+      "loadError": "Unable to load your assigned students.",
+      "empty": "No students are currently accessible to you.",
+      "emptyForMission": "No students are accessible for this mission today.",
+      "period": "Period",
+      "reason": "Reason"
+    },
+    "serviceStatements": {
+      "createEyebrow": "New statement",
+      "createTitle": "Create service statement",
+      "drawerEyebrow": "Service statement",
+      "empty": "No service statements.",
+      "createHint": "The statement automatically groups all service entries in the period for this engagement.",
+      "fields": {
+        "engagement": "Engagement",
+        "periodStart": "Period start",
+        "periodEnd": "Period end",
+        "total": "Total",
+        "approved": "Approved",
+        "disputed": "Disputed",
+        "createdAt": "Created at",
+        "submittedAt": "Submitted at",
+        "reviewedAt": "Reviewed at"
+      },
+      "preview": {
+        "title": "Preview",
+        "lines": "line(s)",
+        "recordedWarning": "Some entries are still recorded but not submitted. Submit them before creating the statement.",
+        "empty": "No service entries in this period."
+      },
+      "actions": {
+        "new": "New statement",
+        "create": "Create statement",
+        "submit": "Submit statement"
+      },
+      "tabs": {
+        "summary": "Summary",
+        "lines": "Service entries",
+        "history": "History"
+      },
+      "status": {
+        "Draft": "Draft",
+        "Submitted": "Submitted",
+        "UnderReview": "Under review",
+        "Approved": "Approved",
+        "PartiallyApproved": "Partially approved",
+        "Rejected": "Rejected",
+        "Disputed": "Disputed",
+        "Invoiced": "Invoiced"
+      },
+      "errors": {
+        "required": "Select an engagement and period."
+      }
+    },
+    "serviceReview": {
+      "title": "Service validation",
+      "subtitle": "Review submitted statements, approve compliant lines and isolate disputes.",
+      "empty": "No service statements for this engagement.",
+      "eyebrow": "Driving school review",
+      "pending": "Lines to review",
+      "fields": {
+        "reason": "Reason",
+        "disputeReason": "Dispute reason",
+        "description": "Dispute description"
+      },
+      "actions": {
+        "startReview": "Start review",
+        "approveRemaining": "Approve remaining lines",
+        "rejectStatement": "Reject statement",
+        "approveLine": "Approve",
+        "rejectLine": "Reject",
+        "disputeLine": "Dispute",
+        "openDispute": "Open dispute"
+      },
+      "errors": {
+        "reason": "A reason is required.",
+        "description": "A dispute description is required."
+      },
+      "disputeReasons": {
+        "Duration": "Duration",
+        "Rate": "Rate",
+        "Absence": "Absence",
+        "Expenses": "Expenses",
+        "ServiceQuality": "Service quality",
+        "ServiceNotPerformed": "Service not performed",
+        "Duplicate": "Duplicate",
+        "IncorrectStudent": "Incorrect student",
+        "NonCompliantVehicle": "Non-compliant vehicle",
+        "Other": "Other"
+      }
+    },
+    "disputes": {
+      "mainTab": "Disputes",
+      "eyebrow": "Dispute case",
+      "empty": "No disputes to display.",
+      "emptyDiscussion": "No discussion yet.",
+      "emptyEvidence": "No evidence attached.",
+      "tabs": {
+        "summary": "Summary",
+        "discussion": "Discussion",
+        "evidence": "Evidence",
+        "history": "History"
+      },
+      "fields": {
+        "description": "Description",
+        "serviceEntry": "Service entry",
+        "engagement": "Engagement",
+        "resolution": "Resolution",
+        "escalation": "Escalation reason",
+        "createdAt": "Opened at",
+        "escalatedAt": "Escalated at",
+        "resolvedAt": "Resolved at",
+        "message": "Message",
+        "documentReferenceId": "Document reference",
+        "label": "Label",
+        "note": "Note",
+        "waitingFor": "Waiting for",
+        "outcome": "Decision"
+      },
+      "actions": {
+        "open": "Open dispute",
+        "message": "Add message",
+        "evidence": "Add evidence",
+        "wait": "Change waiting party",
+        "resolve": "Resolve",
+        "escalate": "Escalate"
+      },
+      "party": {
+        "School": "Driving school",
+        "Freelance": "Freelance",
+        "Mediator": "Mediator"
+      },
+      "status": {
+        "Open": "Open",
+        "UnderDiscussion": "Under discussion",
+        "WaitingForFreelance": "Waiting for freelance",
+        "WaitingForSchool": "Waiting for driving school",
+        "Resolved": "Resolved",
+        "Rejected": "Rejected",
+        "Escalated": "Escalated"
+      },
+      "reason": {
+        "Duration": "Duration",
+        "Rate": "Rate",
+        "Absence": "Absence",
+        "Expenses": "Expenses",
+        "ServiceQuality": "Service quality",
+        "ServiceNotPerformed": "Service not performed",
+        "Duplicate": "Duplicate",
+        "IncorrectStudent": "Incorrect student",
+        "NonCompliantVehicle": "Non-compliant vehicle",
+        "Other": "Other"
+      },
+      "outcome": {
+        "ApproveServiceEntry": "Approve service entry",
+        "RejectServiceEntry": "Reject service entry",
+        "Rejected": "Reject dispute and approve service entry"
+      },
+      "errors": {
+        "message": "A message is required.",
+        "evidence": "A valid document reference and label are required.",
+        "resolution": "Resolution must contain at least 2 characters.",
+        "escalation": "Escalation reason must contain at least 2 characters."
+      }
+    },
+    "invoices": {
+      "title": "Supplier billing",
+      "subtitle": "Prepare professional invoices and follow their financial lifecycle in BC-07.",
+      "eyebrow": "Professional invoice",
+      "unnumbered": "Unnumbered invoice",
+      "createSelfBilling": "Create self-billed invoice",
+      "empty": "No invoice for this engagement.",
+      "financeNotRequested": "This invoice has not been sent to Finance yet.",
+      "noPayments": "No payment activity available.",
+      "tabs": {
+        "invoices": "Invoices",
+        "summary": "Summary",
+        "finance": "Finance",
+        "payments": "Payments",
+        "history": "History"
+      },
+      "mode": {
+        "FreelanceIssued": "Freelance-issued",
+        "SelfBilling": "Self-billing"
+      },
+      "status": {
+        "Draft": "Draft",
+        "Validated": "Validated",
+        "Requested": "Sent to Finance",
+        "Cancelled": "Cancelled"
+      },
+      "paymentStatus": {
+        "Pending": "Pending",
+        "Scheduled": "Scheduled",
+        "Processing": "Processing",
+        "Paid": "Paid",
+        "PartiallyPaid": "Partially paid",
+        "Failed": "Failed",
+        "Overdue": "Overdue",
+        "Cancelled": "Cancelled",
+        "Refunded": "Refunded"
+      },
+      "fields": {
+        "statement": "Approved statement",
+        "issueDate": "Issue date",
+        "dueDate": "Due date",
+        "taxAmount": "Tax amount",
+        "invoiceNumber": "Invoice number",
+        "bankReference": "Bank reference",
+        "subtotal": "Subtotal",
+        "total": "Total",
+        "supplierInvoiceId": "BC-07 SupplierInvoice",
+        "financeStatus": "Finance status",
+        "paid": "Paid",
+        "refunded": "Refunded",
+        "remaining": "Remaining",
+        "createdAt": "Created at",
+        "validatedAt": "Validated at",
+        "requestedAt": "Sent at",
+        "financeSyncedAt": "Finance synced at",
+        "reconciliation": "Reconciliation",
+        "difference": "Difference"
+      },
+      "actions": {
+        "createSelfBilling": "Create self-billed invoice",
+        "validate": "Validate",
+        "requestFinance": "Send to BC-07",
+        "syncFinance": "Sync Finance",
+        "approveOperational": "Operational approval",
+        "approveFinancial": "Financial approval",
+        "schedulePayment": "Schedule payment",
+        "recordManualPayment": "Record manual payment",
+        "refund": "Refund",
+        "markProcessing": "Mark processing",
+        "cancelPayment": "Cancel attempt",
+        "markPaid": "Mark paid",
+        "markFailed": "Mark failed"
+      },
+      "errors": {
+        "statementRequired": "Select an approved service statement."
+      },
+      "paymentActions": {
+        "eyebrow": "Supplier payment",
+        "schedule": {
+          "title": "Schedule a payment"
+        },
+        "manual": {
+          "title": "Record a manual payment"
+        },
+        "paid": {
+          "title": "Confirm settlement"
+        },
+        "failed": {
+          "title": "Record payment failure"
+        },
+        "refund": {
+          "title": "Record a refund"
+        },
+        "fields": {
+          "amount": "Amount",
+          "date": "Date",
+          "method": "Payment method",
+          "bankReference": "Bank reference",
+          "providerReference": "Provider reference",
+          "reason": "Reason"
+        },
+        "errors": {
+          "amountRequired": "Enter an amount greater than zero.",
+          "reasonRequired": "Enter a reason."
+        }
+      }
+    },
+    "messages": {
+      "title": "Collaboration messages",
+      "subtitle": "Contextual messages between the driving school and the freelance professional. Messages are owned by Communication & Engagement.",
+      "unread": "unread",
+      "me": "You",
+      "otherParty": "Other participant",
+      "attachments": "attachment(s)",
+      "empty": "No messages for this collaboration yet.",
+      "placeholder": "Write a message…",
+      "send": "Send"
+    },
+    "reviews": {
+      "tabs": {
+        "reputation": "Reputation",
+        "moderation": "Moderation"
+      },
+      "reviewCount": "review(s)",
+      "reports": "report(s)",
+      "professionalResponse": "Professional response",
+      "empty": "No published reviews for this professional.",
+      "emptyModeration": "No reviews to moderate.",
+      "noReports": "No reports.",
+      "metrics": {
+        "overall": "Overall",
+        "reliability": "Reliability",
+        "pedagogy": "Teaching",
+        "communication": "Communication",
+        "punctuality": "Punctuality"
+      },
+      "actions": {
+        "create": "Add review",
+        "respond": "Respond",
+        "report": "Report",
+        "moderate": "Moderate",
+        "hide": "Hide",
+        "restore": "Restore",
+        "resolve": "Resolve"
+      },
+      "drawer": {
+        "create": "New review",
+        "respond": "Respond to review",
+        "report": "Report review",
+        "moderate": "Review moderation"
+      },
+      "fields": {
+        "engagement": "Completed collaboration",
+        "comment": "Comment",
+        "response": "Public response",
+        "reason": "Reason",
+        "details": "Details",
+        "moderationReason": "Moderation reason",
+        "resolution": "Resolution"
+      },
+      "reportReasons": {
+        "inappropriate": "Inappropriate content",
+        "falseInformation": "False or misleading information",
+        "personalData": "Exposed personal data"
+      }
+    },
+    "notifications": {
+      "missionProposd": "New mission proposed: {{title}} ({{startsOn}} → {{endsOn}}).",
+      "serviceEntryRejected": "A service entry was rejected: {{reason}}.",
+      "serviceEntryDisputed": "A service entry was disputed: {{reason}}.",
+      "disputeOpened": "A dispute was opened for a service entry ({{reason}}).",
+      "disputeOpenedForSchool": "A freelancer opened a service dispute ({{reason}}).",
+      "credentialExpiring": "A credential or document expires on {{expiresOn}}.",
+      "compliancePolicyApplied": "A compliance policy was applied: {{action}}.",
+      "engagementCompleted": "The engagement has been completed.",
+      "engagementTerminated": "The engagement has been terminated: {{reason}}.",
+      "initialIntegrationCompleted": "The freelancer initial onboarding is complete after the first payment."
+    },
+    "myDashboard": {
+      "eyebrow": "Freelance workspace",
+      "title": "My dashboard",
+      "defaultProfessional": "Independent professional",
+      "tabs": {
+        "actions": "To do",
+        "activity": "Activity",
+        "finance": "Finance",
+        "profile": "Profile & compliance"
+      },
+      "kpis": {
+        "toAnswer": "Missions to answer",
+        "activeMissions": "Active missions",
+        "students": "Accessible students",
+        "entries": "Entries to submit",
+        "disputes": "Open disputes",
+        "pendingInvoices": "Pending invoices"
+      },
+      "actions": {
+        "missions": "Missions requiring action",
+        "missionsHint": "Respond directly without leaving the dashboard.",
+        "noMission": "No mission is waiting for your response.",
+        "myStudents": "My students",
+        "studentsAccessible": "student(s) currently accessible",
+        "myServices": "My service entries",
+        "entriesToSubmit": "entry/entries to submit"
+      },
+      "activity": {
+        "operations": "Operational activity",
+        "quality": "Service quality",
+        "relationships": "Collaborations"
+      },
+      "finance": {
+        "invoices": "Invoicing",
+        "payments": "Payments",
+        "openServices": "Open my services",
+        "openServicesHint": "Review service entries, statements and disputes in one workspace."
+      },
+      "profile": {
+        "status": "Profile status",
+        "compliance": "Compliance",
+        "complete": "Profile complete",
+        "summary": "Professional presentation"
+      }
+    },
+    "analytics": {
+      "title": "Marketplace analytics",
+      "description": "Analyze onboarding, operations, quality, and financial performance across your external professional collaborations.",
+      "noPermissionTitle": "Restricted access",
+      "noPermission": "You do not have permission to view Marketplace analytics.",
+      "missingOrganization": "No active organization is available to load Marketplace analytics.",
+      "period": "Analyzed period",
+      "loadError": "Unable to load Marketplace analytics",
+      "tabs": {
+        "label": "Analytics sections",
+        "integration": "Onboarding",
+        "operations": "Operations",
+        "quality": "Quality",
+        "finance": "Finance"
+      },
+      "comparison": {
+        "title": "Automatic comparison",
+        "description": "Compared with the previous {{days}} days.",
+        "help": "DriveOS automatically compares the selected period with the immediately preceding period of the same length. Snapshot metrics are shown without a delta.",
+        "vsPrevious": "vs previous period",
+        "new": "New"
+      },
+      "filters": {
+        "open": "Period",
+        "title": "Analytics period",
+        "description": "Choose the period to analyze.",
+        "presets": "Presets",
+        "from": "From",
+        "to": "To",
+        "apply": "Apply",
+        "invalidTitle": "Invalid period",
+        "invalid": "The start date must be earlier than or equal to the end date."
+      },
+      "metrics": {
+        "invitationAcceptance": "Invitation acceptance rate",
+        "invitationActivation": "Invitation → activation",
+        "profileCompletion": "Complete profiles",
+        "signedContracts": "Prepared / signed contracts",
+        "contractsPrepared": "prepared engagement(s)",
+        "invitationsSent": "Invitations sent",
+        "invitationsAccepted": "Invitations accepted",
+        "invitationsActivated": "Profiles activated after invitation",
+        "applicationsAccepted": "Applications accepted",
+        "initialIntegrations": "Initial onboardings completed",
+        "reliableRelationships": "Reliable relationships",
+        "invitationActivationDelay": "Invitation → activation delay",
+        "documentValidationDelay": "Document validation delay",
+        "applicationAcceptance": "Application acceptance rate",
+        "plannedHours": "Planned hours",
+        "realizedHours": "Delivered hours",
+        "occupancy": "Occupancy rate",
+        "studentsHandled": "Students handled",
+        "cancelledMissions": "Cancelled missions",
+        "cancellationRate": "Mission cancellation rate",
+        "reviewedEntries": "Reviewed service entries",
+        "firstPassEntries": "Entries approved without correction",
+        "firstPassValidation": "First-pass validation",
+        "disputeRate": "Dispute rate",
+        "validationDelay": "Average validation delay",
+        "openDisputes": "Open disputes",
+        "invoicedAmount": "Invoiced amount",
+        "averageHourlyCost": "Average hourly cost",
+        "paymentDelay": "Average payment delay",
+        "overdueInvoices": "Overdue invoices",
+        "failedPayments": "Failed payments"
+      },
+      "integration": {
+        "funnel": "Onboarding funnel",
+        "delays": "Onboarding delays"
+      },
+      "operations": {
+        "capacity": "Capacity and missions",
+        "serviceEntries": "Service entry processing"
+      },
+      "quality": {
+        "disputes": "Quality and disputes",
+        "alerts": "Operational alerts",
+        "noAlerts": "No Marketplace alert for this period."
+      },
+      "finance": {
+        "invoices": "Invoices and payments",
+        "reading": "Financial interpretation",
+        "readingDescription": "Amounts and payment statuses come from BC-07 Funding & Billing. BC-13 consolidates them here without owning the financial operations."
+      }
+    },
+    "engagementTypes": {
+      "HourlyService": "Hourly service",
+      "HalfDay": "Half-day",
+      "FullDay": "Full day",
+      "FixedMission": "Fixed mission",
+      "RecurringMission": "Recurring mission",
+      "Replacement": "Replacement",
+      "Negotiable": "Negotiable"
+    }
+  },
+  "communication": {
+    "notifications": {
+      "title": "Notifications",
+      "unread": "Unread",
+      "all": "All",
+      "markRead": "Mark as read",
+      "dismiss": "Dismiss",
+      "preferences": "Preferences",
+      "inApp": "In DriveOS",
+      "email": "Email"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "tabs": {
+      "marketplace": "Marketplace",
+      "all": "All",
+      "preferences": "Preferences"
+    },
+    "items": "notification(s)",
+    "empty": "No notifications.",
+    "fallback": "{{category}} notification",
+    "actions": {
+      "markRead": "Mark as read",
+      "dismiss": "Dismiss"
+    },
+    "preferences": {
+      "inApp": "In DriveOS",
+      "email": "Email",
+      "empty": "No custom preferences."
+    },
+    "categories": {
+      "MISSION": "Mission",
+      "SERVICE_ENTRY": "Service",
+      "DISPUTE": "Dispute",
+      "COMPLIANCE": "Compliance",
+      "ENGAGEMENT": "Engagement",
+      "INVOICE": "Invoice",
+      "PAYMENT": "Payment",
+      "CONTRACT": "Contract"
     }
   }
 }

@@ -1,0 +1,269 @@
+<drive-os-drawer
+  [open]="open()"
+  size="lg"
+  (closeRequested)="close()"
+>
+  <div class="grid gap-4 p-5">
+    @if (loading()) {
+      <div class="p-8 text-center text-sm">{{ 'common.loading' | translate }}</div>
+    } @else if (item(); as m) {
+      <header class="flex items-start justify-between gap-3">
+        <div>
+          <p class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+            {{ 'professionalMarketplace.myMissions.drawerEyebrow' | translate }}
+          </p>
+          <h2 class="text-xl font-extrabold">{{ m.title }}</h2>
+          <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+            {{ m.startsOn }} → {{ m.endsOn }}
+          </p>
+        </div>
+        <span class="rounded-full border px-2 py-1 text-xs font-bold">
+          {{ 'professionalMarketplace.missions.status.' + m.status | translate }}
+        </span>
+      </header>
+      <nav class="flex gap-1 overflow-x-auto border-b">
+        <button
+          class="border-b-2 px-3 py-2 text-xs font-bold"
+          [class.border-blue-800]="tab() === 'details'"
+          (click)="selectTab('details')"
+        >
+          {{ 'professionalMarketplace.myMissions.tabs.details' | translate }}
+        </button>
+        <button
+          class="border-b-2 px-3 py-2 text-xs font-bold"
+          [class.border-blue-800]="tab() === 'schedule'"
+          (click)="selectTab('schedule')"
+        >
+          {{ 'professionalMarketplace.myMissions.tabs.schedule' | translate }}
+        </button>
+        <button
+          class="border-b-2 px-3 py-2 text-xs font-bold"
+          [class.border-blue-800]="tab() === 'students'"
+          (click)="selectTab('students')"
+        >
+          {{ 'professionalMarketplace.myMissions.tabs.students' | translate }}
+        </button>
+        <button
+          class="border-b-2 px-3 py-2 text-xs font-bold"
+          [class.border-blue-800]="tab() === 'services'"
+          (click)="selectTab('services')"
+        >
+          {{ 'professionalMarketplace.myMissions.tabs.services' | translate }}
+        </button>
+        <button
+          class="border-b-2 px-3 py-2 text-xs font-bold"
+          [class.border-blue-800]="tab() === 'history'"
+          (click)="selectTab('history')"
+        >
+          {{ 'professionalMarketplace.myMissions.tabs.history' | translate }}
+        </button>
+      </nav>
+      @if (tab() === 'details') {
+        <section class="grid gap-3 text-sm">
+          <div class="rounded-xl border p-4">
+            <div class="font-bold">
+              {{ 'professionalMarketplace.myMissions.fields.client' | translate }}
+            </div>
+            <div class="mt-1 break-all text-xs text-[var(--driveos-text-secondary)]">
+              {{ m.organizationId }}
+            </div>
+          </div>
+          <div class="rounded-xl border p-4">
+            <div class="font-bold">
+              {{ 'professionalMarketplace.missions.fields.description' | translate }}
+            </div>
+            <div class="mt-1">{{ m.description || '—' }}</div>
+          </div>
+          <div class="grid grid-cols-2 gap-3 max-md:grid-cols-1">
+            <div class="rounded-xl border p-4">
+              <div class="text-xs font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.missions.fields.categories' | translate }}
+              </div>
+              <div class="mt-2 flex flex-wrap gap-1">
+                @for (c of m.teachingCategoryCodes; track c) {
+                  <span class="rounded bg-blue-50 px-2 py-1 text-xs font-bold text-blue-800">
+                    {{ c }}
+                  </span>
+                }
+              </div>
+            </div>
+            <div class="rounded-xl border p-4">
+              <div class="text-xs font-bold text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.missions.fields.minutes' | translate }}
+              </div>
+              <div class="mt-2 font-extrabold">{{ m.estimatedMinutes || '—' }}</div>
+            </div>
+          </div>
+        </section>
+      }
+      @if (tab() === 'schedule') {
+        <section class="grid gap-2">
+          @for (w of m.timeWindows; track $index) {
+            <div class="rounded-xl border p-4 text-sm">
+              <strong>
+                {{ 'professionalMarketplace.missions.days.' + w.dayOfWeek | translate }}
+              </strong>
+              · {{ w.startTime }}–{{ w.endTime }} · {{ w.timeZoneId }}
+            </div>
+          } @empty {
+            <div
+              class="rounded-xl border border-dashed p-6 text-center text-sm text-[var(--driveos-text-secondary)]"
+            >
+              {{ 'professionalMarketplace.missions.schedule.empty' | translate }}
+            </div>
+          }
+        </section>
+      }
+
+      @if (tab() === 'students') {
+        <section class="grid gap-2">
+          @if (studentsLoading()) {
+            <div class="p-6 text-center text-sm">{{ 'common.loading' | translate }}</div>
+          } @else {
+            @for (x of students(); track x.id) {
+              <article class="rounded-xl border p-4">
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div class="font-extrabold">{{ x.studentDisplayName }}</div>
+                    <div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                      {{ x.studentEmail || x.studentPhone || '—' }}
+                    </div>
+                  </div>
+                  <span
+                    class="rounded-full bg-emerald-50 px-2 py-1 text-[11px] font-bold text-emerald-700"
+                  >
+                    {{ x.scopeCode }}
+                  </span>
+                </div>
+                <div class="mt-3 text-xs text-[var(--driveos-text-secondary)]">
+                  {{ x.startsOn }} → {{ x.endsOn }} · {{ x.assignmentReason }}
+                </div>
+              </article>
+            } @empty {
+              <div
+                class="rounded-xl border border-dashed p-6 text-center text-sm text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'professionalMarketplace.myStudents.emptyForMission' | translate }}
+              </div>
+            }
+          }
+        </section>
+      }
+      @if (tab() === 'services') {
+        <section class="grid gap-2">
+          @if (servicesLoading()) {
+            <div class="p-6 text-center text-sm">{{ 'common.loading' | translate }}</div>
+          } @else {
+            @for (x of services(); track x.id) {
+              <button
+                class="rounded-xl border p-4 text-left transition hover:border-blue-300"
+                (click)="openService(x)"
+              >
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div class="font-extrabold">{{ x.serviceCode }}</div>
+                    <div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                      {{ x.serviceDate }} · {{ x.quantityMinutes }} min
+                    </div>
+                  </div>
+                  <span class="rounded-full border px-2 py-1 text-[11px] font-bold">
+                    {{ 'professionalMarketplace.myServiceEntries.status.' + x.status | translate }}
+                  </span>
+                </div>
+                <div class="mt-3 flex items-end justify-between gap-3">
+                  <span class="line-clamp-1 text-xs text-[var(--driveos-text-secondary)]">
+                    {{ x.description }}
+                  </span>
+                  <span class="font-black">{{ x.totalAmount }} {{ x.currency }}</span>
+                </div>
+              </button>
+            } @empty {
+              <div
+                class="rounded-xl border border-dashed p-6 text-center text-sm text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'professionalMarketplace.myServiceEntries.emptyForMission' | translate }}
+              </div>
+            }
+          }
+        </section>
+      }
+      @if (tab() === 'history') {
+        <section class="grid gap-2 text-sm">
+          <div class="rounded-xl border p-3">
+            {{ 'professionalMarketplace.missions.history.proposed' | translate }}:
+            {{ m.proposedAtUtc || '—' }}
+          </div>
+          <div class="rounded-xl border p-3">
+            {{ 'professionalMarketplace.missions.history.responded' | translate }}:
+            {{ m.respondedAtUtc || '—' }}
+          </div>
+          <div class="rounded-xl border p-3">
+            {{ 'professionalMarketplace.missions.history.activated' | translate }}:
+            {{ m.activatedAtUtc || '—' }}
+          </div>
+          @if (m.statusReason) {
+            <div class="rounded-xl border border-amber-200 bg-amber-50 p-3">
+              {{ m.statusReason }}
+            </div>
+          }
+        </section>
+      }
+      @if (formErrors().length) {
+        <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+          @for (e of formErrors(); track e) {
+            <p>{{ e }}</p>
+          }
+        </div>
+      }
+      @if (declineMode()) {
+        <section class="grid gap-2 rounded-xl border border-amber-200 bg-amber-50 p-4">
+          <textarea
+            class="min-h-24 rounded-lg border bg-white px-3 py-2 text-sm"
+            [(ngModel)]="reason"
+            [placeholder]="'professionalMarketplace.myMissions.declinePlaceholder' | translate"
+          ></textarea>
+          <div class="flex justify-end gap-2">
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="cancelDecline()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </button>
+            <button
+              class="rounded-lg bg-red-700 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="confirmDecline()"
+            >
+              {{ 'professionalMarketplace.myMissions.actions.confirmDecline' | translate }}
+            </button>
+          </div>
+        </section>
+      }
+      @if (m.status === 'Proposed' && !declineMode()) {
+        <footer class="flex flex-wrap justify-end gap-2 border-t pt-4">
+          <button
+            class="rounded-lg border border-red-300 px-4 py-2 text-xs font-bold text-red-700"
+            [disabled]="busy()"
+            (click)="beginDecline()"
+          >
+            {{ 'professionalMarketplace.myMissions.actions.decline' | translate }}
+          </button>
+          <button
+            class="rounded-lg bg-blue-800 px-4 py-2 text-xs font-bold text-white"
+            [disabled]="busy()"
+            (click)="accept()"
+          >
+            {{ 'professionalMarketplace.myMissions.actions.accept' | translate }}
+          </button>
+        </footer>
+      }
+    }
+  </div>
+</drive-os-drawer>
+
+<driveos-service-entry-drawer
+  [open]="serviceDrawerOpen()"
+  [entryId]="selectedService()?.id ?? null"
+  (closeRequested)="closeService()"
+  (changed)="loadServices(missionId()!)"
+/>

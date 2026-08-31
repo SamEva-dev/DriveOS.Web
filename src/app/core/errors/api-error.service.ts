@@ -16,8 +16,14 @@ interface ProblemDetailsLike {
 export class ApiErrorService {
   private readonly translate = inject(TranslateService);
 
-  getMessages(response: HttpErrorResponse): string[] {
-    if (response.status === 0) return [this.translate.instant('errors.network')];
+  getMessages(error: unknown): string[] {
+    if (this.isTechnicalFailure(error)) {
+      return [this.translate.instant('errors.technicalUnavailable')];
+    }
+
+    if (!(error instanceof HttpErrorResponse)) return [this.translate.instant('errors.technicalUnavailable')];
+
+    const response = error;
 
     const validationResponse = response.error as ApiValidationErrorResponse | undefined;
     if (validationResponse?.type === 'validation' && Array.isArray(validationResponse.errors)) {
@@ -57,6 +63,27 @@ export class ApiErrorService {
     }
 
     return [this.translate.instant('errors.generic')];
+  }
+
+
+  private isTechnicalFailure(error: unknown): boolean {
+    if (error instanceof HttpErrorResponse) {
+      return error.status === 0 || error.status >= 500;
+    }
+
+    if (error instanceof Error) {
+      const message = error.message.trim().toLowerCase();
+      return (
+        error.name === 'TimeoutError' ||
+        message.includes('failed to fetch') ||
+        message.includes('networkerror') ||
+        message.includes('network request failed') ||
+        message.includes('load failed') ||
+        message.includes('timeout')
+      );
+    }
+
+    return false;
   }
 
   private resolveMessageKey(body: ProblemDetailsLike | undefined): string | null {

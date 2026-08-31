@@ -18,7 +18,17 @@ type Dimension = 'branch' | 'license' | 'type' | 'center' | 'instructor';
 @Component({
   selector: 'driveos-exams-dashboard-page',
   standalone: true,
-  imports: [DatePipe, DecimalPipe, FormsModule, TranslatePipe, DriveOsButtonComponent, DriveOsEmptyStateComponent, DriveOsInputDirective, DriveOsSpinnerComponent, DriveOsStateBannerComponent],
+  imports: [
+    DatePipe,
+    DecimalPipe,
+    FormsModule,
+    TranslatePipe,
+    DriveOsButtonComponent,
+    DriveOsEmptyStateComponent,
+    DriveOsInputDirective,
+    DriveOsSpinnerComponent,
+    DriveOsStateBannerComponent,
+  ],
   templateUrl: './exams-dashboard.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -41,28 +51,54 @@ export class ExamsDashboardPage {
     const report = this.data();
     if (!report) return [];
     switch (this.dimension()) {
-      case 'license': return report.byLicenseCategory;
-      case 'type': return report.byExamType;
-      case 'center': return report.byExamCenter;
-      case 'instructor': return report.byInstructor;
-      default: return report.byBranch;
+      case 'license':
+        return report.byLicenseCategory;
+      case 'type':
+        return report.byExamType;
+      case 'center':
+        return report.byExamCenter;
+      case 'instructor':
+        return report.byInstructor;
+      default:
+        return report.byBranch;
     }
   });
 
-  constructor() { this.load(); }
+  constructor() {
+    this.load();
+  }
 
-  setTab(tab: DashboardTab): void { this.activeTab.set(tab); }
-  setDimension(value: Dimension): void { this.dimension.set(value); }
+  setTab(tab: DashboardTab): void {
+    this.activeTab.set(tab);
+  }
+  setDimension(value: Dimension): void {
+    this.dimension.set(value);
+  }
 
   load(): void {
     this.loading.set(true);
     this.messages.set([]);
-    const fromUtc = this.fromDate ? new Date(`${this.fromDate}T00:00:00Z`).toISOString() : undefined;
+    const fromUtc = this.fromDate
+      ? new Date(`${this.fromDate}T00:00:00Z`).toISOString()
+      : undefined;
     const toUtc = this.toDate ? new Date(`${this.toDate}T23:59:59Z`).toISOString() : undefined;
-    this.api.getAnalytics({ fromUtc, toUtc, examType: this.examType || undefined, licenseCategory: this.licenseCategory || undefined }).subscribe({
-      next: value => { this.data.set(value); this.loading.set(false); },
-      error: (error: HttpErrorResponse) => { this.messages.set(this.errors.getMessages(error)); this.loading.set(false); },
-    });
+    this.api
+      .getAnalytics({
+        fromUtc,
+        toUtc,
+        examType: this.examType || undefined,
+        licenseCategory: this.licenseCategory || undefined,
+      })
+      .subscribe({
+        next: (value) => {
+          this.data.set(value);
+          this.loading.set(false);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.messages.set(this.errors.getMessages(error));
+          this.loading.set(false);
+        },
+      });
   }
 
   resetFilters(): void {
@@ -72,5 +108,4 @@ export class ExamsDashboardPage {
     this.licenseCategory = '';
     this.load();
   }
-
 }

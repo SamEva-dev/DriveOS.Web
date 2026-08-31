@@ -1,0 +1,175 @@
+<drive-os-drawer
+  [open]="open()"
+  [title]="'professionalMarketplace.invitations.drawer.title' | translate"
+  [description]="
+    professionalLabel() || ('professionalMarketplace.invitations.drawer.description' | translate)
+  "
+  size="lg"
+  [closeDisabled]="saving()"
+  (closeRequested)="close()"
+>
+  <div class="grid gap-5 p-6 text-[var(--driveos-text-primary)]">
+    @if (!canCreateAndSend()) {
+      <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+        {{ 'professionalMarketplace.invitations.errors.permission' | translate }}
+      </div>
+    }
+
+    @if (formErrors().length) {
+      <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+        @for (error of formErrors(); track error) {
+          <p>{{ error }}</p>
+        }
+      </div>
+    }
+
+    @if (result(); as sentInvitation) {
+      <section
+        class="grid gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900"
+      >
+        <div class="flex items-center gap-2 font-extrabold">
+          <i class="ph ph-check-circle text-lg"></i>
+          {{ 'professionalMarketplace.invitations.success.title' | translate }}
+        </div>
+        <p>
+          {{
+            'professionalMarketplace.invitations.success.expires'
+              | translate: { date: sentInvitation.expirationDate }
+          }}
+        </p>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.invitations.success.secureLink' | translate }}
+          <input
+            class="min-h-10 rounded-lg border border-emerald-300 bg-white px-3 font-normal"
+            [value]="sentInvitation.secureUrl"
+            readonly
+          />
+        </label>
+      </section>
+    } @else {
+      @if (professionalProfileId()) {
+        <section class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
+          <strong>
+            {{ 'professionalMarketplace.invitations.form.linkedProfile' | translate }}
+          </strong>
+          <p class="mt-1">{{ professionalLabel() || professionalProfileId() }}</p>
+        </section>
+      }
+
+      <section class="grid gap-4">
+        <div>
+          <h3 class="font-extrabold">
+            {{ 'professionalMarketplace.invitations.sections.recipient' | translate }}
+          </h3>
+          <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+            {{ 'professionalMarketplace.invitations.sections.recipientHelp' | translate }}
+          </p>
+        </div>
+        <div class="grid gap-4 md:grid-cols-2">
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.invitations.form.email' | translate }}
+            <input
+              type="email"
+              [(ngModel)]="email"
+              class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+            />
+          </label>
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.invitations.form.phone' | translate }}
+            <input
+              type="tel"
+              [(ngModel)]="phone"
+              class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+            />
+          </label>
+        </div>
+      </section>
+
+      <section class="grid gap-4 border-t border-[var(--driveos-border)] pt-5">
+        <div>
+          <h3 class="font-extrabold">
+            {{ 'professionalMarketplace.invitations.sections.scope' | translate }}
+          </h3>
+          <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+            {{ 'professionalMarketplace.invitations.sections.scopeHelp' | translate }}
+          </p>
+        </div>
+        <div class="grid gap-4 md:grid-cols-2">
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.invitations.form.branchId' | translate }}
+            <input
+              [(ngModel)]="branchId"
+              class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+            />
+          </label>
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.invitations.form.missionId' | translate }}
+            <input
+              [(ngModel)]="missionId"
+              class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+            />
+          </label>
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.invitations.form.invitedUserId' | translate }}
+            <input
+              [(ngModel)]="invitedUserId"
+              class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+            />
+          </label>
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.invitations.form.expirationDate' | translate }}
+            <input
+              type="date"
+              [(ngModel)]="expirationDate"
+              class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+            />
+          </label>
+        </div>
+      </section>
+
+      <section class="grid gap-2 border-t border-[var(--driveos-border)] pt-5">
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.invitations.form.message' | translate }}
+          <textarea
+            rows="5"
+            [(ngModel)]="message"
+            class="rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 py-2 font-normal"
+            [placeholder]="
+              'professionalMarketplace.invitations.form.messagePlaceholder' | translate
+            "
+          ></textarea>
+        </label>
+      </section>
+    }
+  </div>
+
+  <div
+    driveOsDrawerFooter
+    class="flex w-full justify-end gap-2"
+  >
+    <button
+      type="button"
+      class="min-h-10 rounded-lg border border-[var(--driveos-border)] px-4 text-xs font-bold"
+      [disabled]="saving()"
+      (click)="close()"
+    >
+      {{ (result() ? 'common.actions.close' : 'common.actions.cancel') | translate }}
+    </button>
+    @if (!result()) {
+      <button
+        type="button"
+        class="min-h-10 rounded-lg bg-blue-800 px-5 text-xs font-bold text-white disabled:opacity-50"
+        [disabled]="saving() || !canCreateAndSend()"
+        (click)="submit()"
+      >
+        <i
+          class="ph"
+          [class.ph-paper-plane-tilt]="!saving()"
+          [class.ph-circle-notch]="saving()"
+          [class.animate-spin]="saving()"
+        ></i>
+        {{ 'professionalMarketplace.invitations.actions.createAndSend' | translate }}
+      </button>
+    }
+  </div>
+</drive-os-drawer>

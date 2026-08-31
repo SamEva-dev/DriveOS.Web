@@ -109,7 +109,8 @@ export class AuthService {
   }
 
   logout(): void {
-    if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('driveos:session-revoked'));
+    if (typeof window !== 'undefined')
+      window.dispatchEvent(new CustomEvent('driveos:session-revoked'));
     this.tokens.clear();
     this.tokensSignal.set(null);
     this.userSignal.set(null);
@@ -118,12 +119,34 @@ export class AuthService {
 
   getBackendErrorMessage(error: unknown): string | null {
     const value = error as {
+      status?: number;
       error?: { message?: string; error?: string; title?: string } | string;
       message?: string;
     };
-    if (typeof value?.error === 'string') return value.error;
+
+    if (value?.status === 0 || (typeof value?.status === 'number' && value.status >= 500)) {
+      return null;
+    }
+
+    if (typeof value?.error === 'string') {
+      return this.isTechnicalMessage(value.error) ? null : value.error;
+    }
+
+    const backendMessage = value?.error?.message ?? value?.error?.error ?? value?.error?.title ?? null;
+    if (backendMessage) return this.isTechnicalMessage(backendMessage) ? null : backendMessage;
+
+    return null;
+  }
+
+  private isTechnicalMessage(message: string): boolean {
+    const normalized = message.trim().toLowerCase();
     return (
-      value?.error?.message ?? value?.error?.error ?? value?.error?.title ?? value?.message ?? null
+      normalized.includes('failed to fetch') ||
+      normalized.includes('networkerror') ||
+      normalized.includes('network request failed') ||
+      normalized.includes('http failure response') ||
+      normalized.includes('load failed') ||
+      normalized.includes('timeout')
     );
   }
 

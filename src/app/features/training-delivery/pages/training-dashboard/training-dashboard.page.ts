@@ -54,22 +54,84 @@ export class TrainingDashboardPage {
   readonly kpis = computed<readonly DashboardKpiCard[]>(() => {
     const kpis = this.data()?.kpis;
     return [
-      { kind: 'sessionsToday', labelKey: 'training.dashboard.kpis.sessionsToday', value: kpis?.sessionsToday ?? 0, icon: 'ph ph-calendar-check', emphasis: 'primary' },
-      { kind: 'inProgress', labelKey: 'training.dashboard.kpis.inProgress', value: kpis?.inProgress ?? 0, icon: 'ph ph-play-circle', emphasis: 'success' },
-      { kind: 'completed', labelKey: 'training.dashboard.kpis.completed', value: kpis?.completed ?? 0, icon: 'ph ph-check-circle', emphasis: 'neutral' },
-      { kind: 'missingReports', labelKey: 'training.dashboard.kpis.missingReports', value: kpis?.missingReports ?? 0, icon: 'ph ph-clipboard-text', emphasis: 'warning' },
-      { kind: 'lateStarts', labelKey: 'training.dashboard.kpis.lateStarts', value: kpis?.lateStarts ?? 0, icon: 'ph ph-clock-countdown', emphasis: 'warning' },
-      { kind: 'absences', labelKey: 'training.dashboard.kpis.absences', value: kpis?.absences ?? 0, icon: 'ph ph-user-minus', emphasis: 'danger' },
-      { kind: 'cancelled', labelKey: 'training.dashboard.kpis.cancelled', value: kpis?.cancelled ?? 0, icon: 'ph ph-calendar-x', emphasis: 'neutral' },
-      { kind: 'openIncidents', labelKey: 'training.dashboard.kpis.openIncidents', value: kpis?.openIncidents ?? 0, icon: 'ph ph-warning-octagon', emphasis: 'danger' },
-      { kind: 'durationsToValidate', labelKey: 'training.dashboard.kpis.durationsToValidate', value: kpis?.durationsToValidate ?? 0, icon: 'ph ph-timer', emphasis: 'warning' },
-      { kind: 'syncFailures', labelKey: 'training.dashboard.kpis.syncFailures', value: kpis?.syncFailures ?? null, icon: 'ph ph-cloud-x', emphasis: 'neutral' },
+      {
+        kind: 'sessionsToday',
+        labelKey: 'training.dashboard.kpis.sessionsToday',
+        value: kpis?.sessionsToday ?? 0,
+        icon: 'ph ph-calendar-check',
+        emphasis: 'primary',
+      },
+      {
+        kind: 'inProgress',
+        labelKey: 'training.dashboard.kpis.inProgress',
+        value: kpis?.inProgress ?? 0,
+        icon: 'ph ph-play-circle',
+        emphasis: 'success',
+      },
+      {
+        kind: 'completed',
+        labelKey: 'training.dashboard.kpis.completed',
+        value: kpis?.completed ?? 0,
+        icon: 'ph ph-check-circle',
+        emphasis: 'neutral',
+      },
+      {
+        kind: 'missingReports',
+        labelKey: 'training.dashboard.kpis.missingReports',
+        value: kpis?.missingReports ?? 0,
+        icon: 'ph ph-clipboard-text',
+        emphasis: 'warning',
+      },
+      {
+        kind: 'lateStarts',
+        labelKey: 'training.dashboard.kpis.lateStarts',
+        value: kpis?.lateStarts ?? 0,
+        icon: 'ph ph-clock-countdown',
+        emphasis: 'warning',
+      },
+      {
+        kind: 'absences',
+        labelKey: 'training.dashboard.kpis.absences',
+        value: kpis?.absences ?? 0,
+        icon: 'ph ph-user-minus',
+        emphasis: 'danger',
+      },
+      {
+        kind: 'cancelled',
+        labelKey: 'training.dashboard.kpis.cancelled',
+        value: kpis?.cancelled ?? 0,
+        icon: 'ph ph-calendar-x',
+        emphasis: 'neutral',
+      },
+      {
+        kind: 'openIncidents',
+        labelKey: 'training.dashboard.kpis.openIncidents',
+        value: kpis?.openIncidents ?? 0,
+        icon: 'ph ph-warning-octagon',
+        emphasis: 'danger',
+      },
+      {
+        kind: 'durationsToValidate',
+        labelKey: 'training.dashboard.kpis.durationsToValidate',
+        value: kpis?.durationsToValidate ?? 0,
+        icon: 'ph ph-timer',
+        emphasis: 'warning',
+      },
+      {
+        kind: 'syncFailures',
+        labelKey: 'training.dashboard.kpis.syncFailures',
+        value: kpis?.syncFailures ?? null,
+        icon: 'ph ph-cloud-x',
+        emphasis: 'neutral',
+      },
     ];
   });
 
   readonly sessions = computed(() => this.data()?.sessions ?? []);
   readonly incidents = computed(() => this.data()?.incidents ?? []);
-  readonly criticalIncidents = computed(() => this.incidents().filter((incident) => incident.severity === 4));
+  readonly criticalIncidents = computed(() =>
+    this.incidents().filter((incident) => incident.severity === 4),
+  );
   readonly attentionSessions = computed(() =>
     this.sessions().filter(
       (session) =>
@@ -80,13 +142,19 @@ export class TrainingDashboardPage {
     ),
   );
 
-  readonly completedWithoutObjectives = computed(() =>
-    this.sessions().filter((session) => session.status === 4 && !session.objectives?.trim()).length,
+  readonly completedWithoutObjectives = computed(
+    () =>
+      this.sessions().filter((session) => session.status === 4 && !session.objectives?.trim())
+        .length,
   );
-  readonly completedWithoutAssessments = computed(() =>
-    this.sessions().filter((session) => session.status === 4 && session.assessmentCount === 0).length,
+  readonly completedWithoutAssessments = computed(
+    () =>
+      this.sessions().filter((session) => session.status === 4 && session.assessmentCount === 0)
+        .length,
   );
-  readonly durationVariances = computed(() => this.sessions().filter((session) => this.hasDurationVariance(session)).length);
+  readonly durationVariances = computed(
+    () => this.sessions().filter((session) => this.hasDurationVariance(session)).length,
+  );
   readonly reportCompletionRate = computed(() => {
     const completed = this.sessions().filter((session) => session.status === 4);
     if (!completed.length) return null;
@@ -97,15 +165,24 @@ export class TrainingDashboardPage {
     const kind = this.drawerKind();
     const sessions = this.sessions();
     switch (kind) {
-      case 'sessionsToday': return sessions;
-      case 'inProgress': return sessions.filter((x) => x.status === 3 || x.status === 6);
-      case 'completed': return sessions.filter((x) => x.status === 4);
-      case 'missingReports': return sessions.filter((x) => this.isMissingReport(x));
-      case 'lateStarts': return sessions.filter((x) => this.isLateStart(x));
-      case 'absences': return sessions.filter((x) => this.isAbsence(x.attendanceStatus));
-      case 'cancelled': return sessions.filter((x) => x.status === 5);
-      case 'durationsToValidate': return sessions.filter((x) => this.hasDurationVariance(x));
-      default: return [];
+      case 'sessionsToday':
+        return sessions;
+      case 'inProgress':
+        return sessions.filter((x) => x.status === 3 || x.status === 6);
+      case 'completed':
+        return sessions.filter((x) => x.status === 4);
+      case 'missingReports':
+        return sessions.filter((x) => this.isMissingReport(x));
+      case 'lateStarts':
+        return sessions.filter((x) => this.isLateStart(x));
+      case 'absences':
+        return sessions.filter((x) => this.isAbsence(x.attendanceStatus));
+      case 'cancelled':
+        return sessions.filter((x) => x.status === 5);
+      case 'durationsToValidate':
+        return sessions.filter((x) => this.hasDurationVariance(x));
+      default:
+        return [];
     }
   });
 
@@ -162,7 +239,9 @@ export class TrainingDashboardPage {
   }
 
   attendanceKey(status: number | null): string {
-    return status === null ? 'training.statuses.attendance.none' : `training.statuses.attendance.${status}`;
+    return status === null
+      ? 'training.statuses.attendance.none'
+      : `training.statuses.attendance.${status}`;
   }
 
   incidentSeverityKey(severity: number): string {
@@ -176,7 +255,11 @@ export class TrainingDashboardPage {
   plannedDurationMinutes(session: TrainingDeliveryDashboardSession): number {
     return Math.max(
       0,
-      Math.round((new Date(session.plannedEndAtUtc).getTime() - new Date(session.plannedStartAtUtc).getTime()) / 60_000),
+      Math.round(
+        (new Date(session.plannedEndAtUtc).getTime() -
+          new Date(session.plannedStartAtUtc).getTime()) /
+          60_000,
+      ),
     );
   }
 
@@ -186,7 +269,10 @@ export class TrainingDashboardPage {
   }
 
   isLateStart(session: TrainingDeliveryDashboardSession): boolean {
-    return new Date(session.plannedStartAtUtc).getTime() < Date.now() && (session.status === 1 || session.status === 2);
+    return (
+      new Date(session.plannedStartAtUtc).getTime() < Date.now() &&
+      (session.status === 1 || session.status === 2)
+    );
   }
 
   isMissingReport(session: TrainingDeliveryDashboardSession): boolean {

@@ -23,6 +23,7 @@ describe('AuthUsersApiService', () => {
 
           useValue: {
             baseUrl: '/auth-api',
+            clientId: 'driveos-web',
           },
         },
       ],
@@ -54,7 +55,7 @@ describe('AuthUsersApiService', () => {
       })
       .subscribe();
 
-    const request = http.expectOne((request) => request.url === '/auth-api/users');
+    const request = http.expectOne((request) => request.url === '/auth-api/api/users');
 
     expect(request.request.method).toBe('GET');
 
@@ -67,6 +68,8 @@ describe('AuthUsersApiService', () => {
     expect(request.request.params.get('isActive')).toBe('true');
 
     expect(request.request.params.get('organizationId')).toBe('organization-1');
+
+    expect(request.request.params.get('clientId')).toBe('driveos-web');
 
     request.flush({
       items: [],

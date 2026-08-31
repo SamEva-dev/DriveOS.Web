@@ -11,7 +11,12 @@ import { BranchesApiService } from '../../../organizations/branches/data-access/
 import { BranchListItem } from '../../../organizations/branches/models/branch-list-item';
 import { RegulatoryIntegrationsApiService } from '../../data-access/regulatory-integrations-api.service';
 import { REGULATORY_INTEGRATIONS_PERMISSIONS } from '../../domain/regulatory-integrations-permissions';
-import { RegulatoryIntegrationConnection, RegulatorySubmissionDetail, RegulatorySubmissionListItem, RegulatorySynchronizationSummary } from '../../models/regulatory-integrations.models';
+import {
+  RegulatoryIntegrationConnection,
+  RegulatorySubmissionDetail,
+  RegulatorySubmissionListItem,
+  RegulatorySynchronizationSummary,
+} from '../../models/regulatory-integrations.models';
 
 @Component({
   selector: 'driveos-regulatory-integrations-page',
@@ -28,9 +33,15 @@ export class RegulatoryIntegrationsPage {
   private readonly errors = inject(ApiErrorService);
 
   readonly organizationId = computed(() => this.auth.user()?.organizationId ?? '');
-  readonly canManage = computed(() => this.authorization.hasPermission(REGULATORY_INTEGRATIONS_PERMISSIONS.manage));
-  readonly canReadSubmissions = computed(() => this.authorization.hasPermission(REGULATORY_INTEGRATIONS_PERMISSIONS.submissionsRead));
-  readonly canManageSubmissions = computed(() => this.authorization.hasPermission(REGULATORY_INTEGRATIONS_PERMISSIONS.submissionsManage));
+  readonly canManage = computed(() =>
+    this.authorization.hasPermission(REGULATORY_INTEGRATIONS_PERMISSIONS.manage),
+  );
+  readonly canReadSubmissions = computed(() =>
+    this.authorization.hasPermission(REGULATORY_INTEGRATIONS_PERMISSIONS.submissionsRead),
+  );
+  readonly canManageSubmissions = computed(() =>
+    this.authorization.hasPermission(REGULATORY_INTEGRATIONS_PERMISSIONS.submissionsManage),
+  );
   readonly loading = signal(false);
   readonly connections = signal<readonly RegulatoryIntegrationConnection[]>([]);
   readonly branches = signal<readonly BranchListItem[]>([]);
@@ -58,15 +69,24 @@ export class RegulatoryIntegrationsPage {
   externalAccountReference = '';
   secretReference = '';
 
-  constructor() { this.reload(); }
+  constructor() {
+    this.reload();
+  }
 
   reload(): void {
     const organizationId = this.organizationId();
     if (!organizationId) return;
-    this.loading.set(true); this.errorMessages.set([]);
+    this.loading.set(true);
+    this.errorMessages.set([]);
     const requests: any = {
       connections: this.api.getConnections(organizationId),
-      branches: this.branchesApi.getPaged(organizationId, { pageNumber: 1, pageSize: 100, search: '', sortBy: 'name', sortDirection: 'asc' }),
+      branches: this.branchesApi.getPaged(organizationId, {
+        pageNumber: 1,
+        pageSize: 100,
+        search: '',
+        sortBy: 'name',
+        sortDirection: 'asc',
+      }),
     };
     if (this.canReadSubmissions()) {
       requests.summary = this.api.getSummary();
@@ -80,59 +100,113 @@ export class RegulatoryIntegrationsPage {
         if (result.submissions) this.submissions.set(result.submissions.items ?? []);
         this.loading.set(false);
       },
-      error: (error: HttpErrorResponse) => { this.errorMessages.set(this.errors.getMessages(error)); this.loading.set(false); },
+      error: (error: HttpErrorResponse) => {
+        this.errorMessages.set(this.errors.getMessages(error));
+        this.loading.set(false);
+      },
     });
   }
 
-  filter(status: string): void { this.selectedStatus.set(status); this.reload(); }
+  filter(status: string): void {
+    this.selectedStatus.set(status);
+    this.reload();
+  }
 
   openCreate(): void {
-    this.editing.set(null); this.branchId = ''; this.externalAccountReference = ''; this.secretReference = ''; this.drawerOpen.set(true);
+    this.editing.set(null);
+    this.branchId = '';
+    this.externalAccountReference = '';
+    this.secretReference = '';
+    this.drawerOpen.set(true);
   }
 
   openEdit(connection: RegulatoryIntegrationConnection): void {
-    this.editing.set(connection); this.branchId = connection.branchId ?? ''; this.externalAccountReference = connection.externalAccountReference; this.secretReference = ''; this.drawerOpen.set(true);
+    this.editing.set(connection);
+    this.branchId = connection.branchId ?? '';
+    this.externalAccountReference = connection.externalAccountReference;
+    this.secretReference = '';
+    this.drawerOpen.set(true);
   }
 
-  closeDrawer(): void { this.drawerOpen.set(false); this.editing.set(null); }
+  closeDrawer(): void {
+    this.drawerOpen.set(false);
+    this.editing.set(null);
+  }
 
   saveConnection(): void {
     const organizationId = this.organizationId();
     if (!organizationId || !this.externalAccountReference.trim()) return;
     const current = this.editing();
     const observer = {
-      next: () => { this.closeDrawer(); this.reload(); },
+      next: () => {
+        this.closeDrawer();
+        this.reload();
+      },
       error: (e: HttpErrorResponse) => this.errorMessages.set(this.errors.getMessages(e)),
     };
 
     if (current) {
-      this.api.updateConnection(organizationId, current.id, {
-        externalAccountReference: this.externalAccountReference.trim(),
-        secretReference: this.secretReference.trim() || null,
-        expectedRevision: current.revision,
-      }).subscribe(observer);
+      this.api
+        .updateConnection(organizationId, current.id, {
+          externalAccountReference: this.externalAccountReference.trim(),
+          secretReference: this.secretReference.trim() || null,
+          expectedRevision: current.revision,
+        })
+        .subscribe(observer);
       return;
     }
 
-    this.api.createConnection(organizationId, {
-      branchId: this.branchId || null,
-      countryCode: 'FR',
-      providerCode: 'fr-livret-numerique',
-      externalAccountReference: this.externalAccountReference.trim(),
-      secretReference: this.secretReference.trim() || null,
-    }).subscribe(observer);
+    this.api
+      .createConnection(organizationId, {
+        branchId: this.branchId || null,
+        countryCode: 'FR',
+        providerCode: 'fr-livret-numerique',
+        externalAccountReference: this.externalAccountReference.trim(),
+        secretReference: this.secretReference.trim() || null,
+      })
+      .subscribe(observer);
   }
 
   setStatus(connection: RegulatoryIntegrationConnection, status: string): void {
-    this.api.changeConnectionStatus(this.organizationId(), connection.id, status, connection.revision).subscribe({ next: () => this.reload(), error: (e: HttpErrorResponse) => this.errorMessages.set(this.errors.getMessages(e)) });
+    this.api
+      .changeConnectionStatus(this.organizationId(), connection.id, status, connection.revision)
+      .subscribe({
+        next: () => this.reload(),
+        error: (e: HttpErrorResponse) => this.errorMessages.set(this.errors.getMessages(e)),
+      });
   }
 
   openSubmission(item: RegulatorySubmissionListItem): void {
-    this.api.getSubmission(item.id).subscribe({ next: value => this.detail.set(value), error: (e: HttpErrorResponse) => this.errorMessages.set(this.errors.getMessages(e)) });
+    this.api
+      .getSubmission(item.id)
+      .subscribe({
+        next: (value) => this.detail.set(value),
+        error: (e: HttpErrorResponse) => this.errorMessages.set(this.errors.getMessages(e)),
+      });
   }
 
-  closeDetail(): void { this.detail.set(null); }
-  reconcile(id: string): void { this.api.reconcile(id).subscribe({ next: () => { this.closeDetail(); this.reload(); }, error: (e: HttpErrorResponse) => this.errorMessages.set(this.errors.getMessages(e)) }); }
-  retry(id: string): void { this.api.retry(id).subscribe({ next: () => { this.closeDetail(); this.reload(); }, error: (e: HttpErrorResponse) => this.errorMessages.set(this.errors.getMessages(e)) }); }
-  branchName(id: string | null): string { return id ? (this.branches().find(x => x.id === id)?.name ?? id) : '—'; }
+  closeDetail(): void {
+    this.detail.set(null);
+  }
+  reconcile(id: string): void {
+    this.api.reconcile(id).subscribe({
+      next: () => {
+        this.closeDetail();
+        this.reload();
+      },
+      error: (e: HttpErrorResponse) => this.errorMessages.set(this.errors.getMessages(e)),
+    });
+  }
+  retry(id: string): void {
+    this.api.retry(id).subscribe({
+      next: () => {
+        this.closeDetail();
+        this.reload();
+      },
+      error: (e: HttpErrorResponse) => this.errorMessages.set(this.errors.getMessages(e)),
+    });
+  }
+  branchName(id: string | null): string {
+    return id ? (this.branches().find((x) => x.id === id)?.name ?? id) : '—';
+  }
 }

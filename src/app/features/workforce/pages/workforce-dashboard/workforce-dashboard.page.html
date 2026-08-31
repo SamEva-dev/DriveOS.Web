@@ -19,90 +19,209 @@
           [message]="error"
         />
       }
-      <button type="button" class="rounded-xl bg-blue-800 px-4 py-2 text-sm font-bold text-white" (click)="load()">
+      <button
+        type="button"
+        class="rounded-xl bg-blue-800 px-4 py-2 text-sm font-bold text-white"
+        (click)="load()"
+      >
         {{ 'common.actions.retry' | translate }}
       </button>
     </div>
   } @else if (dashboard(); as data) {
     <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
-      <drive-os-stat-card [label]="'workforce.dashboard.kpis.current' | translate" [value]="data.headcount.current" icon="ph ph-users-four" />
-      <drive-os-stat-card [label]="'workforce.dashboard.kpis.active' | translate" [value]="data.headcount.active" icon="ph ph-user-check" state="success" />
-      <drive-os-stat-card [label]="'workforce.dashboard.kpis.onboarding' | translate" [value]="data.headcount.onboarding" icon="ph ph-user-plus" />
-      <drive-os-stat-card [label]="'workforce.dashboard.kpis.suspended' | translate" [value]="data.headcount.suspended" icon="ph ph-pause-circle" state="warning" />
-      <drive-os-stat-card [label]="'workforce.dashboard.kpis.onLeave' | translate" [value]="data.headcount.onLeave" icon="ph ph-calendar-x" />
-      <drive-os-stat-card [label]="'workforce.dashboard.kpis.ending' | translate" [value]="data.headcount.ending" icon="ph ph-sign-out" state="warning" />
+      <drive-os-stat-card
+        [label]="'workforce.dashboard.kpis.current' | translate"
+        [value]="data.headcount.current"
+        icon="ph ph-users-four"
+      />
+      <drive-os-stat-card
+        [label]="'workforce.dashboard.kpis.active' | translate"
+        [value]="data.headcount.active"
+        icon="ph ph-user-check"
+        state="success"
+      />
+      <drive-os-stat-card
+        [label]="'workforce.dashboard.kpis.onboarding' | translate"
+        [value]="data.headcount.onboarding"
+        icon="ph ph-user-plus"
+      />
+      <drive-os-stat-card
+        [label]="'workforce.dashboard.kpis.suspended' | translate"
+        [value]="data.headcount.suspended"
+        icon="ph ph-pause-circle"
+        state="warning"
+      />
+      <drive-os-stat-card
+        [label]="'workforce.dashboard.kpis.onLeave' | translate"
+        [value]="data.headcount.onLeave"
+        icon="ph ph-calendar-x"
+      />
+      <drive-os-stat-card
+        [label]="'workforce.dashboard.kpis.ending' | translate"
+        [value]="data.headcount.ending"
+        icon="ph ph-sign-out"
+        state="warning"
+      />
     </div>
 
     <div class="mt-6 grid gap-5 xl:grid-cols-3">
-      <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+      <article
+        class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
         <div class="flex items-center justify-between gap-4">
           <div>
-            <p class="text-xs font-extrabold uppercase tracking-[.12em] text-[var(--driveos-text-tertiary)]">{{ 'workforce.dashboard.sections.leave' | translate }}</p>
-            <h2 class="mt-1 text-lg font-black">{{ 'workforce.dashboard.sections.leaveTitle' | translate }}</h2>
+            <p
+              class="text-xs font-extrabold uppercase tracking-[.12em] text-[var(--driveos-text-tertiary)]"
+            >
+              {{ 'workforce.dashboard.sections.leave' | translate }}
+            </p>
+            <h2 class="mt-1 text-lg font-black">
+              {{ 'workforce.dashboard.sections.leaveTitle' | translate }}
+            </h2>
           </div>
-          <i class="ph ph-calendar-x text-2xl text-blue-800" aria-hidden="true"></i>
+          <i
+            class="ph ph-calendar-x text-2xl text-blue-800"
+            aria-hidden="true"
+          ></i>
         </div>
         <dl class="mt-5 space-y-3 text-sm">
-          <div class="flex items-center justify-between"><dt>{{ 'workforce.dashboard.kpis.pendingApproval' | translate }}</dt><dd class="font-black">{{ data.leave.pendingApproval }}</dd></div>
-          <div class="flex items-center justify-between"><dt>{{ 'workforce.dashboard.kpis.activeToday' | translate }}</dt><dd class="font-black">{{ data.leave.activeToday }}</dd></div>
-          <div class="flex items-center justify-between"><dt>{{ 'workforce.dashboard.kpis.upcomingLeave' | translate }}</dt><dd class="font-black">{{ data.leave.upcoming }}</dd></div>
+          <div class="flex items-center justify-between">
+            <dt>{{ 'workforce.dashboard.kpis.pendingApproval' | translate }}</dt>
+            <dd class="font-black">{{ data.leave.pendingApproval }}</dd>
+          </div>
+          <div class="flex items-center justify-between">
+            <dt>{{ 'workforce.dashboard.kpis.activeToday' | translate }}</dt>
+            <dd class="font-black">{{ data.leave.activeToday }}</dd>
+          </div>
+          <div class="flex items-center justify-between">
+            <dt>{{ 'workforce.dashboard.kpis.upcomingLeave' | translate }}</dt>
+            <dd class="font-black">{{ data.leave.upcoming }}</dd>
+          </div>
         </dl>
       </article>
 
-      <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+      <article
+        class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
         <div class="flex items-center justify-between gap-4">
           <div>
-            <p class="text-xs font-extrabold uppercase tracking-[.12em] text-[var(--driveos-text-tertiary)]">{{ 'workforce.dashboard.sections.compliance' | translate }}</p>
-            <h2 class="mt-1 text-lg font-black">{{ 'workforce.dashboard.sections.complianceTitle' | translate }}</h2>
+            <p
+              class="text-xs font-extrabold uppercase tracking-[.12em] text-[var(--driveos-text-tertiary)]"
+            >
+              {{ 'workforce.dashboard.sections.compliance' | translate }}
+            </p>
+            <h2 class="mt-1 text-lg font-black">
+              {{ 'workforce.dashboard.sections.complianceTitle' | translate }}
+            </h2>
           </div>
-          <i class="ph ph-shield-warning text-2xl text-orange-600" aria-hidden="true"></i>
+          <i
+            class="ph ph-shield-warning text-2xl text-orange-600"
+            aria-hidden="true"
+          ></i>
         </div>
         <dl class="mt-5 space-y-3 text-sm">
-          <div class="flex items-center justify-between"><dt>{{ 'workforce.dashboard.kpis.expiredAuthorizations' | translate }}</dt><dd class="font-black">{{ data.compliance.instructorAuthorizationsExpired }}</dd></div>
-          <div class="flex items-center justify-between"><dt>{{ 'workforce.dashboard.kpis.expiringAuthorizations' | translate }}</dt><dd class="font-black">{{ data.compliance.instructorAuthorizationsExpiringSoon }}</dd></div>
-          <div class="flex items-center justify-between"><dt>{{ 'workforce.dashboard.kpis.expiredDocuments' | translate }}</dt><dd class="font-black">{{ data.compliance.employeeDocumentsExpired }}</dd></div>
+          <div class="flex items-center justify-between">
+            <dt>{{ 'workforce.dashboard.kpis.expiredAuthorizations' | translate }}</dt>
+            <dd class="font-black">{{ data.compliance.instructorAuthorizationsExpired }}</dd>
+          </div>
+          <div class="flex items-center justify-between">
+            <dt>{{ 'workforce.dashboard.kpis.expiringAuthorizations' | translate }}</dt>
+            <dd class="font-black">{{ data.compliance.instructorAuthorizationsExpiringSoon }}</dd>
+          </div>
+          <div class="flex items-center justify-between">
+            <dt>{{ 'workforce.dashboard.kpis.expiredDocuments' | translate }}</dt>
+            <dd class="font-black">{{ data.compliance.employeeDocumentsExpired }}</dd>
+          </div>
         </dl>
       </article>
 
-      <article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+      <article
+        class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
         <div class="flex items-center justify-between gap-4">
           <div>
-            <p class="text-xs font-extrabold uppercase tracking-[.12em] text-[var(--driveos-text-tertiary)]">{{ 'workforce.dashboard.sections.operations' | translate }}</p>
-            <h2 class="mt-1 text-lg font-black">{{ 'workforce.dashboard.sections.operationsTitle' | translate }}</h2>
+            <p
+              class="text-xs font-extrabold uppercase tracking-[.12em] text-[var(--driveos-text-tertiary)]"
+            >
+              {{ 'workforce.dashboard.sections.operations' | translate }}
+            </p>
+            <h2 class="mt-1 text-lg font-black">
+              {{ 'workforce.dashboard.sections.operationsTitle' | translate }}
+            </h2>
           </div>
-          <i class="ph ph-clipboard-text text-2xl text-blue-800" aria-hidden="true"></i>
+          <i
+            class="ph ph-clipboard-text text-2xl text-blue-800"
+            aria-hidden="true"
+          ></i>
         </div>
         <dl class="mt-5 space-y-3 text-sm">
-          <div class="flex items-center justify-between"><dt>{{ 'workforce.dashboard.kpis.timesheetsToReview' | translate }}</dt><dd class="font-black">{{ data.timesheets.submitted + data.timesheets.underReview }}</dd></div>
-          <div class="flex items-center justify-between"><dt>{{ 'workforce.dashboard.kpis.equipmentOverdue' | translate }}</dt><dd class="font-black">{{ data.equipment.returnOverdue }}</dd></div>
-          <div class="flex items-center justify-between"><dt>{{ 'workforce.dashboard.kpis.pendingSignatures' | translate }}</dt><dd class="font-black">{{ data.contracts.pendingSignature }}</dd></div>
+          <div class="flex items-center justify-between">
+            <dt>{{ 'workforce.dashboard.kpis.timesheetsToReview' | translate }}</dt>
+            <dd class="font-black">
+              {{ data.timesheets.submitted + data.timesheets.underReview }}
+            </dd>
+          </div>
+          <div class="flex items-center justify-between">
+            <dt>{{ 'workforce.dashboard.kpis.equipmentOverdue' | translate }}</dt>
+            <dd class="font-black">{{ data.equipment.returnOverdue }}</dd>
+          </div>
+          <div class="flex items-center justify-between">
+            <dt>{{ 'workforce.dashboard.kpis.pendingSignatures' | translate }}</dt>
+            <dd class="font-black">{{ data.contracts.pendingSignature }}</dd>
+          </div>
         </dl>
       </article>
     </div>
 
     <div class="mt-6 grid gap-5 xl:grid-cols-[1.35fr_.65fr]">
-      <section class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
+      <section
+        class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 class="text-lg font-black">{{ 'workforce.dashboard.alerts.title' | translate }}</h2>
-            <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.dashboard.alerts.description' | translate:{days:data.alertWindowDays} }}</p>
+            <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+              {{
+                'workforce.dashboard.alerts.description' | translate: { days: data.alertWindowDays }
+              }}
+            </p>
           </div>
-          <span class="rounded-full bg-[var(--driveos-surface-subtle)] px-3 py-1 text-xs font-bold text-[var(--driveos-text-secondary)]">{{ data.asOfDate | date:'mediumDate' }}</span>
+          <span
+            class="rounded-full bg-[var(--driveos-surface-subtle)] px-3 py-1 text-xs font-bold text-[var(--driveos-text-secondary)]"
+          >
+            {{ data.asOfDate | date: 'mediumDate' }}
+          </span>
         </div>
 
         @if (data.alerts.length) {
           <div class="mt-4 space-y-3">
-            @for (alert of data.alerts; track alert.kind + (alert.referenceId ?? '') + (alert.employeeId ?? '')) {
+            @for (
+              alert of data.alerts;
+              track alert.kind + (alert.referenceId ?? '') + (alert.employeeId ?? '')
+            ) {
               <article class="rounded-xl border border-[var(--driveos-border)] p-4">
                 <div class="flex items-start gap-3">
-                  <span class="mt-0.5 size-2.5 shrink-0 rounded-full" [class.bg-red-500]="alertTone(alert.severity)==='danger'" [class.bg-orange-500]="alertTone(alert.severity)==='warning'" [class.bg-blue-500]="alertTone(alert.severity)==='info'"></span>
+                  <span
+                    class="mt-0.5 size-2.5 shrink-0 rounded-full"
+                    [class.bg-red-500]="alertTone(alert.severity) === 'danger'"
+                    [class.bg-orange-500]="alertTone(alert.severity) === 'warning'"
+                    [class.bg-blue-500]="alertTone(alert.severity) === 'info'"
+                  ></span>
                   <div class="min-w-0 flex-1">
-                    <p class="font-bold text-[var(--driveos-text-primary)]">{{ alertMessage(alert) }}</p>
+                    <p class="font-bold text-[var(--driveos-text-primary)]">
+                      {{ alertMessage(alert) }}
+                    </p>
                     @if (alert.dueDate) {
-                      <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">{{ 'workforce.dashboard.alerts.dueDate' | translate }} : {{ alert.dueDate | date:'mediumDate' }}</p>
+                      <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                        {{ 'workforce.dashboard.alerts.dueDate' | translate }} :
+                        {{ alert.dueDate | date: 'mediumDate' }}
+                      </p>
                     }
                     @if (alert.employeeId) {
-                      <a class="mt-2 inline-flex text-xs font-extrabold text-blue-800 hover:underline" [routerLink]="['/workforce/employees', alert.employeeId]">
+                      <a
+                        class="mt-2 inline-flex text-xs font-extrabold text-blue-800 hover:underline"
+                        [routerLink]="['/workforce/employees', alert.employeeId]"
+                      >
                         {{ 'workforce.dashboard.alerts.openEmployee' | translate }}
                       </a>
                     }
@@ -113,17 +232,40 @@
           </div>
         } @else {
           <div class="mt-5">
-            <drive-os-empty-state icon="shield-check" [compact]="true" tone="success" [title]="'workforce.dashboard.alerts.empty' | translate" />
+            <drive-os-empty-state
+              icon="shield-check"
+              [compact]="true"
+              tone="success"
+              [title]="'workforce.dashboard.alerts.empty' | translate"
+            />
           </div>
         }
       </section>
 
-      <aside class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5">
-        <h2 class="text-lg font-black">{{ 'workforce.dashboard.quickAccess.title' | translate }}</h2>
-        <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ 'workforce.dashboard.quickAccess.description' | translate }}</p>
-        <a routerLink="/workforce/employees" class="mt-5 flex items-center justify-between rounded-xl border border-[var(--driveos-border)] p-4 font-bold transition hover:bg-[var(--driveos-surface-hover)]">
-          <span class="flex items-center gap-3"><i class="ph ph-users-three text-xl" aria-hidden="true"></i>{{ 'workforce.employees.title' | translate }}</span>
-          <i class="ph ph-arrow-right" aria-hidden="true"></i>
+      <aside
+        class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
+        <h2 class="text-lg font-black">
+          {{ 'workforce.dashboard.quickAccess.title' | translate }}
+        </h2>
+        <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+          {{ 'workforce.dashboard.quickAccess.description' | translate }}
+        </p>
+        <a
+          routerLink="/workforce/employees"
+          class="mt-5 flex items-center justify-between rounded-xl border border-[var(--driveos-border)] p-4 font-bold transition hover:bg-[var(--driveos-surface-hover)]"
+        >
+          <span class="flex items-center gap-3">
+            <i
+              class="ph ph-users-three text-xl"
+              aria-hidden="true"
+            ></i>
+            {{ 'workforce.employees.title' | translate }}
+          </span>
+          <i
+            class="ph ph-arrow-right"
+            aria-hidden="true"
+          ></i>
         </a>
       </aside>
     </div>

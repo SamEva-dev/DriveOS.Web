@@ -1,0 +1,832 @@
+<drive-os-drawer
+  [open]="open()"
+  [title]="'professionalMarketplace.engagements.drawer.title' | translate"
+  size="xl"
+  (closeRequested)="close()"
+>
+  <div class="grid gap-4 p-5">
+    @if (loading()) {
+      <div class="rounded-xl border border-dashed p-8 text-center text-sm">
+        {{ 'common.loading' | translate }}
+      </div>
+    }
+    @if (item(); as e) {
+      <header class="grid gap-3 border-b border-[var(--driveos-border)] pb-4">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h3 class="text-xl font-extrabold">
+              {{ 'professionalMarketplace.engagements.title' | translate }}
+            </h3>
+            <p class="text-sm text-[var(--driveos-text-secondary)]">
+              {{ e.terms.startsOn }} → {{ e.terms.endsOn }}
+            </p>
+          </div>
+          <span
+            class="rounded-full border border-[var(--driveos-border)] px-3 py-1 text-xs font-bold"
+          >
+            {{ 'professionalMarketplace.engagements.status.' + e.status | translate }}
+          </span>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs">
+          <span>{{ e.terms.engagementType }}</span>
+          <span>•</span>
+          <span>{{ e.terms.teachingCategoryCodes.join(', ') }}</span>
+          <span>•</span>
+          <span>
+            {{ preparedCount(e) }}/5
+            {{ 'professionalMarketplace.engagements.preparation.ready' | translate }}
+          </span>
+        </div>
+      </header>
+      <nav class="flex gap-1 overflow-x-auto border-b border-[var(--driveos-border)]">
+        <button
+          class="whitespace-nowrap px-3 py-2 text-xs font-bold"
+          [class.border-b-2]="tab() === 'summary'"
+          [class.border-blue-700]="tab() === 'summary'"
+          (click)="selectTab('summary')"
+        >
+          {{ 'professionalMarketplace.engagements.tabs.summary' | translate }}
+        </button>
+        <button
+          class="whitespace-nowrap px-3 py-2 text-xs font-bold"
+          [class.border-b-2]="tab() === 'preparation'"
+          [class.border-blue-700]="tab() === 'preparation'"
+          (click)="selectTab('preparation')"
+        >
+          {{ 'professionalMarketplace.engagements.tabs.preparation' | translate }}
+        </button>
+        <button
+          class="whitespace-nowrap px-3 py-2 text-xs font-bold"
+          [class.border-b-2]="tab() === 'contract'"
+          [class.border-blue-700]="tab() === 'contract'"
+          (click)="selectTab('contract')"
+        >
+          {{ 'professionalMarketplace.engagements.tabs.contract' | translate }}
+        </button>
+        <button
+          class="whitespace-nowrap px-3 py-2 text-xs font-bold"
+          [class.border-b-2]="tab() === 'access'"
+          [class.border-blue-700]="tab() === 'access'"
+          (click)="selectTab('access')"
+        >
+          {{ 'professionalMarketplace.engagements.tabs.access' | translate }}
+        </button>
+        @if (canReadMissions()) {
+          <button
+            class="whitespace-nowrap px-3 py-2 text-xs font-bold"
+            [class.border-b-2]="tab() === 'missions'"
+            [class.border-blue-700]="tab() === 'missions'"
+            (click)="selectTab('missions')"
+          >
+            {{ 'professionalMarketplace.engagements.tabs.missions' | translate }}
+          </button>
+        }
+        @if (canReadServices() || canReadDisputes()) {
+          <button
+            class="whitespace-nowrap px-3 py-2 text-xs font-bold"
+            [class.border-b-2]="tab() === 'services'"
+            [class.border-blue-700]="tab() === 'services'"
+            (click)="selectTab('services')"
+          >
+            {{ 'professionalMarketplace.engagements.tabs.services' | translate }}
+          </button>
+        }
+        @if (canReadBilling()) {
+          <button
+            class="whitespace-nowrap px-3 py-2 text-xs font-bold"
+            [class.border-b-2]="tab() === 'billing'"
+            [class.border-blue-700]="tab() === 'billing'"
+            (click)="selectTab('billing')"
+          >
+            {{ 'professionalMarketplace.engagements.tabs.billing' | translate }}
+          </button>
+        }
+        @if (canReadMessages()) {
+          <button
+            class="whitespace-nowrap px-3 py-2 text-xs font-bold"
+            [class.border-b-2]="tab() === 'messages'"
+            [class.border-blue-700]="tab() === 'messages'"
+            (click)="selectTab('messages')"
+          >
+            {{ 'professionalMarketplace.engagements.tabs.messages' | translate }}
+          </button>
+        }
+      </nav>
+      @if (tab() === 'summary') {
+        <section class="grid gap-4">
+          <div class="grid grid-cols-3 gap-3 max-md:grid-cols-1">
+            <div class="rounded-xl border p-4">
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.engagements.fields.period' | translate }}
+              </span>
+              <strong class="mt-1 block">{{ e.terms.startsOn }} → {{ e.terms.endsOn }}</strong>
+            </div>
+            <div class="rounded-xl border p-4">
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.engagements.fields.rate' | translate }}
+              </span>
+              <strong class="mt-1 block">
+                {{
+                  e.terms.rateAmount === null
+                    ? '—'
+                    : e.terms.rateAmount +
+                      ' ' +
+                      (e.terms.currency || '') +
+                      '/' +
+                      (e.terms.rateUnit || '')
+                }}
+              </strong>
+            </div>
+            <div class="rounded-xl border p-4">
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.engagements.fields.offerRevision' | translate }}
+              </span>
+              <strong class="mt-1 block">#{{ e.commercialOfferRevision }}</strong>
+            </div>
+          </div>
+          <div class="rounded-xl border p-4">
+            <h4 class="font-extrabold">
+              {{ 'professionalMarketplace.engagements.fields.categories' | translate }}
+            </h4>
+            <div class="mt-2 flex flex-wrap gap-2">
+              @for (c of e.terms.teachingCategoryCodes; track c) {
+                <span class="rounded bg-blue-50 px-2 py-1 text-xs font-bold text-blue-800">
+                  {{ c }}
+                </span>
+              }
+            </div>
+          </div>
+          @if (e.statusReason) {
+            <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm">
+              {{ e.statusReason }}
+            </div>
+          }
+        </section>
+      }
+      @if (tab() === 'preparation') {
+        <section class="grid gap-3">
+          @for (
+            step of [
+              { k: 'compliance', done: e.compliancePrepared },
+              { k: 'contract', done: e.contractPrepared },
+              { k: 'access', done: e.accessPrepared },
+              { k: 'scheduling', done: e.schedulingPrepared },
+              { k: 'internalApproval', done: e.internalApprovalPrepared },
+            ];
+            track step.k
+          ) {
+            <div class="flex items-center justify-between gap-3 rounded-xl border p-4">
+              <div>
+                <strong>
+                  {{ 'professionalMarketplace.engagements.preparation.' + step.k | translate }}
+                </strong>
+                <p class="text-xs text-[var(--driveos-text-secondary)]">
+                  {{
+                    (step.done
+                      ? 'professionalMarketplace.engagements.preparation.done'
+                      : 'professionalMarketplace.engagements.preparation.pending'
+                    ) | translate
+                  }}
+                </p>
+              </div>
+              <span
+                class="rounded-full px-3 py-1 text-xs font-bold"
+                [class.bg-emerald-100]="step.done"
+                [class.text-emerald-800]="step.done"
+                [class.bg-amber-100]="!step.done"
+                [class.text-amber-800]="!step.done"
+              >
+                {{ step.done ? '✓' : '…' }}
+              </span>
+            </div>
+          }
+          <div class="flex flex-wrap gap-2">
+            @if (!e.compliancePrepared && canPrepareCompliance()) {
+              <button
+                class="rounded-lg border px-3 py-2 text-xs font-bold"
+                [disabled]="busy()"
+                (click)="prepareCompliance()"
+              >
+                {{ 'professionalMarketplace.engagements.actions.validateCompliance' | translate }}
+              </button>
+            }
+            @if (!e.contractPrepared && canPrepareContract()) {
+              <button
+                class="rounded-lg border px-3 py-2 text-xs font-bold"
+                [disabled]="busy()"
+                (click)="prepareContract()"
+              >
+                {{ 'professionalMarketplace.engagements.actions.validateContract' | translate }}
+              </button>
+            }
+            @if (!e.accessPrepared && canPrepareAccess()) {
+              <button
+                class="rounded-lg border px-3 py-2 text-xs font-bold"
+                [disabled]="busy()"
+                (click)="prepareAccess()"
+              >
+                {{ 'professionalMarketplace.engagements.actions.prepareAccess' | translate }}
+              </button>
+            }
+            @if (!e.schedulingPrepared && canManage()) {
+              <button
+                class="rounded-lg border px-3 py-2 text-xs font-bold"
+                [disabled]="busy()"
+                (click)="prepareScheduling()"
+              >
+                {{ 'professionalMarketplace.engagements.actions.prepareScheduling' | translate }}
+              </button>
+            }
+            @if (!e.internalApprovalPrepared && canManage()) {
+              <button
+                class="rounded-lg border px-3 py-2 text-xs font-bold"
+                [disabled]="busy()"
+                (click)="approveInternal()"
+              >
+                {{ 'professionalMarketplace.engagements.actions.internalApproval' | translate }}
+              </button>
+            }
+          </div>
+        </section>
+      }
+      @if (tab() === 'contract') {
+        <section class="grid gap-3">
+          @if (e.contract; as c) {
+            <div class="rounded-xl border p-4">
+              <div class="flex justify-between gap-3">
+                <div>
+                  <strong>{{ c.contractNumber }}</strong>
+                  <p class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ c.contractType }} · v{{ c.version }}
+                  </p>
+                </div>
+                <span class="text-xs font-bold">{{ c.status }}</span>
+              </div>
+              <div class="mt-3 text-sm">
+                {{ c.signedRequiredSignatories }} / {{ c.requiredSignatories }}
+                {{ 'professionalMarketplace.engagements.contract.signatures' | translate }}
+              </div>
+            </div>
+          } @else {
+            <div class="rounded-xl border border-dashed p-6 text-center text-sm">
+              {{ 'professionalMarketplace.engagements.contract.none' | translate }}
+            </div>
+          }
+          @if (canPrepareContract()) {
+            <button
+              class="justify-self-start rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              (click)="openContract()"
+            >
+              {{ 'professionalMarketplace.engagements.contract.manage' | translate }}
+            </button>
+          }
+          <p class="text-xs text-[var(--driveos-text-secondary)]">
+            {{ 'professionalMarketplace.engagements.contract.owner' | translate }}
+          </p>
+        </section>
+      }
+      @if (tab() === 'access') {
+        <section class="grid gap-3">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h4 class="font-extrabold">
+                {{ 'professionalMarketplace.accessGrants.title' | translate }}
+              </h4>
+              <p class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.accessGrants.subtitle' | translate }}
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              @if (!e.accessPrepared && canPrepareAccess()) {
+                <button
+                  class="rounded-lg border px-3 py-2 text-xs font-bold"
+                  [disabled]="busy()"
+                  (click)="prepareAccess()"
+                >
+                  {{ 'professionalMarketplace.engagements.actions.prepareAccess' | translate }}
+                </button>
+              }
+              @if (e.status === 'Active' && canCreateAccess()) {
+                <button
+                  class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+                  (click)="openNewAccessGrant()"
+                >
+                  {{ 'professionalMarketplace.accessGrants.actions.create' | translate }}
+                </button>
+              }
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 max-md:grid-cols-1">
+            <div class="rounded-xl border p-3">
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.accessGrants.kpi.total' | translate }}
+              </span>
+              <strong class="mt-1 block text-lg">{{ accessGrants().length }}</strong>
+            </div>
+            <div class="rounded-xl border p-3">
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.accessGrants.kpi.active' | translate }}
+              </span>
+              <strong class="mt-1 block text-lg">{{ activeAccessCount() }}</strong>
+            </div>
+            <div class="rounded-xl border p-3">
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.accessGrants.kpi.prepared' | translate }}
+              </span>
+              <strong class="mt-1 block text-lg">{{ e.accessPrepared ? '✓' : '—' }}</strong>
+            </div>
+          </div>
+          @if (!canReadAccess()) {
+            <div
+              class="rounded-xl border border-dashed p-6 text-center text-sm text-[var(--driveos-text-secondary)]"
+            >
+              {{ 'professionalMarketplace.accessGrants.noReadPermission' | translate }}
+            </div>
+          } @else if (accessLoading()) {
+            <div class="rounded-xl border border-dashed p-6 text-center text-sm">
+              {{ 'common.loading' | translate }}
+            </div>
+          } @else if (!accessGrants().length) {
+            <div
+              class="rounded-xl border border-dashed p-6 text-center text-sm text-[var(--driveos-text-secondary)]"
+            >
+              {{ 'professionalMarketplace.accessGrants.empty' | translate }}
+            </div>
+          } @else {
+            <div class="grid gap-2">
+              @for (g of accessGrants(); track g.id) {
+                <button
+                  class="grid gap-2 rounded-xl border p-4 text-left hover:bg-[var(--driveos-surface-muted)]"
+                  (click)="openAccessGrant(g)"
+                >
+                  <div class="flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                      <strong>
+                        {{
+                          'professionalMarketplace.accessGrants.resourceType.' + g.resourceType
+                            | translate
+                        }}
+                        · {{ g.permission }}
+                      </strong>
+                      <p class="mt-1 font-mono text-[11px] text-[var(--driveos-text-secondary)]">
+                        {{ g.resourceId }}
+                      </p>
+                    </div>
+                    <span class="rounded-full border px-2 py-1 text-[11px] font-bold">
+                      {{ 'professionalMarketplace.accessGrants.status.' + g.status | translate }}
+                    </span>
+                  </div>
+                  <div class="flex flex-wrap gap-2 text-xs text-[var(--driveos-text-secondary)]">
+                    <span>
+                      {{
+                        'professionalMarketplace.accessGrants.origin.' + g.originCode | translate
+                      }}
+                    </span>
+                    <span>•</span>
+                    <span>{{ g.startDate }} → {{ g.endDate }}</span>
+                  </div>
+                </button>
+              }
+            </div>
+          }
+        </section>
+      }
+      @if (tab() === 'missions') {
+        <section class="grid gap-3">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h4 class="font-extrabold">
+                {{ 'professionalMarketplace.missions.title' | translate }}
+              </h4>
+              <p class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.missions.subtitle' | translate }}
+              </p>
+            </div>
+            @if (canCreateMission() && e.status === 'Active') {
+              <button
+                class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+                (click)="openNewMission()"
+              >
+                {{ 'professionalMarketplace.missions.actions.create' | translate }}
+              </button>
+            }
+          </div>
+          @if (missionsLoading()) {
+            <div class="rounded-xl border border-dashed p-6 text-center text-sm">
+              {{ 'common.loading' | translate }}
+            </div>
+          } @else if (!missions().length) {
+            <div
+              class="rounded-xl border border-dashed p-6 text-center text-sm text-[var(--driveos-text-secondary)]"
+            >
+              {{ 'professionalMarketplace.missions.empty' | translate }}
+            </div>
+          } @else {
+            <div class="grid gap-2">
+              @for (m of missions(); track m.id) {
+                <button
+                  class="grid gap-2 rounded-xl border p-4 text-left hover:bg-[var(--driveos-surface-muted)]"
+                  (click)="openMission(m.id)"
+                >
+                  <div class="flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                      <strong>{{ m.title }}</strong>
+                      <p class="text-xs text-[var(--driveos-text-secondary)]">
+                        {{ m.startsOn }} → {{ m.endsOn }}
+                      </p>
+                    </div>
+                    <span class="rounded-full border px-2 py-1 text-[11px] font-bold">
+                      {{ 'professionalMarketplace.missions.status.' + m.status | translate }}
+                    </span>
+                  </div>
+                  <div class="flex flex-wrap gap-2 text-xs text-[var(--driveos-text-secondary)]">
+                    <span>{{ m.teachingCategoryCodes.join(', ') }}</span>
+                    @if (m.estimatedMinutes) {
+                      <span>• {{ m.estimatedMinutes }} min</span>
+                    }
+                    <span>
+                      •
+                      {{
+                        'professionalMarketplace.missions.vehicle.' + m.vehicleProvisionMode
+                          | translate
+                      }}
+                    </span>
+                  </div>
+                </button>
+              }
+            </div>
+          }
+        </section>
+      }
+      @if (tab() === 'services') {
+        <section class="grid gap-3">
+          <div>
+            <h4 class="font-extrabold">
+              {{ 'professionalMarketplace.serviceReview.title' | translate }}
+            </h4>
+            <p class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'professionalMarketplace.serviceReview.subtitle' | translate }}
+            </p>
+          </div>
+          <nav class="flex gap-1 overflow-x-auto border-b">
+            @if (canReadServices()) {
+              <button
+                class="border-b-2 px-3 py-2 text-xs font-bold"
+                [class.border-blue-800]="servicesSubTab() === 'statements'"
+                (click)="selectServicesSubTab('statements')"
+              >
+                {{ 'professionalMarketplace.serviceReview.title' | translate }} ({{
+                  serviceStatements().length
+                }})
+              </button>
+            }
+            @if (canReadDisputes()) {
+              <button
+                class="border-b-2 px-3 py-2 text-xs font-bold"
+                [class.border-blue-800]="servicesSubTab() === 'disputes'"
+                (click)="selectServicesSubTab('disputes')"
+              >
+                {{ 'professionalMarketplace.disputes.mainTab' | translate }} ({{
+                  serviceDisputes().length
+                }})
+              </button>
+            }
+          </nav>
+          @if (servicesSubTab() === 'statements') {
+            @if (statementsLoading()) {
+              <div class="rounded-xl border border-dashed p-6 text-center text-sm">
+                {{ 'common.loading' | translate }}
+              </div>
+            } @else {
+              @for (s of serviceStatements(); track s.id) {
+                <button
+                  class="grid gap-2 rounded-xl border p-4 text-left hover:bg-slate-50"
+                  (click)="openStatement(s.id)"
+                >
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <strong>{{ s.periodStart }} → {{ s.periodEnd }}</strong>
+                      <div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                        {{ s.lines.length }}
+                        {{ 'professionalMarketplace.serviceStatements.preview.lines' | translate }}
+                      </div>
+                    </div>
+                    <span class="rounded-full border px-2 py-1 text-xs font-bold">
+                      {{
+                        'professionalMarketplace.serviceStatements.status.' + s.status | translate
+                      }}
+                    </span>
+                  </div>
+                  <div class="grid grid-cols-3 gap-2 text-xs max-md:grid-cols-1">
+                    <span>
+                      {{ 'professionalMarketplace.serviceStatements.fields.total' | translate }}:
+                      <strong>{{ s.totalAmount }} {{ s.currency }}</strong>
+                    </span>
+                    <span>
+                      {{ 'professionalMarketplace.serviceStatements.fields.approved' | translate }}:
+                      <strong>{{ s.approvedAmount }} {{ s.currency }}</strong>
+                    </span>
+                    <span>
+                      {{ 'professionalMarketplace.serviceStatements.fields.disputed' | translate }}:
+                      <strong>{{ s.disputedAmount }} {{ s.currency }}</strong>
+                    </span>
+                  </div>
+                </button>
+              } @empty {
+                <div
+                  class="rounded-xl border border-dashed p-6 text-center text-sm text-[var(--driveos-text-secondary)]"
+                >
+                  {{ 'professionalMarketplace.serviceReview.empty' | translate }}
+                </div>
+              }
+            }
+          } @else {
+            @for (d of serviceDisputes(); track d.id) {
+              <button
+                class="grid gap-2 rounded-xl border p-4 text-left hover:bg-amber-50"
+                (click)="openServiceDispute(d.id)"
+              >
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <strong>
+                      {{ 'professionalMarketplace.disputes.reason.' + d.reason | translate }}
+                    </strong>
+                    <p class="mt-1 line-clamp-2 text-xs text-[var(--driveos-text-secondary)]">
+                      {{ d.description }}
+                    </p>
+                  </div>
+                  <span class="rounded-full border px-2 py-1 text-xs font-bold">
+                    {{ 'professionalMarketplace.disputes.status.' + d.status | translate }}
+                  </span>
+                </div>
+                <div class="break-all text-[11px] text-[var(--driveos-text-secondary)]">
+                  {{ d.serviceEntryId }}
+                </div>
+              </button>
+            } @empty {
+              <div
+                class="rounded-xl border border-dashed p-6 text-center text-sm text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'professionalMarketplace.disputes.empty' | translate }}
+              </div>
+            }
+          }
+        </section>
+      }
+      @if (tab() === 'billing') {
+        <section class="grid gap-3">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h4 class="font-extrabold">
+                {{ 'professionalMarketplace.invoices.title' | translate }}
+              </h4>
+              <p class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.invoices.subtitle' | translate }}
+              </p>
+            </div>
+            @if (canRequestInvoice()) {
+              <button
+                class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+                (click)="openNewInvoice()"
+              >
+                {{ 'professionalMarketplace.invoices.actions.createSelfBilling' | translate }}
+              </button>
+            }
+          </div>
+          <nav class="flex gap-1 overflow-x-auto border-b">
+            <button
+              class="border-b-2 px-3 py-2 text-xs font-bold"
+              [class.border-blue-800]="billingSubTab() === 'invoices'"
+              (click)="selectBillingSubTab('invoices')"
+            >
+              {{ 'professionalMarketplace.invoices.tabs.invoices' | translate }} ({{
+                invoices().length
+              }})
+            </button>
+            @if (canReadPayments()) {
+              <button
+                class="border-b-2 px-3 py-2 text-xs font-bold"
+                [class.border-blue-800]="billingSubTab() === 'payments'"
+                (click)="selectBillingSubTab('payments')"
+              >
+                {{ 'professionalMarketplace.invoices.tabs.payments' | translate }}
+              </button>
+            }
+          </nav>
+          @if (billingLoading()) {
+            <div class="rounded-xl border border-dashed p-6 text-center text-sm">
+              {{ 'common.loading' | translate }}
+            </div>
+          } @else if (billingSubTab() === 'invoices') {
+            @for (i of invoices(); track i.id) {
+              <button
+                class="grid gap-2 rounded-xl border p-4 text-left hover:bg-slate-50"
+                (click)="openInvoice(i.id)"
+              >
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <strong>
+                      {{
+                        i.invoiceNumber ||
+                          ('professionalMarketplace.invoices.unnumbered' | translate)
+                      }}
+                    </strong>
+                    <div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                      {{ i.issueDate }} ·
+                      {{ 'professionalMarketplace.invoices.mode.' + i.mode | translate }}
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <strong>{{ i.total }} {{ i.currency }}</strong>
+                    <div class="mt-1 text-xs">
+                      {{ 'professionalMarketplace.invoices.status.' + i.status | translate }}
+                    </div>
+                  </div>
+                </div>
+              </button>
+            } @empty {
+              <div
+                class="rounded-xl border border-dashed p-6 text-center text-sm text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'professionalMarketplace.invoices.empty' | translate }}
+              </div>
+            }
+          } @else {
+            @for (i of invoices(); track i.id) {
+              <button
+                class="grid gap-2 rounded-xl border p-4 text-left hover:bg-slate-50"
+                (click)="openInvoice(i.id)"
+              >
+                <div class="flex flex-wrap justify-between gap-3">
+                  <div>
+                    <strong>
+                      {{
+                        i.invoiceNumber ||
+                          ('professionalMarketplace.invoices.unnumbered' | translate)
+                      }}
+                    </strong>
+                    <div class="text-xs text-[var(--driveos-text-secondary)]">
+                      {{ i.financeSupplierInvoiceStatus || '—' }}
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <strong>{{ i.total }} {{ i.currency }}</strong>
+                    <div class="text-xs">
+                      {{
+                        'professionalMarketplace.invoices.paymentStatus.' + i.paymentStatus
+                          | translate
+                      }}
+                    </div>
+                  </div>
+                </div>
+              </button>
+            } @empty {
+              <div
+                class="rounded-xl border border-dashed p-6 text-center text-sm text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'professionalMarketplace.invoices.noPayments' | translate }}
+              </div>
+            }
+          }
+        </section>
+      }
+      @if (tab() === 'messages' && canReadMessages()) {
+        <driveos-marketplace-messages-panel
+          [engagementId]="e.id"
+          [professionalProfileId]="e.professionalProfileId"
+        />
+      }
+      @if (formErrors().length) {
+        <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+          @for (err of formErrors(); track err) {
+            <p>{{ err }}</p>
+          }
+        </div>
+      }
+      @if (actionMode()) {
+        <section class="grid gap-2 rounded-xl border border-amber-200 bg-amber-50 p-4">
+          <textarea
+            class="min-h-20 rounded-lg border bg-white px-3 py-2 text-sm"
+            [(ngModel)]="reason"
+          ></textarea>
+          <div class="flex justify-end gap-2">
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="cancelAction()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </button>
+            <button
+              class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="confirmReason()"
+            >
+              {{ 'common.actions.confirm' | translate }}
+            </button>
+          </div>
+        </section>
+      } @else {
+        <footer
+          class="flex flex-wrap justify-end gap-2 border-t border-[var(--driveos-border)] pt-4"
+        >
+          @if (e.status === 'PendingActivation' && e.isOperationallyReady && canActivate()) {
+            <button
+              class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="activate()"
+            >
+              {{ 'professionalMarketplace.engagements.actions.activate' | translate }}
+            </button>
+          }
+          @if (e.status === 'Active' && canSuspend()) {
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="begin('suspend')"
+            >
+              {{ 'professionalMarketplace.engagements.actions.suspend' | translate }}
+            </button>
+          }
+          @if (e.status === 'Suspended' && canResume()) {
+            <button
+              class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="resume()"
+            >
+              {{ 'professionalMarketplace.engagements.actions.resume' | translate }}
+            </button>
+          }
+          @if ((e.status === 'Active' || e.status === 'Suspended') && canManage()) {
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              [disabled]="busy()"
+              (click)="complete()"
+            >
+              {{ 'professionalMarketplace.engagements.actions.complete' | translate }}
+            </button>
+          }
+          @if (e.status !== 'Ended' && e.status !== 'Terminated' && canTerminate()) {
+            <button
+              class="rounded-lg border border-red-300 px-3 py-2 text-xs font-bold text-red-700"
+              (click)="begin('terminate')"
+            >
+              {{ 'professionalMarketplace.engagements.actions.terminate' | translate }}
+            </button>
+          }
+        </footer>
+      }
+    }
+  </div>
+</drive-os-drawer>
+
+<driveos-professional-service-contract-drawer
+  [open]="contractDrawerOpen()"
+  [engagementId]="engagementId()"
+  (closeRequested)="closeContract()"
+  (changed)="contractChanged()"
+/>
+
+<driveos-professional-mission-drawer
+  [open]="missionDrawerOpen()"
+  [engagementId]="engagementId()"
+  [missionId]="selectedMissionId()"
+  [engagementStartsOn]="item()?.terms?.startsOn || ''"
+  [engagementEndsOn]="item()?.terms?.endsOn || ''"
+  [defaultCategories]="item()?.terms?.teachingCategoryCodes || []"
+  (closeRequested)="closeMission()"
+  (changed)="missionChanged()"
+/>
+
+<driveos-external-access-grant-drawer
+  [open]="accessGrantDrawerOpen()"
+  [engagement]="item()"
+  [missions]="missions()"
+  [grant]="selectedAccessGrant()"
+  (closeRequested)="closeAccessGrant()"
+  (changed)="accessGrantChanged()"
+/>
+
+<driveos-service-statement-review-drawer
+  [open]="statementDrawerOpen()"
+  [organizationId]="organizationId()"
+  [statementId]="selectedStatementId()"
+  (closeRequested)="closeStatement()"
+  (changed)="statementChanged()"
+/>
+
+<driveos-service-dispute-drawer
+  [open]="disputeDrawerOpen()"
+  mode="school"
+  [organizationId]="organizationId()"
+  [disputeId]="selectedDisputeId()"
+  (closeRequested)="closeServiceDispute()"
+  (changed)="serviceDisputeChanged()"
+/>
+
+<driveos-professional-invoice-drawer
+  [open]="invoiceDrawerOpen()"
+  [organizationId]="organizationId()"
+  [invoiceId]="selectedInvoiceId()"
+  [statements]="serviceStatements()"
+  (closeRequested)="closeInvoice()"
+  (changed)="invoiceChanged()"
+/>

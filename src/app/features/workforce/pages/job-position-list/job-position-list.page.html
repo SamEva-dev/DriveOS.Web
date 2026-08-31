@@ -1,18 +1,227 @@
 <section class="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
-  <drive-os-page-header [title]="'workforce.jobPositions.title' | translate" [description]="'workforce.jobPositions.description' | translate">
-    @if (canManage()) { <drive-os-button icon="plus" (pressed)="openCreate()">{{ 'workforce.jobPositions.add' | translate }}</drive-os-button> }
+  <drive-os-page-header
+    [title]="'workforce.jobPositions.title' | translate"
+    [description]="'workforce.jobPositions.description' | translate"
+  >
+    @if (canManage()) {
+      <drive-os-button
+        icon="plus"
+        (pressed)="openCreate()"
+      >
+        {{ 'workforce.jobPositions.add' | translate }}
+      </drive-os-button>
+    }
   </drive-os-page-header>
-  @if (errors().length) { <div class="mt-5 space-y-2">@for(error of errors();track error){<drive-os-form-alert tone="danger" [title]="'workforce.jobPositions.loadError'|translate" [message]="error"/>}</div> }
-  <div class="mt-5 grid gap-3 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 md:grid-cols-[1fr_220px]">
-    <input [ngModel]="search()" (ngModelChange)="search.set($event)" [placeholder]="'workforce.jobPositions.search'|translate" class="w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 outline-none focus:border-blue-700" />
-    <select [ngModel]="status()" (ngModelChange)="status.set($event)" class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5"><option value="">{{ 'common.all'|translate }}</option><option value="Active">{{ 'workforce.jobPositionStatus.Active'|translate }}</option><option value="Inactive">{{ 'workforce.jobPositionStatus.Inactive'|translate }}</option></select>
+  @if (errors().length) {
+    <div class="mt-5 space-y-2">
+      @for (error of errors(); track error) {
+        <drive-os-form-alert
+          tone="danger"
+          [title]="'workforce.jobPositions.loadError' | translate"
+          [message]="error"
+        />
+      }
+    </div>
+  }
+  <div
+    class="mt-5 grid gap-3 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 md:grid-cols-[1fr_220px]"
+  >
+    <input
+      [ngModel]="search()"
+      (ngModelChange)="search.set($event)"
+      [placeholder]="'workforce.jobPositions.search' | translate"
+      class="w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5 outline-none focus:border-blue-700"
+    />
+    <select
+      [ngModel]="status()"
+      (ngModelChange)="status.set($event)"
+      class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5"
+    >
+      <option value="">{{ 'common.all' | translate }}</option>
+      <option value="Active">{{ 'workforce.jobPositionStatus.Active' | translate }}</option>
+      <option value="Inactive">{{ 'workforce.jobPositionStatus.Inactive' | translate }}</option>
+    </select>
   </div>
-  @if (loading()) { <div class="flex min-h-72 items-center justify-center"><drive-os-spinner [label]="'common.loading'|translate"/></div> }
-  @else if (!filtered().length) { <div class="mt-5"><drive-os-empty-state icon="briefcase" [title]="'workforce.jobPositions.emptyTitle'|translate" [description]="'workforce.jobPositions.emptyDescription'|translate"/></div> }
-  @else { <div class="mt-5 grid gap-4 xl:grid-cols-2">@for(item of filtered();track item.id){<article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><div class="flex items-start justify-between gap-3"><div><div class="flex flex-wrap items-center gap-2"><h2 class="font-black">{{item.name}}</h2><drive-os-status-badge [tone]="tone(item.status)" [label]="('workforce.jobPositionStatus.'+item.status)|translate"/></div><p class="mt-1 text-xs font-bold uppercase tracking-wide text-[var(--driveos-text-tertiary)]">{{item.code}}</p></div>@if(canManage()){<div class="flex gap-2"><drive-os-button variant="outline" icon="pencil-simple" (pressed)="openEdit(item)">{{'common.edit'|translate}}</drive-os-button><drive-os-button [variant]="item.status==='Active'?'danger':'outline'" [icon]="item.status==='Active'?'pause-circle':'arrow-counter-clockwise'" (pressed)="openState(item)">{{(item.status==='Active'?'workforce.jobPositions.deactivate':'workforce.jobPositions.reactivate')|translate}}</drive-os-button></div>}</div><div class="mt-4 rounded-xl bg-[var(--driveos-surface-hover)] p-3"><p class="text-xs font-extrabold uppercase text-[var(--driveos-text-tertiary)]">{{'workforce.jobPositions.professionalFunction'|translate}}</p><p class="mt-1 font-bold">{{('workforce.professionalFunctions.'+item.professionalFunction)|translate}}</p></div>@if(item.description){<p class="mt-4 text-sm leading-6 text-[var(--driveos-text-secondary)]">{{item.description}}</p>}</article>}</div> }
+  @if (loading()) {
+    <div class="flex min-h-72 items-center justify-center">
+      <drive-os-spinner [label]="'common.loading' | translate" />
+    </div>
+  } @else if (!filtered().length) {
+    <div class="mt-5">
+      <drive-os-empty-state
+        icon="briefcase"
+        [title]="'workforce.jobPositions.emptyTitle' | translate"
+        [description]="'workforce.jobPositions.emptyDescription' | translate"
+      />
+    </div>
+  } @else {
+    <div class="mt-5 grid gap-4 xl:grid-cols-2">
+      @for (item of filtered(); track item.id) {
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 class="font-black">{{ item.name }}</h2>
+                <drive-os-status-badge
+                  [tone]="tone(item.status)"
+                  [label]="'workforce.jobPositionStatus.' + item.status | translate"
+                />
+              </div>
+              <p
+                class="mt-1 text-xs font-bold uppercase tracking-wide text-[var(--driveos-text-tertiary)]"
+              >
+                {{ item.code }}
+              </p>
+            </div>
+            @if (canManage()) {
+              <div class="flex gap-2">
+                <drive-os-button
+                  variant="outline"
+                  icon="pencil-simple"
+                  (pressed)="openEdit(item)"
+                >
+                  {{ 'common.edit' | translate }}
+                </drive-os-button>
+                <drive-os-button
+                  [variant]="item.status === 'Active' ? 'danger' : 'outline'"
+                  [icon]="item.status === 'Active' ? 'pause-circle' : 'arrow-counter-clockwise'"
+                  (pressed)="openState(item)"
+                >
+                  {{
+                    (item.status === 'Active'
+                      ? 'workforce.jobPositions.deactivate'
+                      : 'workforce.jobPositions.reactivate'
+                    ) | translate
+                  }}
+                </drive-os-button>
+              </div>
+            }
+          </div>
+          <div class="mt-4 rounded-xl bg-[var(--driveos-surface-hover)] p-3">
+            <p class="text-xs font-extrabold uppercase text-[var(--driveos-text-tertiary)]">
+              {{ 'workforce.jobPositions.professionalFunction' | translate }}
+            </p>
+            <p class="mt-1 font-bold">
+              {{ 'workforce.professionalFunctions.' + item.professionalFunction | translate }}
+            </p>
+          </div>
+          @if (item.description) {
+            <p class="mt-4 text-sm leading-6 text-[var(--driveos-text-secondary)]">
+              {{ item.description }}
+            </p>
+          }
+        </article>
+      }
+    </div>
+  }
 </section>
-<drive-os-drawer [open]="drawer()!==null" [title]="drawerTitleKey()|translate" [description]="'workforce.jobPositions.drawers.description'|translate" size="md" [closeDisabled]="saving()" (closeRequested)="close()">
-  <div class="space-y-5 p-6">@for(error of actionErrors();track error){<drive-os-form-alert tone="danger" [title]="'workforce.jobPositions.actionError'|translate" [message]="error"/>}
-  @if(drawer()==='create'||drawer()==='edit'){<form [formGroup]="form" class="space-y-5"><div><label class="text-sm font-bold">{{'workforce.jobPositions.fields.code'|translate}}</label><input formControlName="code" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.jobPositions.fields.name'|translate}}</label><input formControlName="name" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"/></div><div><label class="text-sm font-bold">{{'workforce.jobPositions.fields.function'|translate}}</label><select formControlName="professionalFunction" class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5">@for(fn of functions;track fn){<option [value]="fn">{{('workforce.professionalFunctions.'+fn)|translate}}</option>}</select></div><div><label class="text-sm font-bold">{{'workforce.jobPositions.fields.description'|translate}}</label><textarea rows="5" formControlName="description" class="mt-2 w-full resize-none rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"></textarea></div></form>} @else {<div class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm leading-6 text-orange-900 dark:border-orange-900 dark:bg-orange-950/20 dark:text-orange-100">{{(drawer()==='deactivate'?'workforce.jobPositions.drawers.deactivate.warning':'workforce.jobPositions.drawers.reactivate.warning')|translate}}</div>}</div>
-  <div driveOsDrawerFooter class="flex justify-end gap-2"><drive-os-button variant="ghost" [disabled]="saving()" (pressed)="close()">{{'common.cancel'|translate}}</drive-os-button>@if(drawer()==='create'||drawer()==='edit'){<drive-os-button [loading]="saving()" [disabled]="form.invalid" (pressed)="save()">{{'common.save'|translate}}</drive-os-button>}@else{<drive-os-button [variant]="drawer()==='deactivate'?'danger':'primary'" [loading]="saving()" (pressed)="confirmState()">{{'common.confirm'|translate}}</drive-os-button>}</div>
+<drive-os-drawer
+  [open]="drawer() !== null"
+  [title]="drawerTitleKey() | translate"
+  [description]="'workforce.jobPositions.drawers.description' | translate"
+  size="md"
+  [closeDisabled]="saving()"
+  (closeRequested)="close()"
+>
+  <div class="space-y-5 p-6">
+    @for (error of actionErrors(); track error) {
+      <drive-os-form-alert
+        tone="danger"
+        [title]="'workforce.jobPositions.actionError' | translate"
+        [message]="error"
+      />
+    }
+    @if (drawer() === 'create' || drawer() === 'edit') {
+      <form
+        [formGroup]="form"
+        class="space-y-5"
+      >
+        <div>
+          <label class="text-sm font-bold">
+            {{ 'workforce.jobPositions.fields.code' | translate }}
+          </label>
+          <input
+            formControlName="code"
+            class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+          />
+        </div>
+        <div>
+          <label class="text-sm font-bold">
+            {{ 'workforce.jobPositions.fields.name' | translate }}
+          </label>
+          <input
+            formControlName="name"
+            class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+          />
+        </div>
+        <div>
+          <label class="text-sm font-bold">
+            {{ 'workforce.jobPositions.fields.function' | translate }}
+          </label>
+          <select
+            formControlName="professionalFunction"
+            class="mt-2 w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5"
+          >
+            @for (fn of functions; track fn) {
+              <option [value]="fn">
+                {{ 'workforce.professionalFunctions.' + fn | translate }}
+              </option>
+            }
+          </select>
+        </div>
+        <div>
+          <label class="text-sm font-bold">
+            {{ 'workforce.jobPositions.fields.description' | translate }}
+          </label>
+          <textarea
+            rows="5"
+            formControlName="description"
+            class="mt-2 w-full resize-none rounded-xl border border-[var(--driveos-border)] bg-transparent px-3 py-2.5"
+          ></textarea>
+        </div>
+      </form>
+    } @else {
+      <div
+        class="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm leading-6 text-orange-900 dark:border-orange-900 dark:bg-orange-950/20 dark:text-orange-100"
+      >
+        {{
+          (drawer() === 'deactivate'
+            ? 'workforce.jobPositions.drawers.deactivate.warning'
+            : 'workforce.jobPositions.drawers.reactivate.warning'
+          ) | translate
+        }}
+      </div>
+    }
+  </div>
+  <div
+    driveOsDrawerFooter
+    class="flex justify-end gap-2"
+  >
+    <drive-os-button
+      variant="ghost"
+      [disabled]="saving()"
+      (pressed)="close()"
+    >
+      {{ 'common.cancel' | translate }}
+    </drive-os-button>
+    @if (drawer() === 'create' || drawer() === 'edit') {
+      <drive-os-button
+        [loading]="saving()"
+        [disabled]="form.invalid"
+        (pressed)="save()"
+      >
+        {{ 'common.save' | translate }}
+      </drive-os-button>
+    } @else {
+      <drive-os-button
+        [variant]="drawer() === 'deactivate' ? 'danger' : 'primary'"
+        [loading]="saving()"
+        (pressed)="confirmState()"
+      >
+        {{ 'common.confirm' | translate }}
+      </drive-os-button>
+    }
+  </div>
 </drive-os-drawer>

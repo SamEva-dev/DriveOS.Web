@@ -13,7 +13,11 @@ import { DriveOsSpinnerComponent } from '../../../../shared/ui/spinner/driveos-s
 import { DriveOsStatCardComponent } from '../../../../shared/ui/stat-card/driveos-stat-card.component';
 import { WorkforceApiService } from '../../data-access/workforce-api.service';
 import { WORKFORCE_PERMISSIONS } from '../../domain/workforce-permissions';
-import { WorkforceAnalytics, WorkforceAnalyticsBreakdown, WorkforceAnalyticsMonthlyPoint } from '../../models/workforce.models';
+import {
+  WorkforceAnalytics,
+  WorkforceAnalyticsBreakdown,
+  WorkforceAnalyticsMonthlyPoint,
+} from '../../models/workforce.models';
 
 type AnalyticsTab = 'overview' | 'activity' | 'compliance' | 'trends';
 
@@ -40,7 +44,9 @@ export class WorkforceAnalyticsPage {
   private readonly authorization = inject(AuthorizationService);
   private readonly translate = inject(TranslateService);
 
-  readonly canRead = computed(() => this.authorization.hasPermission(WORKFORCE_PERMISSIONS.analytics.read));
+  readonly canRead = computed(() =>
+    this.authorization.hasPermission(WORKFORCE_PERMISSIONS.analytics.read),
+  );
   readonly analytics = signal<WorkforceAnalytics | null>(null);
   readonly loading = signal(false);
   readonly errors = signal<readonly string[]>([]);
@@ -54,7 +60,8 @@ export class WorkforceAnalyticsPage {
   readonly tabs: readonly AnalyticsTab[] = ['overview', 'activity', 'compliance', 'trends'];
 
   readonly maxFunctionValue = computed(() => {
-    const values = this.analytics()?.currentHeadcountByProfessionalFunction.map((item) => item.value) ?? [];
+    const values =
+      this.analytics()?.currentHeadcountByProfessionalFunction.map((item) => item.value) ?? [];
     return Math.max(1, ...values);
   });
 
@@ -119,12 +126,17 @@ export class WorkforceAnalyticsPage {
   }
 
   formatDays(value: number): string {
-    return this.translate.instant('workforce.analytics.units.days', { value: this.formatNumber(value, 1) });
+    return this.translate.instant('workforce.analytics.units.days', {
+      value: this.formatNumber(value, 1),
+    });
   }
 
   monthLabel(point: WorkforceAnalyticsMonthlyPoint): string {
     const date = new Date(point.year, point.month - 1, 1);
-    return new Intl.DateTimeFormat(this.translate.currentLang() || 'fr', { month: 'short', year: 'numeric' }).format(date);
+    return new Intl.DateTimeFormat(this.translate.currentLang() || 'fr', {
+      month: 'short',
+      year: 'numeric',
+    }).format(date);
   }
 
   functionLabel(item: WorkforceAnalyticsBreakdown): string {
@@ -138,7 +150,10 @@ export class WorkforceAnalyticsPage {
   }
 
   monthlyHoursWidth(point: WorkforceAnalyticsMonthlyPoint): number {
-    return Math.max(2, Math.min(100, (point.validatedTimesheetHours / this.maxMonthlyTimesheetHours()) * 100));
+    return Math.max(
+      2,
+      Math.min(100, (point.validatedTimesheetHours / this.maxMonthlyTimesheetHours()) * 100),
+    );
   }
 
   metricDefinition(key: string): string | null {

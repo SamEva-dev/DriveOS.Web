@@ -98,10 +98,13 @@ export class StudentEnrollmentChecklistPanelComponent {
     responsibleUserId: ['', Validators.required],
   });
 
-
   openSource(item: EnrollmentChecklistItem): void {
     if (!item.targetRoute) return;
-    void this.router.navigate(['/students', this.studentId(), ...item.targetRoute.split('/').filter(Boolean)]);
+    void this.router.navigate([
+      '/students',
+      this.studentId(),
+      ...item.targetRoute.split('/').filter(Boolean),
+    ]);
   }
 
   openStatus(item: EnrollmentChecklistItem): void {

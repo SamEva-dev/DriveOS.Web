@@ -1,6 +1,13 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnDestroy, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -10,7 +17,11 @@ import { DriveOsButtonComponent } from '../../../../shared/ui/button/driveos-but
 import { DriveOsSpinnerComponent } from '../../../../shared/ui/spinner/driveos-spinner.component';
 import { DriveOsDrawerComponent } from '../../../../shared/ui/drawer/driveos-drawer.component';
 import { TrainingDeliveryApiService } from '../../data-access/training-delivery-api.service';
-import { TrainingSessionDetail, TrainingSessionNarrativeRevision, TrainingSessionReportReview } from '../../models/training-session-detail.models';
+import {
+  TrainingSessionDetail,
+  TrainingSessionNarrativeRevision,
+  TrainingSessionReportReview,
+} from '../../models/training-session-detail.models';
 import { TRAINING_DELIVERY_PERMISSIONS } from '../../domain/training-delivery-permissions';
 
 interface LocalReportDraft {
@@ -30,7 +41,14 @@ interface LocalReportDraft {
 @Component({
   selector: 'driveos-training-session-report-page',
   standalone: true,
-  imports: [DatePipe, FormsModule, TranslatePipe, DriveOsButtonComponent, DriveOsSpinnerComponent, DriveOsDrawerComponent],
+  imports: [
+    DatePipe,
+    FormsModule,
+    TranslatePipe,
+    DriveOsButtonComponent,
+    DriveOsSpinnerComponent,
+    DriveOsDrawerComponent,
+  ],
   templateUrl: './training-session-report.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -58,13 +76,27 @@ export class TrainingSessionReportPage implements OnDestroy {
   readonly submitting = signal(false);
   readonly submitDrawerOpen = signal(false);
   readonly requestSupervisorReview = signal(false);
-  readonly canCreateSharedComment = computed(() => this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.narratives.createShared));
-  readonly canCreateInternalNote = computed(() => this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.narratives.createInternal));
-  readonly canReadInternalNote = computed(() => this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.narratives.readInternal));
-  readonly canReadReports = computed(() => this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.reports.read));
-  readonly canWriteReports = computed(() => this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.reports.write));
-  readonly canSubmitReports = computed(() => this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.reports.submit));
-  readonly canRequestReview = computed(() => this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.reports.requestReview));
+  readonly canCreateSharedComment = computed(() =>
+    this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.narratives.createShared),
+  );
+  readonly canCreateInternalNote = computed(() =>
+    this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.narratives.createInternal),
+  );
+  readonly canReadInternalNote = computed(() =>
+    this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.narratives.readInternal),
+  );
+  readonly canReadReports = computed(() =>
+    this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.reports.read),
+  );
+  readonly canWriteReports = computed(() =>
+    this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.reports.write),
+  );
+  readonly canSubmitReports = computed(() =>
+    this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.reports.submit),
+  );
+  readonly canRequestReview = computed(() =>
+    this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.reports.requestReview),
+  );
   readonly reportLocked = computed(() => [2, 3, 4].includes(this.session()?.report?.status ?? 0));
 
   readonly summary = signal('');
@@ -76,16 +108,29 @@ export class TrainingSessionReportPage implements OnDestroy {
   readonly internalNoteHistory = signal<readonly TrainingSessionNarrativeRevision[]>([]);
 
   readonly steps = [
-    'summary', 'attendance', 'competencies', 'observations', 'safety', 'nextObjectives', 'vehicle', 'sharedComment', 'validation',
+    'summary',
+    'attendance',
+    'competencies',
+    'observations',
+    'safety',
+    'nextObjectives',
+    'vehicle',
+    'sharedComment',
+    'validation',
   ] as const;
   readonly progress = computed(() => Math.round((this.step() / this.steps.length) * 100));
   readonly currentStepKey = computed(() => this.steps[this.step() - 1]);
   readonly canGoBack = computed(() => this.step() > 1);
   readonly canGoNext = computed(() => this.step() < this.steps.length);
 
-  private readonly onOnline = () => { this.online.set(true); if (this.pendingSync()) this.save(false); };
+  private readonly onOnline = () => {
+    this.online.set(true);
+    if (this.pendingSync()) this.save(false);
+  };
   private readonly onOffline = () => this.online.set(false);
-  private readonly onVisibility = () => { if (document.visibilityState === 'hidden') this.save(true); };
+  private readonly onVisibility = () => {
+    if (document.visibilityState === 'hidden') this.save(true);
+  };
 
   constructor() {
     window.addEventListener('online', this.onOnline);
@@ -102,8 +147,14 @@ export class TrainingSessionReportPage implements OnDestroy {
     this.persistLocal(true);
   }
 
-  backToSession(): void { void this.router.navigate(['/training/sessions', this.sessionId], { queryParams: { tab: 'report' } }); }
-  openRevision(): void { void this.router.navigate(['/training/sessions', this.sessionId, 'report', 'revision']); }
+  backToSession(): void {
+    void this.router.navigate(['/training/sessions', this.sessionId], {
+      queryParams: { tab: 'report' },
+    });
+  }
+  openRevision(): void {
+    void this.router.navigate(['/training/sessions', this.sessionId, 'report', 'revision']);
+  }
 
   previous(): void {
     if (!this.canGoBack()) return;
@@ -134,40 +185,51 @@ export class TrainingSessionReportPage implements OnDestroy {
 
     this.saving.set(true);
     this.errors.set([]);
-    this.api.saveReportDraft(this.sessionId, {
-      operationId: crypto.randomUUID(),
-      expectedVersion: this.serverVersion(),
-      lastCompletedStep: this.step(),
-      summary: this.nullIfEmpty(this.summary()),
-      objectivesWorked: this.nullIfEmpty(this.objectivesWorked()),
-      objectivesAchieved: this.nullIfEmpty(this.objectivesAchieved()),
-      nextObjective: this.nullIfEmpty(this.nextObjective()),
-      sharedComment: this.canCreateSharedComment() ? this.nullIfEmpty(this.sharedComment()) : null,
-      internalNote: this.canCreateInternalNote() ? this.nullIfEmpty(this.internalNote()) : null,
-    }).subscribe({
-      next: (session) => {
-        this.session.set(session);
-        this.serverVersion.set(session.report?.version ?? this.serverVersion());
-        this.lastSavedAtUtc.set(session.report?.lastSavedAtUtc ?? new Date().toISOString());
-        this.pendingSync.set(false);
-        this.persistLocal(false);
-        this.saving.set(false);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.errors.set(this.apiErrors.getMessages(error));
-        this.pendingSync.set(true);
-        this.persistLocal(true);
-        this.saving.set(false);
-      },
-    });
+    this.api
+      .saveReportDraft(this.sessionId, {
+        operationId: crypto.randomUUID(),
+        expectedVersion: this.serverVersion(),
+        lastCompletedStep: this.step(),
+        summary: this.nullIfEmpty(this.summary()),
+        objectivesWorked: this.nullIfEmpty(this.objectivesWorked()),
+        objectivesAchieved: this.nullIfEmpty(this.objectivesAchieved()),
+        nextObjective: this.nullIfEmpty(this.nextObjective()),
+        sharedComment: this.canCreateSharedComment()
+          ? this.nullIfEmpty(this.sharedComment())
+          : null,
+        internalNote: this.canCreateInternalNote() ? this.nullIfEmpty(this.internalNote()) : null,
+      })
+      .subscribe({
+        next: (session) => {
+          this.session.set(session);
+          this.serverVersion.set(session.report?.version ?? this.serverVersion());
+          this.lastSavedAtUtc.set(session.report?.lastSavedAtUtc ?? new Date().toISOString());
+          this.pendingSync.set(false);
+          this.persistLocal(false);
+          this.saving.set(false);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.errors.set(this.apiErrors.getMessages(error));
+          this.pendingSync.set(true);
+          this.persistLocal(true);
+          this.saving.set(false);
+        },
+      });
   }
 
   refreshReview(): void {
     if (!this.canReadReports() || !this.sessionId) return;
     this.reviewing.set(true);
     this.api.getReportReview(this.sessionId).subscribe({
-      next: (review) => { this.review.set(review); this.serverVersion.set(review.serverVersion); this.reviewing.set(false); },
-      error: (error: HttpErrorResponse) => { this.errors.set(this.apiErrors.getMessages(error)); this.reviewing.set(false); },
+      next: (review) => {
+        this.review.set(review);
+        this.serverVersion.set(review.serverVersion);
+        this.reviewing.set(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.errors.set(this.apiErrors.getMessages(error));
+        this.reviewing.set(false);
+      },
     });
   }
 
@@ -183,23 +245,41 @@ export class TrainingSessionReportPage implements OnDestroy {
     if (!review?.canSubmit || this.submitting()) return;
     this.submitting.set(true);
     this.errors.set([]);
-    const afterReady = () => this.api.submitReport(this.sessionId, this.serverVersion(), this.requestSupervisorReview()).subscribe({
+    const afterReady = () =>
+      this.api
+        .submitReport(this.sessionId, this.serverVersion(), this.requestSupervisorReview())
+        .subscribe({
+          next: (session) => {
+            this.session.set(session);
+            this.serverVersion.set(session.report?.version ?? this.serverVersion());
+            this.pendingSync.set(false);
+            this.submitDrawerOpen.set(false);
+            this.submitting.set(false);
+            this.clearLocal();
+            this.refreshReview();
+          },
+          error: (error: HttpErrorResponse) => {
+            this.errors.set(this.apiErrors.getMessages(error));
+            this.submitting.set(false);
+            this.refreshReview();
+          },
+        });
+
+    if (review.reportStatus === 1) {
+      afterReady();
+      return;
+    }
+    this.api.markReportReady(this.sessionId, this.serverVersion()).subscribe({
       next: (session) => {
         this.session.set(session);
         this.serverVersion.set(session.report?.version ?? this.serverVersion());
-        this.pendingSync.set(false);
-        this.submitDrawerOpen.set(false);
+        afterReady();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.errors.set(this.apiErrors.getMessages(error));
         this.submitting.set(false);
-        this.clearLocal();
         this.refreshReview();
       },
-      error: (error: HttpErrorResponse) => { this.errors.set(this.apiErrors.getMessages(error)); this.submitting.set(false); this.refreshReview(); },
-    });
-
-    if (review.reportStatus === 1) { afterReady(); return; }
-    this.api.markReportReady(this.sessionId, this.serverVersion()).subscribe({
-      next: (session) => { this.session.set(session); this.serverVersion.set(session.report?.version ?? this.serverVersion()); afterReady(); },
-      error: (error: HttpErrorResponse) => { this.errors.set(this.apiErrors.getMessages(error)); this.submitting.set(false); this.refreshReview(); },
     });
   }
 
@@ -220,7 +300,16 @@ export class TrainingSessionReportPage implements OnDestroy {
           this.sharedComment.set(report.sharedComment ?? '');
           this.internalNote.set('');
           if (this.canReadInternalNote()) {
-            this.api.getInternalNote(this.sessionId).subscribe({ next: (note) => { this.internalNote.set(note.internalNote ?? ''); this.internalNoteHistory.set(note.history); }, error: () => { this.internalNote.set(''); this.internalNoteHistory.set([]); } });
+            this.api.getInternalNote(this.sessionId).subscribe({
+              next: (note) => {
+                this.internalNote.set(note.internalNote ?? '');
+                this.internalNoteHistory.set(note.history);
+              },
+              error: () => {
+                this.internalNote.set('');
+                this.internalNoteHistory.set([]);
+              },
+            });
           }
           this.lastSavedAtUtc.set(report.lastSavedAtUtc);
           this.pendingSync.set(false);
@@ -264,8 +353,10 @@ export class TrainingSessionReportPage implements OnDestroy {
   private readLocal(): LocalReportDraft | null {
     try {
       const raw = localStorage.getItem(this.storageKey());
-      return raw ? JSON.parse(raw) as LocalReportDraft : null;
-    } catch { return null; }
+      return raw ? (JSON.parse(raw) as LocalReportDraft) : null;
+    } catch {
+      return null;
+    }
   }
 
   private applyLocal(local: LocalReportDraft): void {
@@ -286,6 +377,11 @@ export class TrainingSessionReportPage implements OnDestroy {
     this.pendingSync.set(false);
   }
 
-  private storageKey(): string { return `driveos.training.reportDraft.${this.sessionId}`; }
-  private nullIfEmpty(value: string): string | null { const normalized = value.trim(); return normalized ? normalized : null; }
+  private storageKey(): string {
+    return `driveos.training.reportDraft.${this.sessionId}`;
+  }
+  private nullIfEmpty(value: string): string | null {
+    const normalized = value.trim();
+    return normalized ? normalized : null;
+  }
 }

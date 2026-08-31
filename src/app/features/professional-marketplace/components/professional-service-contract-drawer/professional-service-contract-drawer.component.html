@@ -1,0 +1,399 @@
+<drive-os-drawer
+  [open]="open()"
+  size="xl"
+  [title]="'professionalMarketplace.serviceContract.title' | translate"
+  [closeDisabled]="busy()"
+  (closeRequested)="close()"
+>
+  <div class="grid gap-4 p-5">
+    @if (loading()) {
+      <p class="text-sm text-[var(--driveos-text-secondary)]">{{ 'common.loading' | translate }}</p>
+    }
+    @if (!loading()) {
+      @if (item(); as c) {
+        <header
+          class="flex flex-wrap items-start justify-between gap-3 border-b border-[var(--driveos-border)] pb-4"
+        >
+          <div>
+            <h3 class="text-xl font-extrabold">{{ c.contractNumber }}</h3>
+            <p class="text-sm text-[var(--driveos-text-secondary)]">
+              {{ c.contractType }} · v{{ c.version }}
+            </p>
+          </div>
+          <span class="rounded-full border px-3 py-1 text-xs font-bold">
+            {{ 'professionalMarketplace.serviceContract.status.' + c.status | translate }}
+          </span>
+        </header>
+        <nav class="flex gap-1 overflow-x-auto border-b border-[var(--driveos-border)]">
+          <button
+            class="px-3 py-2 text-xs font-bold"
+            [class.border-b-2]="tab() === 'summary'"
+            (click)="selectTab('summary')"
+          >
+            {{ 'professionalMarketplace.serviceContract.tabs.summary' | translate }}
+          </button>
+          <button
+            class="px-3 py-2 text-xs font-bold"
+            [class.border-b-2]="tab() === 'signatories'"
+            (click)="selectTab('signatories')"
+          >
+            {{ 'professionalMarketplace.serviceContract.tabs.signatories' | translate }}
+          </button>
+          <button
+            class="px-3 py-2 text-xs font-bold"
+            [class.border-b-2]="tab() === 'versions'"
+            (click)="selectTab('versions')"
+          >
+            {{ 'professionalMarketplace.serviceContract.tabs.versions' | translate }}
+          </button>
+        </nav>
+        @if (tab() === 'summary') {
+          <section class="grid gap-3">
+            <div class="grid grid-cols-2 gap-3 max-md:grid-cols-1">
+              <div class="rounded-xl border p-4">
+                <span class="text-xs text-[var(--driveos-text-secondary)]">
+                  {{ 'professionalMarketplace.serviceContract.fields.signatureOrder' | translate }}
+                </span>
+                <strong class="mt-1 block">{{ c.signatureOrder }}</strong>
+              </div>
+              <div class="rounded-xl border p-4">
+                <span class="text-xs text-[var(--driveos-text-secondary)]">
+                  {{ 'professionalMarketplace.serviceContract.fields.signatures' | translate }}
+                </span>
+                <strong class="mt-1 block">
+                  {{ c.signedRequiredSignatories }} / {{ c.requiredSignatories }}
+                </strong>
+              </div>
+            </div>
+            @if (c.documentReference) {
+              <div class="rounded-xl border p-4">
+                <div class="text-xs text-[var(--driveos-text-secondary)]">
+                  {{ 'professionalMarketplace.serviceContract.fields.document' | translate }}
+                </div>
+                <div class="mt-1 break-all text-sm font-semibold">{{ c.documentReference }}</div>
+                <div
+                  class="mt-2 break-all font-mono text-[11px] text-[var(--driveos-text-secondary)]"
+                >
+                  SHA-256 {{ c.documentSha256 }}
+                </div>
+              </div>
+            }
+            @if (c.terminationReason) {
+              <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+                {{ c.terminationReason }}
+              </div>
+            }
+          </section>
+        }
+        @if (tab() === 'signatories') {
+          <section class="grid gap-3">
+            @for (s of c.signatories; track s.personId) {
+              <div class="rounded-xl border p-4">
+                <div class="flex justify-between gap-3">
+                  <div>
+                    <strong>{{ s.role }}</strong>
+                    <p class="break-all text-xs text-[var(--driveos-text-secondary)]">
+                      {{ s.personId }}
+                    </p>
+                  </div>
+                  <span class="text-xs font-bold">
+                    {{
+                      s.signedAtUtc
+                        ? '✓ ' + ('professionalMarketplace.serviceContract.signed' | translate)
+                        : ('professionalMarketplace.serviceContract.pending' | translate)
+                    }}
+                  </span>
+                </div>
+                @if (s.signedAtUtc) {
+                  <div class="mt-2 text-xs text-[var(--driveos-text-secondary)]">
+                    {{ s.signedAtUtc }} · {{ s.provider }} · {{ s.authenticationMethod }}
+                  </div>
+                }
+              </div>
+            }
+          </section>
+        }
+        @if (tab() === 'versions') {
+          <section class="grid gap-3">
+            @if (c.previousVersions.length === 0) {
+              <div
+                class="rounded-xl border border-dashed p-6 text-center text-sm text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'professionalMarketplace.serviceContract.noVersions' | translate }}
+              </div>
+            }
+            @for (v of c.previousVersions; track v.version) {
+              <div class="rounded-xl border p-4">
+                <div class="flex justify-between">
+                  <strong>
+                    v{{ v.version }} ·
+                    {{ 'professionalMarketplace.serviceContract.status.' + v.status | translate }}
+                  </strong>
+                  <span class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ v.supersededAtUtc }}
+                  </span>
+                </div>
+                <p class="mt-2 text-sm">{{ v.revisionReason }}</p>
+              </div>
+            }
+          </section>
+        }
+        @if (!mode()) {
+          <footer class="flex flex-wrap justify-end gap-2 border-t pt-4">
+            @if (c.status === 'Draft' && canGenerate()) {
+              <button
+                class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+                (click)="begin('generate')"
+              >
+                {{ 'professionalMarketplace.serviceContract.actions.generate' | translate }}
+              </button>
+            }
+            @if (c.status === 'Generated' && canSend()) {
+              <button
+                class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+                [disabled]="busy()"
+                (click)="send()"
+              >
+                {{ 'professionalMarketplace.serviceContract.actions.send' | translate }}
+              </button>
+            }
+            @if (
+              (c.status === 'SentForSignature' || c.status === 'PartiallySigned') && canManage()
+            ) {
+              <button
+                class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+                (click)="begin('signature')"
+              >
+                {{ 'professionalMarketplace.serviceContract.actions.recordSignature' | translate }}
+              </button>
+            }
+            @if ((c.status === 'PartiallySigned' || c.status === 'Signed') && canGenerate()) {
+              <button
+                class="rounded-lg border px-3 py-2 text-xs font-bold"
+                (click)="begin('revise')"
+              >
+                {{ 'professionalMarketplace.serviceContract.actions.revise' | translate }}
+              </button>
+            }
+            @if (c.status !== 'Terminated' && c.status !== 'Cancelled' && canTerminate()) {
+              <button
+                class="rounded-lg border border-red-300 px-3 py-2 text-xs font-bold text-red-700"
+                (click)="begin('terminate')"
+              >
+                {{ 'professionalMarketplace.serviceContract.actions.terminate' | translate }}
+              </button>
+            }
+          </footer>
+        }
+      } @else {
+        @if (canManage() && !mode()) {
+          <div class="rounded-xl border border-dashed p-8 text-center">
+            <p class="text-sm text-[var(--driveos-text-secondary)]">
+              {{ 'professionalMarketplace.serviceContract.none' | translate }}
+            </p>
+            <button
+              class="mt-3 rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              (click)="begin('create')"
+            >
+              {{ 'professionalMarketplace.serviceContract.actions.create' | translate }}
+            </button>
+          </div>
+        }
+      }
+      @if (mode() === 'create') {
+        <section class="grid gap-3 rounded-xl border p-4">
+          <input
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="contractNumber"
+            [placeholder]="'professionalMarketplace.serviceContract.fields.number' | translate"
+          />
+          <input
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="contractType"
+            [placeholder]="'professionalMarketplace.serviceContract.fields.type' | translate"
+          />
+          <select
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="signatureOrder"
+          >
+            <option [ngValue]="1">Sequential</option>
+            <option [ngValue]="2">Parallel</option>
+          </select>
+          @for (s of signatories; track $index; let i = $index) {
+            <div class="grid grid-cols-[1fr_1fr_auto] gap-2 max-md:grid-cols-1">
+              <input
+                class="rounded-lg border px-3 py-2 text-sm"
+                [(ngModel)]="s.personId"
+                placeholder="PersonId"
+              />
+              <input
+                class="rounded-lg border px-3 py-2 text-sm"
+                [(ngModel)]="s.role"
+                [placeholder]="'professionalMarketplace.serviceContract.fields.role' | translate"
+              />
+              <button
+                class="rounded-lg border px-3 py-2 text-xs"
+                [disabled]="signatories.length <= 2"
+                (click)="removeSignatory(i)"
+              >
+                ×
+              </button>
+            </div>
+          }
+          <button
+            class="justify-self-start rounded-lg border px-3 py-2 text-xs font-bold"
+            (click)="addSignatory()"
+          >
+            {{ 'professionalMarketplace.serviceContract.actions.addSignatory' | translate }}
+          </button>
+          <div class="flex justify-end gap-2">
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="cancelMode()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </button>
+            <button
+              class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="submitCreate()"
+            >
+              {{ 'common.actions.confirm' | translate }}
+            </button>
+          </div>
+        </section>
+      }
+      @if (mode() === 'generate' || mode() === 'revise') {
+        <section class="grid gap-3 rounded-xl border p-4">
+          <input
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="documentReference"
+            [placeholder]="
+              'professionalMarketplace.serviceContract.fields.documentReference' | translate
+            "
+          />
+          <input
+            class="rounded-lg border px-3 py-2 font-mono text-sm"
+            [(ngModel)]="documentSha256"
+            placeholder="SHA-256"
+          />
+          @if (mode() === 'revise') {
+            <textarea
+              class="min-h-20 rounded-lg border px-3 py-2 text-sm"
+              [(ngModel)]="reason"
+              [placeholder]="'professionalMarketplace.serviceContract.fields.reason' | translate"
+            ></textarea>
+          }
+          <div class="flex justify-end gap-2">
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="cancelMode()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </button>
+            <button
+              class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="mode() === 'generate' ? submitGenerate() : submitRevise()"
+            >
+              {{ 'common.actions.confirm' | translate }}
+            </button>
+          </div>
+        </section>
+      }
+      @if (mode() === 'signature') {
+        <section class="grid gap-3 rounded-xl border p-4">
+          <select
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="signaturePersonId"
+          >
+            @for (s of item()?.signatories ?? []; track s.personId) {
+              @if (!s.signedAtUtc) {
+                <option [value]="s.personId">{{ s.role }} — {{ s.personId }}</option>
+              }
+            }
+          </select>
+          <input
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="signatureMethod"
+            [placeholder]="
+              'professionalMarketplace.serviceContract.fields.signatureMethod' | translate
+            "
+          />
+          <input
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="authenticationMethod"
+            [placeholder]="
+              'professionalMarketplace.serviceContract.fields.authenticationMethod' | translate
+            "
+          />
+          <input
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="provider"
+            [placeholder]="'professionalMarketplace.serviceContract.fields.provider' | translate"
+          />
+          <input
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="providerReference"
+            [placeholder]="
+              'professionalMarketplace.serviceContract.fields.providerReference' | translate
+            "
+          />
+          <input
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="certificateReference"
+            [placeholder]="
+              'professionalMarketplace.serviceContract.fields.certificateReference' | translate
+            "
+          />
+          <div class="flex justify-end gap-2">
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="cancelMode()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </button>
+            <button
+              class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="submitSignature()"
+            >
+              {{ 'common.actions.confirm' | translate }}
+            </button>
+          </div>
+        </section>
+      }
+      @if (mode() === 'terminate') {
+        <section class="grid gap-3 rounded-xl border border-red-200 p-4">
+          <textarea
+            class="min-h-20 rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="reason"
+            [placeholder]="'professionalMarketplace.serviceContract.fields.reason' | translate"
+          ></textarea>
+          <div class="flex justify-end gap-2">
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="cancelMode()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </button>
+            <button
+              class="rounded-lg bg-red-700 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="submitTerminate()"
+            >
+              {{ 'professionalMarketplace.serviceContract.actions.terminate' | translate }}
+            </button>
+          </div>
+        </section>
+      }
+    }
+    @if (formErrors().length) {
+      <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+        @for (err of formErrors(); track err) {
+          <p>{{ err }}</p>
+        }
+      </div>
+    }
+  </div>
+</drive-os-drawer>

@@ -195,8 +195,12 @@
               </div>
             } @else if (regulatoryRecord(); as record) {
               @if (record.totalSubmissions === 0) {
-                <div class="mt-4 rounded-lg border border-dashed border-[var(--driveos-border)] p-4">
-                  <p class="font-bold">{{ 'pedagogy.student.regulatoryRecord.empty.title' | translate }}</p>
+                <div
+                  class="mt-4 rounded-lg border border-dashed border-[var(--driveos-border)] p-4"
+                >
+                  <p class="font-bold">
+                    {{ 'pedagogy.student.regulatoryRecord.empty.title' | translate }}
+                  </p>
                   <p class="mt-1 text-sm text-slate-500">
                     {{ 'pedagogy.student.regulatoryRecord.empty.description' | translate }}
                   </p>
@@ -238,7 +242,9 @@
                 </div>
 
                 @if (record.currentIssues.length > 0 || record.lastErrorCode) {
-                  <div class="mt-4 rounded-lg border border-amber-200 bg-amber-50/60 p-4 dark:border-amber-900 dark:bg-amber-950/20">
+                  <div
+                    class="mt-4 rounded-lg border border-amber-200 bg-amber-50/60 p-4 dark:border-amber-900 dark:bg-amber-950/20"
+                  >
                     <p class="font-bold">
                       {{ 'pedagogy.student.regulatoryRecord.attention.title' | translate }}
                     </p>
@@ -248,7 +254,8 @@
                       }
                       @if (record.lastErrorCode) {
                         <p>
-                          • {{
+                          •
+                          {{
                             'pedagogy.student.regulatoryRecord.providerError'
                               | translate: { code: record.lastErrorCode }
                           }}

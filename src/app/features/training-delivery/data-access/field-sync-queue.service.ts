@@ -2,7 +2,12 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { TokenService } from '../../../core/services/token.service';
-import { FieldSyncItem, FieldSyncItemType, FieldSyncState, FieldSyncSummary } from '../models/field-sync.models';
+import {
+  FieldSyncItem,
+  FieldSyncItemType,
+  FieldSyncState,
+  FieldSyncSummary,
+} from '../models/field-sync.models';
 
 const DB_NAME = 'driveos-field-sync';
 const DB_VERSION = 1;
@@ -16,7 +21,9 @@ export class FieldSyncQueueService {
   private readonly tokens = inject(TokenService);
   private readonly itemsSignal = signal<readonly FieldSyncItem[]>([]);
   private readonly runningSignal = signal(false);
-  private readonly onlineSignal = signal(typeof navigator === 'undefined' ? true : navigator.onLine);
+  private readonly onlineSignal = signal(
+    typeof navigator === 'undefined' ? true : navigator.onLine,
+  );
   private dbPromise: Promise<IDBDatabase> | null = null;
 
   readonly items = this.itemsSignal.asReadonly();
@@ -24,16 +31,22 @@ export class FieldSyncQueueService {
   readonly online = this.onlineSignal.asReadonly();
   readonly summary = computed<FieldSyncSummary>(() => {
     const items = this.itemsSignal();
-    const last = items
-      .map((item) => item.lastSuccessAtUtc)
-      .filter((value): value is string => !!value)
-      .sort()
-      .at(-1) ?? null;
+    const last =
+      items
+        .map((item) => item.lastSuccessAtUtc)
+        .filter((value): value is string => !!value)
+        .sort()
+        .at(-1) ?? null;
     return {
-      pending: items.filter((item) => item.state === 'LocalDraft' || item.state === 'PendingSync' || item.state === 'Syncing').length,
+      pending: items.filter(
+        (item) =>
+          item.state === 'LocalDraft' || item.state === 'PendingSync' || item.state === 'Syncing',
+      ).length,
       failed: items.filter((item) => item.state === 'Failed').length,
       conflicts: items.filter((item) => item.state === 'Conflict').length,
-      blocked: items.filter((item) => item.state === 'BlockedByPermission' || item.state === 'BlockedByValidation').length,
+      blocked: items.filter(
+        (item) => item.state === 'BlockedByPermission' || item.state === 'BlockedByValidation',
+      ).length,
       synced: items.filter((item) => item.state === 'Synced').length,
       lastSuccessfulSyncAtUtc: last,
     };
@@ -43,7 +56,10 @@ export class FieldSyncQueueService {
     if (typeof window !== 'undefined') {
       window.addEventListener('online', this.handleOnline);
       window.addEventListener('offline', this.handleOffline);
-      window.addEventListener('driveos:session-revoked', this.handleSessionRevoked as EventListener);
+      window.addEventListener(
+        'driveos:session-revoked',
+        this.handleSessionRevoked as EventListener,
+      );
     }
     void this.refresh();
   }
@@ -60,7 +76,12 @@ export class FieldSyncQueueService {
     const normalizedBody = this.normalizeOfflineBody(request.body);
     const operationId = this.extractOperationId(normalizedBody);
     const existing = operationId
-      ? this.itemsSignal().find((item) => item.ownerUserId === context.userId && item.organizationId === context.organizationId && item.operationId === operationId)
+      ? this.itemsSignal().find(
+          (item) =>
+            item.ownerUserId === context.userId &&
+            item.organizationId === context.organizationId &&
+            item.operationId === operationId,
+        )
       : undefined;
     if (existing) return existing;
 
@@ -94,12 +115,20 @@ export class FieldSyncQueueService {
 
   async refresh(): Promise<void> {
     const context = this.currentContext();
-    if (!context) { this.itemsSignal.set([]); return; }
+    if (!context) {
+      this.itemsSignal.set([]);
+      return;
+    }
     await this.purgeExpired();
     const all = await this.getAll();
-    this.itemsSignal.set(all
-      .filter((item) => item.ownerUserId === context.userId && item.organizationId === context.organizationId)
-      .sort((a, b) => a.createdAtUtc.localeCompare(b.createdAtUtc)));
+    this.itemsSignal.set(
+      all
+        .filter(
+          (item) =>
+            item.ownerUserId === context.userId && item.organizationId === context.organizationId,
+        )
+        .sort((a, b) => a.createdAtUtc.localeCompare(b.createdAtUtc)),
+    );
   }
 
   async syncNow(): Promise<void> {
@@ -110,7 +139,9 @@ export class FieldSyncQueueService {
       let progressed = true;
       while (progressed && this.onlineSignal()) {
         progressed = false;
-        const candidates = this.itemsSignal().filter((item) => ['PendingSync', 'Failed'].includes(item.state));
+        const candidates = this.itemsSignal().filter((item) =>
+          ['PendingSync', 'Failed'].includes(item.state),
+        );
         for (const item of candidates) {
           if (!this.dependenciesSatisfied(item)) continue;
           await this.syncItem(item.id);
@@ -128,7 +159,13 @@ export class FieldSyncQueueService {
   async retry(id: string): Promise<void> {
     const item = this.itemsSignal().find((candidate) => candidate.id === id);
     if (!item) return;
-    await this.put({ ...item, state: 'PendingSync', errorCode: null, errorMessageKey: null, updatedAtUtc: new Date().toISOString() });
+    await this.put({
+      ...item,
+      state: 'PendingSync',
+      errorCode: null,
+      errorMessageKey: null,
+      updatedAtUtc: new Date().toISOString(),
+    });
     await this.refresh();
     await this.syncNow();
   }
@@ -168,44 +205,105 @@ export class FieldSyncQueueService {
     const now = new Date().toISOString();
     await this.put({ ...item, state: 'Syncing', lastAttemptAtUtc: now, updatedAtUtc: now });
     try {
-      await firstValueFrom(this.http.request(item.method, item.url, { body: item.body, observe: 'response' }));
-      await this.put({ ...item, state: 'Synced', retryCount: item.retryCount + 1, lastAttemptAtUtc: now, lastSuccessAtUtc: new Date().toISOString(), errorCode: null, errorMessageKey: null, updatedAtUtc: new Date().toISOString() });
+      await firstValueFrom(
+        this.http.request(item.method, item.url, { body: item.body, observe: 'response' }),
+      );
+      await this.put({
+        ...item,
+        state: 'Synced',
+        retryCount: item.retryCount + 1,
+        lastAttemptAtUtc: now,
+        lastSuccessAtUtc: new Date().toISOString(),
+        errorCode: null,
+        errorMessageKey: null,
+        updatedAtUtc: new Date().toISOString(),
+      });
     } catch (error) {
       const classified = this.classify(error);
-      await this.put({ ...item, state: classified.state, retryCount: item.retryCount + 1, lastAttemptAtUtc: now, errorCode: classified.code, errorMessageKey: classified.messageKey, updatedAtUtc: new Date().toISOString() });
+      await this.put({
+        ...item,
+        state: classified.state,
+        retryCount: item.retryCount + 1,
+        lastAttemptAtUtc: now,
+        errorCode: classified.code,
+        errorMessageKey: classified.messageKey,
+        updatedAtUtc: new Date().toISOString(),
+      });
     }
   }
 
-  private classify(error: unknown): { state: FieldSyncState; code: string | null; messageKey: string | null } {
+  private classify(error: unknown): {
+    state: FieldSyncState;
+    code: string | null;
+    messageKey: string | null;
+  } {
     const http = error as HttpErrorResponse;
     const payload = (http?.error ?? {}) as { code?: string; messageKey?: string };
-    if (!http || http.status === 0) return { state: 'Failed', code: 'Network', messageKey: 'training.sync.errors.network' };
-    if (http.status === 401 || http.status === 403) return { state: 'BlockedByPermission', code: payload.code ?? `HTTP_${http.status}`, messageKey: payload.messageKey ?? 'training.sync.errors.permission' };
-    if (http.status === 409 || /Version\.Conflict|Conflict/i.test(payload.code ?? '')) return { state: 'Conflict', code: payload.code ?? 'Conflict', messageKey: payload.messageKey ?? 'training.sync.errors.conflict' };
-    if (http.status === 400 || http.status === 422) return { state: 'BlockedByValidation', code: payload.code ?? `HTTP_${http.status}`, messageKey: payload.messageKey ?? 'training.sync.errors.validation' };
-    return { state: 'Failed', code: payload.code ?? `HTTP_${http.status}`, messageKey: payload.messageKey ?? 'training.sync.errors.failed' };
+    if (!http || http.status === 0)
+      return { state: 'Failed', code: 'Network', messageKey: 'training.sync.errors.network' };
+    if (http.status === 401 || http.status === 403)
+      return {
+        state: 'BlockedByPermission',
+        code: payload.code ?? `HTTP_${http.status}`,
+        messageKey: payload.messageKey ?? 'training.sync.errors.permission',
+      };
+    if (http.status === 409 || /Version\.Conflict|Conflict/i.test(payload.code ?? ''))
+      return {
+        state: 'Conflict',
+        code: payload.code ?? 'Conflict',
+        messageKey: payload.messageKey ?? 'training.sync.errors.conflict',
+      };
+    if (http.status === 400 || http.status === 422)
+      return {
+        state: 'BlockedByValidation',
+        code: payload.code ?? `HTTP_${http.status}`,
+        messageKey: payload.messageKey ?? 'training.sync.errors.validation',
+      };
+    return {
+      state: 'Failed',
+      code: payload.code ?? `HTTP_${http.status}`,
+      messageKey: payload.messageKey ?? 'training.sync.errors.failed',
+    };
   }
 
   private dependenciesSatisfied(item: FieldSyncItem): boolean {
-    return item.dependsOn.every((id) => this.itemsSignal().find((candidate) => candidate.id === id)?.state === 'Synced');
+    return item.dependsOn.every(
+      (id) => this.itemsSignal().find((candidate) => candidate.id === id)?.state === 'Synced',
+    );
   }
 
   private inferDependencies(sessionId: string | null, type: FieldSyncItemType): readonly string[] {
     if (!sessionId) return [];
-    const sameSession = this.itemsSignal().filter((item) => item.sessionId === sessionId && item.state !== 'Synced');
-    const order: readonly FieldSyncItemType[] = ['SessionStart', 'Attendance', 'SessionMarker', 'Observation', 'Intervention', 'VehicleMileage', 'VehicleCheck', 'Incident', 'SessionEnd', 'SessionReport', 'CompetencyAssessment', 'Photo'];
+    const sameSession = this.itemsSignal().filter(
+      (item) => item.sessionId === sessionId && item.state !== 'Synced',
+    );
+    const order: readonly FieldSyncItemType[] = [
+      'SessionStart',
+      'Attendance',
+      'SessionMarker',
+      'Observation',
+      'Intervention',
+      'VehicleMileage',
+      'VehicleCheck',
+      'Incident',
+      'SessionEnd',
+      'SessionReport',
+      'CompetencyAssessment',
+      'Photo',
+    ];
     const rank = order.indexOf(type);
     if (rank < 0) return [];
-    const predecessor = [...sameSession]
-      .reverse()
-      .find((item) => {
-        const predecessorRank = order.indexOf(item.type);
-        return predecessorRank >= 0 && predecessorRank < rank;
-      });
+    const predecessor = [...sameSession].reverse().find((item) => {
+      const predecessorRank = order.indexOf(item.type);
+      return predecessorRank >= 0 && predecessorRank < rank;
+    });
     return predecessor ? [predecessor.id] : [];
   }
 
-  private describe(url: string, body: unknown): { type: FieldSyncItemType; sessionId: string | null; permission: string | null } {
+  private describe(
+    url: string,
+    body: unknown,
+  ): { type: FieldSyncItemType; sessionId: string | null; permission: string | null } {
     const base = typeof window === 'undefined' ? 'http://localhost' : window.location.origin;
     const path = new URL(url, base).pathname;
     const match = path.match(/\/training-delivery\/sessions\/([0-9a-f-]{36})/i);
@@ -213,7 +311,11 @@ export class FieldSyncQueueService {
     const mappings: Array<[RegExp, FieldSyncItemType, string | null]> = [
       [/\/start$/, 'SessionStart', 'TrainingDelivery.Sessions.Start'],
       [/\/finish$/, 'SessionEnd', 'TrainingDelivery.Sessions.Complete'],
-      [/\/attendance(?:\/correct|\/override)?$/, 'Attendance', 'TrainingDelivery.Attendance.Record'],
+      [
+        /\/attendance(?:\/correct|\/override)?$/,
+        'Attendance',
+        'TrainingDelivery.Attendance.Record',
+      ],
       [/\/markers$/, 'SessionMarker', 'TrainingDelivery.Execution.Observations.Record'],
       [/\/observations$/, 'Observation', 'TrainingDelivery.Execution.Observations.Record'],
       [/\/interventions$/, 'Intervention', 'TrainingDelivery.Execution.Interventions.Record'],
@@ -221,7 +323,11 @@ export class FieldSyncQueueService {
       [/\/energy$/, 'VehicleCheck', 'TrainingDelivery.Execution.Odometer.Record'],
       [/\/incidents$/, 'Incident', 'TrainingDelivery.Incidents.Report'],
       [/\/assessments$/, 'CompetencyAssessment', 'TrainingDelivery.Assessments.Record'],
-      [/\/report\/(draft|shared-comment|internal-note|ready|submit)$/, 'SessionReport', 'TrainingDelivery.Reports.Submit'],
+      [
+        /\/report\/(draft|shared-comment|internal-note|ready|submit)$/,
+        'SessionReport',
+        'TrainingDelivery.Reports.Submit',
+      ],
       [/\/interrupt$/, 'SessionInterrupt', 'TrainingDelivery.Execution.Interrupt'],
       [/\/resume$/, 'SessionResume', 'TrainingDelivery.Execution.Resume'],
     ];
@@ -255,27 +361,43 @@ export class FieldSyncQueueService {
   private async purgeExpired(): Promise<void> {
     const now = Date.now();
     const all = await this.getAll();
-    for (const item of all) if (new Date(item.expiresAtUtc).getTime() <= now) await this.deleteById(item.id);
+    for (const item of all)
+      if (new Date(item.expiresAtUtc).getTime() <= now) await this.deleteById(item.id);
   }
 
   private async purgeSynced(): Promise<void> {
     const threshold = Date.now() - PURGE_SYNCED_AFTER_MS;
     const all = await this.getAll();
-    for (const item of all) if (item.state === 'Synced' && item.lastSuccessAtUtc && new Date(item.lastSuccessAtUtc).getTime() <= threshold) await this.deleteById(item.id);
+    for (const item of all)
+      if (
+        item.state === 'Synced' &&
+        item.lastSuccessAtUtc &&
+        new Date(item.lastSuccessAtUtc).getTime() <= threshold
+      )
+        await this.deleteById(item.id);
   }
 
   private async purgeCurrentContext(): Promise<void> {
     const context = this.currentContext();
     const all = await this.getAll();
     for (const item of all) {
-      if (!context || (item.ownerUserId === context.userId && item.organizationId === context.organizationId)) await this.deleteById(item.id);
+      if (
+        !context ||
+        (item.ownerUserId === context.userId && item.organizationId === context.organizationId)
+      )
+        await this.deleteById(item.id);
     }
     this.itemsSignal.set([]);
   }
 
-  private readonly handleOnline = (): void => { this.onlineSignal.set(true); void this.syncNow(); };
+  private readonly handleOnline = (): void => {
+    this.onlineSignal.set(true);
+    void this.syncNow();
+  };
   private readonly handleOffline = (): void => this.onlineSignal.set(false);
-  private readonly handleSessionRevoked = (): void => { void this.purgeCurrentContext(); };
+  private readonly handleSessionRevoked = (): void => {
+    void this.purgeCurrentContext();
+  };
 
   private async db(): Promise<IDBDatabase> {
     if (this.dbPromise) return this.dbPromise;

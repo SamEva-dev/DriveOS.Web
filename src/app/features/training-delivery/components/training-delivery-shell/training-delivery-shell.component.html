@@ -1,28 +1,43 @@
 <section class="min-w-0">
-  <div class="border-b border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-4 sm:px-6">
+  <div
+    class="border-b border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-4 sm:px-6"
+  >
     <div class="mx-auto max-w-[1600px]">
       <div class="flex items-center gap-3 py-4">
-        <span class="grid size-11 shrink-0 place-items-center rounded-2xl bg-blue-800 text-white shadow-sm">
-          <i class="ph ph-steering-wheel text-xl" aria-hidden="true"></i>
+        <span
+          class="grid size-11 shrink-0 place-items-center rounded-2xl bg-blue-800 text-white shadow-sm"
+        >
+          <i
+            class="ph ph-steering-wheel text-xl"
+            aria-hidden="true"
+          ></i>
         </span>
         <div class="min-w-0">
           <p class="text-[0.68rem] font-extrabold uppercase tracking-[0.16em] text-orange-600">
             {{ 'training.kicker' | translate }}
           </p>
-          <h1 class="truncate text-xl font-black tracking-tight text-[var(--driveos-text-primary)] sm:text-2xl">
+          <h1
+            class="truncate text-xl font-black tracking-tight text-[var(--driveos-text-primary)] sm:text-2xl"
+          >
             {{ 'training.title' | translate }}
           </h1>
         </div>
       </div>
 
-      <nav class="-mb-px flex gap-1 overflow-x-auto" [attr.aria-label]="'training.tabs.navigation' | translate">
+      <nav
+        class="-mb-px flex gap-1 overflow-x-auto"
+        [attr.aria-label]="'training.tabs.navigation' | translate"
+      >
         @for (tab of visibleTabs(); track tab.route) {
           <a
             [routerLink]="tab.route"
             routerLinkActive="border-blue-800 bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-200"
             class="flex min-h-11 shrink-0 items-center gap-2 rounded-t-xl border-b-2 border-transparent px-3.5 text-sm font-bold text-[var(--driveos-text-secondary)] transition-colors hover:bg-[var(--driveos-surface-hover)] hover:text-[var(--driveos-text-primary)]"
           >
-            <i [class]="tab.icon + ' text-lg'" aria-hidden="true"></i>
+            <i
+              [class]="tab.icon + ' text-lg'"
+              aria-hidden="true"
+            ></i>
             <span>{{ tab.labelKey | translate }}</span>
           </a>
         }

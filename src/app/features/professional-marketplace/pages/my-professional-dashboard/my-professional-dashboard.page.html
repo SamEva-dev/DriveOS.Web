@@ -1,0 +1,377 @@
+<drive-os-page-shell
+  width="full"
+  spacing="compact"
+>
+  <main class="grid gap-5 text-[var(--driveos-text-primary)]">
+    <header
+      class="flex flex-wrap items-start justify-between gap-4 border-b border-[var(--driveos-border)] py-3"
+    >
+      <div>
+        <p class="text-xs font-bold uppercase tracking-wide text-[var(--driveos-text-secondary)]">
+          {{ 'professionalMarketplace.myDashboard.eyebrow' | translate }}
+        </p>
+        <h1 class="text-2xl font-extrabold">
+          {{ 'professionalMarketplace.myDashboard.title' | translate }}
+        </h1>
+        <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{ profileLabel() }}</p>
+      </div>
+      <button
+        class="rounded-lg border px-4 py-2 text-xs font-bold"
+        [disabled]="loading()"
+        (click)="load()"
+      >
+        <i
+          class="ph ph-arrows-clockwise"
+          [class.animate-spin]="loading()"
+        ></i>
+        {{ 'common.actions.refresh' | translate }}
+      </button>
+    </header>
+    @if (errors().length) {
+      <div class="grid gap-2">
+        @for (error of errors(); track error) {
+          <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+            {{ error }}
+          </div>
+        }
+      </div>
+    }
+    @if (dashboard(); as data) {
+      <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+        <drive-os-stat-card
+          [label]="'professionalMarketplace.myDashboard.kpis.toAnswer' | translate"
+          [value]="pendingMissions().length"
+          icon="ph ph-bell-ringing"
+          state="warning"
+        />
+        <drive-os-stat-card
+          [label]="'professionalMarketplace.myDashboard.kpis.activeMissions' | translate"
+          [value]="data.kpis.activeMissions"
+          icon="ph ph-road-horizon"
+        />
+        <drive-os-stat-card
+          [label]="'professionalMarketplace.myDashboard.kpis.students' | translate"
+          [value]="activeAccessibleStudents()"
+          icon="ph ph-student"
+        />
+        <drive-os-stat-card
+          [label]="'professionalMarketplace.myDashboard.kpis.entries' | translate"
+          [value]="data.kpis.pendingServiceEntries"
+          icon="ph ph-receipt"
+          state="warning"
+        />
+        <drive-os-stat-card
+          [label]="'professionalMarketplace.myDashboard.kpis.disputes' | translate"
+          [value]="data.advanced?.openDisputes || 0"
+          icon="ph ph-warning-circle"
+          state="danger"
+        />
+        <drive-os-stat-card
+          [label]="'professionalMarketplace.myDashboard.kpis.pendingInvoices' | translate"
+          [value]="data.kpis.pendingInvoices"
+          icon="ph ph-wallet"
+          state="warning"
+        />
+      </section>
+      <nav class="flex gap-1 overflow-x-auto border-b border-[var(--driveos-border)]">
+        @for (tab of ['actions', 'activity', 'finance', 'profile']; track tab) {
+          <button
+            class="whitespace-nowrap border-b-2 px-4 py-3 text-sm font-bold"
+            [class.border-blue-800]="activeTab() === tab"
+            [class.text-blue-800]="activeTab() === tab"
+            (click)="setTab($any(tab))"
+          >
+            {{ 'professionalMarketplace.myDashboard.tabs.' + tab | translate }}
+          </button>
+        }
+      </nav>
+      @if (activeTab() === 'actions') {
+        <section class="grid gap-5 xl:grid-cols-[1.25fr_.75fr]">
+          <article class="rounded-2xl border bg-[var(--driveos-surface-card)] p-5">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <h2 class="text-lg font-black">
+                  {{ 'professionalMarketplace.myDashboard.actions.missions' | translate }}
+                </h2>
+                <p class="text-sm text-[var(--driveos-text-secondary)]">
+                  {{ 'professionalMarketplace.myDashboard.actions.missionsHint' | translate }}
+                </p>
+              </div>
+              <button
+                class="rounded-lg border px-3 py-2 text-xs font-bold"
+                (click)="go('/marketplace/my-missions')"
+              >
+                {{ 'common.actions.view' | translate }}
+              </button>
+            </div>
+            <div class="mt-4 grid gap-3">
+              @for (m of pendingMissions().slice(0, 4); track m.id) {
+                <button
+                  class="rounded-xl border p-4 text-left hover:border-blue-300"
+                  (click)="openMission(m)"
+                >
+                  <div class="flex items-center justify-between gap-2">
+                    <strong>{{ m.title }}</strong>
+                    <span class="rounded-full border px-2 py-1 text-[10px] font-bold">
+                      {{ 'professionalMarketplace.missions.status.Proposed' | translate }}
+                    </span>
+                  </div>
+                  <p class="mt-2 text-xs text-[var(--driveos-text-secondary)]">
+                    {{ m.startsOn }} → {{ m.endsOn }} · {{ m.teachingCategoryCodes.join(' · ') }}
+                  </p>
+                </button>
+              } @empty {
+                <div
+                  class="rounded-xl border border-dashed p-6 text-center text-sm text-[var(--driveos-text-secondary)]"
+                >
+                  {{ 'professionalMarketplace.myDashboard.actions.noMission' | translate }}
+                </div>
+              }
+            </div>
+          </article>
+          <aside class="grid gap-3">
+            <button
+              class="rounded-2xl border bg-[var(--driveos-surface-card)] p-4 text-left hover:border-blue-300"
+              (click)="go('/marketplace/my-students')"
+            >
+              <strong>
+                {{ 'professionalMarketplace.myDashboard.actions.myStudents' | translate }}
+              </strong>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ activeAccessibleStudents() }}
+                {{ 'professionalMarketplace.myDashboard.actions.studentsAccessible' | translate }}
+              </p>
+            </button>
+            <button
+              class="rounded-2xl border bg-[var(--driveos-surface-card)] p-4 text-left hover:border-blue-300"
+              (click)="go('/marketplace/my-service-entries')"
+            >
+              <strong>
+                {{ 'professionalMarketplace.myDashboard.actions.myServices' | translate }}
+              </strong>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ data.kpis.pendingServiceEntries }}
+                {{ 'professionalMarketplace.myDashboard.actions.entriesToSubmit' | translate }}
+              </p>
+            </button>
+            @for (alert of data.alerts; track alert.code + (alert.entityId || '')) {
+              <div
+                class="rounded-2xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900"
+              >
+                <strong>{{ alertMessage(alert) }}</strong>
+                @if (alert.dueDate) {
+                  <p class="mt-1 text-xs">{{ alert.dueDate }}</p>
+                }
+              </div>
+            }
+          </aside>
+        </section>
+      }
+      @if (activeTab() === 'activity') {
+        <section class="grid gap-4 lg:grid-cols-3">
+          @if (data.advanced; as a) {
+            <article class="rounded-2xl border bg-[var(--driveos-surface-card)] p-5">
+              <h2 class="font-black">
+                {{ 'professionalMarketplace.myDashboard.activity.operations' | translate }}
+              </h2>
+              <dl class="mt-4 grid gap-3 text-sm">
+                <div class="flex justify-between">
+                  <dt>{{ 'professionalMarketplace.dashboard.kpis.plannedHours' | translate }}</dt>
+                  <dd class="font-black">{{ a.plannedHours }} h</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>{{ 'professionalMarketplace.dashboard.kpis.realizedHours' | translate }}</dt>
+                  <dd class="font-black">{{ a.realizedHours }} h</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.dashboard.kpis.studentsHandled' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ a.studentsHandled }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>{{ 'professionalMarketplace.dashboard.kpis.occupancy' | translate }}</dt>
+                  <dd class="font-black">{{ formatPercent(a.occupancyRatePercent) }}</dd>
+                </div>
+              </dl>
+            </article>
+            <article class="rounded-2xl border bg-[var(--driveos-surface-card)] p-5">
+              <h2 class="font-black">
+                {{ 'professionalMarketplace.myDashboard.activity.quality' | translate }}
+              </h2>
+              <dl class="mt-4 grid gap-3 text-sm">
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.dashboard.kpis.firstPassValidation' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ formatPercent(a.firstPassValidationRatePercent) }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>{{ 'professionalMarketplace.dashboard.kpis.openDisputes' | translate }}</dt>
+                  <dd class="font-black">{{ a.openDisputes }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>
+                    {{
+                      'professionalMarketplace.dashboard.kpis.averageValidationDelay' | translate
+                    }}
+                  </dt>
+                  <dd class="font-black">
+                    {{ formatHours(data.kpis.averageValidationDelayHours) }}
+                  </dd>
+                </div>
+              </dl>
+            </article>
+            <article class="rounded-2xl border bg-[var(--driveos-surface-card)] p-5">
+              <h2 class="font-black">
+                {{ 'professionalMarketplace.myDashboard.activity.relationships' | translate }}
+              </h2>
+              <dl class="mt-4 grid gap-3 text-sm">
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.dashboard.kpis.activeEngagements' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ data.kpis.activeEngagements }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.dashboard.kpis.reliableRelationships' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ a.reliableRelationships }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>
+                    {{
+                      'professionalMarketplace.dashboard.kpis.initialIntegrationsCompleted'
+                        | translate
+                    }}
+                  </dt>
+                  <dd class="font-black">{{ a.initialIntegrationsCompleted }}</dd>
+                </div>
+              </dl>
+            </article>
+          }
+        </section>
+      }
+      @if (activeTab() === 'finance') {
+        <section class="grid gap-4 lg:grid-cols-3">
+          @if (data.advanced; as a) {
+            <article class="rounded-2xl border bg-[var(--driveos-surface-card)] p-5">
+              <h2 class="font-black">
+                {{ 'professionalMarketplace.myDashboard.finance.invoices' | translate }}
+              </h2>
+              <dl class="mt-4 grid gap-3 text-sm">
+                <div class="flex justify-between">
+                  <dt>{{ 'professionalMarketplace.dashboard.kpis.invoicedAmount' | translate }}</dt>
+                  <dd class="font-black">
+                    {{ formatMoney(a.invoicedAmount, a.invoicedCurrency) }}
+                  </dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.dashboard.kpis.pendingInvoices' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ data.kpis.pendingInvoices }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>{{ 'professionalMarketplace.dashboard.kpis.paidInvoices' | translate }}</dt>
+                  <dd class="font-black">{{ data.kpis.paidInvoices }}</dd>
+                </div>
+              </dl>
+            </article>
+            <article class="rounded-2xl border bg-[var(--driveos-surface-card)] p-5">
+              <h2 class="font-black">
+                {{ 'professionalMarketplace.myDashboard.finance.payments' | translate }}
+              </h2>
+              <dl class="mt-4 grid gap-3 text-sm">
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.dashboard.kpis.scheduledPayments' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ data.kpis.scheduledPayments }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>{{ 'professionalMarketplace.dashboard.kpis.failedPayments' | translate }}</dt>
+                  <dd class="font-black">{{ data.kpis.failedPayments }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt>
+                    {{ 'professionalMarketplace.dashboard.kpis.averagePaymentDelay' | translate }}
+                  </dt>
+                  <dd class="font-black">{{ formatHours(data.kpis.averagePaymentDelayHours) }}</dd>
+                </div>
+              </dl>
+            </article>
+            <button
+              class="rounded-2xl border bg-[var(--driveos-surface-card)] p-5 text-left hover:border-blue-300"
+              (click)="go('/marketplace/my-service-entries')"
+            >
+              <i class="ph ph-receipt text-2xl"></i>
+              <h2 class="mt-3 font-black">
+                {{ 'professionalMarketplace.myDashboard.finance.openServices' | translate }}
+              </h2>
+              <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.myDashboard.finance.openServicesHint' | translate }}
+              </p>
+            </button>
+          }
+        </section>
+      }
+      @if (activeTab() === 'profile') {
+        <section class="grid gap-4 lg:grid-cols-[.8fr_1.2fr]">
+          <article class="rounded-2xl border bg-[var(--driveos-surface-card)] p-5">
+            <h2 class="font-black">
+              {{ 'professionalMarketplace.myDashboard.profile.status' | translate }}
+            </h2>
+            <div class="mt-4 flex items-center justify-between gap-3">
+              <span>
+                {{ 'professionalMarketplace.myDashboard.profile.compliance' | translate }}
+              </span>
+              <strong>
+                {{
+                  'professionalMarketplace.compliance.status.' +
+                    (profile()?.complianceStatus || 'Incomplete') | translate
+                }}
+              </strong>
+            </div>
+            <div class="mt-3 flex items-center justify-between gap-3">
+              <span>{{ 'professionalMarketplace.myDashboard.profile.complete' | translate }}</span>
+              <strong>
+                {{
+                  profile()?.isProfileComplete
+                    ? ('common.yes' | translate)
+                    : ('common.no' | translate)
+                }}
+              </strong>
+            </div>
+            <div class="mt-3 flex items-center justify-between gap-3">
+              <span>
+                {{ 'professionalMarketplace.dashboard.kpis.expiringCredentials' | translate }}
+              </span>
+              <strong>{{ data.kpis.expiringCredentials }}</strong>
+            </div>
+          </article>
+          <article class="rounded-2xl border bg-[var(--driveos-surface-card)] p-5">
+            <h2 class="font-black">
+              {{ 'professionalMarketplace.myDashboard.profile.summary' | translate }}
+            </h2>
+            <p class="mt-3 text-sm text-[var(--driveos-text-secondary)]">
+              {{ profile()?.headline || profile()?.biography || '—' }}
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              @for (c of profile()?.teachingCategoryCodes || []; track c) {
+                <span class="rounded-full border px-2 py-1 text-xs font-bold">{{ c }}</span>
+              }
+            </div>
+          </article>
+        </section>
+      }
+    }
+  </main>
+  <driveos-my-professional-mission-drawer
+    [open]="missionDrawerOpen()"
+    [missionId]="selectedMission()?.id || null"
+    (closeRequested)="closeMission()"
+    (changed)="load()"
+  />
+</drive-os-page-shell>

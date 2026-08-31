@@ -108,7 +108,8 @@ export class StudentPedagogyPage {
     const value = (status ?? '').toLowerCase();
     if (value === 'accepted') return 'success';
     if (['rejected', 'failed'].includes(value)) return 'danger';
-    if (['waitingfordata', 'pending', 'processing', 'retrypending'].includes(value)) return 'warning';
+    if (['waitingfordata', 'pending', 'processing', 'retrypending'].includes(value))
+      return 'warning';
     return 'neutral';
   }
 

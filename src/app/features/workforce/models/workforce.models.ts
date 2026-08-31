@@ -68,13 +68,7 @@ export interface WorkforceDashboard {
 }
 
 export type EmploymentStatus =
-  | 'Draft'
-  | 'Onboarding'
-  | 'Active'
-  | 'Suspended'
-  | 'OnLeave'
-  | 'Ending'
-  | 'Ended';
+  'Draft' | 'Onboarding' | 'Active' | 'Suspended' | 'OnLeave' | 'Ending' | 'Ended';
 
 export interface EmployeeSummary {
   readonly id: string;
@@ -90,7 +84,6 @@ export interface EmployeeSummary {
   readonly lastModifiedAtUtc: string | null;
 }
 
-
 export type EmployeeBranchAssignmentStatus = 'Planned' | 'Active' | 'Ended' | 'Cancelled';
 
 export interface EmployeeBranchAssignment {
@@ -103,7 +96,6 @@ export interface EmployeeBranchAssignment {
   readonly createdAtUtc: string;
   readonly lastModifiedAtUtc: string | null;
 }
-
 
 export type JobPositionStatus = 'Active' | 'Inactive';
 
@@ -130,8 +122,8 @@ export interface EmployeeJobPositionAssignment {
   readonly status: EmployeeJobPositionAssignmentStatus | string;
 }
 
-
-export type WorkforceCredentialStatus = 'Declared' | 'Verified' | 'Rejected' | 'Expired' | 'Superseded';
+export type WorkforceCredentialStatus =
+  'Declared' | 'Verified' | 'Rejected' | 'Expired' | 'Superseded';
 export type QualificationSource = 'Manual' | 'Import' | 'ExternalProvider';
 
 export interface EmployeeQualification {
@@ -171,7 +163,6 @@ export interface InstructorAuthorization {
   readonly supersededById: string | null;
 }
 
-
 export type EmploymentContractStatus =
   | 'Draft'
   | 'PendingSignature'
@@ -206,76 +197,180 @@ export interface EmploymentContract {
   readonly lastModifiedAtUtc: string | null;
 }
 
-
-export type LeaveCategory = 'PaidLeave' | 'UnpaidLeave' | 'SickLeave' | 'TrainingLeave' | 'ParentalLeave' | 'CompensatoryLeave' | 'Other';
+export type LeaveCategory =
+  | 'PaidLeave'
+  | 'UnpaidLeave'
+  | 'SickLeave'
+  | 'TrainingLeave'
+  | 'ParentalLeave'
+  | 'CompensatoryLeave'
+  | 'Other';
 export type LeavePolicyStatus = 'Active' | 'Inactive';
 export interface LeavePolicy {
-  readonly id: string; readonly countryCode: string; readonly code: string; readonly name: string; readonly category: LeaveCategory | string;
-  readonly isPaid: boolean; readonly requiresApproval: boolean; readonly requiresEvidence: boolean; readonly allowHalfDay: boolean;
-  readonly minimumNoticeDays: number | null; readonly maximumConsecutiveDays: number | null; readonly status: LeavePolicyStatus | string;
+  readonly id: string;
+  readonly countryCode: string;
+  readonly code: string;
+  readonly name: string;
+  readonly category: LeaveCategory | string;
+  readonly isPaid: boolean;
+  readonly requiresApproval: boolean;
+  readonly requiresEvidence: boolean;
+  readonly allowHalfDay: boolean;
+  readonly minimumNoticeDays: number | null;
+  readonly maximumConsecutiveDays: number | null;
+  readonly status: LeavePolicyStatus | string;
 }
 export type LeaveRequestStatus = 'Draft' | 'Submitted' | 'Approved' | 'Rejected' | 'Cancelled';
 export type LeaveDayPortion = 'FullDay' | 'Morning' | 'Afternoon';
 export interface LeaveRequest {
-  readonly id: string; readonly employeeId: string; readonly leavePolicyId: string; readonly policyCode: string; readonly countryCode: string;
-  readonly startDate: string; readonly endDate: string; readonly startPortion: LeaveDayPortion | string; readonly endPortion: LeaveDayPortion | string;
-  readonly reason: string | null; readonly evidenceDocumentId: string | null; readonly requiresApproval: boolean; readonly requiresEvidence: boolean;
-  readonly status: LeaveRequestStatus | string; readonly submittedAtUtc: string | null; readonly decidedAtUtc: string | null; readonly decidedByUserId: string | null;
-  readonly decisionReason: string | null; readonly cancelledAtUtc: string | null;
+  readonly id: string;
+  readonly employeeId: string;
+  readonly leavePolicyId: string;
+  readonly policyCode: string;
+  readonly countryCode: string;
+  readonly startDate: string;
+  readonly endDate: string;
+  readonly startPortion: LeaveDayPortion | string;
+  readonly endPortion: LeaveDayPortion | string;
+  readonly reason: string | null;
+  readonly evidenceDocumentId: string | null;
+  readonly requiresApproval: boolean;
+  readonly requiresEvidence: boolean;
+  readonly status: LeaveRequestStatus | string;
+  readonly submittedAtUtc: string | null;
+  readonly decidedAtUtc: string | null;
+  readonly decidedByUserId: string | null;
+  readonly decisionReason: string | null;
+  readonly cancelledAtUtc: string | null;
 }
-
 
 export type WorkingTimePolicyStatus = 'Active' | 'Inactive';
 export interface WorkingTimePolicy {
-  readonly id: string; readonly employeeId: string; readonly effectiveFrom: string; readonly effectiveTo: string | null;
-  readonly contractualWeeklyHours: number; readonly contractualDailyHours: number | null; readonly maxWorkingDaysPerWeek: number | null;
+  readonly id: string;
+  readonly employeeId: string;
+  readonly effectiveFrom: string;
+  readonly effectiveTo: string | null;
+  readonly contractualWeeklyHours: number;
+  readonly contractualDailyHours: number | null;
+  readonly maxWorkingDaysPerWeek: number | null;
   readonly status: WorkingTimePolicyStatus | string;
 }
 export interface WorkingTimeSummary {
-  readonly employeeId: string; readonly from: string; readonly to: string; readonly contractualHours: number; readonly plannedHours: number;
-  readonly actualTeachingHours: number; readonly approvedLeaveHours: number; readonly varianceToContractHours: number;
+  readonly employeeId: string;
+  readonly from: string;
+  readonly to: string;
+  readonly contractualHours: number;
+  readonly plannedHours: number;
+  readonly actualTeachingHours: number;
+  readonly approvedLeaveHours: number;
+  readonly varianceToContractHours: number;
 }
-export type TimesheetStatus = 'Draft' | 'Submitted' | 'UnderReview' | 'Approved' | 'Rejected' | 'Locked';
-export type TimesheetActivityType = 'Teaching' | 'Exam' | 'Administrative' | 'Travel' | 'Meeting' | 'Training' | 'Leave' | 'Other';
+export type TimesheetStatus =
+  'Draft' | 'Submitted' | 'UnderReview' | 'Approved' | 'Rejected' | 'Locked';
+export type TimesheetActivityType =
+  'Teaching' | 'Exam' | 'Administrative' | 'Travel' | 'Meeting' | 'Training' | 'Leave' | 'Other';
 export type TimesheetEntrySource = 'Manual' | 'Scheduling' | 'TrainingDelivery' | 'Leave';
 export interface TimesheetEntry {
-  readonly id: string; readonly date: string; readonly activityType: TimesheetActivityType | string; readonly hours: number;
-  readonly description: string | null; readonly source: TimesheetEntrySource | string; readonly sourceReference: string | null;
+  readonly id: string;
+  readonly date: string;
+  readonly activityType: TimesheetActivityType | string;
+  readonly hours: number;
+  readonly description: string | null;
+  readonly source: TimesheetEntrySource | string;
+  readonly sourceReference: string | null;
 }
 export interface Timesheet {
-  readonly id: string; readonly employeeId: string; readonly periodFrom: string; readonly periodTo: string; readonly status: TimesheetStatus | string;
-  readonly totalHours: number; readonly submittedAtUtc: string | null; readonly submittedByUserId: string | null; readonly reviewStartedAtUtc: string | null;
-  readonly reviewerUserId: string | null; readonly decidedAtUtc: string | null; readonly decidedByUserId: string | null; readonly decisionReason: string | null;
-  readonly lockedAtUtc: string | null; readonly lockedByUserId: string | null; readonly entries: readonly TimesheetEntry[];
+  readonly id: string;
+  readonly employeeId: string;
+  readonly periodFrom: string;
+  readonly periodTo: string;
+  readonly status: TimesheetStatus | string;
+  readonly totalHours: number;
+  readonly submittedAtUtc: string | null;
+  readonly submittedByUserId: string | null;
+  readonly reviewStartedAtUtc: string | null;
+  readonly reviewerUserId: string | null;
+  readonly decidedAtUtc: string | null;
+  readonly decidedByUserId: string | null;
+  readonly decisionReason: string | null;
+  readonly lockedAtUtc: string | null;
+  readonly lockedByUserId: string | null;
+  readonly entries: readonly TimesheetEntry[];
 }
 
-
-export type EquipmentResourceType = 'Vehicle' | 'MobilePhone' | 'Tablet' | 'Computer' | 'Badge' | 'Keys' | 'TrainingEquipment' | 'Other';
+export type EquipmentResourceType =
+  | 'Vehicle'
+  | 'MobilePhone'
+  | 'Tablet'
+  | 'Computer'
+  | 'Badge'
+  | 'Keys'
+  | 'TrainingEquipment'
+  | 'Other';
 export type EquipmentAssignmentStatus = 'Planned' | 'Active' | 'Returned' | 'Cancelled';
 export type EquipmentCondition = 'Unknown' | 'New' | 'Good' | 'Fair' | 'Damaged' | 'Unusable';
 export interface EquipmentAssignment {
-  readonly id: string; readonly employeeId: string; readonly resourceType: EquipmentResourceType | string; readonly resourceId: string;
-  readonly startDate: string; readonly plannedEndDate: string | null; readonly returnedOn: string | null; readonly status: EquipmentAssignmentStatus | string;
-  readonly handoverCondition: EquipmentCondition | string; readonly handoverNotes: string | null; readonly handedOverAtUtc: string | null; readonly handedOverByUserId: string | null;
-  readonly returnCondition: EquipmentCondition | string; readonly returnNotes: string | null; readonly returnedAtUtc: string | null; readonly returnedByUserId: string | null; readonly cancellationReason: string | null;
+  readonly id: string;
+  readonly employeeId: string;
+  readonly resourceType: EquipmentResourceType | string;
+  readonly resourceId: string;
+  readonly startDate: string;
+  readonly plannedEndDate: string | null;
+  readonly returnedOn: string | null;
+  readonly status: EquipmentAssignmentStatus | string;
+  readonly handoverCondition: EquipmentCondition | string;
+  readonly handoverNotes: string | null;
+  readonly handedOverAtUtc: string | null;
+  readonly handedOverByUserId: string | null;
+  readonly returnCondition: EquipmentCondition | string;
+  readonly returnNotes: string | null;
+  readonly returnedAtUtc: string | null;
+  readonly returnedByUserId: string | null;
+  readonly cancellationReason: string | null;
 }
 
-
-export type PerformanceReviewStatus = 'Draft' | 'InProgress' | 'Submitted' | 'Acknowledged' | 'Completed' | 'Cancelled';
+export type PerformanceReviewStatus =
+  'Draft' | 'InProgress' | 'Submitted' | 'Acknowledged' | 'Completed' | 'Cancelled';
 export interface PerformanceReviewCriterion {
-  readonly id: string; readonly code: string; readonly label: string; readonly weight: number; readonly rating: number | null; readonly comment: string | null;
+  readonly id: string;
+  readonly code: string;
+  readonly label: string;
+  readonly weight: number;
+  readonly rating: number | null;
+  readonly comment: string | null;
 }
 export interface PerformanceReview {
-  readonly id: string; readonly employeeId: string; readonly evaluatorUserId: string; readonly periodFrom: string; readonly periodTo: string; readonly title: string;
-  readonly status: PerformanceReviewStatus | string; readonly overallAssessment: string | null; readonly objectives: string | null; readonly submittedAtUtc: string | null;
-  readonly acknowledgedAtUtc: string | null; readonly acknowledgedByUserId: string | null; readonly employeeComment: string | null; readonly completedAtUtc: string | null;
-  readonly cancellationReason: string | null; readonly criteria: readonly PerformanceReviewCriterion[];
+  readonly id: string;
+  readonly employeeId: string;
+  readonly evaluatorUserId: string;
+  readonly periodFrom: string;
+  readonly periodTo: string;
+  readonly title: string;
+  readonly status: PerformanceReviewStatus | string;
+  readonly overallAssessment: string | null;
+  readonly objectives: string | null;
+  readonly submittedAtUtc: string | null;
+  readonly acknowledgedAtUtc: string | null;
+  readonly acknowledgedByUserId: string | null;
+  readonly employeeComment: string | null;
+  readonly completedAtUtc: string | null;
+  readonly cancellationReason: string | null;
+  readonly criteria: readonly PerformanceReviewCriterion[];
 }
 
-
-export type EmployeeDocumentCategory = 'Identity' | 'Employment' | 'Qualification' | 'RegulatoryAuthorization' | 'LeaveEvidence' | 'OccupationalHealth' | 'Payroll' | 'Administrative' | 'Other';
+export type EmployeeDocumentCategory =
+  | 'Identity'
+  | 'Employment'
+  | 'Qualification'
+  | 'RegulatoryAuthorization'
+  | 'LeaveEvidence'
+  | 'OccupationalHealth'
+  | 'Payroll'
+  | 'Administrative'
+  | 'Other';
 export type EmployeeDocumentConfidentiality = 'Internal' | 'Confidential' | 'Restricted';
-export type EmployeeDocumentStatus = 'Registered' | 'Verified' | 'Superseded' | 'Revoked' | 'Archived';
+export type EmployeeDocumentStatus =
+  'Registered' | 'Verified' | 'Superseded' | 'Revoked' | 'Archived';
 export interface EmployeeDocument {
   readonly id: string;
   readonly employeeId: string;
@@ -297,10 +392,15 @@ export interface EmployeeDocument {
   readonly supersededByEmployeeDocumentId: string | null;
 }
 
-
-export type ProfessionalRestrictionActivity = 'AllProfessionalDuties' | 'Teaching' | 'ExamDuties' | 'VehicleOperation';
+export type ProfessionalRestrictionActivity =
+  'AllProfessionalDuties' | 'Teaching' | 'ExamDuties' | 'VehicleOperation';
 export type ProfessionalRestrictionStatus = 'Planned' | 'Active' | 'Lifted' | 'Cancelled';
-export type ProfessionalRestrictionSource = 'InternalDecision' | 'RegulatoryAuthority' | 'OccupationalHealth' | 'QualificationIssue' | 'Other';
+export type ProfessionalRestrictionSource =
+  | 'InternalDecision'
+  | 'RegulatoryAuthority'
+  | 'OccupationalHealth'
+  | 'QualificationIssue'
+  | 'Other';
 export interface ProfessionalRestriction {
   readonly id: string;
   readonly employeeId: string;
@@ -319,7 +419,6 @@ export interface ProfessionalRestriction {
   readonly liftReason: string | null;
   readonly cancellationReason: string | null;
 }
-
 
 export type OffboardingStatus = 'InProgress' | 'ReadyToComplete' | 'Completed' | 'Cancelled';
 export type OffboardingChecklistItemStatus = 'Pending' | 'Completed' | 'Waived';

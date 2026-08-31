@@ -1,0 +1,373 @@
+<drive-os-drawer
+  [open]="open()"
+  size="xl"
+  (closeRequested)="close()"
+>
+  <div class="grid gap-4 p-5">
+    @if (loading()) {
+      <div class="p-8 text-center text-sm">{{ 'common.loading' | translate }}</div>
+    } @else if (item(); as x) {
+      <header class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+            {{ 'professionalMarketplace.disputes.eyebrow' | translate }}
+          </p>
+          <h2 class="text-xl font-extrabold">
+            {{ 'professionalMarketplace.disputes.reason.' + x.reason | translate }}
+          </h2>
+          <p class="mt-1 break-all text-xs text-[var(--driveos-text-secondary)]">#{{ x.id }}</p>
+        </div>
+        <span class="rounded-full border px-2 py-1 text-xs font-bold">
+          {{ 'professionalMarketplace.disputes.status.' + x.status | translate }}
+        </span>
+      </header>
+      <nav class="flex gap-1 overflow-x-auto border-b">
+        <button
+          class="border-b-2 px-3 py-2 text-xs font-bold"
+          [class.border-blue-800]="tab() === 'summary'"
+          (click)="selectTab('summary')"
+        >
+          {{ 'professionalMarketplace.disputes.tabs.summary' | translate }}
+        </button>
+        <button
+          class="border-b-2 px-3 py-2 text-xs font-bold"
+          [class.border-blue-800]="tab() === 'discussion'"
+          (click)="selectTab('discussion')"
+        >
+          {{ 'professionalMarketplace.disputes.tabs.discussion' | translate }} ({{
+            x.discussion.length
+          }})
+        </button>
+        <button
+          class="border-b-2 px-3 py-2 text-xs font-bold"
+          [class.border-blue-800]="tab() === 'evidence'"
+          (click)="selectTab('evidence')"
+        >
+          {{ 'professionalMarketplace.disputes.tabs.evidence' | translate }} ({{
+            x.evidence.length
+          }})
+        </button>
+        <button
+          class="border-b-2 px-3 py-2 text-xs font-bold"
+          [class.border-blue-800]="tab() === 'history'"
+          (click)="selectTab('history')"
+        >
+          {{ 'professionalMarketplace.disputes.tabs.history' | translate }}
+        </button>
+      </nav>
+      @if (tab() === 'summary') {
+        <section class="grid gap-3">
+          <div class="rounded-xl border p-4">
+            <div class="text-xs font-bold text-[var(--driveos-text-secondary)]">
+              {{ 'professionalMarketplace.disputes.fields.description' | translate }}
+            </div>
+            <p class="mt-2 text-sm">{{ x.description }}</p>
+          </div>
+          <div class="grid gap-3 md:grid-cols-2">
+            <div class="rounded-xl border p-4">
+              <div class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.disputes.fields.serviceEntry' | translate }}
+              </div>
+              <div class="mt-1 break-all text-xs font-bold">{{ x.serviceEntryId }}</div>
+            </div>
+            <div class="rounded-xl border p-4">
+              <div class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.disputes.fields.engagement' | translate }}
+              </div>
+              <div class="mt-1 break-all text-xs font-bold">{{ x.engagementId }}</div>
+            </div>
+          </div>
+          @if (x.resolution) {
+            <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm">
+              <div class="font-bold text-emerald-800">
+                {{ 'professionalMarketplace.disputes.fields.resolution' | translate }}
+              </div>
+              <div class="mt-1">{{ x.resolution }}</div>
+            </div>
+          }
+          @if (x.escalationReason) {
+            <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm">
+              <div class="font-bold text-amber-800">
+                {{ 'professionalMarketplace.disputes.fields.escalation' | translate }}
+              </div>
+              <div class="mt-1">{{ x.escalationReason }}</div>
+            </div>
+          }
+        </section>
+      }
+      @if (tab() === 'discussion') {
+        <section class="grid gap-2">
+          @for (m of x.discussion; track m.id) {
+            <article class="rounded-xl border p-3">
+              <div class="flex justify-between gap-3">
+                <strong class="text-xs">
+                  {{ 'professionalMarketplace.disputes.party.' + m.party | translate }}
+                </strong>
+                <span class="text-[11px] text-[var(--driveos-text-secondary)]">
+                  {{ m.createdAtUtc }}
+                </span>
+              </div>
+              <p class="mt-2 text-sm whitespace-pre-wrap">{{ m.message }}</p>
+            </article>
+          } @empty {
+            <div
+              class="rounded-xl border border-dashed p-6 text-center text-sm text-[var(--driveos-text-secondary)]"
+            >
+              {{ 'professionalMarketplace.disputes.emptyDiscussion' | translate }}
+            </div>
+          }
+        </section>
+      }
+      @if (tab() === 'evidence') {
+        <section class="grid gap-2">
+          @for (e of x.evidence; track e.documentReferenceId) {
+            <article class="rounded-xl border p-3">
+              <div class="font-bold text-sm">{{ e.label }}</div>
+              <div class="mt-1 break-all text-xs text-[var(--driveos-text-secondary)]">
+                {{ e.documentReferenceId }}
+              </div>
+              @if (e.note) {
+                <p class="mt-2 text-sm">{{ e.note }}</p>
+              }
+            </article>
+          } @empty {
+            <div
+              class="rounded-xl border border-dashed p-6 text-center text-sm text-[var(--driveos-text-secondary)]"
+            >
+              {{ 'professionalMarketplace.disputes.emptyEvidence' | translate }}
+            </div>
+          }
+        </section>
+      }
+      @if (tab() === 'history') {
+        <section class="grid gap-2 text-sm">
+          <div class="rounded-xl border p-3">
+            {{ 'professionalMarketplace.disputes.fields.createdAt' | translate }}:
+            {{ x.createdAtUtc }}
+          </div>
+          <div class="rounded-xl border p-3">
+            {{ 'professionalMarketplace.disputes.fields.escalatedAt' | translate }}:
+            {{ x.escalatedAtUtc || '—' }}
+          </div>
+          <div class="rounded-xl border p-3">
+            {{ 'professionalMarketplace.disputes.fields.resolvedAt' | translate }}:
+            {{ x.resolvedAtUtc || '—' }}
+          </div>
+        </section>
+      }
+      @if (action() === 'message') {
+        <section class="rounded-xl border bg-slate-50 p-4">
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.disputes.fields.message' | translate }}
+            <textarea
+              class="min-h-28 rounded-lg border bg-white px-3 py-2 text-sm"
+              [(ngModel)]="message"
+            ></textarea>
+          </label>
+          <div class="mt-3 flex justify-end gap-2">
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="cancel()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </button>
+            <button
+              class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="confirm()"
+            >
+              {{ 'common.actions.confirm' | translate }}
+            </button>
+          </div>
+        </section>
+      }
+      @if (action() === 'evidence') {
+        <section class="grid gap-3 rounded-xl border bg-slate-50 p-4">
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.disputes.fields.documentReferenceId' | translate }}
+            <input
+              class="rounded-lg border bg-white px-3 py-2 text-sm"
+              [(ngModel)]="documentReferenceId"
+            />
+          </label>
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.disputes.fields.label' | translate }}
+            <input
+              class="rounded-lg border bg-white px-3 py-2 text-sm"
+              [(ngModel)]="evidenceLabel"
+            />
+          </label>
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.disputes.fields.note' | translate }}
+            <textarea
+              class="min-h-20 rounded-lg border bg-white px-3 py-2 text-sm"
+              [(ngModel)]="evidenceNote"
+            ></textarea>
+          </label>
+          <div class="flex justify-end gap-2">
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="cancel()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </button>
+            <button
+              class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="confirm()"
+            >
+              {{ 'common.actions.confirm' | translate }}
+            </button>
+          </div>
+        </section>
+      }
+      @if (action() === 'wait') {
+        <section class="rounded-xl border bg-slate-50 p-4">
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.disputes.fields.waitingFor' | translate }}
+            <select
+              class="rounded-lg border bg-white px-3 py-2 text-sm"
+              [(ngModel)]="waitingFor"
+            >
+              <option value="School">
+                {{ 'professionalMarketplace.disputes.party.School' | translate }}
+              </option>
+              <option value="Freelance">
+                {{ 'professionalMarketplace.disputes.party.Freelance' | translate }}
+              </option>
+            </select>
+          </label>
+          <div class="mt-3 flex justify-end gap-2">
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="cancel()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </button>
+            <button
+              class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="confirm()"
+            >
+              {{ 'common.actions.confirm' | translate }}
+            </button>
+          </div>
+        </section>
+      }
+      @if (action() === 'resolve') {
+        <section class="grid gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.disputes.fields.outcome' | translate }}
+            <select
+              class="rounded-lg border bg-white px-3 py-2 text-sm"
+              [(ngModel)]="resolutionOutcome"
+            >
+              <option value="ApproveServiceEntry">
+                {{ 'professionalMarketplace.disputes.outcome.ApproveServiceEntry' | translate }}
+              </option>
+              <option value="RejectServiceEntry">
+                {{ 'professionalMarketplace.disputes.outcome.RejectServiceEntry' | translate }}
+              </option>
+              <option value="Rejected">
+                {{ 'professionalMarketplace.disputes.outcome.Rejected' | translate }}
+              </option>
+            </select>
+          </label>
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.disputes.fields.resolution' | translate }}
+            <textarea
+              class="min-h-24 rounded-lg border bg-white px-3 py-2 text-sm"
+              [(ngModel)]="resolution"
+            ></textarea>
+          </label>
+          <div class="flex justify-end gap-2">
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="cancel()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </button>
+            <button
+              class="rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="confirm()"
+            >
+              {{ 'professionalMarketplace.disputes.actions.resolve' | translate }}
+            </button>
+          </div>
+        </section>
+      }
+      @if (action() === 'escalate') {
+        <section class="rounded-xl border border-amber-200 bg-amber-50 p-4">
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.disputes.fields.escalation' | translate }}
+            <textarea
+              class="min-h-24 rounded-lg border bg-white px-3 py-2 text-sm"
+              [(ngModel)]="escalationReason"
+            ></textarea>
+          </label>
+          <div class="mt-3 flex justify-end gap-2">
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="cancel()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </button>
+            <button
+              class="rounded-lg bg-amber-700 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="confirm()"
+            >
+              {{ 'professionalMarketplace.disputes.actions.escalate' | translate }}
+            </button>
+          </div>
+        </section>
+      }
+      @if (formErrors().length) {
+        <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+          @for (e of formErrors(); track e) {
+            <p>{{ e | translate }}</p>
+          }
+        </div>
+      }
+      @if (!isClosed()) {
+        <footer class="flex flex-wrap justify-end gap-2 border-t pt-4">
+          @if (canManage()) {
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="begin('message')"
+            >
+              {{ 'professionalMarketplace.disputes.actions.message' | translate }}
+            </button>
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="begin('evidence')"
+            >
+              {{ 'professionalMarketplace.disputes.actions.evidence' | translate }}
+            </button>
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="begin('wait')"
+            >
+              {{ 'professionalMarketplace.disputes.actions.wait' | translate }}
+            </button>
+            <button
+              class="rounded-lg border border-amber-300 px-3 py-2 text-xs font-bold text-amber-800"
+              (click)="begin('escalate')"
+            >
+              {{ 'professionalMarketplace.disputes.actions.escalate' | translate }}
+            </button>
+          }
+          @if (canResolve()) {
+            <button
+              class="rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white"
+              (click)="begin('resolve')"
+            >
+              {{ 'professionalMarketplace.disputes.actions.resolve' | translate }}
+            </button>
+          }
+        </footer>
+      }
+    }
+  </div>
+</drive-os-drawer>

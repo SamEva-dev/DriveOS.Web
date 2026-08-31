@@ -1,45 +1,615 @@
-export interface ExamAnalyticsKpis { scheduledAttempts:number; presentedAttempts:number; finalizedResults:number; passed:number; failed:number; candidateAbsences:number; excusedAbsences:number; cancelledOrPostponed:number; passRatePercent:number|null; firstAttemptPassRatePercent:number|null; absenceRatePercent:number|null; averageAttemptNumber:number|null; remediationRequired:number; remediationValidatedForRePresentation:number; isSmallSample:boolean; contextNote:string|null; }
-export interface ExamAnalyticsSeriesPoint { key:string; sampleSize:number; presented:number; passed:number; failed:number; passRatePercent:number|null; isSmallSample:boolean; contextNote:string|null; }
-export interface ExamAttemptDistributionPoint { attemptNumber:number; finalizedResults:number; passed:number; failed:number; passRatePercent:number|null; isSmallSample:boolean; contextNote:string|null; }
-export interface ExamFailureReasonPoint { reasonCode:string; count:number; percentageOfFailures:number; }
-export interface ExamAnalyticsAlert { code:string; messageKey:string; severity:string; dimension:string; dimensionKey:string|null; sampleSize:number; explanation:string; sourceRoute:string; }
-export interface ExamAnalyticsResponse { fromUtc:string; toUtc:string; kpis:ExamAnalyticsKpis; monthlyTrend:readonly ExamAnalyticsSeriesPoint[]; byBranch:readonly ExamAnalyticsSeriesPoint[]; byLicenseCategory:readonly ExamAnalyticsSeriesPoint[]; byExamType:readonly ExamAnalyticsSeriesPoint[]; byExamCenter:readonly ExamAnalyticsSeriesPoint[]; byInstructor:readonly ExamAnalyticsSeriesPoint[]; byAttemptNumber:readonly ExamAttemptDistributionPoint[]; failureReasons:readonly ExamFailureReasonPoint[]; alerts:readonly ExamAnalyticsAlert[]; contextWarnings:readonly string[]; }
-export interface ExamReadinessSnapshot { [key:string]: unknown; }
-export interface ExamReadinessDecision { [key:string]: unknown; }
-export interface ExamCenter { id:string; name:string; countryCode:string; timeZoneId:string; administrativeAreaCode:string|null; address:string|null; externalProviderCode:string|null; externalCenterId:string|null; status:string; }
-export interface ExamPlace { id:string; examCenterId:string; examType:string; licenseCategory:string; startsAtUtc:string; endsAtUtc:string; timeZoneId:string; source:string; providerCode:string; externalPlaceId:string|null; status:string; lastObservedAtUtc:string; holdExpiresAtUtc:string|null; assignedStudentId:string|null; examRegistrationId:string|null; }
-export interface ExamRegistration { id:string; studentId:string; trainingPathId:string; readinessDecisionId:string; examPlaceId:string; examCenterId:string; examType:string; licenseCategory:string; scheduledStartUtc:string; scheduledEndUtc:string; providerCode:string; externalPlaceId:string|null; externalRegistrationId:string|null; candidateReference:string|null; status:string; createdAtUtc:string; }
-export interface ExamResultRevision { revision:number; outcome:string; score:number|null; failureReasonCode:string|null; comments:string|null; sourceKind:string; providerCode:string; externalResultId:string|null; evidenceDocumentId:string|null; receivedAtUtc:string; correctionReason:string|null; operationId:string; actorUserId:string; createdAtUtc:string; }
-export interface ExamResult { id:string; attemptId:string; registrationId:string; studentId:string; attemptNumber:number; currentRevision:number; outcome:string; score:number|null; failureReasonCode:string|null; comments:string|null; sourceKind:string; providerCode:string; externalResultId:string|null; evidenceDocumentId:string|null; receivedAtUtc:string; status:string; verifiedAtUtc:string|null; verifiedByUserId:string|null; verificationReference:string|null; finalizedAtUtc:string|null; finalizedByUserId:string|null; revisions:readonly ExamResultRevision[]; }
-export interface ExamFailureFinding { id:string; kind:string; code:string; detail:string|null; critical:boolean; source:string; actorUserId:string; createdAtUtc:string; }
-export interface ExamFailureAnalysis { id:string; examResultId:string; resultRevision:number; attemptId:string; registrationId:string; studentId:string; attemptNumber:number; status:string; instructorAnalysis:string|null; studentFeedback:string|null; summary:string|null; recommendation:string|null; completedAtUtc:string|null; completedByUserId:string|null; supersededAtUtc:string|null; findings:readonly ExamFailureFinding[]; }
-export interface ExamRemediationRequest { id:string; failureAnalysisId:string; examResultId:string; resultRevision:number; failedAttemptId:string; registrationId:string; studentId:string; failedAttemptNumber:number; trainingPathId:string|null; analysisSummary:string; recommendationSummary:string|null; affectedCompetencyIds:readonly string[]; recommendationCodes:readonly string[]; recommendedHours:number|null; responsibleUserId:string|null; reviewDate:string|null; targetDate:string|null; mockExamRequired:boolean; fundingReviewRequired:boolean; pedagogicalRemediationPlanId:string|null; status:string; deferredReasonCode:string|null; failureCode:string|null; provisionedAtUtc:string|null; completedAtUtc:string|null; validatedForRePresentationAtUtc:string|null; validatedByUserId:string|null; supersededAtUtc:string|null; }
-export interface ExamSuccessAction { code:string; blocking:boolean; status:string; evidenceReference:string|null; reasonCode:string|null; detail:string|null; updatedAtUtc:string|null; }
-export interface ExamSuccessProcess { id:string; resultId:string; resultRevision:number; attemptId:string; registrationId:string; studentId:string; attemptNumber:number; status:string; actions:readonly ExamSuccessAction[]; createdAtUtc:string; completedAtUtc:string|null; supersededAtUtc:string|null; archivedAtUtc:string|null; }
-export interface ExamSuccessConsequence { id:string; kind:string; status:string; attemptCount:number; createdAtUtc:string; lastAttemptAtUtc:string|null; nextAttemptAtUtc:string|null; processedAtUtc:string|null; supersededAtUtc:string|null; lastErrorCode:string|null; lastErrorDetail:string|null; }
-export interface ExamAttestationRevision { id:string; version:number; templateCode:string; templateVersion:number; documentId:string; documentSha256:string; hasPublicVerification:boolean; signatureProcessReference:string|null; signatureEvidenceHash:string|null; signedByUserId:string|null; signedAtUtc:string|null; generatedByUserId:string; generatedAtUtc:string; }
-export interface ExamAttestation { id:string; examResultId:string; resultRevision:number; examAttemptId:string; examRegistrationId:string; studentId:string; attemptNumber:number; type:string; reference:string; currentVersion:number; supersedesAttestationId:string|null; status:string; issuedAtUtc:string; issuedByUserId:string; expiresAtUtc:string|null; deliveredAtUtc:string|null; deliveredByUserId:string|null; deliveryChannel:string|null; revokedAtUtc:string|null; revokedByUserId:string|null; revocationReasonCode:string|null; revocationNotes:string|null; supersededAtUtc:string|null; revisions:readonly ExamAttestationRevision[]; }
+export interface ExamAnalyticsKpis {
+  scheduledAttempts: number;
+  presentedAttempts: number;
+  finalizedResults: number;
+  passed: number;
+  failed: number;
+  candidateAbsences: number;
+  excusedAbsences: number;
+  cancelledOrPostponed: number;
+  passRatePercent: number | null;
+  firstAttemptPassRatePercent: number | null;
+  absenceRatePercent: number | null;
+  averageAttemptNumber: number | null;
+  remediationRequired: number;
+  remediationValidatedForRePresentation: number;
+  isSmallSample: boolean;
+  contextNote: string | null;
+}
+export interface ExamAnalyticsSeriesPoint {
+  key: string;
+  sampleSize: number;
+  presented: number;
+  passed: number;
+  failed: number;
+  passRatePercent: number | null;
+  isSmallSample: boolean;
+  contextNote: string | null;
+}
+export interface ExamAttemptDistributionPoint {
+  attemptNumber: number;
+  finalizedResults: number;
+  passed: number;
+  failed: number;
+  passRatePercent: number | null;
+  isSmallSample: boolean;
+  contextNote: string | null;
+}
+export interface ExamFailureReasonPoint {
+  reasonCode: string;
+  count: number;
+  percentageOfFailures: number;
+}
+export interface ExamAnalyticsAlert {
+  code: string;
+  messageKey: string;
+  severity: string;
+  dimension: string;
+  dimensionKey: string | null;
+  sampleSize: number;
+  explanation: string;
+  sourceRoute: string;
+}
+export interface ExamAnalyticsResponse {
+  fromUtc: string;
+  toUtc: string;
+  kpis: ExamAnalyticsKpis;
+  monthlyTrend: readonly ExamAnalyticsSeriesPoint[];
+  byBranch: readonly ExamAnalyticsSeriesPoint[];
+  byLicenseCategory: readonly ExamAnalyticsSeriesPoint[];
+  byExamType: readonly ExamAnalyticsSeriesPoint[];
+  byExamCenter: readonly ExamAnalyticsSeriesPoint[];
+  byInstructor: readonly ExamAnalyticsSeriesPoint[];
+  byAttemptNumber: readonly ExamAttemptDistributionPoint[];
+  failureReasons: readonly ExamFailureReasonPoint[];
+  alerts: readonly ExamAnalyticsAlert[];
+  contextWarnings: readonly string[];
+}
+export interface ExamReadinessSnapshot {
+  [key: string]: unknown;
+}
+export interface ExamReadinessDecision {
+  [key: string]: unknown;
+}
+export interface ExamCenter {
+  id: string;
+  name: string;
+  countryCode: string;
+  timeZoneId: string;
+  administrativeAreaCode: string | null;
+  address: string | null;
+  externalProviderCode: string | null;
+  externalCenterId: string | null;
+  status: string;
+}
+export interface ExamPlace {
+  id: string;
+  examCenterId: string;
+  examType: string;
+  licenseCategory: string;
+  startsAtUtc: string;
+  endsAtUtc: string;
+  timeZoneId: string;
+  source: string;
+  providerCode: string;
+  externalPlaceId: string | null;
+  status: string;
+  lastObservedAtUtc: string;
+  holdExpiresAtUtc: string | null;
+  assignedStudentId: string | null;
+  examRegistrationId: string | null;
+}
+export interface ExamRegistration {
+  id: string;
+  studentId: string;
+  trainingPathId: string;
+  readinessDecisionId: string;
+  examPlaceId: string;
+  examCenterId: string;
+  examType: string;
+  licenseCategory: string;
+  scheduledStartUtc: string;
+  scheduledEndUtc: string;
+  providerCode: string;
+  externalPlaceId: string | null;
+  externalRegistrationId: string | null;
+  candidateReference: string | null;
+  status: string;
+  createdAtUtc: string;
+}
+export interface ExamResultRevision {
+  revision: number;
+  outcome: string;
+  score: number | null;
+  failureReasonCode: string | null;
+  comments: string | null;
+  sourceKind: string;
+  providerCode: string;
+  externalResultId: string | null;
+  evidenceDocumentId: string | null;
+  receivedAtUtc: string;
+  correctionReason: string | null;
+  operationId: string;
+  actorUserId: string;
+  createdAtUtc: string;
+}
+export interface ExamResult {
+  id: string;
+  attemptId: string;
+  registrationId: string;
+  studentId: string;
+  attemptNumber: number;
+  currentRevision: number;
+  outcome: string;
+  score: number | null;
+  failureReasonCode: string | null;
+  comments: string | null;
+  sourceKind: string;
+  providerCode: string;
+  externalResultId: string | null;
+  evidenceDocumentId: string | null;
+  receivedAtUtc: string;
+  status: string;
+  verifiedAtUtc: string | null;
+  verifiedByUserId: string | null;
+  verificationReference: string | null;
+  finalizedAtUtc: string | null;
+  finalizedByUserId: string | null;
+  revisions: readonly ExamResultRevision[];
+}
+export interface ExamFailureFinding {
+  id: string;
+  kind: string;
+  code: string;
+  detail: string | null;
+  critical: boolean;
+  source: string;
+  actorUserId: string;
+  createdAtUtc: string;
+}
+export interface ExamFailureAnalysis {
+  id: string;
+  examResultId: string;
+  resultRevision: number;
+  attemptId: string;
+  registrationId: string;
+  studentId: string;
+  attemptNumber: number;
+  status: string;
+  instructorAnalysis: string | null;
+  studentFeedback: string | null;
+  summary: string | null;
+  recommendation: string | null;
+  completedAtUtc: string | null;
+  completedByUserId: string | null;
+  supersededAtUtc: string | null;
+  findings: readonly ExamFailureFinding[];
+}
+export interface ExamRemediationRequest {
+  id: string;
+  failureAnalysisId: string;
+  examResultId: string;
+  resultRevision: number;
+  failedAttemptId: string;
+  registrationId: string;
+  studentId: string;
+  failedAttemptNumber: number;
+  trainingPathId: string | null;
+  analysisSummary: string;
+  recommendationSummary: string | null;
+  affectedCompetencyIds: readonly string[];
+  recommendationCodes: readonly string[];
+  recommendedHours: number | null;
+  responsibleUserId: string | null;
+  reviewDate: string | null;
+  targetDate: string | null;
+  mockExamRequired: boolean;
+  fundingReviewRequired: boolean;
+  pedagogicalRemediationPlanId: string | null;
+  status: string;
+  deferredReasonCode: string | null;
+  failureCode: string | null;
+  provisionedAtUtc: string | null;
+  completedAtUtc: string | null;
+  validatedForRePresentationAtUtc: string | null;
+  validatedByUserId: string | null;
+  supersededAtUtc: string | null;
+}
+export interface ExamSuccessAction {
+  code: string;
+  blocking: boolean;
+  status: string;
+  evidenceReference: string | null;
+  reasonCode: string | null;
+  detail: string | null;
+  updatedAtUtc: string | null;
+}
+export interface ExamSuccessProcess {
+  id: string;
+  resultId: string;
+  resultRevision: number;
+  attemptId: string;
+  registrationId: string;
+  studentId: string;
+  attemptNumber: number;
+  status: string;
+  actions: readonly ExamSuccessAction[];
+  createdAtUtc: string;
+  completedAtUtc: string | null;
+  supersededAtUtc: string | null;
+  archivedAtUtc: string | null;
+}
+export interface ExamSuccessConsequence {
+  id: string;
+  kind: string;
+  status: string;
+  attemptCount: number;
+  createdAtUtc: string;
+  lastAttemptAtUtc: string | null;
+  nextAttemptAtUtc: string | null;
+  processedAtUtc: string | null;
+  supersededAtUtc: string | null;
+  lastErrorCode: string | null;
+  lastErrorDetail: string | null;
+}
+export interface ExamAttestationRevision {
+  id: string;
+  version: number;
+  templateCode: string;
+  templateVersion: number;
+  documentId: string;
+  documentSha256: string;
+  hasPublicVerification: boolean;
+  signatureProcessReference: string | null;
+  signatureEvidenceHash: string | null;
+  signedByUserId: string | null;
+  signedAtUtc: string | null;
+  generatedByUserId: string;
+  generatedAtUtc: string;
+}
+export interface ExamAttestation {
+  id: string;
+  examResultId: string;
+  resultRevision: number;
+  examAttemptId: string;
+  examRegistrationId: string;
+  studentId: string;
+  attemptNumber: number;
+  type: string;
+  reference: string;
+  currentVersion: number;
+  supersedesAttestationId: string | null;
+  status: string;
+  issuedAtUtc: string;
+  issuedByUserId: string;
+  expiresAtUtc: string | null;
+  deliveredAtUtc: string | null;
+  deliveredByUserId: string | null;
+  deliveryChannel: string | null;
+  revokedAtUtc: string | null;
+  revokedByUserId: string | null;
+  revocationReasonCode: string | null;
+  revocationNotes: string | null;
+  supersededAtUtc: string | null;
+  revisions: readonly ExamAttestationRevision[];
+}
 
-export interface ExamPreparationCheck { code:string; required:boolean; status:string; messageKey:string; source:string; evidence:string|null; }
-export interface ExamPreparation { id:string; registrationId:string; studentId:string; revision:number; convocationVersion:number; status:string; isReady:boolean; isConfirmed:boolean; confirmedRevision:number|null; confirmedAtUtc:string|null; confirmedByUserId:string|null; meetingPointConfirmed:boolean; vehicleEnergyConfirmed:boolean; instructorConfirmed:boolean; instructionsTransmitted:boolean; reminderOffsetsDays:readonly number[]; lastEvaluatedAtUtc:string|null; checks:readonly ExamPreparationCheck[]; }
-export interface ExamConvocationRevision { id:string; version:number; examCenterId:string; centerName:string; centerAddress:string|null; timeZoneId:string; scheduledStartUtc:string; scheduledEndUtc:string; providerCode:string; officialReference:string|null; candidateReference:string|null; instructions:string|null; requiredDocuments:string|null; providerPayloadReference:string|null; receivedAtUtc:string; }
-export interface ExamConvocation { id:string; registrationId:string; studentId:string; currentVersion:number; deliveryStatus:string; deliveryChannel:string|null; deliveredAtUtc:string|null; acknowledgedAtUtc:string|null; internalMeetingAtUtc:string|null; internalMeetingInstructions:string|null; revisions:readonly ExamConvocationRevision[]; createdAtUtc:string; lastModifiedAtUtc:string|null; }
-export interface ExamOperationalResourceCandidate { calendarResourceId:string; externalResourceId:string; displayName:string; branchId:string|null; isAvailable:boolean; conflicts:readonly string[]; }
-export interface ExamOperationalPlan { id:string; registrationId:string; studentId:string; convocationVersion:number; officialStartUtc:string; officialEndUtc:string; meetingAtUtc:string; operationalWindowStartUtc:string; operationalWindowEndUtc:string; travelBufferBeforeMinutes:number; travelBufferAfterMinutes:number; departureBranchId:string|null; instructorRequired:boolean; vehicleRequired:boolean; meetingInstructions:string|null; hasSchedulingConflicts:boolean; instructorCandidatesAvailable:number; vehicleCandidatesAvailable:number; conflictSummary:string|null; status:string; lastAssessedAtUtc:string; }
-export interface ExamOperationalPlanningOptions { windowStartUtc:string; windowEndUtc:string; instructors:readonly ExamOperationalResourceCandidate[]; vehicles:readonly ExamOperationalResourceCandidate[]; conflicts:readonly string[]; }
-export interface ExamResourceAssignment { id:string; registrationId:string; studentId:string; operationalPlanId:string; convocationVersion:number; instructorCalendarResourceId:string|null; instructorId:string|null; instructorQualificationVerified:boolean; instructorAvailabilityVerified:boolean; instructorWarnings:readonly string[]; vehicleCalendarResourceId:string|null; vehicleId:string|null; vehicleTechnicalCompatibilityVerified:boolean; vehicleInsuranceVerified:boolean; vehicleMaintenanceVerified:boolean; vehicleLocationVerified:boolean; vehicleOwnershipVerified:boolean; vehicleExternalReviews:readonly string[]; schedulingBookingId:string|null; schedulingErrorCode:string|null; status:string; operationId:string; }
-export interface ExamAttemptTimelineEntry { id:string; operationId:string; type:string; status:string; note:string|null; occurredAtUtc:string; actorUserId:string; latitude:number|null; longitude:number|null; accuracyMeters:number|null; locationPurpose:string|null; instructorId:string|null; vehicleId:string|null; }
-export interface ExamAttempt { id:string; registrationId:string; preparationId:string; studentId:string; attemptNumber:number; preparationRevision:number; convocationVersion:number; examType:string; licenseCategory:string; examCenterId:string; examPlaceId:string; scheduledStartUtc:string; scheduledEndUtc:string; meetingAtUtc:string; instructorId:string|null; vehicleId:string|null; schedulingBookingId:string; status:string; attendanceStatus:string; checkedInAtUtc:string|null; departedAtUtc:string|null; arrivedAtCenterAtUtc:string|null; startedAtUtc:string|null; completedAtUtc:string|null; returnedAtUtc:string|null; operationalReasonCode:string|null; operationalNotes:string|null; timeline:readonly ExamAttemptTimelineEntry[]; createdAtUtc:string; lastModifiedAtUtc:string|null; }
+export interface ExamPreparationCheck {
+  code: string;
+  required: boolean;
+  status: string;
+  messageKey: string;
+  source: string;
+  evidence: string | null;
+}
+export interface ExamPreparation {
+  id: string;
+  registrationId: string;
+  studentId: string;
+  revision: number;
+  convocationVersion: number;
+  status: string;
+  isReady: boolean;
+  isConfirmed: boolean;
+  confirmedRevision: number | null;
+  confirmedAtUtc: string | null;
+  confirmedByUserId: string | null;
+  meetingPointConfirmed: boolean;
+  vehicleEnergyConfirmed: boolean;
+  instructorConfirmed: boolean;
+  instructionsTransmitted: boolean;
+  reminderOffsetsDays: readonly number[];
+  lastEvaluatedAtUtc: string | null;
+  checks: readonly ExamPreparationCheck[];
+}
+export interface ExamConvocationRevision {
+  id: string;
+  version: number;
+  examCenterId: string;
+  centerName: string;
+  centerAddress: string | null;
+  timeZoneId: string;
+  scheduledStartUtc: string;
+  scheduledEndUtc: string;
+  providerCode: string;
+  officialReference: string | null;
+  candidateReference: string | null;
+  instructions: string | null;
+  requiredDocuments: string | null;
+  providerPayloadReference: string | null;
+  receivedAtUtc: string;
+}
+export interface ExamConvocation {
+  id: string;
+  registrationId: string;
+  studentId: string;
+  currentVersion: number;
+  deliveryStatus: string;
+  deliveryChannel: string | null;
+  deliveredAtUtc: string | null;
+  acknowledgedAtUtc: string | null;
+  internalMeetingAtUtc: string | null;
+  internalMeetingInstructions: string | null;
+  revisions: readonly ExamConvocationRevision[];
+  createdAtUtc: string;
+  lastModifiedAtUtc: string | null;
+}
+export interface ExamOperationalResourceCandidate {
+  calendarResourceId: string;
+  externalResourceId: string;
+  displayName: string;
+  branchId: string | null;
+  isAvailable: boolean;
+  conflicts: readonly string[];
+}
+export interface ExamOperationalPlan {
+  id: string;
+  registrationId: string;
+  studentId: string;
+  convocationVersion: number;
+  officialStartUtc: string;
+  officialEndUtc: string;
+  meetingAtUtc: string;
+  operationalWindowStartUtc: string;
+  operationalWindowEndUtc: string;
+  travelBufferBeforeMinutes: number;
+  travelBufferAfterMinutes: number;
+  departureBranchId: string | null;
+  instructorRequired: boolean;
+  vehicleRequired: boolean;
+  meetingInstructions: string | null;
+  hasSchedulingConflicts: boolean;
+  instructorCandidatesAvailable: number;
+  vehicleCandidatesAvailable: number;
+  conflictSummary: string | null;
+  status: string;
+  lastAssessedAtUtc: string;
+}
+export interface ExamOperationalPlanningOptions {
+  windowStartUtc: string;
+  windowEndUtc: string;
+  instructors: readonly ExamOperationalResourceCandidate[];
+  vehicles: readonly ExamOperationalResourceCandidate[];
+  conflicts: readonly string[];
+}
+export interface ExamResourceAssignment {
+  id: string;
+  registrationId: string;
+  studentId: string;
+  operationalPlanId: string;
+  convocationVersion: number;
+  instructorCalendarResourceId: string | null;
+  instructorId: string | null;
+  instructorQualificationVerified: boolean;
+  instructorAvailabilityVerified: boolean;
+  instructorWarnings: readonly string[];
+  vehicleCalendarResourceId: string | null;
+  vehicleId: string | null;
+  vehicleTechnicalCompatibilityVerified: boolean;
+  vehicleInsuranceVerified: boolean;
+  vehicleMaintenanceVerified: boolean;
+  vehicleLocationVerified: boolean;
+  vehicleOwnershipVerified: boolean;
+  vehicleExternalReviews: readonly string[];
+  schedulingBookingId: string | null;
+  schedulingErrorCode: string | null;
+  status: string;
+  operationId: string;
+}
+export interface ExamAttemptTimelineEntry {
+  id: string;
+  operationId: string;
+  type: string;
+  status: string;
+  note: string | null;
+  occurredAtUtc: string;
+  actorUserId: string;
+  latitude: number | null;
+  longitude: number | null;
+  accuracyMeters: number | null;
+  locationPurpose: string | null;
+  instructorId: string | null;
+  vehicleId: string | null;
+}
+export interface ExamAttempt {
+  id: string;
+  registrationId: string;
+  preparationId: string;
+  studentId: string;
+  attemptNumber: number;
+  preparationRevision: number;
+  convocationVersion: number;
+  examType: string;
+  licenseCategory: string;
+  examCenterId: string;
+  examPlaceId: string;
+  scheduledStartUtc: string;
+  scheduledEndUtc: string;
+  meetingAtUtc: string;
+  instructorId: string | null;
+  vehicleId: string | null;
+  schedulingBookingId: string;
+  status: string;
+  attendanceStatus: string;
+  checkedInAtUtc: string | null;
+  departedAtUtc: string | null;
+  arrivedAtCenterAtUtc: string | null;
+  startedAtUtc: string | null;
+  completedAtUtc: string | null;
+  returnedAtUtc: string | null;
+  operationalReasonCode: string | null;
+  operationalNotes: string | null;
+  timeline: readonly ExamAttemptTimelineEntry[];
+  createdAtUtc: string;
+  lastModifiedAtUtc: string | null;
+}
 
-export interface ExamReadinessOpinionContext { studentId:string; trainingPathId:string; progressPercent:number; requiredCompetencies:number; evaluatedRequiredCompetencies:number; criticalCompetenciesValidated:boolean; hasCompletedPedagogicalReview:boolean; latestPedagogicalDecision:string|null; blockers:readonly string[]; evaluatedAtUtc:string; }
-export interface ExamReadinessOpinion { id:string; studentId:string; trainingPathId:string; previousOpinionId:string|null; version:number; opinion:string; observedAutonomy:string; reservationCodes:readonly string[]; reservations:string|null; conditions:string|null; comment:string|null; progressPercent:number; requiredCompetencies:number; evaluatedRequiredCompetencies:number; hasCompletedPedagogicalReview:boolean; latestPedagogicalDecision:string|null; authorId:string; submittedAtUtc:string; }
-export interface ExamPlaceHold { examPlaceId:string; holdToken:string; expiresAtUtc:string; }
-export interface ExamRegistrationFileChecklistItem { code:string; required:boolean; status:string; messageKey:string; source:string|null; evidence:string|null; }
-export interface ExamRegistrationFileRevision { version:number; candidateReference:string|null; officialDataJson:string|null; createdAtUtc:string; createdByUserId:string; checklist:readonly ExamRegistrationFileChecklistItem[]; }
-export interface ExamRegistrationFile { id:string; registrationId:string; studentId:string; status:string; currentVersion:number; candidateReference:string|null; lastEvaluatedAtUtc:string|null; revisions:readonly ExamRegistrationFileRevision[]; }
-export interface ExamRegistrationSubmission { id:string; registrationId:string; registrationFileId:string; fileRevisionId:string; fileVersion:number; submissionVersion:number; providerCode:string; status:string; externalSubmissionId:string|null; externalRegistrationId:string|null; candidateReference:string|null; providerResponseCode:string|null; errorCode:string|null; errorMessageKey:string|null; submittedAtUtc:string|null; respondedAtUtc:string|null; createdAtUtc:string; }
-export interface ExamPlaceWatch { id:string; providerCode:string; countryCode:string; administrativeAreaCode:string|null; examCategory:string|null; windowFromUtc:string; windowToUtc:string; checkIntervalMinutes:number; centerExternalIds:readonly string[]; status:string; nextCheckAtUtc:string; lastCheckedAtUtc:string|null; lastSuccessfulCheckAtUtc:string|null; lastAvailabilityDetectedAtUtc:string|null; lastErrorCode:string|null; consecutiveFailureCount:number; }
-export interface ExamPlaceWatchScan { id:string; startedAtUtc:string; completedAtUtc:string|null; isSuccess:boolean; externalSlotsRead:number; newAvailabilitiesDetected:number; errorCode:string|null; }
-export interface ExamProviderCatalog { code:string; countryCode:string; kind:string; capabilities:number; adapterEnabled:boolean; tenantConnected:boolean; connectionStatus:string|null; }
-export interface ExamProviderConnection { id:string; providerCode:string; displayName:string; countryCode:string; kind:string; authenticationMode:string; baseUrl:string|null; hasCredentialReference:boolean; requestsPerMinute:number; status:string; lastTestedAtUtc:string|null; lastSuccessfulAtUtc:string|null; lastErrorCode:string|null; consecutiveFailureCount:number; }
-export interface ExamPlaceSynchronization { providerCode:string; synchronizedAtUtc:string; externalSlotsRead:number; centersCreated:number; centersUpdated:number; placesCreated:number; placesUpdated:number; placesReactivated:number; placesMarkedUnavailable:number; placesPreservedBecauseAssigned:number; newlyAvailablePlaceIds:readonly string[]; observedAvailablePlaceIds:readonly string[]; warnings:readonly string[]; }
+export interface ExamReadinessOpinionContext {
+  studentId: string;
+  trainingPathId: string;
+  progressPercent: number;
+  requiredCompetencies: number;
+  evaluatedRequiredCompetencies: number;
+  criticalCompetenciesValidated: boolean;
+  hasCompletedPedagogicalReview: boolean;
+  latestPedagogicalDecision: string | null;
+  blockers: readonly string[];
+  evaluatedAtUtc: string;
+}
+export interface ExamReadinessOpinion {
+  id: string;
+  studentId: string;
+  trainingPathId: string;
+  previousOpinionId: string | null;
+  version: number;
+  opinion: string;
+  observedAutonomy: string;
+  reservationCodes: readonly string[];
+  reservations: string | null;
+  conditions: string | null;
+  comment: string | null;
+  progressPercent: number;
+  requiredCompetencies: number;
+  evaluatedRequiredCompetencies: number;
+  hasCompletedPedagogicalReview: boolean;
+  latestPedagogicalDecision: string | null;
+  authorId: string;
+  submittedAtUtc: string;
+}
+export interface ExamPlaceHold {
+  examPlaceId: string;
+  holdToken: string;
+  expiresAtUtc: string;
+}
+export interface ExamRegistrationFileChecklistItem {
+  code: string;
+  required: boolean;
+  status: string;
+  messageKey: string;
+  source: string | null;
+  evidence: string | null;
+}
+export interface ExamRegistrationFileRevision {
+  version: number;
+  candidateReference: string | null;
+  officialDataJson: string | null;
+  createdAtUtc: string;
+  createdByUserId: string;
+  checklist: readonly ExamRegistrationFileChecklistItem[];
+}
+export interface ExamRegistrationFile {
+  id: string;
+  registrationId: string;
+  studentId: string;
+  status: string;
+  currentVersion: number;
+  candidateReference: string | null;
+  lastEvaluatedAtUtc: string | null;
+  revisions: readonly ExamRegistrationFileRevision[];
+}
+export interface ExamRegistrationSubmission {
+  id: string;
+  registrationId: string;
+  registrationFileId: string;
+  fileRevisionId: string;
+  fileVersion: number;
+  submissionVersion: number;
+  providerCode: string;
+  status: string;
+  externalSubmissionId: string | null;
+  externalRegistrationId: string | null;
+  candidateReference: string | null;
+  providerResponseCode: string | null;
+  errorCode: string | null;
+  errorMessageKey: string | null;
+  submittedAtUtc: string | null;
+  respondedAtUtc: string | null;
+  createdAtUtc: string;
+}
+export interface ExamPlaceWatch {
+  id: string;
+  providerCode: string;
+  countryCode: string;
+  administrativeAreaCode: string | null;
+  examCategory: string | null;
+  windowFromUtc: string;
+  windowToUtc: string;
+  checkIntervalMinutes: number;
+  centerExternalIds: readonly string[];
+  status: string;
+  nextCheckAtUtc: string;
+  lastCheckedAtUtc: string | null;
+  lastSuccessfulCheckAtUtc: string | null;
+  lastAvailabilityDetectedAtUtc: string | null;
+  lastErrorCode: string | null;
+  consecutiveFailureCount: number;
+}
+export interface ExamPlaceWatchScan {
+  id: string;
+  startedAtUtc: string;
+  completedAtUtc: string | null;
+  isSuccess: boolean;
+  externalSlotsRead: number;
+  newAvailabilitiesDetected: number;
+  errorCode: string | null;
+}
+export interface ExamProviderCatalog {
+  code: string;
+  countryCode: string;
+  kind: string;
+  capabilities: number;
+  adapterEnabled: boolean;
+  tenantConnected: boolean;
+  connectionStatus: string | null;
+}
+export interface ExamProviderConnection {
+  id: string;
+  providerCode: string;
+  displayName: string;
+  countryCode: string;
+  kind: string;
+  authenticationMode: string;
+  baseUrl: string | null;
+  hasCredentialReference: boolean;
+  requestsPerMinute: number;
+  status: string;
+  lastTestedAtUtc: string | null;
+  lastSuccessfulAtUtc: string | null;
+  lastErrorCode: string | null;
+  consecutiveFailureCount: number;
+}
+export interface ExamPlaceSynchronization {
+  providerCode: string;
+  synchronizedAtUtc: string;
+  externalSlotsRead: number;
+  centersCreated: number;
+  centersUpdated: number;
+  placesCreated: number;
+  placesUpdated: number;
+  placesReactivated: number;
+  placesMarkedUnavailable: number;
+  placesPreservedBecauseAssigned: number;
+  newlyAvailablePlaceIds: readonly string[];
+  observedAvailablePlaceIds: readonly string[];
+  warnings: readonly string[];
+}

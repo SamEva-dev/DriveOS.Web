@@ -120,8 +120,13 @@ export const routes: Routes = [
       {
         path: 'workforce',
         loadChildren: () =>
-          import('./features/workforce/workforce.routes').then(
-            (module) => module.WORKFORCE_ROUTES,
+          import('./features/workforce/workforce.routes').then((module) => module.WORKFORCE_ROUTES),
+      },
+      {
+        path: 'marketplace',
+        loadChildren: () =>
+          import('./features/professional-marketplace/professional-marketplace.routes').then(
+            (module) => module.PROFESSIONAL_MARKETPLACE_ROUTES,
           ),
       },
       {

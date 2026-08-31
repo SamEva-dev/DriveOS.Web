@@ -1,0 +1,420 @@
+<drive-os-drawer
+  [open]="open()"
+  [title]="
+    (createMode()
+      ? 'professionalMarketplace.proposals.create.title'
+      : 'professionalMarketplace.proposals.detail.title'
+    ) | translate
+  "
+  size="lg"
+  (closeRequested)="close()"
+>
+  <div class="grid gap-4 p-5">
+    @if (createMode()) {
+      @if (application(); as a) {
+        <div class="rounded-xl border border-[var(--driveos-border)] p-3 text-sm">
+          <strong>{{ a.displayName }}</strong>
+          <p class="text-xs text-[var(--driveos-text-secondary)]">{{ a.headline || '—' }}</p>
+        </div>
+      }
+      <form
+        class="grid gap-4"
+        (ngSubmit)="create()"
+      >
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.proposals.fields.subject' | translate }}
+          <input
+            class="rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 py-2 text-sm"
+            [(ngModel)]="subject"
+            name="subject"
+            maxlength="180"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.proposals.fields.message' | translate }}
+          <textarea
+            class="min-h-28 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 py-2 text-sm"
+            [(ngModel)]="message"
+            name="message"
+            maxlength="3000"
+          ></textarea>
+        </label>
+        <div class="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.proposals.fields.startsOn' | translate }}
+            <input
+              type="date"
+              class="rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 py-2"
+              [(ngModel)]="startsOn"
+              name="startsOn"
+            />
+          </label>
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.proposals.fields.endsOn' | translate }}
+            <input
+              type="date"
+              class="rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 py-2"
+              [(ngModel)]="endsOn"
+              name="endsOn"
+            />
+          </label>
+        </div>
+        <div class="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.proposals.fields.engagement' | translate }}
+            <select
+              class="rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 py-2"
+              [(ngModel)]="engagementType"
+              name="engagement"
+            >
+              <option value="HourlyService">
+                {{ 'professionalMarketplace.engagementTypes.HourlyService' | translate }}
+              </option>
+              <option value="HalfDay">
+                {{ 'professionalMarketplace.engagementTypes.HalfDay' | translate }}
+              </option>
+              <option value="FullDay">
+                {{ 'professionalMarketplace.engagementTypes.FullDay' | translate }}
+              </option>
+              <option value="FixedMission">
+                {{ 'professionalMarketplace.engagementTypes.FixedMission' | translate }}
+              </option>
+              <option value="RecurringMission">
+                {{ 'professionalMarketplace.engagementTypes.RecurringMission' | translate }}
+              </option>
+              <option value="Replacement">
+                {{ 'professionalMarketplace.engagementTypes.Replacement' | translate }}
+              </option>
+              <option value="Negotiable">
+                {{ 'professionalMarketplace.engagementTypes.Negotiable' | translate }}
+              </option>
+            </select>
+          </label>
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.proposals.fields.vehicle' | translate }}
+            <select
+              class="rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 py-2"
+              [(ngModel)]="vehicleProvisionMode"
+              name="vehicle"
+            >
+              <option value="NotApplicable">
+                {{ 'professionalMarketplace.missions.vehicle.NotApplicable' | translate }}
+              </option>
+              <option value="ClientProvided">
+                {{ 'professionalMarketplace.missions.vehicle.ClientProvided' | translate }}
+              </option>
+              <option value="ProfessionalProvided">
+                {{ 'professionalMarketplace.missions.vehicle.ProfessionalProvided' | translate }}
+              </option>
+              <option value="Either">
+                {{ 'professionalMarketplace.missions.vehicle.Either' | translate }}
+              </option>
+            </select>
+          </label>
+        </div>
+        <section class="grid gap-3 rounded-xl border border-[var(--driveos-border)] p-4">
+          <h4 class="font-extrabold">
+            {{ 'professionalMarketplace.proposals.fields.rate' | translate }}
+          </h4>
+          <div class="grid grid-cols-3 gap-3 max-sm:grid-cols-1">
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              class="rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 py-2"
+              [(ngModel)]="proposedRate"
+              name="rate"
+            />
+            <input
+              maxlength="3"
+              class="rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 py-2 uppercase"
+              [(ngModel)]="currency"
+              name="currency"
+            />
+            <select
+              class="rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 py-2"
+              [(ngModel)]="rateUnit"
+              name="rateUnit"
+            >
+              <option value="Hour">
+                {{ 'professionalMarketplace.rateUnits.Hour' | translate }}
+              </option>
+              <option value="HalfDay">
+                {{ 'professionalMarketplace.rateUnits.HalfDay' | translate }}
+              </option>
+              <option value="Day">{{ 'professionalMarketplace.rateUnits.Day' | translate }}</option>
+              <option value="Session">
+                {{ 'professionalMarketplace.rateUnits.Session' | translate }}
+              </option>
+              <option value="Mission">
+                {{ 'professionalMarketplace.rateUnits.Mission' | translate }}
+              </option>
+            </select>
+          </div>
+          <label class="flex items-center gap-2 text-xs font-bold">
+            <input
+              type="checkbox"
+              [(ngModel)]="negotiable"
+              name="negotiable"
+            />
+            {{ 'professionalMarketplace.proposals.fields.negotiable' | translate }}
+          </label>
+        </section>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.proposals.fields.expiresOn' | translate }}
+          <input
+            type="date"
+            class="rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 py-2"
+            [(ngModel)]="expiresOn"
+            name="expiresOn"
+          />
+        </label>
+        @if (formErrors().length) {
+          <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+            @for (e of formErrors(); track e) {
+              <p>{{ e }}</p>
+            }
+          </div>
+        }
+        <footer class="flex justify-end gap-2 border-t border-[var(--driveos-border)] pt-4">
+          <button
+            type="button"
+            class="rounded-lg border px-4 py-2 text-xs font-bold"
+            (click)="close()"
+          >
+            {{ 'common.actions.cancel' | translate }}
+          </button>
+          <button
+            type="submit"
+            class="rounded-lg bg-blue-800 px-4 py-2 text-xs font-bold text-white"
+            [disabled]="busy() || !canCreate()"
+          >
+            {{ 'professionalMarketplace.proposals.actions.send' | translate }}
+          </button>
+        </footer>
+      </form>
+    } @else if (proposal(); as p) {
+      <nav class="flex gap-2 border-b border-[var(--driveos-border)]">
+        <button
+          type="button"
+          class="px-3 py-2 text-xs font-bold"
+          [class.border-b-2]="tab() === 'terms'"
+          [class.border-blue-700]="tab() === 'terms'"
+          (click)="selectTab('terms')"
+        >
+          {{ 'professionalMarketplace.proposals.tabs.terms' | translate }}
+        </button>
+        <button
+          type="button"
+          class="px-3 py-2 text-xs font-bold"
+          [class.border-b-2]="tab() === 'history'"
+          [class.border-blue-700]="tab() === 'history'"
+          (click)="selectTab('history')"
+        >
+          {{ 'professionalMarketplace.proposals.tabs.history' | translate }} ({{
+            p.revisions.length
+          }})
+        </button>
+      </nav>
+      @if (tab() === 'terms') {
+        <section class="grid gap-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-extrabold">{{ p.subject }}</h3>
+              <p class="text-xs text-[var(--driveos-text-secondary)]">
+                v{{ p.revision }} · {{ p.sentAtUtc }}
+              </p>
+            </div>
+            <span class="rounded-full border px-3 py-1 text-xs font-bold">
+              {{ 'professionalMarketplace.proposals.status.' + p.status | translate }}
+            </span>
+          </div>
+          <p class="whitespace-pre-wrap text-sm">{{ p.message || '—' }}</p>
+          <div class="grid grid-cols-2 gap-3 text-sm max-sm:grid-cols-1">
+            <div>
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.proposals.fields.period' | translate }}
+              </span>
+              <p class="font-bold">{{ p.startsOn }} → {{ p.endsOn }}</p>
+            </div>
+            <div>
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.proposals.fields.rate' | translate }}
+              </span>
+              <p class="font-bold">
+                {{
+                  p.proposedRate === null
+                    ? '—'
+                    : p.proposedRate + ' ' + (p.currency || '') + '/' + (p.rateUnit || '')
+                }}
+              </p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-1">
+            @for (c of p.teachingCategoryCodes; track c) {
+              <span class="rounded bg-blue-50 px-2 py-1 text-xs font-bold text-blue-800">
+                {{ c }}
+              </span>
+            }
+          </div>
+          @if (p.decisionReason) {
+            <div class="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
+              {{ p.decisionReason }}
+            </div>
+          }
+        </section>
+      } @else {
+        <section class="grid gap-3">
+          @for (r of p.revisions; track r.revision) {
+            <article class="grid gap-2 rounded-xl border border-[var(--driveos-border)] p-4">
+              <div class="flex justify-between gap-2">
+                <strong>v{{ r.revision }}</strong>
+                <span class="text-xs text-[var(--driveos-text-secondary)]">
+                  {{ r.changedAtUtc }}
+                </span>
+              </div>
+              <p class="text-sm">{{ r.message || '—' }}</p>
+              <div class="text-sm font-bold">
+                {{
+                  r.proposedRate === null
+                    ? '—'
+                    : r.proposedRate + ' ' + (r.currency || '') + '/' + (r.rateUnit || '')
+                }}
+              </div>
+              <p class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.proposals.history.actor' | translate }}:
+                {{ r.changedByUserId }}
+              </p>
+            </article>
+          } @empty {
+            <div class="rounded-xl border border-dashed p-6 text-center text-sm">
+              {{ 'professionalMarketplace.proposals.history.empty' | translate }}
+            </div>
+          }
+        </section>
+      }
+      @if (formErrors().length) {
+        <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+          @for (e of formErrors(); track e) {
+            <p>{{ e }}</p>
+          }
+        </div>
+      }
+      @if (actionMode() === 'reject' || actionMode() === 'withdraw') {
+        <section class="grid gap-2 rounded-xl border border-amber-200 bg-amber-50 p-4">
+          <textarea
+            class="min-h-20 rounded-lg border bg-white px-3 py-2 text-sm"
+            [(ngModel)]="reason"
+          ></textarea>
+          <div class="flex justify-end gap-2">
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="cancelAction()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </button>
+            <button
+              class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="actionMode() === 'reject' ? reject() : withdraw()"
+            >
+              {{ 'common.actions.confirm' | translate }}
+            </button>
+          </div>
+        </section>
+      } @else if (actionMode() === 'counter') {
+        <section class="grid gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4">
+          <div class="grid grid-cols-3 gap-2 max-sm:grid-cols-1">
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              class="rounded-lg border bg-white px-3 py-2"
+              [(ngModel)]="counterRate"
+            />
+            <input
+              maxlength="3"
+              class="rounded-lg border bg-white px-3 py-2 uppercase"
+              [(ngModel)]="counterCurrency"
+            />
+            <select
+              class="rounded-lg border bg-white px-3 py-2"
+              [(ngModel)]="counterRateUnit"
+            >
+              <option value="Hour">
+                {{ 'professionalMarketplace.rateUnits.Hour' | translate }}
+              </option>
+              <option value="HalfDay">
+                {{ 'professionalMarketplace.rateUnits.HalfDay' | translate }}
+              </option>
+              <option value="Day">{{ 'professionalMarketplace.rateUnits.Day' | translate }}</option>
+              <option value="Session">
+                {{ 'professionalMarketplace.rateUnits.Session' | translate }}
+              </option>
+              <option value="Mission">
+                {{ 'professionalMarketplace.rateUnits.Mission' | translate }}
+              </option>
+            </select>
+          </div>
+          <textarea
+            class="min-h-20 rounded-lg border bg-white px-3 py-2"
+            [(ngModel)]="counterMessage"
+          ></textarea>
+          <div class="flex justify-end gap-2">
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="cancelAction()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </button>
+            <button
+              class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="counter()"
+            >
+              {{ 'professionalMarketplace.proposals.actions.counter' | translate }}
+            </button>
+          </div>
+        </section>
+      } @else if (p.status === 'Sent' || p.status === 'Countered') {
+        <footer
+          class="flex flex-wrap justify-end gap-2 border-t border-[var(--driveos-border)] pt-4"
+        >
+          @if (canWithdraw()) {
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="begin('withdraw')"
+            >
+              {{ 'professionalMarketplace.proposals.actions.withdraw' | translate }}
+            </button>
+          }
+          @if (canReject()) {
+            <button
+              class="rounded-lg border border-red-300 px-3 py-2 text-xs font-bold text-red-700"
+              (click)="begin('reject')"
+            >
+              {{ 'professionalMarketplace.proposals.actions.reject' | translate }}
+            </button>
+          }
+          @if (canCounter() && p.negotiable) {
+            <button
+              class="rounded-lg border border-blue-300 px-3 py-2 text-xs font-bold text-blue-800"
+              (click)="begin('counter')"
+            >
+              {{ 'professionalMarketplace.proposals.actions.counter' | translate }}
+            </button>
+          }
+          @if (canAccept()) {
+            <button
+              class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              [disabled]="busy()"
+              (click)="accept()"
+            >
+              {{ 'professionalMarketplace.proposals.actions.accept' | translate }}
+            </button>
+          }
+        </footer>
+      }
+    }
+  </div>
+</drive-os-drawer>

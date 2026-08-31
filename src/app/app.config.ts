@@ -41,7 +41,12 @@ export const appConfig: ApplicationConfig = {
     ),
 
     provideHttpClient(
-      withInterceptors([correlationIdInterceptor, authInterceptor, fieldSyncInterceptor, apiErrorInterceptor]),
+      withInterceptors([
+        correlationIdInterceptor,
+        authInterceptor,
+        fieldSyncInterceptor,
+        apiErrorInterceptor,
+      ]),
     ),
 
     provideTranslateService({

@@ -1,0 +1,100 @@
+<drive-os-page-shell
+  width="full"
+  spacing="compact"
+>
+  <main class="grid gap-4 text-[var(--driveos-text-primary)]">
+    <header
+      class="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--driveos-border)] py-3"
+    >
+      <div>
+        <p class="text-xs font-bold uppercase tracking-wide text-[var(--driveos-text-secondary)]">
+          {{ 'professionalMarketplace.myMissions.eyebrow' | translate }}
+        </p>
+        <h1 class="text-2xl font-extrabold">
+          {{ 'professionalMarketplace.myMissions.title' | translate }}
+        </h1>
+        <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+          {{
+            profile()?.tradeName ||
+              profile()?.legalName ||
+              ('professionalMarketplace.myMissions.subtitle' | translate)
+          }}
+        </p>
+      </div>
+      <button
+        class="rounded-lg border px-4 py-2 text-xs font-bold"
+        [disabled]="loading()"
+        (click)="load()"
+      >
+        <i
+          class="ph ph-arrows-clockwise"
+          [class.animate-spin]="loading()"
+        ></i>
+        {{ 'common.actions.refresh' | translate }}
+      </button>
+    </header>
+    <nav class="flex gap-1 overflow-x-auto border-b">
+      <button
+        class="whitespace-nowrap border-b-2 px-3 py-2 text-xs font-bold"
+        [class.border-blue-800]="activeTab() === 'pending'"
+        (click)="setTab('pending')"
+      >
+        {{ 'professionalMarketplace.myMissions.tabs.pending' | translate }} ({{ counts().pending }})
+      </button>
+      <button
+        class="whitespace-nowrap border-b-2 px-3 py-2 text-xs font-bold"
+        [class.border-blue-800]="activeTab() === 'active'"
+        (click)="setTab('active')"
+      >
+        {{ 'professionalMarketplace.myMissions.tabs.active' | translate }} ({{ counts().active }})
+      </button>
+      <button
+        class="whitespace-nowrap border-b-2 px-3 py-2 text-xs font-bold"
+        [class.border-blue-800]="activeTab() === 'closed'"
+        (click)="setTab('closed')"
+      >
+        {{ 'professionalMarketplace.myMissions.tabs.closed' | translate }} ({{ counts().closed }})
+      </button>
+    </nav>
+    @if (loadError()) {
+      <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+        {{ 'professionalMarketplace.myMissions.errors.load' | translate }}
+      </div>
+    }
+    <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      @for (m of visibleItems(); track m.id) {
+        <button
+          class="grid min-h-44 gap-3 rounded-xl border bg-[var(--driveos-surface-card)] p-4 text-left shadow-sm hover:border-blue-300"
+          (click)="openDetail(m)"
+        >
+          <div class="flex items-start justify-between gap-2">
+            <h2 class="font-extrabold">{{ m.title }}</h2>
+            <span class="rounded-full border px-2 py-1 text-[11px] font-bold">
+              {{ 'professionalMarketplace.missions.status.' + m.status | translate }}
+            </span>
+          </div>
+          <p class="line-clamp-2 text-sm text-[var(--driveos-text-secondary)]">
+            {{ m.description || '—' }}
+          </p>
+          <div class="mt-auto grid gap-1 text-xs">
+            <strong>{{ m.startsOn }} → {{ m.endsOn }}</strong>
+            <span>{{ m.teachingCategoryCodes.join(' · ') }}</span>
+          </div>
+        </button>
+      } @empty {
+        <div
+          class="col-span-full rounded-xl border border-dashed p-10 text-center text-sm text-[var(--driveos-text-secondary)]"
+        >
+          <i class="ph ph-briefcase text-2xl"></i>
+          <p class="mt-2">{{ 'professionalMarketplace.myMissions.empty' | translate }}</p>
+        </div>
+      }
+    </section>
+  </main>
+  <driveos-my-professional-mission-drawer
+    [open]="drawerOpen()"
+    [missionId]="selected()?.id || null"
+    (closeRequested)="closeDrawer()"
+    (changed)="load()"
+  />
+</drive-os-page-shell>

@@ -70,7 +70,6 @@ export type TrainingDashboardDrawerKind =
   | 'syncFailures'
   | 'session';
 
-
 export interface TrainingDeliveryPendingReportItem {
   readonly sessionId: string;
   readonly studentId: string;

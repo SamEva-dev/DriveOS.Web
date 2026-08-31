@@ -1,5 +1,15 @@
 export type RegulatoryIntegrationConnectionStatus = 'Draft' | 'Active' | 'Suspended' | 'Ended';
-export type RegulatorySubmissionStatus = 'WaitingForData' | 'Pending' | 'Processing' | 'Submitted' | 'Accepted' | 'Rejected' | 'RetryPending' | 'Failed' | 'Cancelled' | 'Superseded';
+export type RegulatorySubmissionStatus =
+  | 'WaitingForData'
+  | 'Pending'
+  | 'Processing'
+  | 'Submitted'
+  | 'Accepted'
+  | 'Rejected'
+  | 'RetryPending'
+  | 'Failed'
+  | 'Cancelled'
+  | 'Superseded';
 
 export interface RegulatoryIntegrationConnection {
   readonly id: string;

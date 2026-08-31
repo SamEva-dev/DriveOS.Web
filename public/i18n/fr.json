@@ -62,7 +62,8 @@
     "yes": "Oui",
     "success": "Succès",
     "confirm": "Confirmer",
-    "edit": "Modifier"
+    "edit": "Modifier",
+    "other": "Autre"
   },
   "navigation": {
     "dashboard": "Tableau de bord",
@@ -75,7 +76,9 @@
     "settings": "Paramètres",
     "groups": {
       "operations": "Opérations",
-      "platform": "DriveOS"
+      "platform": "Plateforme",
+      "pilotage": "Pilotage",
+      "management": "Gestion"
     },
     "crm": {
       "label": "CRM & Admissions",
@@ -94,7 +97,7 @@
       "analytics": "Analytics"
     },
     "studentsMenu": {
-      "label": "Élèves",
+      "label": "Élèves & inscriptions",
       "dashboard": "Tableau de bord",
       "list": "Liste des élèves",
       "newEnrollment": "Nouvelle inscription"
@@ -1115,10 +1118,7 @@
         "invalidTransition": "Cette transition d’offboarding est impossible.",
         "itemNotFound": "L’élément de checklist est introuvable.",
         "manualItemExpected": "Cet élément est automatique et ne peut pas être validé manuellement.",
-        "automaticItemExpected": "Cet élément nécessite une validation manuelle.",
-        "accessRevocationMustBeExecuted": "La révocation d’accès doit être exécutée via AuthGate et ne peut pas être validée manuellement.",
-        "accessRevocationUnavailable": "Le service de révocation des accès AuthGate n’est pas configuré ou disponible.",
-        "accessRevocationFailed": "La révocation de l’accès DriveOS dans AuthGate a échoué."
+        "automaticItemExpected": "Cet élément nécessite une validation manuelle."
       },
       "employee": {
         "invalidRehireUserSelection": "Le choix du compte utilisateur pour la réembauche est invalide.",
@@ -1129,7 +1129,334 @@
         "userAlreadyLinked": "Ce compte utilisateur est déjà lié à une relation d’emploi incompatible.",
         "duplicateEmployeeNumber": "Ce matricule est déjà utilisé par une relation d’emploi active."
       }
-    }
+    },
+    "professionalMarketplace": {
+      "compliance": {
+        "invalidIdentifier": "Identifiant de conformité professionnelle invalide.",
+        "invalidDocumentMetadata": "Les informations du document professionnel sont invalides.",
+        "invalidCredentialMetadata": "Les informations de l’habilitation professionnelle sont invalides.",
+        "invalidValidityPeriod": "La période de validité est invalide.",
+        "invalidDocumentTransition": "Cette transition d’état du document n’est pas autorisée.",
+        "invalidCredentialTransition": "Cette transition d’état de l’habilitation n’est pas autorisée.",
+        "documentExpired": "Le document est expiré et ne peut pas être validé.",
+        "credentialNotCurrentlyValid": "L’habilitation n’est pas valide à la date courante.",
+        "rejectionReasonRequired": "Un motif de rejet est obligatoire.",
+        "documentNotFound": "Document professionnel introuvable.",
+        "credentialNotFound": "Habilitation professionnelle introuvable.",
+        "duplicateDocumentReference": "Ce document est déjà rattaché au profil.",
+        "duplicateCredential": "Cette habilitation existe déjà pour ce profil.",
+        "invalidRequirement": "La règle de conformité professionnelle est invalide.",
+        "invalidRequirementTransition": "Cette transition de la règle de conformité n’est pas autorisée.",
+        "duplicateRequirementVersion": "Cette version de règle de conformité existe déjà.",
+        "profileNotFound": "Profil professionnel introuvable."
+      },
+      "profile": {
+        "verifiedProfileRequiredForVisibility": "Le profil doit être conforme et vérifié avant d’être visible sur la marketplace.",
+        "invalidServiceAreas": "Les zones d’intervention professionnelles sont invalides.",
+        "invalidAvailabilityPolicy": "La politique de disponibilité Marketplace est invalide.",
+        "overlappingAvailabilityRules": "Les plages de disponibilité récurrentes se chevauchent.",
+        "invalidProfessionalRates": "Les tarifs professionnels sont invalides.",
+        "overlappingProfessionalRates": "Deux périodes tarifaires du même tarif se chevauchent.",
+        "invalidComplianceEnforcement": "La restriction opérationnelle de conformité est invalide.",
+        "alreadyActive": "Le profil professionnel est déjà actif.",
+        "archived": "Le profil professionnel est archivé et ne peut plus être modifié.",
+        "complianceRequired": "La conformité du profil professionnel doit être validée avant cette action.",
+        "incomplete": "Le profil professionnel est incomplet.",
+        "invalidBusinessIdentity": "Les informations d’identité de l’entreprise sont invalides.",
+        "invalidEngagementPreferences": "Les préférences de collaboration sont invalides.",
+        "invalidIdentifier": "L’identifiant du profil professionnel est invalide.",
+        "invalidLanguages": "La liste des langues est invalide.",
+        "invalidPerson": "La personne associée au profil professionnel est invalide.",
+        "invalidPresentation": "La présentation du profil professionnel est invalide.",
+        "invalidProviderOrganization": "L’organisation prestataire associée au profil est invalide.",
+        "invalidServiceArea": "La zone d’intervention est invalide.",
+        "invalidTeachingCapabilities": "Les capacités pédagogiques renseignées sont invalides.",
+        "invalidTeachingCategories": "Les catégories enseignées renseignées sont invalides.",
+        "invalidVehicleInformation": "Les informations relatives au véhicule sont invalides.",
+        "notFound": "Profil professionnel introuvable.",
+        "personAlreadyLinked": "Cette personne est déjà liée à un profil professionnel.",
+        "suspendReasonRequired": "Un motif de suspension est obligatoire."
+      },
+      "opportunities": {
+        "notFound": "Opportunité professionnelle introuvable.",
+        "invalidIdentifier": "Identifiant d’opportunité invalide.",
+        "invalidContent": "Le contenu de l’opportunité est invalide.",
+        "invalidRequirements": "Les critères de l’opportunité sont invalides.",
+        "invalidLocation": "La zone géographique de l’opportunité est invalide.",
+        "invalidTimeWindows": "Les créneaux de l’opportunité sont invalides ou se chevauchent.",
+        "invalidBudget": "Le budget de l’opportunité est invalide.",
+        "invalidTransition": "Cette transition d’état de l’opportunité n’est pas autorisée.",
+        "opportunityExpired": "Une opportunité expirée ne peut pas être publiée.",
+        "notYetExpired": "L’opportunité n’est pas encore arrivée à expiration.",
+        "closureReasonRequired": "Un motif d’annulation est obligatoire."
+      },
+      "applications": {
+        "notFound": "Candidature professionnelle introuvable.",
+        "invalidIdentifier": "Identifiant de candidature invalide.",
+        "duplicateApplication": "Ce professionnel a déjà candidaté à cette opportunité.",
+        "opportunityNotOpen": "Cette opportunité n’est pas ouverte aux candidatures.",
+        "profileNotEligible": "Le profil professionnel n’est pas éligible à cette opportunité.",
+        "invalidMessage": "Le message de candidature est invalide.",
+        "invalidRate": "Le tarif proposé est invalide.",
+        "invalidAvailability": "La période de disponibilité proposée est invalide.",
+        "invalidTransition": "Cette transition d’état de la candidature n’est pas autorisée.",
+        "decisionReasonRequired": "Un motif de décision est obligatoire."
+      },
+      "proposals": {
+        "notFound": "Proposition professionnelle introuvable.",
+        "invalidIdentifier": "Identifiant de proposition invalide.",
+        "duplicateOpenProposal": "Une proposition active existe déjà pour ce professionnel et ce besoin.",
+        "profileNotEligible": "Le profil professionnel n’est pas éligible à une proposition directe.",
+        "invalidContent": "Le contenu de la proposition est invalide.",
+        "invalidRequirements": "Les critères de la proposition sont incompatibles avec le profil.",
+        "invalidRate": "Le tarif proposé est invalide.",
+        "invalidExpiration": "La date d’expiration de la proposition est invalide.",
+        "invalidTransition": "Cette transition d’état de la proposition n’est pas autorisée.",
+        "proposalExpired": "La proposition a expiré.",
+        "counterNotAllowed": "Une contre-proposition n’est pas autorisée pour cette proposition.",
+        "notYetExpired": "La proposition n’est pas encore arrivée à expiration."
+      },
+      "commercialOffers": {
+        "notFound": "Offre commerciale introuvable.",
+        "invalidIdentifier": "Identifiant d’offre commerciale invalide.",
+        "invalidSource": "La source de l’offre commerciale est invalide ou n’est pas acceptée.",
+        "invalidTerms": "Les conditions commerciales sont invalides.",
+        "invalidTransition": "Cette transition d’état de l’offre commerciale n’est pas autorisée.",
+        "bilateralAcceptanceRequired": "Les deux parties doivent accepter la même révision avant finalisation.",
+        "cancellationReasonRequired": "Un motif d’annulation est obligatoire.",
+        "activeOfferExists": "Une offre commerciale active existe déjà pour cette source."
+      },
+      "engagements": {
+        "notFound": "Relation professionnelle introuvable.",
+        "invalidIdentifier": "Identifiant de relation professionnelle invalide.",
+        "finalizedOfferRequired": "Une offre commerciale finalisée est obligatoire pour créer la relation.",
+        "duplicateEngagement": "Une relation existe déjà pour cette offre commerciale.",
+        "invalidTransition": "Cette transition d’état de la relation professionnelle n’est pas autorisée.",
+        "invalidPreparationStep": "L’étape de préparation est invalide.",
+        "preparationIncomplete": "Toutes les préparations obligatoires doivent être terminées avant activation.",
+        "outsideEngagementPeriod": "La relation ne peut pas être activée en dehors de sa période contractuelle.",
+        "statusReasonRequired": "Un motif est obligatoire pour cette opération.",
+        "engagementNotEndedYet": "La période de la relation professionnelle n’est pas encore terminée.",
+        "professionalUserRequired": "Le profil professionnel doit être lié à un compte utilisateur pour être préparé dans le planning.",
+        "schedulingCategoryMismatch": "Les catégories de l’engagement ne correspondent plus au profil professionnel.",
+        "schedulingTimeZoneRequired": "Un fuseau horaire de disponibilité est requis avant la préparation du planning.",
+        "schedulingPreparationMustBeValidated": "La préparation Scheduling doit être effectuée par le contrôle dédié et ne peut pas être cochée manuellement.",
+        "contractPreparationMustBeValidated": "La préparation contractuelle doit être validée à partir d’un contrat réellement signé.",
+        "compliancePreparationMustBeValidated": "La conformité doit être validée à partir de l’état réel du profil.",
+        "signedProfessionalContractRequired": "Un contrat de prestation signé est obligatoire avant l’activation.",
+        "compliantActiveProfessionalRequired": "Le professionnel doit être actif et conforme avant l’activation de la relation."
+      },
+      "reviews": {
+        "notFound": "Avis professionnel introuvable.",
+        "invalidIdentifier": "Identifiant d’avis invalide.",
+        "duplicateReview": "Un avis existe déjà pour cette collaboration.",
+        "completedCollaborationRequired": "Un avis ne peut être publié qu’après une collaboration réellement activée puis clôturée.",
+        "invalidRatings": "Toutes les notes doivent être comprises entre 1 et 5.",
+        "invalidComment": "Le commentaire de l’avis est invalide.",
+        "invalidResponse": "La réponse du professionnel est invalide.",
+        "reviewNotRespondable": "Cet avis ne peut pas recevoir de réponse dans son état actuel.",
+        "invalidTransition": "Cette transition d’état de l’avis n’est pas autorisée.",
+        "moderationReasonRequired": "Un motif de modération est obligatoire.",
+        "invalidReport": "Le signalement de l’avis est invalide.",
+        "duplicateOpenReport": "Un signalement ouvert existe déjà pour cet avis et cet utilisateur.",
+        "reportNotFound": "Signalement d’avis introuvable.",
+        "invalidReportResolution": "La résolution du signalement est invalide.",
+        "profileAccessDenied": "Vous ne pouvez répondre qu’aux avis de votre propre profil professionnel.",
+        "organizationMismatch": "Cette organisation ne peut pas signaler cet avis."
+      },
+      "missions": {
+        "notFound": "Mission professionnelle introuvable.",
+        "invalidIdentifier": "Identifiant de mission invalide.",
+        "activeEngagementRequired": "Un engagement professionnel actif et opérationnel est obligatoire.",
+        "invalidContent": "Le contenu de la mission est invalide.",
+        "outsideEngagementPeriod": "La mission doit être entièrement comprise dans la période de l’engagement.",
+        "invalidTeachingCategories": "Les catégories de la mission ne sont pas couvertes par l’engagement.",
+        "invalidEstimatedWorkload": "Le volume estimé de la mission est invalide.",
+        "branchMismatch": "L’agence de la mission est incompatible avec celle de l’engagement.",
+        "invalidTimeWindows": "Les créneaux de la mission sont invalides ou se chevauchent.",
+        "invalidTransition": "Cette transition d’état de la mission n’est pas autorisée.",
+        "outsideMissionPeriod": "La mission ne peut pas être activée ou reprise en dehors de sa période.",
+        "statusReasonRequired": "Un motif est obligatoire pour cette opération.",
+        "missionNotEndedYet": "La période de la mission n’est pas encore terminée."
+      },
+      "accessGrants": {
+        "notFound": "Autorisation d’accès externe introuvable.",
+        "invalidIdentifier": "Identifiant d’autorisation externe invalide.",
+        "invalidGrant": "La portée ou la période de l’autorisation externe est invalide.",
+        "outsideEngagementPeriod": "La période de l’autorisation doit rester dans celle de l’engagement.",
+        "duplicateGrant": "Une autorisation active identique existe déjà.",
+        "invalidTransition": "Cette transition d’état de l’autorisation n’est pas autorisée.",
+        "revocationReasonRequired": "Un motif de révocation est obligatoire.",
+        "notYetExpired": "L’autorisation n’est pas encore expirée.",
+        "activeEngagementRequired": "Un engagement professionnel actif est requis.",
+        "accessPreparationMustBeValidated": "La préparation des accès doit être effectuée par le contrôle dédié et ne peut pas être cochée manuellement.",
+        "professionalUserRequired": "Le profil professionnel doit être lié à un compte utilisateur avant la préparation des accès.",
+        "outsideResourcePeriod": "La période de l’autorisation doit rester dans celle de la ressource ciblée."
+      },
+      "serviceEntries": {
+        "notFound": "Prestation introuvable.",
+        "invalidIdentifier": "Identifiant de prestation invalide.",
+        "invalidService": "Les données de la prestation sont invalides.",
+        "outsideEngagementPeriod": "La prestation doit appartenir à la période de l’engagement.",
+        "duplicateSource": "Une prestation existe déjà pour cette source.",
+        "invalidTransition": "Cette transition de prestation n’est pas autorisée.",
+        "reasonRequired": "Un motif est obligatoire.",
+        "activeEngagementRequired": "La relation professionnelle doit permettre l’enregistrement de la prestation."
+      },
+      "serviceStatements": {
+        "notFound": "Relevé de prestations introuvable.",
+        "invalidIdentifier": "Identifiant de relevé invalide.",
+        "invalidPeriod": "La période du relevé est invalide.",
+        "noEntries": "Aucune prestation ne peut être incluse dans ce relevé.",
+        "unsubmittedEntries": "Toutes les prestations du relevé doivent avoir été soumises.",
+        "mixedCurrencies": "Un relevé ne peut pas mélanger plusieurs devises.",
+        "duplicatePeriod": "Un relevé existe déjà pour cette relation et cette période.",
+        "invalidTransition": "Cette transition d’état du relevé n’est pas autorisée.",
+        "reasonRequired": "Un motif est obligatoire.",
+        "invoiceNotAllowed": "Le relevé ne contient pas de montant approuvé facturable."
+      },
+      "invoices": {
+        "notFound": "Facture professionnelle introuvable.",
+        "invalidIdentifier": "Identifiant de facture professionnelle invalide.",
+        "approvedStatementRequired": "Le relevé doit être approuvé ou partiellement approuvé avant facturation.",
+        "noApprovedAmount": "Aucun montant approuvé n’est disponible pour la facturation.",
+        "invalidAmounts": "Les montants ou les dates de la facture sont invalides.",
+        "invalidCurrency": "La devise de la facture est invalide.",
+        "invoiceNumberRequired": "Le numéro de facture du freelance est obligatoire dans ce mode.",
+        "duplicateStatement": "Une facture active existe déjà pour ce relevé.",
+        "invalidTransition": "Cette transition de facture n’est pas autorisée.",
+        "immutableAfterValidation": "La facture n’est plus modifiable après validation.",
+        "immutableAfterRequest": "La facture ne peut plus être annulée après transmission à la finance.",
+        "invalidFinanceReference": "La référence de facture fournisseur Finance est invalide ou introuvable."
+      },
+      "dashboard": {
+        "invalidPeriod": "La période sélectionnée pour le tableau de bord est invalide."
+      },
+      "studentAssignments": {
+        "notFound": "Affectation élève introuvable.",
+        "invalidIdentifier": "Identifiant d’affectation invalide.",
+        "outsideMissionPeriod": "L’affectation doit rester dans la période de la mission.",
+        "invalidScope": "Le périmètre d’affectation est invalide.",
+        "duplicateAssignment": "Cet élève est déjà affecté à cette mission.",
+        "invalidTransition": "Cette transition d’affectation n’est pas autorisée.",
+        "revocationReasonRequired": "Un motif de révocation est obligatoire.",
+        "studentNotFound": "L’élève n’existe pas dans cette organisation.",
+        "activeMissionRequired": "La mission doit être active avant d’affecter un élève.",
+        "assignmentReasonRequired": "Le motif de l’affectation élève est obligatoire."
+      },
+      "invitations": {
+        "notFound": "Invitation introuvable ou lien invalide.",
+        "invalidIdentifier": "Identifiant d’invitation invalide.",
+        "recipientRequired": "Un destinataire est obligatoire.",
+        "invalidExpiration": "La date d’expiration de l’invitation est invalide.",
+        "invalidToken": "Le lien d’invitation est invalide.",
+        "expired": "Cette invitation a expiré.",
+        "invalidTransition": "Cette transition d’invitation n’est pas autorisée.",
+        "authenticationRequired": "Connectez-vous ou créez votre compte avant d’accepter l’invitation.",
+        "invitedUserMismatch": "Cette invitation est destinée à un autre compte DriveOS.",
+        "duplicatePending": "Une invitation active existe déjà pour ce destinataire et cette mission."
+      },
+      "disputes": {
+        "notFound": "Litige introuvable.",
+        "invalidIdentifier": "Identifiant de litige invalide.",
+        "invalidDescription": "La description du litige est invalide.",
+        "invalidEvidence": "Les preuves du litige sont invalides.",
+        "invalidMessage": "Le message du litige est invalide.",
+        "duplicateOpenDispute": "Un litige ouvert existe déjà pour cette prestation.",
+        "closed": "Ce litige est déjà clôturé.",
+        "resolutionRequired": "Une résolution détaillée est obligatoire.",
+        "escalationReasonRequired": "Un motif d’escalade est obligatoire."
+      },
+      "compliancePolicies": {
+        "notFound": "Politique de criticité introuvable.",
+        "invalidPolicy": "La politique de criticité est invalide.",
+        "invalidPeriod": "La période d’application de la politique est invalide.",
+        "duplicatePolicy": "Cette version de politique existe déjà.",
+        "invalidTransition": "Cette transition de politique n’est pas autorisée."
+      },
+      "complianceWaivers": {
+        "notFound": "Dérogation de conformité introuvable.",
+        "invalidWaiver": "La dérogation de conformité est invalide.",
+        "invalidPeriod": "La période de dérogation est invalide.",
+        "duplicateWaiver": "Une dérogation active chevauche déjà cette période.",
+        "invalidTransition": "Cette transition de dérogation n’est pas autorisée.",
+        "reasonRequired": "Un motif est obligatoire.",
+        "notYetExpired": "La dérogation n’est pas encore expirée."
+      }
+    },
+    "communication": {
+      "conversation": {
+        "notFound": "Conversation introuvable.",
+        "invalidIdentifier": "Identifiant de conversation invalide.",
+        "invalidRelatedEntity": "Le contexte métier de la conversation est invalide.",
+        "invalidParticipants": "Les participants de la conversation sont invalides.",
+        "participantNotFound": "Participant de conversation introuvable.",
+        "closed": "Cette conversation est fermée."
+      },
+      "message": {
+        "empty": "Le message doit contenir du texte ou au moins une pièce jointe.",
+        "tooLong": "Le message est trop long.",
+        "senderNotAuthorized": "Vous n’êtes pas autorisé à envoyer un message dans cette conversation."
+      },
+      "notifications": {
+        "notFound": "Notification introuvable.",
+        "invalidIdentifier": "Identifiant de notification invalide.",
+        "invalidContent": "Le contenu de la notification est invalide.",
+        "invalidTransition": "Cette transition de notification n’est pas autorisée."
+      },
+      "notificationPreferences": {
+        "notFound": "Préférence de notification introuvable.",
+        "invalidIdentifier": "Identifiant de préférence de notification invalide.",
+        "invalidCategory": "La catégorie de notification est invalide."
+      },
+      "surveys": {
+        "invalidIdentifier": "Identifiant de demande d’enquête invalide.",
+        "invalidContent": "La demande d’enquête est invalide."
+      }
+    },
+    "finance": {
+      "supplierInvoices": {
+        "notFound": "Facture fournisseur introuvable.",
+        "invalidIdentifier": "Identifiant de facture fournisseur invalide.",
+        "invalidAmounts": "Les montants ou les dates de la facture fournisseur sont invalides.",
+        "invalidCurrency": "La devise de la facture fournisseur est invalide.",
+        "duplicateSource": "Une facture fournisseur existe déjà pour cette source.",
+        "invalidTransition": "Cette transition de facture fournisseur n’est pas autorisée.",
+        "reasonRequired": "Un motif est obligatoire pour cette décision.",
+        "paymentNotAllowed": "Le paiement ne peut pas être planifié ou enregistré avant les approbations requises.",
+        "invalidSettlementAmount": "Le montant de règlement fournisseur est invalide.",
+        "invalidRefundAmount": "Le montant du remboursement fournisseur est invalide."
+      },
+      "supplierPayments": {
+        "notFound": "Tentative de paiement fournisseur introuvable.",
+        "invalidIdentifier": "Identifiant de tentative de paiement invalide.",
+        "invalidAmount": "Le montant du paiement fournisseur est invalide.",
+        "invalidCurrency": "La devise du paiement fournisseur est invalide.",
+        "invalidPaymentMethod": "Le mode de paiement fournisseur est invalide.",
+        "invalidTransition": "Cette transition de tentative de paiement n’est pas autorisée.",
+        "failureReasonRequired": "Un motif d’échec est obligatoire.",
+        "activeAttemptExists": "Une tentative de paiement active existe déjà pour cette facture.",
+        "invoiceNotApproved": "La facture fournisseur doit être approuvée avant de planifier un paiement.",
+        "mixedCurrenciesNotAllowed": "Un paiement groupé ne peut pas mélanger plusieurs devises."
+      }
+    },
+    "contracts": {
+      "professionalServiceContract": {
+        "notFound": "Contrat de prestation freelance introuvable.",
+        "invalid": "Le contrat de prestation freelance est invalide.",
+        "duplicate": "Un contrat existe déjà pour cette relation.",
+        "invalidTransition": "Cette transition du contrat n’est pas autorisée.",
+        "invalidDocument": "Le document contractuel généré est invalide.",
+        "documentHashMismatch": "L’empreinte du document ne correspond pas à la version à signer.",
+        "signatoryNotFound": "Le signataire n’appartient pas au contrat.",
+        "alreadySigned": "Ce signataire a déjà signé cette version.",
+        "signingOrderViolation": "L’ordre de signature du contrat n’est pas respecté.",
+        "invalidSignatureEvidence": "La preuve de signature est invalide.",
+        "reasonRequired": "Un motif est obligatoire.",
+        "revisionRequiresSignature": "Une nouvelle version contractuelle ne peut être créée qu’après au moins une signature."
+      }
+    },
+    "technicalUnavailable": "Le service est temporairement indisponible. Nous n’avons pas pu joindre le serveur. Veuillez réessayer dans quelques instants."
   },
   "organizations": {
     "title": "Mes organisations",
@@ -2311,6 +2638,11 @@
       "payment": {
         "title": "Suivre les paiements",
         "description": "Consulter les échéances, encaissements et impayés."
+      },
+      "permitAppointment": {
+        "title": "Rendez-vous permis",
+        "description": "Accéder au planning pour créer ou retrouver un rendez-vous lié au parcours permis.",
+        "badge": "Planning"
       }
     },
     "metrics": {
@@ -5409,7 +5741,8 @@
       "tabs": {
         "instructors": "Enseignants",
         "resources": "Ressources",
-        "students": "Élèves"
+        "students": "Élèves",
+        "services": "Prestations"
       },
       "title": "Disponibilités",
       "weekdays": {
@@ -5561,7 +5894,8 @@
           "global": "Global",
           "instructors": "Enseignants",
           "vehicles": "Véhicules",
-          "students": "Élèves"
+          "students": "Élèves",
+          "services": "Prestations"
         },
         "global": {
           "title": "Planning global",
@@ -9546,6 +9880,1421 @@
       "equipmentAssignments": "Du matériel reste à restituer.",
       "timesheets": "Des feuilles de temps restent à finaliser.",
       "professionalRestrictions": "Des restrictions professionnelles restent à traiter."
+    }
+  },
+  "professionalMarketplace": {
+    "label": "Marketplace professionnelle",
+    "navigation": {
+      "label": "Marketplace",
+      "dashboard": "Tableau de bord",
+      "professionals": "Trouver un freelance",
+      "missions": "Missions",
+      "serviceStatements": "Relevés",
+      "opportunities": "Opportunités",
+      "myMissions": "Mes missions",
+      "myStudents": "Mes élèves",
+      "myServiceEntries": "Mes prestations",
+      "myDashboard": "Mon tableau de bord",
+      "analytics": "Analytique"
+    },
+    "dashboard": {
+      "title": "Marketplace professionnelle",
+      "description": "Pilotez l’intégration des freelances, les missions, les prestations et les flux fournisseurs.",
+      "loadError": "Impossible de charger le tableau de bord marketplace.",
+      "missingOrganization": "Aucune organisation active n’est associée à la session courante.",
+      "sections": {
+        "integration": "Intégration",
+        "integrationTitle": "Activation et conformité",
+        "operations": "Opérations",
+        "operationsTitle": "Missions et activité",
+        "finance": "Finance",
+        "financeTitle": "Prestations et paiements"
+      },
+      "kpis": {
+        "activeEngagements": "Relations actives",
+        "activeMissions": "Missions actives",
+        "pendingEntries": "Prestations à traiter",
+        "disputedEntries": "Prestations en litige",
+        "pendingInvoices": "Factures en attente",
+        "expiringCredentials": "Justificatifs expirants",
+        "profileCompletion": "Profils complets",
+        "invitationAcceptance": "Acceptation des invitations",
+        "signedContractRate": "Contrats signés",
+        "reliableRelationships": "Relations fiables",
+        "plannedHours": "Heures planifiées",
+        "realizedHours": "Heures réalisées",
+        "occupancy": "Taux d’occupation",
+        "studentsHandled": "Élèves pris en charge",
+        "invoicedAmount": "Montant facturé",
+        "overdueInvoices": "Factures en retard",
+        "averagePaymentDelay": "Délai moyen de paiement",
+        "averageHourlyCost": "Coût horaire moyen",
+        "pendingStatements": "Relevés en attente",
+        "scheduledPayments": "Paiements planifiés",
+        "paidInvoices": "Factures payées",
+        "openReviewReports": "Signalements d’avis ouverts",
+        "averageValidationDelay": "Délai moyen de validation",
+        "failedPayments": "Paiements échoués",
+        "firstPassValidation": "Validation au premier passage",
+        "initialIntegrationsCompleted": "Intégrations initiales terminées",
+        "openDisputes": "Litiges ouverts"
+      },
+      "alerts": {
+        "title": "Alertes et points d’attention",
+        "description": "Les éléments BC-13 nécessitant une action ou une surveillance.",
+        "empty": "Aucune alerte marketplace en cours.",
+        "fallback": "Alerte marketplace : {{code}}",
+        "disputedServiceEntries": "Des prestations sont actuellement en litige.",
+        "failedPayments": "Un ou plusieurs paiements fournisseurs ont échoué.",
+        "expiringCredentials": "Des justificatifs professionnels arrivent à expiration.",
+        "pendingServiceEntries": "Des prestations attendent une validation.",
+        "pendingInvoices": "Des factures fournisseurs attendent un traitement.",
+        "overdueInvoices": "Des factures fournisseurs sont en retard.",
+        "openDisputes": "Des litiges fournisseurs restent ouverts."
+      },
+      "quickAccess": {
+        "title": "État opérationnel",
+        "description": "Synthèse complémentaire des flux en cours."
+      }
+    },
+    "search": {
+      "title": "Annuaire des professionnels",
+      "description": "Recherchez des professionnels disponibles selon leurs compétences, leur zone, leurs disponibilités et leurs conditions tarifaires.",
+      "filters": {
+        "country": "Pays",
+        "category": "Catégorie enseignée",
+        "language": "Langue",
+        "specialization": "Spécialisation",
+        "area": "Zone d’intervention",
+        "radius": "Rayon (km)",
+        "date": "Disponible le",
+        "from": "À partir de",
+        "to": "Jusqu’à",
+        "maxRate": "Tarif maximum",
+        "currency": "Devise",
+        "rateUnit": "Unité tarifaire",
+        "verifiedOnly": "Afficher uniquement les profils vérifiés",
+        "latitude": "Latitude",
+        "longitude": "Longitude"
+      },
+      "actions": {
+        "search": "Rechercher",
+        "openProfile": "Voir la fiche"
+      },
+      "results": {
+        "count": "{{count}} professionnel(s)",
+        "page": "Page {{page}}",
+        "empty": "Aucun professionnel ne correspond à ces critères.",
+        "verified": "Vérifié",
+        "negotiable": "Négociable"
+      },
+      "errors": {
+        "load": "Impossible de charger l’annuaire des professionnels."
+      }
+    },
+    "rateUnits": {
+      "Hour": "/ heure",
+      "HalfDay": "/ demi-journée",
+      "Day": "/ jour",
+      "Session": "/ séance",
+      "Mission": "/ mission"
+    },
+    "professionalTypes": {
+      "DrivingInstructor": "Enseignant de la conduite",
+      "InstructorTrainer": "Formateur d’enseignants",
+      "AdministrativeContractor": "Prestataire administratif",
+      "ComplianceConsultant": "Consultant conformité",
+      "Other": "Autre professionnel"
+    },
+    "profile360": {
+      "eyebrow": "Marketplace professionnel",
+      "title": "Fiche freelance",
+      "complete": "Profil complet",
+      "noBiography": "Aucune présentation renseignée.",
+      "yearsExperience": "ans d’expérience",
+      "identity": "Identité professionnelle",
+      "contact": "Coordonnées",
+      "primaryArea": "Zone principale",
+      "deferredReadModel": "Cette section sera activée avec son endpoint de lecture dédié dans les prochains lots BC-13.",
+      "errors": {
+        "load": "Impossible de charger le profil professionnel."
+      },
+      "tabs": {
+        "overview": "Synthèse",
+        "profile": "Profil",
+        "capabilities": "Qualifications",
+        "availability": "Disponibilités",
+        "areas": "Zones",
+        "rates": "Tarifs",
+        "compliance": "Conformité",
+        "missions": "Missions",
+        "students": "Élèves",
+        "services": "Prestations",
+        "invoices": "Factures",
+        "reviews": "Avis"
+      },
+      "cards": {
+        "categories": "Catégories enseignées",
+        "areas": "Zones d’intervention",
+        "rates": "Grilles tarifaires",
+        "vehicle": "Véhicule personnel"
+      },
+      "fields": {
+        "legalName": "Raison sociale",
+        "tradeName": "Nom commercial",
+        "registration": "Immatriculation",
+        "tax": "N° fiscal / TVA"
+      },
+      "availability": {
+        "notice": "Préavis minimum : {{hours}} h",
+        "daily": "Maximum journalier : {{minutes}} min"
+      },
+      "rate": {
+        "code": "Tarif",
+        "category": "Catégorie",
+        "amount": "Montant",
+        "unit": "Unité",
+        "negotiable": "Négociable"
+      },
+      "empty": {
+        "capabilities": "Aucune qualification détaillée.",
+        "availability": "Aucune disponibilité récurrente renseignée.",
+        "areas": "Aucune zone d’intervention renseignée.",
+        "rates": "Aucun tarif renseigné."
+      }
+    },
+    "invitations": {
+      "drawer": {
+        "title": "Inviter un freelance",
+        "description": "Créez puis envoyez une invitation sécurisée sans quitter votre contexte de travail."
+      },
+      "actions": {
+        "invite": "Inviter",
+        "createAndSend": "Créer et envoyer"
+      },
+      "sections": {
+        "recipient": "Destinataire",
+        "recipientHelp": "Renseignez un e-mail ou un téléphone, sauf si un profil DriveOS est déjà sélectionné.",
+        "scope": "Périmètre de collaboration",
+        "scopeHelp": "Vous pouvez rattacher l’invitation à une agence ou une mission existante."
+      },
+      "form": {
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "branchId": "Identifiant agence",
+        "missionId": "Identifiant mission",
+        "invitedUserId": "Identifiant utilisateur DriveOS",
+        "expirationDate": "Date d’expiration",
+        "message": "Message",
+        "messagePlaceholder": "Présentez le besoin, la période et les principales conditions proposées.",
+        "linkedProfile": "Profil DriveOS sélectionné"
+      },
+      "success": {
+        "title": "Invitation envoyée",
+        "expires": "Le lien est valable jusqu’au {{date}}.",
+        "secureLink": "Lien sécurisé"
+      },
+      "errors": {
+        "permission": "Vous devez disposer des permissions de création et d’envoi des invitations.",
+        "organization": "Aucune organisation active n’a été trouvée.",
+        "recipientRequired": "Renseignez un e-mail, un téléphone ou sélectionnez un profil professionnel.",
+        "expirationRequired": "La date d’expiration est obligatoire."
+      }
+    },
+    "compliance": {
+      "globalStatus": "Statut global de conformité",
+      "documents": "Documents professionnels",
+      "credentials": "Qualifications et habilitations",
+      "emptyDocuments": "Aucun document professionnel enregistré.",
+      "emptyCredentials": "Aucune qualification ou habilitation enregistrée.",
+      "issueDate": "Date d’émission",
+      "expirationDate": "Date d’expiration",
+      "mandatory": "Obligatoire",
+      "drawerTitle": "Conformité professionnelle",
+      "documentReferenceId": "Référence du document BC-06 (GUID)",
+      "documentType": "Type de document",
+      "credentialType": "Type d’habilitation",
+      "issuer": "Autorité émettrice",
+      "referenceNumber": "Numéro de référence",
+      "categories": "Catégories (séparées par des virgules)",
+      "evidenceDocumentId": "Document justificatif associé (GUID)",
+      "rejectionReason": "Motif du rejet",
+      "actions": {
+        "addDocument": "Ajouter un document",
+        "addCredential": "Ajouter une habilitation",
+        "reevaluate": "Réévaluer la conformité",
+        "review": "Contrôler",
+        "approve": "Approuver",
+        "reject": "Rejeter",
+        "confirmReject": "Confirmer le rejet"
+      }
+    },
+    "opportunities": {
+      "title": "Opportunités & besoins",
+      "subtitle": "Centralisez les besoins en professionnels, publiez-les et suivez leur cycle de vie sans quitter cet écran.",
+      "tabs": {
+        "active": "Actives",
+        "drafts": "Brouillons",
+        "closed": "Clôturées"
+      },
+      "empty": "Aucune opportunité dans cet onglet.",
+      "noBudget": "Budget non renseigné",
+      "budgetSection": "Budget indicatif",
+      "drawer": {
+        "createTitle": "Créer une opportunité",
+        "createDescription": "Définissez le besoin avant publication. La création reste en brouillon.",
+        "detailTitle": "Détail de l’opportunité",
+        "detailDescription": "Consultez le besoin et pilotez son cycle de vie depuis ce panneau.",
+        "tabs": {
+          "details": "Détails",
+          "matching": "Matching"
+        }
+      },
+      "actions": {
+        "new": "Nouvelle opportunité",
+        "create": "Créer le brouillon",
+        "publish": "Publier",
+        "pause": "Mettre en pause",
+        "fill": "Marquer comme pourvue",
+        "cancel": "Annuler",
+        "confirmCancel": "Confirmer l’annulation"
+      },
+      "cancel": {
+        "reason": "Motif d’annulation"
+      },
+      "fields": {
+        "title": "Titre",
+        "branchId": "Agence (ID)",
+        "description": "Description",
+        "professionalType": "Type de professionnel",
+        "categories": "Catégories enseignées",
+        "languages": "Langues requises",
+        "specializations": "Spécialisations requises",
+        "country": "Pays",
+        "areaCode": "Code de zone",
+        "area": "Zone",
+        "radius": "Rayon (km)",
+        "startsOn": "Début",
+        "endsOn": "Fin",
+        "engagement": "Type de mission",
+        "vehicle": "Véhicule",
+        "estimatedMinutes": "Volume estimé (minutes)",
+        "budget": "Budget",
+        "currency": "Devise",
+        "budgetUnit": "Unité",
+        "negotiable": "Budget négociable",
+        "closureReason": "Motif de clôture"
+      },
+      "status": {
+        "Draft": "Brouillon",
+        "Published": "Publiée",
+        "Paused": "En pause",
+        "Filled": "Pourvue",
+        "Expired": "Expirée",
+        "Cancelled": "Annulée"
+      },
+      "errors": {
+        "load": "Impossible de charger les opportunités.",
+        "organization": "Organisation active introuvable.",
+        "required": "Titre, description, pays, période et au moins une catégorie sont obligatoires.",
+        "cancelReason": "Un motif d’annulation est obligatoire."
+      }
+    },
+    "matching": {
+      "title": "Matching des freelances",
+      "subtitle": "Classement des profils compatibles avec cette opportunité.",
+      "publishedOnly": "Le matching est disponible uniquement pour une opportunité publiée.",
+      "noRunPermission": "Vous pouvez consulter le matching, mais vous n’avez pas le droit de lancer le calcul.",
+      "loadError": "Impossible de charger les correspondances.",
+      "loading": "Calcul des profils compatibles…",
+      "empty": "Aucun profil compatible trouvé.",
+      "eligible": "Éligible",
+      "notEligible": "Non éligible",
+      "years": "ans d’expérience",
+      "startingRate": "Tarif à partir de",
+      "breakdown": "Détail du score",
+      "reasons": {
+        "COMPLIANCE_NOT_VERIFIED": "Conformité non vérifiée",
+        "PROFESSIONAL_TYPE_MISMATCH": "Type de professionnel incompatible",
+        "NO_TEACHING_CATEGORY_MATCH": "Aucune catégorie de permis compatible",
+        "REQUIRED_LANGUAGE_MISSING": "Langue requise manquante",
+        "REQUIRED_SPECIALIZATION_MISSING": "Spécialisation requise manquante",
+        "OUTSIDE_ORGANIZATION_RADIUS": "Hors du rayon demandé",
+        "OUTSIDE_PROFESSIONAL_RADIUS": "Hors du rayon d’intervention du professionnel",
+        "COMMERCIAL_AVAILABILITY_MISMATCH": "Disponibilité incompatible",
+        "PROFESSIONAL_VEHICLE_REQUIRED": "Véhicule professionnel requis"
+      },
+      "criteria": {
+        "category": "Catégorie",
+        "language": "Langues",
+        "specialization": "Spécialisation",
+        "distance": "Distance",
+        "availability": "Disponibilité",
+        "vehicle": "Véhicule",
+        "rate": "Tarif",
+        "compliance": "Conformité"
+      }
+    },
+    "applications": {
+      "tab": "Candidatures",
+      "years": "ans d’expérience",
+      "empty": "Aucune candidature pour cette opportunité.",
+      "status": {
+        "Submitted": "Soumise",
+        "UnderReview": "En cours d’étude",
+        "Shortlisted": "Présélectionnée",
+        "Accepted": "Acceptée",
+        "Rejected": "Refusée",
+        "Withdrawn": "Retirée"
+      },
+      "detail": {
+        "title": "Détail de la candidature",
+        "application": "Candidature",
+        "rate": "Tarif proposé",
+        "availability": "Disponibilité annoncée",
+        "decisionReason": "Motif de décision",
+        "rejectReason": "Motif du refus"
+      },
+      "actions": {
+        "review": "Démarrer l’étude",
+        "shortlist": "Présélectionner",
+        "accept": "Accepter",
+        "reject": "Refuser"
+      },
+      "errors": {
+        "load": "Impossible de charger les candidatures.",
+        "rejectReason": "Le motif du refus est obligatoire."
+      },
+      "tabs": {
+        "application": "Candidature",
+        "negotiation": "Négociation",
+        "commercialOffer": "Offre commerciale",
+        "engagement": "Engagement"
+      }
+    },
+    "proposals": {
+      "sectionTitle": "Propositions et négociation",
+      "sectionHint": "Conservez ici toutes les propositions commerciales liées à cette candidature.",
+      "empty": "Aucune proposition pour cette candidature.",
+      "create": {
+        "title": "Nouvelle proposition",
+        "defaultSubject": "Proposition de collaboration — {{name}}"
+      },
+      "detail": {
+        "title": "Proposition commerciale"
+      },
+      "tabs": {
+        "terms": "Conditions",
+        "history": "Historique"
+      },
+      "fields": {
+        "subject": "Objet",
+        "message": "Message",
+        "startsOn": "Début",
+        "endsOn": "Fin",
+        "period": "Période",
+        "engagement": "Type de mission",
+        "vehicle": "Véhicule",
+        "rate": "Tarif proposé",
+        "negotiable": "Négociable",
+        "expiresOn": "Valable jusqu’au"
+      },
+      "actions": {
+        "new": "Nouvelle proposition",
+        "send": "Envoyer la proposition",
+        "counter": "Contre-proposer",
+        "accept": "Accepter",
+        "reject": "Refuser",
+        "withdraw": "Retirer"
+      },
+      "status": {
+        "Sent": "Envoyée",
+        "Countered": "Contre-proposée",
+        "Accepted": "Acceptée",
+        "Rejected": "Refusée",
+        "Withdrawn": "Retirée",
+        "Expired": "Expirée"
+      },
+      "history": {
+        "actor": "Auteur",
+        "empty": "Aucun historique disponible."
+      },
+      "errors": {
+        "load": "Impossible de charger les propositions.",
+        "required": "Complétez les champs obligatoires.",
+        "reason": "Un motif est requis.",
+        "rate": "Le tarif proposé est invalide."
+      }
+    },
+    "commercialOffers": {
+      "sectionTitle": "Offre commerciale finale",
+      "sectionHint": "Figez ici les conditions finales avant de créer l'engagement et le contrat de prestation.",
+      "offer": "Offre commerciale",
+      "current": "version actuelle",
+      "empty": "Aucune offre commerciale n'a encore été créée.",
+      "drawer": {
+        "title": "Offre commerciale"
+      },
+      "tabs": {
+        "terms": "Conditions",
+        "history": "Historique"
+      },
+      "status": {
+        "Draft": "Brouillon",
+        "Sent": "Envoyée",
+        "PartiallyAccepted": "Partiellement acceptée",
+        "Accepted": "Acceptée",
+        "Finalized": "Finalisée",
+        "Cancelled": "Annulée"
+      },
+      "actions": {
+        "new": "Créer une offre",
+        "create": "Créer l'offre",
+        "revise": "Réviser",
+        "saveRevision": "Enregistrer la révision",
+        "send": "Envoyer",
+        "acceptByOrganization": "Accepter côté auto-école",
+        "finalize": "Finaliser",
+        "cancel": "Annuler",
+        "confirmCancel": "Confirmer l'annulation"
+      },
+      "fields": {
+        "period": "Période",
+        "startsOn": "Début",
+        "endsOn": "Fin",
+        "rate": "Tarif",
+        "rateAmount": "Tarif",
+        "currency": "Devise",
+        "rateUnit": "Unité tarifaire",
+        "engagementType": "Type d'engagement",
+        "vehicle": "Mise à disposition du véhicule",
+        "estimatedMinutes": "Volume estimé (minutes)",
+        "mileageRate": "Indemnité kilométrique",
+        "vehicleAllowance": "Indemnité véhicule",
+        "minimumGuaranteed": "Minimum garanti",
+        "categories": "Catégories enseignées",
+        "clauses": "Clauses / codes contractuels",
+        "cancelReason": "Motif d'annulation"
+      },
+      "errors": {
+        "load": "Impossible de charger les offres commerciales.",
+        "acceptedSourceRequired": "Une candidature ou une proposition acceptée est requise.",
+        "invalidTerms": "Les conditions de l'offre sont incomplètes ou invalides.",
+        "cancelReason": "Un motif d'annulation est requis."
+      }
+    },
+    "engagements": {
+      "title": "Engagement professionnel",
+      "sectionTitle": "Engagement / relation professionnelle",
+      "sectionHint": "Pilotez l’activation et le cycle de vie de la collaboration depuis une seule surface.",
+      "ready": "Prêt à activer",
+      "preparing": "Préparation en cours",
+      "emptyReady": "Une offre finalisée est disponible. Créez l’engagement pour démarrer la préparation opérationnelle.",
+      "emptyOfferRequired": "Finalisez d’abord une offre commerciale avant de créer la relation professionnelle.",
+      "drawer": {
+        "title": "Engagement professionnel"
+      },
+      "tabs": {
+        "summary": "Synthèse",
+        "preparation": "Préparation",
+        "contract": "Contrat",
+        "access": "Accès",
+        "missions": "Missions",
+        "services": "Prestations",
+        "billing": "Facturation",
+        "messages": "Messages"
+      },
+      "status": {
+        "PendingActivation": "En attente d’activation",
+        "Active": "Actif",
+        "Suspended": "Suspendu",
+        "Ended": "Terminé",
+        "Terminated": "Résilié"
+      },
+      "fields": {
+        "period": "Période",
+        "rate": "Tarif",
+        "offerRevision": "Version de l’offre",
+        "categories": "Catégories enseignées"
+      },
+      "preparation": {
+        "ready": "prérequis validés",
+        "compliance": "Conformité",
+        "contract": "Contrat signé",
+        "access": "Accès externe",
+        "scheduling": "Planning et capacité",
+        "internalApproval": "Approbation interne",
+        "done": "Validé",
+        "pending": "À préparer"
+      },
+      "actions": {
+        "create": "Créer l’engagement",
+        "validateCompliance": "Valider la conformité",
+        "validateContract": "Valider le contrat signé",
+        "prepareAccess": "Préparer les accès",
+        "prepareScheduling": "Préparer le planning",
+        "internalApproval": "Approuver en interne",
+        "activate": "Activer",
+        "suspend": "Suspendre",
+        "resume": "Reprendre",
+        "complete": "Clôturer",
+        "terminate": "Résilier"
+      },
+      "contract": {
+        "signatures": "signatures requises",
+        "none": "Aucun contrat de prestation n’est encore rattaché à cet engagement.",
+        "owner": "Le cycle de vie contractuel et les preuves de signature restent la responsabilité de BC-06 Contracts & Documents.",
+        "manage": "Gérer le contrat"
+      },
+      "access": {
+        "title": "Accès externe contextualisé",
+        "description": "Les droits du freelance doivent rester limités à la relation, aux missions, aux ressources et à leur période de validité."
+      },
+      "deferred": {
+        "missions": "Les missions seront branchées dans MKT-FE-014 sans créer une page supplémentaire.",
+        "services": "Les prestations et relevés seront branchés dans les lots dédiés.",
+        "billing": "La facturation fournisseur et les paiements seront affichés ici depuis BC-07."
+      },
+      "errors": {
+        "reason": "Un motif d’au moins 2 caractères est requis."
+      }
+    },
+    "serviceContract": {
+      "title": "Contrat de prestation",
+      "tabs": {
+        "summary": "Synthèse",
+        "signatories": "Signataires",
+        "versions": "Versions"
+      },
+      "fields": {
+        "signatureOrder": "Ordre de signature",
+        "signatures": "Signatures",
+        "document": "Document",
+        "number": "Numéro de contrat",
+        "type": "Type de contrat",
+        "role": "Rôle du signataire",
+        "documentReference": "Référence du document",
+        "reason": "Motif",
+        "signatureMethod": "Méthode de signature",
+        "authenticationMethod": "Méthode d’authentification",
+        "provider": "Prestataire de signature",
+        "providerReference": "Référence prestataire",
+        "certificateReference": "Référence du certificat"
+      },
+      "actions": {
+        "create": "Créer le contrat",
+        "generate": "Générer / rattacher le document",
+        "send": "Envoyer en signature",
+        "recordSignature": "Enregistrer une signature",
+        "revise": "Créer une nouvelle version",
+        "terminate": "Résilier le contrat",
+        "addSignatory": "Ajouter un signataire"
+      },
+      "none": "Aucun contrat de prestation n’est encore créé pour cet engagement.",
+      "signed": "Signé",
+      "pending": "En attente",
+      "noVersions": "Aucune version antérieure.",
+      "errors": {
+        "required": "Complétez tous les champs obligatoires et au moins deux signataires.",
+        "document": "La référence du document est obligatoire et le SHA-256 doit contenir exactement 64 caractères hexadécimaux.",
+        "revision": "Un nouveau document valide et un motif de révision sont requis.",
+        "reason": "Un motif d’au moins 2 caractères est requis."
+      },
+      "status": {
+        "Draft": "Brouillon",
+        "Generated": "Généré",
+        "SentForSignature": "Envoyé en signature",
+        "PartiallySigned": "Partiellement signé",
+        "Signed": "Signé",
+        "Rejected": "Refusé",
+        "Expired": "Expiré",
+        "Cancelled": "Annulé",
+        "Terminated": "Résilié"
+      },
+      "signatureOrderValues": {
+        "Sequential": "Séquentielle",
+        "Parallel": "Parallèle"
+      }
+    },
+    "missions": {
+      "title": "Missions",
+      "subtitle": "Missions opérationnelles de cet engagement.",
+      "empty": "Aucune mission pour cet engagement.",
+      "drawer": {
+        "create": "Nouvelle mission",
+        "title": "Mission"
+      },
+      "tabs": {
+        "details": "Détails",
+        "schedule": "Créneaux",
+        "students": "Élèves affectés",
+        "history": "Historique"
+      },
+      "fields": {
+        "title": "Titre",
+        "description": "Description",
+        "startsOn": "Début",
+        "endsOn": "Fin",
+        "categories": "Catégories enseignées",
+        "minutes": "Volume estimé (minutes)",
+        "vehicle": "Véhicule"
+      },
+      "vehicle": {
+        "NotApplicable": "Non applicable",
+        "ClientProvided": "Fourni par l’auto-école",
+        "ProfessionalProvided": "Fourni par le freelance",
+        "Either": "Indifférent"
+      },
+      "status": {
+        "Draft": "Brouillon",
+        "Proposed": "Proposée",
+        "Accepted": "Acceptée",
+        "Declined": "Refusée",
+        "Active": "Active",
+        "Paused": "En pause",
+        "Completed": "Terminée",
+        "Cancelled": "Annulée"
+      },
+      "actions": {
+        "create": "Créer une mission",
+        "propose": "Proposer",
+        "activate": "Activer",
+        "pause": "Mettre en pause",
+        "resume": "Reprendre",
+        "complete": "Terminer",
+        "cancel": "Annuler"
+      },
+      "schedule": {
+        "title": "Créneaux récurrents",
+        "help": "Définissez les fenêtres horaires souhaitées pour cette mission. Elles restent distinctes des réservations BC-09.",
+        "add": "Ajouter un créneau",
+        "empty": "Aucun créneau récurrent défini."
+      },
+      "history": {
+        "proposed": "Proposée le",
+        "responded": "Réponse le",
+        "activated": "Activée le",
+        "completed": "Terminée le"
+      },
+      "errors": {
+        "required": "Renseignez le titre, la période et au moins une catégorie.",
+        "reason": "Un motif est requis."
+      },
+      "days": {
+        "0": "Dimanche",
+        "1": "Lundi",
+        "2": "Mardi",
+        "3": "Mercredi",
+        "4": "Jeudi",
+        "5": "Vendredi",
+        "6": "Samedi"
+      }
+    },
+    "studentAssignments": {
+      "title": "Élèves affectés",
+      "help": "L’accès du freelance est limité aux élèves affectés à cette mission et à la période définie.",
+      "empty": "Aucun élève affecté à cette mission.",
+      "search": "Rechercher un élève…",
+      "revokeReason": "Motif de révocation",
+      "drawer": {
+        "create": "Affecter un élève",
+        "title": "Détail de l’affectation"
+      },
+      "fields": {
+        "student": "Élève",
+        "startsOn": "Début",
+        "endsOn": "Fin",
+        "period": "Période",
+        "scope": "Périmètre",
+        "reason": "Motif de l’affectation"
+      },
+      "actions": {
+        "assign": "Affecter un élève",
+        "revoke": "Révoquer l’affectation"
+      },
+      "status": {
+        "Active": "Active",
+        "Revoked": "Révoquée",
+        "Completed": "Terminée"
+      },
+      "scopes": {
+        "PEDAGOGICAL": "Suivi pédagogique",
+        "SESSION": "Séances",
+        "EXAM_PREPARATION": "Préparation examen",
+        "TEMPORARY_REPLACEMENT": "Remplacement temporaire"
+      },
+      "errors": {
+        "required": "Sélectionnez un élève et complétez la période, le périmètre et le motif.",
+        "reason": "Un motif de révocation est obligatoire."
+      }
+    },
+    "accessGrants": {
+      "title": "Accès externes",
+      "subtitle": "Qui voit quoi, sur quelle ressource et pendant combien de temps.",
+      "noReadPermission": "Vous n’avez pas la permission de consulter les accès externes.",
+      "empty": "Aucun accès externe n’est enregistré pour cet engagement.",
+      "kpi": {
+        "total": "Accès",
+        "active": "Actifs",
+        "prepared": "Préparation"
+      },
+      "drawer": {
+        "createTitle": "Ajouter un accès externe",
+        "detailTitle": "Détail de l’accès",
+        "securityNotice": "Un accès externe est limité à une ressource, une permission et une période. Il ne crée jamais une appartenance interne au tenant."
+      },
+      "fields": {
+        "resourceType": "Type de ressource",
+        "resourceId": "Identifiant de la ressource",
+        "permission": "Permission",
+        "startDate": "Début",
+        "endDate": "Fin",
+        "period": "Période",
+        "origin": "Origine",
+        "createdAt": "Créé le",
+        "revocation": "Révocation",
+        "revocationReason": "Motif de révocation",
+        "selectMission": "Sélectionner une mission"
+      },
+      "actions": {
+        "create": "Ajouter un accès",
+        "revoke": "Révoquer l’accès"
+      },
+      "status": {
+        "Active": "Actif",
+        "Revoked": "Révoqué",
+        "Expired": "Expiré"
+      },
+      "origin": {
+        "ENGAGEMENT_PREPARATION": "Préparation de l’engagement",
+        "STUDENT_ASSIGNMENT": "Affectation élève",
+        "MISSION_SCOPE": "Périmètre de mission",
+        "MANUAL": "Accès manuel"
+      },
+      "resourceType": {
+        "Engagement": "Engagement",
+        "Mission": "Mission",
+        "Student": "Élève",
+        "Session": "Séance",
+        "Vehicle": "Véhicule",
+        "ContractDocument": "Document contractuel",
+        "ServiceStatement": "Relevé de prestations",
+        "Invoice": "Facture",
+        "Payment": "Paiement"
+      },
+      "errors": {
+        "required": "La ressource et la permission sont obligatoires.",
+        "reason": "Le motif de révocation doit contenir au moins 2 caractères."
+      }
+    },
+    "myMissions": {
+      "eyebrow": "Portail freelance",
+      "title": "Mes missions",
+      "subtitle": "Suivez vos missions et répondez aux nouvelles propositions.",
+      "drawerEyebrow": "Mission freelance",
+      "empty": "Aucune mission dans cette vue.",
+      "tabs": {
+        "pending": "À répondre",
+        "active": "En cours",
+        "closed": "Terminées",
+        "details": "Détails",
+        "schedule": "Créneaux",
+        "history": "Historique",
+        "students": "Élèves",
+        "services": "Prestations"
+      },
+      "fields": {
+        "client": "Organisation cliente"
+      },
+      "actions": {
+        "accept": "Accepter la mission",
+        "decline": "Refuser",
+        "confirmDecline": "Confirmer le refus"
+      },
+      "declinePlaceholder": "Motif du refus…",
+      "errors": {
+        "load": "Impossible de charger vos missions.",
+        "reason": "Le motif du refus est obligatoire."
+      }
+    },
+    "myServiceEntries": {
+      "title": "Mes prestations",
+      "subtitle": "Consultez les prestations issues de vos missions, soumettez-les et suivez leur validation.",
+      "drawerEyebrow": "Prestation freelance",
+      "search": "Rechercher une prestation",
+      "loadError": "Impossible de charger vos prestations.",
+      "empty": "Aucune prestation dans cette vue.",
+      "emptyForMission": "Aucune prestation n’est encore rattachée à cette mission.",
+      "tabs": {
+        "toSubmit": "À soumettre",
+        "review": "En validation",
+        "closed": "Clôturées",
+        "summary": "Synthèse",
+        "amounts": "Montants",
+        "history": "Historique"
+      },
+      "status": {
+        "Recorded": "Enregistrée",
+        "Submitted": "Soumise",
+        "Approved": "Approuvée",
+        "Rejected": "Rejetée",
+        "Disputed": "Contestée"
+      },
+      "source": {
+        "TrainingSession": "Séance de formation",
+        "MissionActivity": "Activité de mission",
+        "ManualAdjustment": "Ajustement manuel"
+      },
+      "fields": {
+        "description": "Description",
+        "source": "Source",
+        "client": "Organisation cliente",
+        "unitRate": "Tarif horaire",
+        "base": "Montant de base",
+        "expenses": "Frais",
+        "indemnities": "Indemnités",
+        "discount": "Réduction",
+        "total": "Total",
+        "reviewReason": "Motif de contrôle",
+        "createdAt": "Créée le",
+        "submittedAt": "Soumise le",
+        "reviewedAt": "Contrôlée le"
+      },
+      "actions": {
+        "submit": "Soumettre la prestation"
+      },
+      "mainTabs": {
+        "entries": "Prestations",
+        "statements": "Relevés",
+        "disputes": "Litiges"
+      }
+    },
+    "myStudents": {
+      "title": "Mes élèves affectés",
+      "subtitle": "Uniquement les élèves couverts par une affectation et un accès encore effectifs.",
+      "search": "Rechercher un élève",
+      "loadError": "Impossible de charger vos élèves affectés.",
+      "empty": "Aucun élève ne vous est actuellement accessible.",
+      "emptyForMission": "Aucun élève accessible pour cette mission aujourd’hui.",
+      "period": "Période",
+      "reason": "Motif"
+    },
+    "serviceStatements": {
+      "createEyebrow": "Nouveau relevé",
+      "createTitle": "Créer un relevé de prestations",
+      "drawerEyebrow": "Relevé de prestations",
+      "empty": "Aucun relevé de prestations.",
+      "createHint": "Le relevé regroupe automatiquement toutes les prestations de la période pour cet engagement.",
+      "fields": {
+        "engagement": "Engagement",
+        "periodStart": "Début de période",
+        "periodEnd": "Fin de période",
+        "total": "Total",
+        "approved": "Approuvé",
+        "disputed": "Contesté",
+        "createdAt": "Créé le",
+        "submittedAt": "Soumis le",
+        "reviewedAt": "Revu le"
+      },
+      "preview": {
+        "title": "Prévisualisation",
+        "lines": "ligne(s)",
+        "recordedWarning": "Certaines prestations sont encore enregistrées mais non soumises. Soumettez-les avant de créer le relevé.",
+        "empty": "Aucune prestation sur cette période."
+      },
+      "actions": {
+        "new": "Nouveau relevé",
+        "create": "Créer le relevé",
+        "submit": "Soumettre le relevé"
+      },
+      "tabs": {
+        "summary": "Synthèse",
+        "lines": "Prestations",
+        "history": "Historique"
+      },
+      "status": {
+        "Draft": "Brouillon",
+        "Submitted": "Soumis",
+        "UnderReview": "En validation",
+        "Approved": "Approuvé",
+        "PartiallyApproved": "Partiellement approuvé",
+        "Rejected": "Rejeté",
+        "Disputed": "Contesté",
+        "Invoiced": "Facturé"
+      },
+      "errors": {
+        "required": "Renseignez l’engagement et la période."
+      }
+    },
+    "serviceReview": {
+      "title": "Validation des prestations",
+      "subtitle": "Contrôlez les relevés soumis, validez les lignes conformes et isolez les contestations.",
+      "empty": "Aucun relevé de prestations pour cet engagement.",
+      "eyebrow": "Revue auto-école",
+      "pending": "Lignes à traiter",
+      "fields": {
+        "reason": "Motif",
+        "disputeReason": "Motif du litige",
+        "description": "Description du litige"
+      },
+      "actions": {
+        "startReview": "Démarrer la revue",
+        "approveRemaining": "Approuver les lignes restantes",
+        "rejectStatement": "Rejeter le relevé",
+        "approveLine": "Approuver",
+        "rejectLine": "Rejeter",
+        "disputeLine": "Contester",
+        "openDispute": "Ouvrir le litige"
+      },
+      "errors": {
+        "reason": "Un motif est obligatoire.",
+        "description": "Une description du litige est obligatoire."
+      },
+      "disputeReasons": {
+        "Duration": "Durée",
+        "Rate": "Tarif",
+        "Absence": "Absence",
+        "Expenses": "Frais",
+        "ServiceQuality": "Qualité de la prestation",
+        "ServiceNotPerformed": "Prestation non réalisée",
+        "Duplicate": "Doublon",
+        "IncorrectStudent": "Élève incorrect",
+        "NonCompliantVehicle": "Véhicule non conforme",
+        "Other": "Autre"
+      }
+    },
+    "disputes": {
+      "mainTab": "Litiges",
+      "eyebrow": "Dossier de litige",
+      "empty": "Aucun litige à afficher.",
+      "emptyDiscussion": "Aucun échange pour le moment.",
+      "emptyEvidence": "Aucune preuve jointe.",
+      "tabs": {
+        "summary": "Synthèse",
+        "discussion": "Discussion",
+        "evidence": "Preuves",
+        "history": "Historique"
+      },
+      "fields": {
+        "description": "Description",
+        "serviceEntry": "Prestation",
+        "engagement": "Engagement",
+        "resolution": "Résolution",
+        "escalation": "Motif d’escalade",
+        "createdAt": "Ouvert le",
+        "escalatedAt": "Escaladé le",
+        "resolvedAt": "Résolu le",
+        "message": "Message",
+        "documentReferenceId": "Référence du document",
+        "label": "Libellé",
+        "note": "Note",
+        "waitingFor": "En attente de",
+        "outcome": "Décision"
+      },
+      "actions": {
+        "open": "Ouvrir le litige",
+        "message": "Ajouter un message",
+        "evidence": "Ajouter une preuve",
+        "wait": "Changer l’attente",
+        "resolve": "Résoudre",
+        "escalate": "Escalader"
+      },
+      "party": {
+        "School": "Auto-école",
+        "Freelance": "Freelance",
+        "Mediator": "Médiateur"
+      },
+      "status": {
+        "Open": "Ouvert",
+        "UnderDiscussion": "En discussion",
+        "WaitingForFreelance": "En attente du freelance",
+        "WaitingForSchool": "En attente de l’auto-école",
+        "Resolved": "Résolu",
+        "Rejected": "Rejeté",
+        "Escalated": "Escaladé"
+      },
+      "reason": {
+        "Duration": "Durée",
+        "Rate": "Tarif",
+        "Absence": "Absence",
+        "Expenses": "Frais",
+        "ServiceQuality": "Qualité de la prestation",
+        "ServiceNotPerformed": "Prestation non réalisée",
+        "Duplicate": "Doublon",
+        "IncorrectStudent": "Élève incorrect",
+        "NonCompliantVehicle": "Véhicule non conforme",
+        "Other": "Autre"
+      },
+      "outcome": {
+        "ApproveServiceEntry": "Approuver la prestation",
+        "RejectServiceEntry": "Rejeter la prestation",
+        "Rejected": "Rejeter le litige et approuver la prestation"
+      },
+      "errors": {
+        "message": "Le message est obligatoire.",
+        "evidence": "Une référence de document valide et un libellé sont obligatoires.",
+        "resolution": "La résolution doit contenir au moins 2 caractères.",
+        "escalation": "Le motif d’escalade doit contenir au moins 2 caractères."
+      }
+    },
+    "invoices": {
+      "title": "Facturation fournisseur",
+      "subtitle": "Préparez les factures professionnelles puis suivez leur traitement financier dans BC-07.",
+      "eyebrow": "Facture professionnelle",
+      "unnumbered": "Facture sans numéro",
+      "createSelfBilling": "Créer une autofacture",
+      "empty": "Aucune facture pour cet engagement.",
+      "financeNotRequested": "La facture n’a pas encore été transmise à la finance.",
+      "noPayments": "Aucun mouvement de paiement disponible.",
+      "tabs": {
+        "invoices": "Factures",
+        "summary": "Synthèse",
+        "finance": "Finance",
+        "payments": "Paiements",
+        "history": "Historique"
+      },
+      "mode": {
+        "FreelanceIssued": "Facture freelance",
+        "SelfBilling": "Autofacturation"
+      },
+      "status": {
+        "Draft": "Brouillon",
+        "Validated": "Validée",
+        "Requested": "Transmise à la finance",
+        "Cancelled": "Annulée"
+      },
+      "paymentStatus": {
+        "Pending": "En attente",
+        "Scheduled": "Planifié",
+        "Processing": "En cours",
+        "Paid": "Payée",
+        "PartiallyPaid": "Partiellement payée",
+        "Failed": "Échec",
+        "Overdue": "En retard",
+        "Cancelled": "Annulé",
+        "Refunded": "Remboursée"
+      },
+      "fields": {
+        "statement": "Relevé approuvé",
+        "issueDate": "Date d’émission",
+        "dueDate": "Échéance",
+        "taxAmount": "Taxes",
+        "invoiceNumber": "Numéro de facture",
+        "bankReference": "Référence bancaire",
+        "subtotal": "Sous-total",
+        "total": "Total",
+        "supplierInvoiceId": "SupplierInvoice BC-07",
+        "financeStatus": "Statut finance",
+        "paid": "Payé",
+        "refunded": "Remboursé",
+        "remaining": "Reste à payer",
+        "createdAt": "Créée le",
+        "validatedAt": "Validée le",
+        "requestedAt": "Transmise le",
+        "financeSyncedAt": "Finance synchronisée le",
+        "reconciliation": "Rapprochement",
+        "difference": "Écart"
+      },
+      "actions": {
+        "createSelfBilling": "Créer une autofacture",
+        "validate": "Valider",
+        "requestFinance": "Transmettre à BC-07",
+        "syncFinance": "Synchroniser la finance",
+        "approveOperational": "Approuver opérationnellement",
+        "approveFinancial": "Approuver financièrement",
+        "schedulePayment": "Planifier un paiement",
+        "recordManualPayment": "Enregistrer un paiement manuel",
+        "refund": "Rembourser",
+        "markProcessing": "Passer en traitement",
+        "cancelPayment": "Annuler la tentative",
+        "markPaid": "Marquer payée",
+        "markFailed": "Marquer en échec"
+      },
+      "errors": {
+        "statementRequired": "Sélectionnez un relevé approuvé."
+      },
+      "paymentActions": {
+        "eyebrow": "Paiement fournisseur",
+        "schedule": {
+          "title": "Planifier un paiement"
+        },
+        "manual": {
+          "title": "Enregistrer un paiement manuel"
+        },
+        "paid": {
+          "title": "Confirmer le règlement"
+        },
+        "failed": {
+          "title": "Déclarer un échec"
+        },
+        "refund": {
+          "title": "Enregistrer un remboursement"
+        },
+        "fields": {
+          "amount": "Montant",
+          "date": "Date",
+          "method": "Moyen de paiement",
+          "bankReference": "Référence bancaire",
+          "providerReference": "Référence prestataire",
+          "reason": "Motif"
+        },
+        "errors": {
+          "amountRequired": "Saisissez un montant strictement positif.",
+          "reasonRequired": "Saisissez un motif."
+        }
+      }
+    },
+    "messages": {
+      "title": "Messagerie de la collaboration",
+      "subtitle": "Échanges contextualisés entre l’auto-école et le freelance. Les messages sont gérés par Communication & Engagement.",
+      "unread": "non lu(s)",
+      "me": "Vous",
+      "otherParty": "Interlocuteur",
+      "attachments": "pièce(s) jointe(s)",
+      "empty": "Aucun message pour cette collaboration.",
+      "placeholder": "Écrire un message…",
+      "send": "Envoyer"
+    },
+    "reviews": {
+      "tabs": {
+        "reputation": "Réputation",
+        "moderation": "Modération"
+      },
+      "reviewCount": "avis",
+      "reports": "signalement(s)",
+      "professionalResponse": "Réponse du professionnel",
+      "empty": "Aucun avis publié pour ce professionnel.",
+      "emptyModeration": "Aucun avis à modérer.",
+      "noReports": "Aucun signalement.",
+      "metrics": {
+        "overall": "Note globale",
+        "reliability": "Fiabilité",
+        "pedagogy": "Pédagogie",
+        "communication": "Communication",
+        "punctuality": "Ponctualité"
+      },
+      "actions": {
+        "create": "Ajouter un avis",
+        "respond": "Répondre",
+        "report": "Signaler",
+        "moderate": "Modérer",
+        "hide": "Masquer",
+        "restore": "Restaurer",
+        "resolve": "Résoudre"
+      },
+      "drawer": {
+        "create": "Nouvel avis",
+        "respond": "Répondre à l’avis",
+        "report": "Signaler l’avis",
+        "moderate": "Modération de l’avis"
+      },
+      "fields": {
+        "engagement": "Collaboration terminée",
+        "comment": "Commentaire",
+        "response": "Réponse publique",
+        "reason": "Motif",
+        "details": "Détails",
+        "moderationReason": "Motif de modération",
+        "resolution": "Résolution"
+      },
+      "reportReasons": {
+        "inappropriate": "Contenu inapproprié",
+        "falseInformation": "Information fausse ou trompeuse",
+        "personalData": "Données personnelles exposées"
+      }
+    },
+    "notifications": {
+      "missionProposd": "Nouvelle mission proposée : {{title}} ({{startsOn}} → {{endsOn}}).",
+      "serviceEntryRejected": "Une prestation a été rejetée : {{reason}}.",
+      "serviceEntryDisputed": "Une prestation a été contestée : {{reason}}.",
+      "disputeOpened": "Un litige a été ouvert sur une prestation ({{reason}}).",
+      "disputeOpenedForSchool": "Un freelance a ouvert un litige sur une prestation ({{reason}}).",
+      "credentialExpiring": "Un justificatif ou une habilitation arrive à expiration le {{expiresOn}}.",
+      "compliancePolicyApplied": "Une règle de conformité a été appliquée : {{action}}.",
+      "engagementCompleted": "La collaboration est terminée.",
+      "engagementTerminated": "La collaboration a été résiliée : {{reason}}.",
+      "initialIntegrationCompleted": "L’intégration initiale du freelance est terminée après le premier paiement."
+    },
+    "myDashboard": {
+      "eyebrow": "Espace freelance",
+      "title": "Mon tableau de bord",
+      "defaultProfessional": "Professionnel indépendant",
+      "tabs": {
+        "actions": "À traiter",
+        "activity": "Activité",
+        "finance": "Finance",
+        "profile": "Profil & conformité"
+      },
+      "kpis": {
+        "toAnswer": "Missions à répondre",
+        "activeMissions": "Missions actives",
+        "students": "Élèves accessibles",
+        "entries": "Prestations à soumettre",
+        "disputes": "Litiges ouverts",
+        "pendingInvoices": "Factures en attente"
+      },
+      "actions": {
+        "missions": "Missions à traiter",
+        "missionsHint": "Répondez directement sans quitter le tableau de bord.",
+        "noMission": "Aucune mission en attente de réponse.",
+        "myStudents": "Mes élèves",
+        "studentsAccessible": "élève(s) actuellement accessible(s)",
+        "myServices": "Mes prestations",
+        "entriesToSubmit": "prestation(s) à soumettre"
+      },
+      "activity": {
+        "operations": "Activité opérationnelle",
+        "quality": "Qualité des prestations",
+        "relationships": "Collaborations"
+      },
+      "finance": {
+        "invoices": "Facturation",
+        "payments": "Paiements",
+        "openServices": "Ouvrir mes prestations",
+        "openServicesHint": "Consulter prestations, relevés et litiges dans le même espace."
+      },
+      "profile": {
+        "status": "État du profil",
+        "compliance": "Conformité",
+        "complete": "Profil complet",
+        "summary": "Présentation professionnelle"
+      }
+    },
+    "analytics": {
+      "title": "Analytique Marketplace",
+      "description": "Analysez l’intégration, l’activité, la qualité et la performance financière de vos collaborations avec les professionnels externes.",
+      "noPermissionTitle": "Accès restreint",
+      "noPermission": "Vous ne disposez pas de la permission nécessaire pour consulter les analyses Marketplace.",
+      "missingOrganization": "Aucune organisation active n’est disponible pour charger les analyses Marketplace.",
+      "period": "Période analysée",
+      "loadError": "Impossible de charger les analyses Marketplace",
+      "tabs": {
+        "label": "Sections analytiques",
+        "integration": "Intégration",
+        "operations": "Opérations",
+        "quality": "Qualité",
+        "finance": "Finance"
+      },
+      "comparison": {
+        "title": "Comparaison automatique",
+        "description": "Comparaison avec les {{days}} jours précédents.",
+        "help": "DriveOS compare automatiquement la période choisie à la période précédente de même durée. Les indicateurs instantanés restent affichés sans variation.",
+        "vsPrevious": "vs période précédente",
+        "new": "Nouveau"
+      },
+      "filters": {
+        "open": "Période",
+        "title": "Période analytique",
+        "description": "Choisissez la période à analyser.",
+        "presets": "Raccourcis",
+        "from": "Du",
+        "to": "Au",
+        "apply": "Appliquer",
+        "invalidTitle": "Période invalide",
+        "invalid": "La date de début doit être antérieure ou égale à la date de fin."
+      },
+      "metrics": {
+        "invitationAcceptance": "Taux d’acceptation des invitations",
+        "invitationActivation": "Invitation → activation",
+        "profileCompletion": "Profils complets",
+        "signedContracts": "Contrats préparés / signés",
+        "contractsPrepared": "engagement(s) préparé(s)",
+        "invitationsSent": "Invitations envoyées",
+        "invitationsAccepted": "Invitations acceptées",
+        "invitationsActivated": "Profils activés après invitation",
+        "applicationsAccepted": "Candidatures acceptées",
+        "initialIntegrations": "Intégrations initiales terminées",
+        "reliableRelationships": "Relations fiables",
+        "invitationActivationDelay": "Délai invitation → activation",
+        "documentValidationDelay": "Délai de validation documentaire",
+        "applicationAcceptance": "Taux d’acceptation des candidatures",
+        "plannedHours": "Heures planifiées",
+        "realizedHours": "Heures réalisées",
+        "occupancy": "Taux d’occupation",
+        "studentsHandled": "Élèves pris en charge",
+        "cancelledMissions": "Missions annulées",
+        "cancellationRate": "Taux d’annulation des missions",
+        "reviewedEntries": "Prestations examinées",
+        "firstPassEntries": "Prestations validées sans correction",
+        "firstPassValidation": "Validation au premier passage",
+        "disputeRate": "Taux de litige",
+        "validationDelay": "Délai moyen de validation",
+        "openDisputes": "Litiges ouverts",
+        "invoicedAmount": "Montant facturé",
+        "averageHourlyCost": "Coût horaire moyen",
+        "paymentDelay": "Délai moyen de paiement",
+        "overdueInvoices": "Factures en retard",
+        "failedPayments": "Paiements échoués"
+      },
+      "integration": {
+        "funnel": "Entonnoir d’intégration",
+        "delays": "Délais d’intégration"
+      },
+      "operations": {
+        "capacity": "Capacité et missions",
+        "serviceEntries": "Traitement des prestations"
+      },
+      "quality": {
+        "disputes": "Qualité et litiges",
+        "alerts": "Alertes opérationnelles",
+        "noAlerts": "Aucune alerte Marketplace sur cette période."
+      },
+      "finance": {
+        "invoices": "Factures et paiements",
+        "reading": "Lecture financière",
+        "readingDescription": "Les montants et statuts de paiement proviennent de BC-07 Funding & Billing. BC-13 les consolide ici sans devenir propriétaire des opérations financières."
+      }
+    },
+    "engagementTypes": {
+      "HourlyService": "Prestation horaire",
+      "HalfDay": "Demi-journée",
+      "FullDay": "Journée complète",
+      "FixedMission": "Mission forfaitaire",
+      "RecurringMission": "Mission récurrente",
+      "Replacement": "Remplacement",
+      "Negotiable": "À négocier"
+    }
+  },
+  "communication": {
+    "notifications": {
+      "title": "Notifications",
+      "unread": "Non lues",
+      "all": "Toutes",
+      "markRead": "Marquer comme lue",
+      "dismiss": "Masquer",
+      "preferences": "Préférences",
+      "inApp": "Dans DriveOS",
+      "email": "E-mail"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "tabs": {
+      "marketplace": "Marketplace",
+      "all": "Toutes",
+      "preferences": "Préférences"
+    },
+    "items": "notification(s)",
+    "empty": "Aucune notification.",
+    "fallback": "Notification {{category}}",
+    "actions": {
+      "markRead": "Marquer comme lue",
+      "dismiss": "Masquer"
+    },
+    "preferences": {
+      "inApp": "Dans DriveOS",
+      "email": "E-mail",
+      "empty": "Aucune préférence personnalisée."
+    },
+    "categories": {
+      "MISSION": "Mission",
+      "SERVICE_ENTRY": "Prestation",
+      "DISPUTE": "Litige",
+      "COMPLIANCE": "Conformité",
+      "ENGAGEMENT": "Collaboration",
+      "INVOICE": "Facture",
+      "PAYMENT": "Paiement",
+      "CONTRACT": "Contrat"
     }
   }
 }

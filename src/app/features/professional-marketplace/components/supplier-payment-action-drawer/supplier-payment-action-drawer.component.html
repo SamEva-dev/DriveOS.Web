@@ -1,0 +1,102 @@
+<drive-os-drawer
+  [open]="open()"
+  size="md"
+  (closeRequested)="close()"
+>
+  <div class="grid gap-4 p-5">
+    <header>
+      <p class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+        {{ 'professionalMarketplace.invoices.paymentActions.eyebrow' | translate }}
+      </p>
+      <h2 class="text-xl font-extrabold">
+        {{ 'professionalMarketplace.invoices.paymentActions.' + action() + '.title' | translate }}
+      </h2>
+    </header>
+    @if (
+      action() === 'schedule' ||
+      action() === 'manual' ||
+      action() === 'paid' ||
+      action() === 'refund'
+    ) {
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'professionalMarketplace.invoices.paymentActions.fields.amount' | translate }}
+        <input
+          class="rounded-lg border px-3 py-2 text-sm"
+          type="number"
+          step="0.01"
+          [(ngModel)]="amount"
+        />
+      </label>
+    }
+    @if (action() !== 'failed' && action() !== 'refund') {
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'professionalMarketplace.invoices.paymentActions.fields.date' | translate }}
+        <input
+          class="rounded-lg border px-3 py-2 text-sm"
+          type="date"
+          [(ngModel)]="date"
+        />
+      </label>
+    }
+    @if (action() === 'schedule' || action() === 'manual' || action() === 'refund') {
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'professionalMarketplace.invoices.paymentActions.fields.method' | translate }}
+        <input
+          class="rounded-lg border px-3 py-2 text-sm"
+          [(ngModel)]="paymentMethod"
+        />
+      </label>
+    }
+    @if (action() === 'schedule' || action() === 'manual') {
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'professionalMarketplace.invoices.paymentActions.fields.bankReference' | translate }}
+        <input
+          class="rounded-lg border px-3 py-2 text-sm"
+          [(ngModel)]="bankReference"
+        />
+      </label>
+    }
+    @if (action() === 'manual' || action() === 'paid' || action() === 'refund') {
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'professionalMarketplace.invoices.paymentActions.fields.providerReference' | translate }}
+        <input
+          class="rounded-lg border px-3 py-2 text-sm"
+          [(ngModel)]="providerReference"
+        />
+      </label>
+    }
+    @if (action() === 'failed' || action() === 'refund') {
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'professionalMarketplace.invoices.paymentActions.fields.reason' | translate }}
+        <textarea
+          rows="4"
+          class="rounded-lg border px-3 py-2 text-sm"
+          [(ngModel)]="reason"
+        ></textarea>
+      </label>
+    }
+    @if (formErrors().length) {
+      <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+        @for (e of formErrors(); track e) {
+          <p>{{ e | translate }}</p>
+        }
+      </div>
+    }
+    <footer class="flex justify-end gap-2 border-t pt-4">
+      <button
+        class="rounded-lg border px-3 py-2 text-xs font-bold"
+        [disabled]="busy()"
+        (click)="close()"
+      >
+        {{ 'common.actions.cancel' | translate }}
+      </button>
+      <button
+        class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+        [disabled]="busy()"
+        (click)="submit()"
+      >
+        {{ 'common.actions.confirm' | translate }}
+      </button>
+    </footer>
+  </div>
+</drive-os-drawer>

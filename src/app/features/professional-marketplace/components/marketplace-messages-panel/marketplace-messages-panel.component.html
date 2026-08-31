@@ -1,0 +1,100 @@
+<section class="grid min-h-[420px] grid-rows-[auto_1fr_auto] gap-3">
+  <header
+    class="flex flex-wrap items-start justify-between gap-3 border-b border-[var(--driveos-border)] pb-3"
+  >
+    <div>
+      <h4 class="font-extrabold">{{ 'professionalMarketplace.messages.title' | translate }}</h4>
+      <p class="text-xs text-[var(--driveos-text-secondary)]">
+        {{ 'professionalMarketplace.messages.subtitle' | translate }}
+      </p>
+    </div>
+    <div class="flex items-center gap-2">
+      @if (thread()?.unreadCount) {
+        <span class="rounded-full bg-orange-100 px-2 py-1 text-xs font-bold text-orange-800">
+          {{ thread()!.unreadCount }} {{ 'professionalMarketplace.messages.unread' | translate }}
+        </span>
+      }
+      <button
+        class="rounded-lg border px-3 py-2 text-xs font-bold"
+        [disabled]="loading()"
+        (click)="refresh()"
+      >
+        {{ 'common.actions.refresh' | translate }}
+      </button>
+    </div>
+  </header>
+  <div
+    class="grid content-start gap-3 overflow-y-auto rounded-xl bg-slate-50 p-3 dark:bg-slate-950/30"
+  >
+    @if (loading() && !thread()) {
+      <div class="p-8 text-center text-sm text-[var(--driveos-text-secondary)]">
+        {{ 'common.loading' | translate }}
+      </div>
+    }
+    @for (m of thread()?.messages ?? []; track m.messageId) {
+      <article
+        class="flex"
+        [class.justify-end]="isMine(m.senderUserId)"
+      >
+        <div
+          class="max-w-[85%] rounded-2xl border bg-white px-4 py-3 shadow-sm dark:bg-slate-900"
+          [class.border-blue-300]="isMine(m.senderUserId)"
+        >
+          <div
+            class="mb-1 text-[10px] font-bold uppercase tracking-wide text-[var(--driveos-text-secondary)]"
+          >
+            {{
+              isMine(m.senderUserId)
+                ? ('professionalMarketplace.messages.me' | translate)
+                : ('professionalMarketplace.messages.otherParty' | translate)
+            }}
+            · {{ m.sentAtUtc | date: 'short' }}
+          </div>
+          <p class="whitespace-pre-wrap text-sm">{{ m.body }}</p>
+          @if (m.attachmentDocumentIds.length) {
+            <div class="mt-2 text-xs text-[var(--driveos-text-secondary)]">
+              {{ m.attachmentDocumentIds.length }}
+              {{ 'professionalMarketplace.messages.attachments' | translate }}
+            </div>
+          }
+        </div>
+      </article>
+    } @empty {
+      @if (!loading()) {
+        <div class="p-8 text-center text-sm text-[var(--driveos-text-secondary)]">
+          {{ 'professionalMarketplace.messages.empty' | translate }}
+        </div>
+      }
+    }
+  </div>
+  @if (canSend()) {
+    <footer class="grid gap-2 border-t border-[var(--driveos-border)] pt-3">
+      <textarea
+        class="min-h-24 rounded-xl border bg-[var(--driveos-surface)] px-3 py-2 text-sm"
+        maxlength="4000"
+        [(ngModel)]="message"
+        [placeholder]="'professionalMarketplace.messages.placeholder' | translate"
+      ></textarea>
+      <div class="flex justify-end">
+        <button
+          class="rounded-lg bg-blue-800 px-4 py-2 text-xs font-bold text-white disabled:opacity-50"
+          [disabled]="sending() || !message.trim()"
+          (click)="send()"
+        >
+          {{
+            sending()
+              ? ('common.loading' | translate)
+              : ('professionalMarketplace.messages.send' | translate)
+          }}
+        </button>
+      </div>
+    </footer>
+  }
+  @if (formErrors().length) {
+    <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+      @for (err of formErrors(); track err) {
+        <p>{{ err }}</p>
+      }
+    </div>
+  }
+</section>

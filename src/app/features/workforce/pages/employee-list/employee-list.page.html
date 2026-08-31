@@ -1,30 +1,61 @@
 <section class="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
-  <drive-os-page-header [kicker]="'workforce.label' | translate" [title]="'workforce.employees.title' | translate" [description]="'workforce.employees.description' | translate" icon="ph ph-users-four" />
+  <drive-os-page-header
+    [kicker]="'workforce.label' | translate"
+    [title]="'workforce.employees.title' | translate"
+    [description]="'workforce.employees.description' | translate"
+    icon="ph ph-users-four"
+  />
 
-  <div class="mt-6 flex flex-col gap-3 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 sm:flex-row sm:items-center">
+  <div
+    class="mt-6 flex flex-col gap-3 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 sm:flex-row sm:items-center"
+  >
     <label class="relative flex-1">
-      <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[var(--driveos-text-tertiary)]" aria-hidden="true"></i>
-      <input class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] py-2.5 pl-10 pr-3 text-sm outline-none focus:ring-2 focus:ring-blue-700/20" [ngModel]="search()" (ngModelChange)="search.set($event)" [placeholder]="'workforce.employees.searchPlaceholder' | translate" />
+      <i
+        class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[var(--driveos-text-tertiary)]"
+        aria-hidden="true"
+      ></i>
+      <input
+        class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] py-2.5 pl-10 pr-3 text-sm outline-none focus:ring-2 focus:ring-blue-700/20"
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+        [placeholder]="'workforce.employees.searchPlaceholder' | translate"
+      />
     </label>
-    <select class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5 text-sm" [ngModel]="status()" (ngModelChange)="status.set($event)">
+    <select
+      class="rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5 text-sm"
+      [ngModel]="status()"
+      (ngModelChange)="status.set($event)"
+    >
       <option value="">{{ 'workforce.employees.allStatuses' | translate }}</option>
       @for (item of statuses; track item) {
-        <option [value]="item">{{ ('workforce.status.' + item) | translate }}</option>
+        <option [value]="item">{{ 'workforce.status.' + item | translate }}</option>
       }
     </select>
   </div>
 
   @if (loading()) {
-    <div class="flex min-h-72 items-center justify-center"><drive-os-spinner [label]="'common.loading' | translate" /></div>
+    <div class="flex min-h-72 items-center justify-center">
+      <drive-os-spinner [label]="'common.loading' | translate" />
+    </div>
   } @else if (errors().length) {
     <div class="mt-6 space-y-3">
-      @for (error of errors(); track error) {<drive-os-form-alert tone="danger" [title]="'workforce.employees.loadError' | translate" [message]="error" />}
+      @for (error of errors(); track error) {
+        <drive-os-form-alert
+          tone="danger"
+          [title]="'workforce.employees.loadError' | translate"
+          [message]="error"
+        />
+      }
     </div>
   } @else if (filteredEmployees().length) {
-    <div class="mt-5 overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]">
+    <div
+      class="mt-5 overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]"
+    >
       <div class="overflow-x-auto">
         <table class="w-full min-w-[900px] text-sm">
-          <thead class="bg-[var(--driveos-surface-muted)] text-left text-xs font-extrabold uppercase tracking-wide text-[var(--driveos-text-tertiary)]">
+          <thead
+            class="bg-[var(--driveos-surface-muted)] text-left text-xs font-extrabold uppercase tracking-wide text-[var(--driveos-text-tertiary)]"
+          >
             <tr>
               <th class="px-4 py-3">{{ 'workforce.employees.columns.employee' | translate }}</th>
               <th class="px-4 py-3">{{ 'workforce.employees.columns.status' | translate }}</th>
@@ -35,17 +66,58 @@
           </thead>
           <tbody>
             @for (employee of filteredEmployees(); track employee.id) {
-              <tr class="border-t border-[var(--driveos-border)] hover:bg-[var(--driveos-surface-hover)]">
+              <tr
+                class="border-t border-[var(--driveos-border)] hover:bg-[var(--driveos-surface-hover)]"
+              >
                 <td class="px-4 py-4">
-                  <a [routerLink]="['/workforce/employees', employee.id]" class="font-black text-[var(--driveos-text-primary)] hover:text-blue-800 hover:underline">{{ employee.employeeNumber }}</a>
-                  <p class="mt-1 text-xs text-[var(--driveos-text-tertiary)]">Person · {{ employee.personId }}</p>
+                  <a
+                    [routerLink]="['/workforce/employees', employee.id]"
+                    class="font-black text-[var(--driveos-text-primary)] hover:text-blue-800 hover:underline"
+                  >
+                    {{ employee.employeeNumber }}
+                  </a>
+                  <p class="mt-1 text-xs text-[var(--driveos-text-tertiary)]">
+                    Person · {{ employee.personId }}
+                  </p>
                 </td>
-                <td class="px-4 py-4"><drive-os-status-badge [compact]="true" [tone]="statusTone(employee.status)" [label]="('workforce.status.' + employee.status) | translate" /></td>
-                <td class="px-4 py-4 text-[var(--driveos-text-secondary)]">{{ employee.employmentStartDate | date:'mediumDate' }} → {{ employee.employmentEndDate ? (employee.employmentEndDate | date:'mediumDate') : ('workforce.employees.openEnded' | translate) }}</td>
                 <td class="px-4 py-4">
-                  @if (employee.userId) {<span class="inline-flex items-center gap-2 text-emerald-700"><i class="ph ph-check-circle" aria-hidden="true"></i>{{ 'workforce.employees.linkedAccount' | translate }}</span>} @else {<span class="text-[var(--driveos-text-tertiary)]">{{ 'workforce.employees.noLinkedAccount' | translate }}</span>}
+                  <drive-os-status-badge
+                    [compact]="true"
+                    [tone]="statusTone(employee.status)"
+                    [label]="'workforce.status.' + employee.status | translate"
+                  />
                 </td>
-                <td class="px-4 py-4 text-right"><a [routerLink]="['/workforce/employees', employee.id]" class="font-extrabold text-blue-800 hover:underline">{{ 'common.actions.view' | translate }}</a></td>
+                <td class="px-4 py-4 text-[var(--driveos-text-secondary)]">
+                  {{ employee.employmentStartDate | date: 'mediumDate' }} →
+                  {{
+                    employee.employmentEndDate
+                      ? (employee.employmentEndDate | date: 'mediumDate')
+                      : ('workforce.employees.openEnded' | translate)
+                  }}
+                </td>
+                <td class="px-4 py-4">
+                  @if (employee.userId) {
+                    <span class="inline-flex items-center gap-2 text-emerald-700">
+                      <i
+                        class="ph ph-check-circle"
+                        aria-hidden="true"
+                      ></i>
+                      {{ 'workforce.employees.linkedAccount' | translate }}
+                    </span>
+                  } @else {
+                    <span class="text-[var(--driveos-text-tertiary)]">
+                      {{ 'workforce.employees.noLinkedAccount' | translate }}
+                    </span>
+                  }
+                </td>
+                <td class="px-4 py-4 text-right">
+                  <a
+                    [routerLink]="['/workforce/employees', employee.id]"
+                    class="font-extrabold text-blue-800 hover:underline"
+                  >
+                    {{ 'common.actions.view' | translate }}
+                  </a>
+                </td>
               </tr>
             }
           </tbody>
@@ -53,6 +125,12 @@
       </div>
     </div>
   } @else {
-    <div class="mt-6"><drive-os-empty-state icon="ph ph-users-four" [title]="'workforce.employees.empty' | translate" [description]="'workforce.employees.emptyDescription' | translate" /></div>
+    <div class="mt-6">
+      <drive-os-empty-state
+        icon="ph ph-users-four"
+        [title]="'workforce.employees.empty' | translate"
+        [description]="'workforce.employees.emptyDescription' | translate"
+      />
+    </div>
   }
 </section>

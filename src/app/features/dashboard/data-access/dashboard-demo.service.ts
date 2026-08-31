@@ -91,6 +91,15 @@ export class DashboardDemoService {
         badgeKey: 'dashboard.quickActions.session.badge',
       },
       {
+        code: 'permitAppointment',
+        titleKey: 'dashboard.quickActions.permitAppointment.title',
+        descriptionKey: 'dashboard.quickActions.permitAppointment.description',
+        route: '/planning',
+        tone: 'accent',
+        icon: 'calendar',
+        badgeKey: 'dashboard.quickActions.permitAppointment.badge',
+      },
+      {
         code: 'instructor',
         titleKey: 'dashboard.quickActions.instructor.title',
         descriptionKey: 'dashboard.quickActions.instructor.description',

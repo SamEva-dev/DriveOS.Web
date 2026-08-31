@@ -762,12 +762,10 @@ export class StudentContractsPage {
   removeSignatory(signatoryId: string): void {
     const contract = this.selected();
     if (!contract || !this.canManageSignatories() || !this.signatoriesEditable()) return;
-    this.api
-      .removeSignatory(contract.id, signatoryId)
-      .subscribe({
-        next: () => this.load(contract.id),
-        error: (e: HttpErrorResponse) => this.showErrors(e),
-      });
+    this.api.removeSignatory(contract.id, signatoryId).subscribe({
+      next: () => this.load(contract.id),
+      error: (e: HttpErrorResponse) => this.showErrors(e),
+    });
   }
 
   decideAuthority(signatoryId: string, approved: boolean): void {
@@ -776,12 +774,10 @@ export class StudentContractsPage {
     const reason = approved
       ? undefined
       : this.translate.instant('contracts.training.signatories.authorityRejectedDefault');
-    this.api
-      .decideSignatoryAuthority(contract.id, signatoryId, approved, reason)
-      .subscribe({
-        next: () => this.load(contract.id),
-        error: (e: HttpErrorResponse) => this.showErrors(e),
-      });
+    this.api.decideSignatoryAuthority(contract.id, signatoryId, approved, reason).subscribe({
+      next: () => this.load(contract.id),
+      error: (e: HttpErrorResponse) => this.showErrors(e),
+    });
   }
 
   onDocumentFileSelected(event: Event): void {

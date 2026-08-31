@@ -20,9 +20,7 @@ export const TRAINING_DELIVERY_ROUTES: Routes = [
       {
         path: 'my-day',
         loadComponent: () =>
-          import('./pages/training-my-day/training-my-day.page').then(
-            (m) => m.TrainingMyDayPage,
-          ),
+          import('./pages/training-my-day/training-my-day.page').then((m) => m.TrainingMyDayPage),
         data: { titleKey: 'training.myDay.title' },
       },
       {
@@ -43,7 +41,10 @@ export const TRAINING_DELIVERY_ROUTES: Routes = [
       },
       {
         path: 'group-sessions/:sessionId',
-        loadComponent: () => import('./pages/group-training-session/group-training-session.page').then((m) => m.GroupTrainingSessionPage),
+        loadComponent: () =>
+          import('./pages/group-training-session/group-training-session.page').then(
+            (m) => m.GroupTrainingSessionPage,
+          ),
         data: { titleKey: 'training.groupSession.title' },
       },
       {

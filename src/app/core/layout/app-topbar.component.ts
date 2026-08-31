@@ -8,6 +8,10 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
+import { AuthorizationService } from '../auth/authorization.service';
+import { CommunicationNotificationService } from '../notifications/communication-notification.service';
+import { NotificationCenterDrawerComponent } from '../notifications/notification-center-drawer.component';
 
 import { AuthService } from '../services/auth.service';
 import { ThemeMode } from '../theme/theme-mode';
@@ -16,7 +20,7 @@ import { ThemeService } from '../theme/theme.service';
 @Component({
   selector: 'driveos-app-topbar',
   standalone: true,
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, NotificationCenterDrawerComponent],
   template: `
     <header
       class="flex h-[4.5rem] items-center gap-3 border-b border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 md:px-5"
@@ -114,21 +118,26 @@ import { ThemeService } from '../theme/theme.service';
             aria-hidden="true"
           ></i>
         </button>
-        <button
-          type="button"
-          class="driveos-topbar-icon relative"
-          [attr.aria-label]="'layout.notifications' | translate"
-        >
-          <i
-            class="ph ph-bell text-xl"
-            aria-hidden="true"
-          ></i>
-          <span
-            class="absolute right-0.5 top-0.5 flex size-4 items-center justify-center rounded-full bg-red-600 text-[0.6rem] font-bold text-white"
+        @if (canReadNotifications()) {
+          <button
+            type="button"
+            class="driveos-topbar-icon relative"
+            [attr.aria-label]="'layout.notifications' | translate"
+            (click)="openNotifications()"
           >
-            4
-          </span>
-        </button>
+            <i
+              class="ph ph-bell text-xl"
+              aria-hidden="true"
+            ></i>
+            @if (unreadNotifications() > 0) {
+              <span
+                class="absolute right-0.5 top-0.5 flex min-w-4 h-4 items-center justify-center rounded-full bg-red-600 px-1 text-[0.6rem] font-bold text-white"
+              >
+                {{ unreadNotifications() > 99 ? '99+' : unreadNotifications() }}
+              </span>
+            }
+          </button>
+        }
 
         <label
           class="sr-only"
@@ -178,6 +187,11 @@ import { ThemeService } from '../theme/theme.service';
         </button>
       </div>
     </header>
+    <driveos-notification-center-drawer
+      [open]="notificationsOpen()"
+      (closeRequested)="notificationsOpen.set(false)"
+      (countChanged)="unreadNotifications.set($event)"
+    />
   `,
   styles: `
     .driveos-topbar-icon {
@@ -209,12 +223,37 @@ export class AppTopbarComponent {
   readonly themeService = inject(ThemeService);
   readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly authorization = inject(AuthorizationService);
+  private readonly notifications = inject(CommunicationNotificationService);
   readonly isSigningOut = signal(false);
+  readonly notificationsOpen = signal(false);
+  readonly unreadNotifications = signal(0);
+  readonly canReadNotifications = computed(() =>
+    this.authorization.hasPermission('Communication.Notifications.Read'),
+  );
+  constructor() {
+    void this.loadUnreadCount();
+  }
+
   readonly initials = computed(() => {
     const source = this.auth.user()?.fullName?.trim() || this.auth.user()?.email || 'U';
     const words = source.split(/\s+/).filter(Boolean);
     return (words.length >= 2 ? `${words[0][0]}${words[1][0]}` : source.slice(0, 2)).toUpperCase();
   });
+
+  openNotifications(): void {
+    this.notificationsOpen.set(true);
+  }
+
+  private async loadUnreadCount(): Promise<void> {
+    if (!this.canReadNotifications()) return;
+    try {
+      const result = await firstValueFrom(this.notifications.unreadCount());
+      this.unreadNotifications.set(result.count);
+    } catch {
+      this.unreadNotifications.set(0);
+    }
+  }
 
   async signOut(): Promise<void> {
     if (this.isSigningOut()) return;

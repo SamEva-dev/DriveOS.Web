@@ -1,0 +1,479 @@
+<drive-os-drawer
+  [open]="open()"
+  [title]="'professionalMarketplace.applications.detail.title' | translate"
+  size="lg"
+  (closeRequested)="close()"
+>
+  <div class="grid gap-4 p-5">
+    @if (application(); as a) {
+      <header class="grid gap-2 border-b border-[var(--driveos-border)] pb-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 class="text-xl font-extrabold">{{ a.displayName }}</h3>
+            <p class="text-sm text-[var(--driveos-text-secondary)]">{{ a.headline || '—' }}</p>
+          </div>
+          <span
+            class="rounded-full border border-[var(--driveos-border)] px-3 py-1 text-xs font-bold"
+          >
+            {{ 'professionalMarketplace.applications.status.' + a.status | translate }}
+          </span>
+        </div>
+
+        <div class="flex flex-wrap gap-2 text-xs">
+          <span>
+            {{ a.experienceYears }} {{ 'professionalMarketplace.applications.years' | translate }}
+          </span>
+          <span>•</span>
+          <span>{{ a.primaryServiceArea || '—' }}</span>
+          <span>•</span>
+          <span>{{ a.complianceStatus }}</span>
+        </div>
+      </header>
+
+      <nav class="flex flex-wrap gap-2 border-b border-[var(--driveos-border)]">
+        <button
+          type="button"
+          class="px-3 py-2 text-xs font-bold"
+          [class.border-b-2]="detailTab() === 'application'"
+          [class.border-blue-700]="detailTab() === 'application'"
+          (click)="setDetailTab('application')"
+        >
+          {{ 'professionalMarketplace.applications.tabs.application' | translate }}
+        </button>
+
+        @if (canReadProposals()) {
+          <button
+            type="button"
+            class="px-3 py-2 text-xs font-bold"
+            [class.border-b-2]="detailTab() === 'negotiation'"
+            [class.border-blue-700]="detailTab() === 'negotiation'"
+            (click)="setDetailTab('negotiation')"
+          >
+            {{ 'professionalMarketplace.applications.tabs.negotiation' | translate }}
+          </button>
+        }
+
+        @if (canReadCommercialOffers()) {
+          <button
+            type="button"
+            class="px-3 py-2 text-xs font-bold"
+            [class.border-b-2]="detailTab() === 'commercialOffer'"
+            [class.border-blue-700]="detailTab() === 'commercialOffer'"
+            (click)="setDetailTab('commercialOffer')"
+          >
+            {{ 'professionalMarketplace.applications.tabs.commercialOffer' | translate }}
+          </button>
+        }
+
+        @if (canReadEngagements()) {
+          <button
+            type="button"
+            class="px-3 py-2 text-xs font-bold"
+            [class.border-b-2]="detailTab() === 'engagement'"
+            [class.border-blue-700]="detailTab() === 'engagement'"
+            (click)="setDetailTab('engagement')"
+          >
+            {{ 'professionalMarketplace.applications.tabs.engagement' | translate }}
+          </button>
+        }
+      </nav>
+
+      @if (detailTab() === 'application') {
+        <section class="grid gap-4">
+          <p class="whitespace-pre-wrap text-sm">{{ a.message || '—' }}</p>
+
+          <div class="grid grid-cols-2 gap-3 text-sm max-sm:grid-cols-1">
+            <div>
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.applications.detail.rate' | translate }}
+              </span>
+              <p class="font-bold">
+                {{
+                  a.proposedRate === null
+                    ? '—'
+                    : a.proposedRate + ' ' + (a.currency || '') + '/' + (a.rateUnit || '')
+                }}
+              </p>
+            </div>
+            <div>
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.applications.detail.availability' | translate }}
+              </span>
+              <p class="font-bold">{{ a.availableFrom || '—' }} → {{ a.availableUntil || '—' }}</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-1">
+            @for (category of a.teachingCategoryCodes; track category) {
+              <span class="rounded bg-blue-50 px-2 py-1 text-xs font-bold text-blue-800">
+                {{ category }}
+              </span>
+            }
+            @for (language of a.languages; track language) {
+              <span class="rounded border border-[var(--driveos-border)] px-2 py-1 text-xs">
+                {{ language }}
+              </span>
+            }
+          </div>
+
+          @if (a.decisionReason) {
+            <div class="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
+              <strong>
+                {{ 'professionalMarketplace.applications.detail.decisionReason' | translate }}:
+              </strong>
+              {{ a.decisionReason }}
+            </div>
+          }
+
+          @if (formErrors().length) {
+            <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+              @for (error of formErrors(); track error) {
+                <p>{{ error }}</p>
+              }
+            </div>
+          }
+
+          @if (rejectMode()) {
+            <section class="grid gap-2 rounded-xl border border-red-200 bg-red-50 p-4">
+              <label class="grid gap-1 text-xs font-bold">
+                {{ 'professionalMarketplace.applications.detail.rejectReason' | translate }}
+                <textarea
+                  class="min-h-24 rounded-lg border border-red-200 bg-white px-3 py-2 text-sm"
+                  [(ngModel)]="rejectReason"
+                ></textarea>
+              </label>
+              <div class="flex justify-end gap-2">
+                <button
+                  type="button"
+                  class="rounded-lg border px-3 py-2 text-xs font-bold"
+                  (click)="cancelReject()"
+                >
+                  {{ 'common.actions.cancel' | translate }}
+                </button>
+                <button
+                  type="button"
+                  class="rounded-lg bg-red-700 px-3 py-2 text-xs font-bold text-white"
+                  [disabled]="busy()"
+                  (click)="reject()"
+                >
+                  {{ 'professionalMarketplace.applications.actions.reject' | translate }}
+                </button>
+              </div>
+            </section>
+          } @else {
+            <footer
+              class="flex flex-wrap justify-end gap-2 border-t border-[var(--driveos-border)] pt-4"
+            >
+              @if (canReview() && a.status === 'Submitted') {
+                <button
+                  type="button"
+                  class="rounded-lg border px-3 py-2 text-xs font-bold"
+                  (click)="review()"
+                >
+                  {{ 'professionalMarketplace.applications.actions.review' | translate }}
+                </button>
+              }
+
+              @if (canShortlist() && (a.status === 'Submitted' || a.status === 'UnderReview')) {
+                <button
+                  type="button"
+                  class="rounded-lg border border-blue-300 px-3 py-2 text-xs font-bold text-blue-800"
+                  (click)="shortlist()"
+                >
+                  {{ 'professionalMarketplace.applications.actions.shortlist' | translate }}
+                </button>
+              }
+
+              @if (canReject() && !['Accepted', 'Rejected', 'Withdrawn'].includes(a.status)) {
+                <button
+                  type="button"
+                  class="rounded-lg border border-red-300 px-3 py-2 text-xs font-bold text-red-700"
+                  (click)="requestReject()"
+                >
+                  {{ 'professionalMarketplace.applications.actions.reject' | translate }}
+                </button>
+              }
+
+              @if (canAccept() && !['Accepted', 'Rejected', 'Withdrawn'].includes(a.status)) {
+                <button
+                  type="button"
+                  class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+                  [disabled]="busy()"
+                  (click)="accept()"
+                >
+                  {{ 'professionalMarketplace.applications.actions.accept' | translate }}
+                </button>
+              }
+            </footer>
+          }
+        </section>
+      } @else if (detailTab() === 'negotiation' && canReadProposals()) {
+        <section class="grid gap-3">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h4 class="font-extrabold">
+                {{ 'professionalMarketplace.proposals.sectionTitle' | translate }}
+              </h4>
+              <p class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.proposals.sectionHint' | translate }}
+              </p>
+            </div>
+            @if (canCreateProposal()) {
+              <button
+                type="button"
+                class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+                (click)="createProposal()"
+              >
+                {{ 'professionalMarketplace.proposals.actions.new' | translate }}
+              </button>
+            }
+          </div>
+
+          @if (proposalsLoading()) {
+            <div class="rounded-xl border p-6 text-center text-sm">
+              {{ 'common.loading' | translate }}
+            </div>
+          } @else if (proposalsError()) {
+            <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+              {{ 'professionalMarketplace.proposals.errors.load' | translate }}
+            </div>
+          } @else {
+            @for (proposal of proposals(); track proposal.id) {
+              <button
+                type="button"
+                class="grid grid-cols-[1fr_auto] gap-3 rounded-xl border border-[var(--driveos-border)] p-4 text-left hover:border-blue-300 max-sm:grid-cols-1"
+                (click)="openProposal(proposal)"
+              >
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <strong>{{ proposal.subject }}</strong>
+                    <span class="rounded-full border px-2 py-1 text-[11px] font-bold">
+                      {{
+                        'professionalMarketplace.proposals.status.' + proposal.status | translate
+                      }}
+                    </span>
+                    <span class="text-xs">v{{ proposal.revision }}</span>
+                  </div>
+                  <p class="mt-2 line-clamp-2 text-sm">{{ proposal.message || '—' }}</p>
+                </div>
+                <div class="text-right max-sm:text-left">
+                  <p class="font-bold">
+                    {{
+                      proposal.proposedRate === null
+                        ? '—'
+                        : proposal.proposedRate +
+                          ' ' +
+                          (proposal.currency || '') +
+                          '/' +
+                          (proposal.rateUnit || '')
+                    }}
+                  </p>
+                  <p class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ proposal.startsOn }} → {{ proposal.endsOn }}
+                  </p>
+                </div>
+              </button>
+            } @empty {
+              <div
+                class="rounded-xl border border-dashed border-[var(--driveos-border)] p-8 text-center text-sm text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'professionalMarketplace.proposals.empty' | translate }}
+              </div>
+            }
+          }
+        </section>
+      } @else if (detailTab() === 'commercialOffer' && canReadCommercialOffers()) {
+        <section class="grid gap-3">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h4 class="font-extrabold">
+                {{ 'professionalMarketplace.commercialOffers.sectionTitle' | translate }}
+              </h4>
+              <p class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.commercialOffers.sectionHint' | translate }}
+              </p>
+            </div>
+            @if (canCreateCommercialOffer() && (a.status === 'Accepted' || acceptedProposal())) {
+              <button
+                type="button"
+                class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+                (click)="createCommercialOffer()"
+              >
+                {{ 'professionalMarketplace.commercialOffers.actions.new' | translate }}
+              </button>
+            }
+          </div>
+
+          @if (commercialOffersLoading()) {
+            <div class="rounded-xl border p-6 text-center text-sm">
+              {{ 'common.loading' | translate }}
+            </div>
+          } @else if (commercialOffersError()) {
+            <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+              {{ 'professionalMarketplace.commercialOffers.errors.load' | translate }}
+            </div>
+          } @else {
+            @for (offer of commercialOffers(); track offer.id) {
+              <button
+                type="button"
+                class="grid grid-cols-[1fr_auto] gap-3 rounded-xl border border-[var(--driveos-border)] p-4 text-left hover:border-blue-300 max-sm:grid-cols-1"
+                (click)="openCommercialOffer(offer)"
+              >
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <strong>
+                      {{ 'professionalMarketplace.commercialOffers.offer' | translate }} v{{
+                        offer.revision
+                      }}
+                    </strong>
+                    <span class="rounded-full border px-2 py-1 text-[11px] font-bold">
+                      {{
+                        'professionalMarketplace.commercialOffers.status.' + offer.status
+                          | translate
+                      }}
+                    </span>
+                  </div>
+                  <p class="mt-2 text-sm">{{ offer.terms.teachingCategoryCodes.join(', ') }}</p>
+                  <p class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ offer.terms.startsOn }} → {{ offer.terms.endsOn }}
+                  </p>
+                </div>
+                <div class="text-right max-sm:text-left">
+                  <p class="font-bold">
+                    {{
+                      offer.terms.rateAmount === null
+                        ? '—'
+                        : offer.terms.rateAmount +
+                          ' ' +
+                          (offer.terms.currency || '') +
+                          '/' +
+                          (offer.terms.rateUnit || '')
+                    }}
+                  </p>
+                  <p class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{
+                      'professionalMarketplace.engagementTypes.' + offer.terms.engagementType
+                        | translate
+                    }}
+                  </p>
+                </div>
+              </button>
+            } @empty {
+              <div
+                class="rounded-xl border border-dashed border-[var(--driveos-border)] p-8 text-center text-sm text-[var(--driveos-text-secondary)]"
+              >
+                {{ 'professionalMarketplace.commercialOffers.empty' | translate }}
+              </div>
+            }
+          }
+        </section>
+      } @else if (detailTab() === 'engagement' && canReadEngagements()) {
+        <section class="grid gap-3">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h4 class="font-extrabold">
+                {{ 'professionalMarketplace.engagements.sectionTitle' | translate }}
+              </h4>
+              <p class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.engagements.sectionHint' | translate }}
+              </p>
+            </div>
+            @if (canCreateEngagement() && finalizedOffer() && engagements().length === 0) {
+              <button
+                type="button"
+                class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+                [disabled]="busy()"
+                (click)="createEngagement()"
+              >
+                {{ 'professionalMarketplace.engagements.actions.create' | translate }}
+              </button>
+            }
+          </div>
+
+          @if (engagementsLoading()) {
+            <div class="rounded-xl border p-6 text-center text-sm">
+              {{ 'common.loading' | translate }}
+            </div>
+          } @else {
+            @for (engagement of engagements(); track engagement.id) {
+              <button
+                type="button"
+                class="grid grid-cols-[1fr_auto] gap-3 rounded-xl border border-[var(--driveos-border)] p-4 text-left hover:border-blue-300 max-sm:grid-cols-1"
+                (click)="openEngagement(engagement)"
+              >
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <strong>{{ 'professionalMarketplace.engagements.title' | translate }}</strong>
+                    <span class="rounded-full border px-2 py-1 text-[11px] font-bold">
+                      {{
+                        'professionalMarketplace.engagements.status.' + engagement.status
+                          | translate
+                      }}
+                    </span>
+                  </div>
+                  <p class="mt-2 text-sm">
+                    {{ engagement.terms.teachingCategoryCodes.join(', ') }}
+                  </p>
+                  <p class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ engagement.terms.startsOn }} → {{ engagement.terms.endsOn }}
+                  </p>
+                </div>
+                <div class="text-right max-sm:text-left">
+                  <p class="font-bold">
+                    {{
+                      engagement.isOperationallyReady
+                        ? ('professionalMarketplace.engagements.ready' | translate)
+                        : ('professionalMarketplace.engagements.preparing' | translate)
+                    }}
+                  </p>
+                  <p class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{
+                      'professionalMarketplace.engagementTypes.' + engagement.terms.engagementType
+                        | translate
+                    }}
+                  </p>
+                </div>
+              </button>
+            } @empty {
+              <div
+                class="rounded-xl border border-dashed border-[var(--driveos-border)] p-8 text-center text-sm text-[var(--driveos-text-secondary)]"
+              >
+                @if (finalizedOffer()) {
+                  <span>{{ 'professionalMarketplace.engagements.emptyReady' | translate }}</span>
+                } @else {
+                  <span>
+                    {{ 'professionalMarketplace.engagements.emptyOfferRequired' | translate }}
+                  </span>
+                }
+              </div>
+            }
+          }
+        </section>
+      }
+    }
+  </div>
+
+  <driveos-professional-proposal-drawer
+    [open]="proposalDrawerOpen()"
+    [proposal]="selectedProposal()"
+    [application]="application()"
+    (closeRequested)="closeProposal()"
+    (changed)="proposalChanged()"
+  />
+
+  <driveos-professional-commercial-offer-drawer
+    [open]="commercialOfferDrawerOpen()"
+    [offer]="selectedCommercialOffer()"
+    [application]="application()"
+    [sourceProposal]="acceptedProposal()"
+    (closeRequested)="closeCommercialOffer()"
+    (changed)="commercialOfferChanged()"
+  />
+
+  <driveos-professional-engagement-drawer
+    [open]="engagementDrawerOpen()"
+    [engagementId]="selectedEngagementId()"
+    (closeRequested)="closeEngagement()"
+    (changed)="engagementChanged()"
+  />
+</drive-os-drawer>

@@ -1,0 +1,255 @@
+<section class="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
+  <drive-os-page-header
+    [kicker]="'professionalMarketplace.label' | translate"
+    [title]="'professionalMarketplace.dashboard.title' | translate"
+    [description]="'professionalMarketplace.dashboard.description' | translate"
+    icon="ph ph-handshake"
+  />
+
+  @if (loading()) {
+    <div class="flex min-h-72 items-center justify-center">
+      <drive-os-spinner [label]="'common.loading' | translate" />
+    </div>
+  } @else if (errors().length) {
+    <div class="mt-6 space-y-3">
+      @for (error of errors(); track error) {
+        <drive-os-form-alert
+          tone="danger"
+          [title]="'professionalMarketplace.dashboard.loadError' | translate"
+          [message]="error"
+        />
+      }
+      <button
+        type="button"
+        class="rounded-xl bg-blue-800 px-4 py-2 text-sm font-bold text-white"
+        (click)="load()"
+      >
+        {{ 'common.actions.retry' | translate }}
+      </button>
+    </div>
+  } @else if (dashboard(); as data) {
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
+      <drive-os-stat-card
+        [label]="'professionalMarketplace.dashboard.kpis.activeEngagements' | translate"
+        [value]="data.kpis.activeEngagements"
+        icon="ph ph-handshake"
+        state="success"
+      />
+      <drive-os-stat-card
+        [label]="'professionalMarketplace.dashboard.kpis.activeMissions' | translate"
+        [value]="data.kpis.activeMissions"
+        icon="ph ph-briefcase"
+      />
+      <drive-os-stat-card
+        [label]="'professionalMarketplace.dashboard.kpis.pendingEntries' | translate"
+        [value]="data.kpis.pendingServiceEntries"
+        icon="ph ph-clock-countdown"
+        state="warning"
+      />
+      <drive-os-stat-card
+        [label]="'professionalMarketplace.dashboard.kpis.disputedEntries' | translate"
+        [value]="data.kpis.disputedServiceEntries"
+        icon="ph ph-warning-circle"
+        state="danger"
+      />
+      <drive-os-stat-card
+        [label]="'professionalMarketplace.dashboard.kpis.pendingInvoices' | translate"
+        [value]="data.kpis.pendingInvoices"
+        icon="ph ph-receipt"
+        state="warning"
+      />
+      <drive-os-stat-card
+        [label]="'professionalMarketplace.dashboard.kpis.expiringCredentials' | translate"
+        [value]="data.kpis.expiringCredentials"
+        icon="ph ph-shield-warning"
+        state="warning"
+      />
+    </div>
+
+    @if (data.advanced; as advanced) {
+      <div class="mt-6 grid gap-5 xl:grid-cols-3">
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <p
+            class="text-xs font-extrabold uppercase tracking-[.12em] text-[var(--driveos-text-tertiary)]"
+          >
+            {{ 'professionalMarketplace.dashboard.sections.integration' | translate }}
+          </p>
+          <h2 class="mt-1 text-lg font-black">
+            {{ 'professionalMarketplace.dashboard.sections.integrationTitle' | translate }}
+          </h2>
+          <dl class="mt-5 space-y-3 text-sm">
+            <div class="flex items-center justify-between gap-4">
+              <dt>{{ 'professionalMarketplace.dashboard.kpis.profileCompletion' | translate }}</dt>
+              <dd class="font-black">{{ formatPercent(advanced.profileCompletionRatePercent) }}</dd>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <dt>
+                {{ 'professionalMarketplace.dashboard.kpis.invitationAcceptance' | translate }}
+              </dt>
+              <dd class="font-black">
+                {{ formatPercent(advanced.invitationAcceptanceRatePercent) }}
+              </dd>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <dt>{{ 'professionalMarketplace.dashboard.kpis.signedContractRate' | translate }}</dt>
+              <dd class="font-black">{{ formatPercent(advanced.signedContractRatePercent) }}</dd>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <dt>
+                {{ 'professionalMarketplace.dashboard.kpis.reliableRelationships' | translate }}
+              </dt>
+              <dd class="font-black">{{ advanced.reliableRelationships }}</dd>
+            </div>
+          </dl>
+        </article>
+
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <p
+            class="text-xs font-extrabold uppercase tracking-[.12em] text-[var(--driveos-text-tertiary)]"
+          >
+            {{ 'professionalMarketplace.dashboard.sections.operations' | translate }}
+          </p>
+          <h2 class="mt-1 text-lg font-black">
+            {{ 'professionalMarketplace.dashboard.sections.operationsTitle' | translate }}
+          </h2>
+          <dl class="mt-5 space-y-3 text-sm">
+            <div class="flex items-center justify-between gap-4">
+              <dt>{{ 'professionalMarketplace.dashboard.kpis.plannedHours' | translate }}</dt>
+              <dd class="font-black">{{ advanced.plannedHours | number: '1.0-1' }} h</dd>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <dt>{{ 'professionalMarketplace.dashboard.kpis.realizedHours' | translate }}</dt>
+              <dd class="font-black">{{ advanced.realizedHours | number: '1.0-1' }} h</dd>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <dt>{{ 'professionalMarketplace.dashboard.kpis.occupancy' | translate }}</dt>
+              <dd class="font-black">{{ formatPercent(advanced.occupancyRatePercent) }}</dd>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <dt>{{ 'professionalMarketplace.dashboard.kpis.studentsHandled' | translate }}</dt>
+              <dd class="font-black">{{ advanced.studentsHandled }}</dd>
+            </div>
+          </dl>
+        </article>
+
+        <article
+          class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+        >
+          <p
+            class="text-xs font-extrabold uppercase tracking-[.12em] text-[var(--driveos-text-tertiary)]"
+          >
+            {{ 'professionalMarketplace.dashboard.sections.finance' | translate }}
+          </p>
+          <h2 class="mt-1 text-lg font-black">
+            {{ 'professionalMarketplace.dashboard.sections.financeTitle' | translate }}
+          </h2>
+          <dl class="mt-5 space-y-3 text-sm">
+            <div class="flex items-center justify-between gap-4">
+              <dt>{{ 'professionalMarketplace.dashboard.kpis.invoicedAmount' | translate }}</dt>
+              <dd class="font-black">
+                {{ formatMoney(advanced.invoicedAmount, advanced.invoicedCurrency) }}
+              </dd>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <dt>{{ 'professionalMarketplace.dashboard.kpis.overdueInvoices' | translate }}</dt>
+              <dd class="font-black">{{ advanced.overdueInvoices }}</dd>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <dt>
+                {{ 'professionalMarketplace.dashboard.kpis.averagePaymentDelay' | translate }}
+              </dt>
+              <dd class="font-black">{{ formatHours(data.kpis.averagePaymentDelayHours) }}</dd>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <dt>{{ 'professionalMarketplace.dashboard.kpis.averageHourlyCost' | translate }}</dt>
+              <dd class="font-black">
+                {{ formatMoney(advanced.averageHourlyCost, advanced.costCurrency) }}
+              </dd>
+            </div>
+          </dl>
+        </article>
+      </div>
+    }
+
+    <div class="mt-6 grid gap-5 xl:grid-cols-[1.35fr_.65fr]">
+      <section
+        class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
+        <h2 class="text-lg font-black">
+          {{ 'professionalMarketplace.dashboard.alerts.title' | translate }}
+        </h2>
+        <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+          {{ 'professionalMarketplace.dashboard.alerts.description' | translate }}
+        </p>
+        @if (data.alerts.length) {
+          <div class="mt-4 space-y-3">
+            @for (alert of data.alerts; track alert.code + (alert.entityId ?? '')) {
+              <article class="rounded-xl border border-[var(--driveos-border)] p-4">
+                <div class="flex items-start gap-3">
+                  <span
+                    class="mt-1 size-2.5 shrink-0 rounded-full"
+                    [class.bg-red-500]="alertTone(alert.severity) === 'danger'"
+                    [class.bg-orange-500]="alertTone(alert.severity) === 'warning'"
+                    [class.bg-blue-500]="alertTone(alert.severity) === 'info'"
+                  ></span>
+                  <div class="min-w-0 flex-1">
+                    <p class="font-bold text-[var(--driveos-text-primary)]">
+                      {{ alertMessage(alert) }}
+                    </p>
+                    @if (alert.dueDate) {
+                      <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                        {{ alert.dueDate | date: 'mediumDate' }}
+                      </p>
+                    }
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="mt-5">
+            <drive-os-empty-state
+              icon="shield-check"
+              [compact]="true"
+              tone="success"
+              [title]="'professionalMarketplace.dashboard.alerts.empty' | translate"
+            />
+          </div>
+        }
+      </section>
+
+      <aside
+        class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+      >
+        <h2 class="text-lg font-black">
+          {{ 'professionalMarketplace.dashboard.quickAccess.title' | translate }}
+        </h2>
+        <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+          {{ 'professionalMarketplace.dashboard.quickAccess.description' | translate }}
+        </p>
+        <dl class="mt-5 space-y-3 text-sm">
+          <div class="flex items-center justify-between gap-4">
+            <dt>{{ 'professionalMarketplace.dashboard.kpis.pendingStatements' | translate }}</dt>
+            <dd class="font-black">{{ data.kpis.pendingStatements }}</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>{{ 'professionalMarketplace.dashboard.kpis.scheduledPayments' | translate }}</dt>
+            <dd class="font-black">{{ data.kpis.scheduledPayments }}</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>{{ 'professionalMarketplace.dashboard.kpis.paidInvoices' | translate }}</dt>
+            <dd class="font-black">{{ data.kpis.paidInvoices }}</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt>{{ 'professionalMarketplace.dashboard.kpis.openReviewReports' | translate }}</dt>
+            <dd class="font-black">{{ data.kpis.openReviewReports }}</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  }
+</section>

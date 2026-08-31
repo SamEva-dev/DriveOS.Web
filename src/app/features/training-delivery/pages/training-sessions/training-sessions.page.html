@@ -1,70 +1,372 @@
 <div class="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 lg:py-8">
   <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
     <div>
-      <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-orange-600">{{ 'training.sessions.kicker' | translate }}</p>
-      <h2 class="mt-1 text-2xl font-black tracking-tight text-[var(--driveos-text-primary)] sm:text-3xl">{{ 'training.sessions.title' | translate }}</h2>
-      <p class="mt-2 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ 'training.sessions.description' | translate }}</p>
+      <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-orange-600">
+        {{ 'training.sessions.kicker' | translate }}
+      </p>
+      <h2
+        class="mt-1 text-2xl font-black tracking-tight text-[var(--driveos-text-primary)] sm:text-3xl"
+      >
+        {{ 'training.sessions.title' | translate }}
+      </h2>
+      <p class="mt-2 max-w-3xl text-sm leading-6 text-[var(--driveos-text-secondary)]">
+        {{ 'training.sessions.description' | translate }}
+      </p>
     </div>
     <div class="flex flex-wrap items-center gap-2">
-      <div class="flex rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-1">
-        @for (item of ['today','week','month']; track item) {
-          <button type="button" class="rounded-lg px-3 py-2 text-xs font-extrabold transition" [class.bg-blue-800]="period() === item" [class.text-white]="period() === item" [class.text-[var(--driveos-text-secondary)]]="period() !== item" (click)="setPeriod($any(item))">{{ ('training.sessions.period.' + item) | translate }}</button>
+      <div
+        class="flex rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-1"
+      >
+        @for (item of ['today', 'week', 'month']; track item) {
+          <button
+            type="button"
+            class="rounded-lg px-3 py-2 text-xs font-extrabold transition"
+            [class.bg-blue-800]="period() === item"
+            [class.text-white]="period() === item"
+            [class.text-[var(--driveos-text-secondary)]]="period() !== item"
+            (click)="setPeriod($any(item))"
+          >
+            {{ 'training.sessions.period.' + item | translate }}
+          </button>
         }
       </div>
-      <drive-os-button variant="secondary" icon="funnel" (pressed)="filtersOpen.set(true)">{{ 'training.sessions.actions.filters' | translate }} @if (activeFilterCount()) { ({{ activeFilterCount() }}) }</drive-os-button>
-      <drive-os-button variant="secondary" icon="arrows-clockwise" [disabled]="loading()" (pressed)="load()">{{ 'training.actions.refresh' | translate }}</drive-os-button>
+      <drive-os-button
+        variant="secondary"
+        icon="funnel"
+        (pressed)="filtersOpen.set(true)"
+      >
+        {{ 'training.sessions.actions.filters' | translate }}
+        @if (activeFilterCount()) {
+          ({{ activeFilterCount() }})
+        }
+      </drive-os-button>
+      <drive-os-button
+        variant="secondary"
+        icon="arrows-clockwise"
+        [disabled]="loading()"
+        (pressed)="load()"
+      >
+        {{ 'training.actions.refresh' | translate }}
+      </drive-os-button>
     </div>
   </div>
 
   @if (errors().length) {
-    <drive-os-state-banner class="mt-5" tone="danger" icon="ph ph-warning-circle" [title]="'training.sessions.loadError' | translate">
-      <div class="space-y-1">@for (error of errors(); track error) { <p>{{ error }}</p> }</div>
+    <drive-os-state-banner
+      class="mt-5"
+      tone="danger"
+      icon="ph ph-warning-circle"
+      [title]="'training.sessions.loadError' | translate"
+    >
+      <div class="space-y-1">
+        @for (error of errors(); track error) {
+          <p>{{ error }}</p>
+        }
+      </div>
     </drive-os-state-banner>
   }
 
   <div class="mt-6 grid gap-3 sm:grid-cols-3">
-    <div class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"><p class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]">{{ 'training.sessions.summary.visible' | translate }}</p><p class="mt-2 text-3xl font-black">{{ filteredSessions().length }}</p></div>
-    <div class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"><p class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]">{{ 'training.sessions.summary.inProgress' | translate }}</p><p class="mt-2 text-3xl font-black">{{ totalInProgress() }}</p></div>
-    <div class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"><p class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]">{{ 'training.sessions.summary.attention' | translate }}</p><p class="mt-2 text-3xl font-black">{{ totalAttention() }}</p></div>
+    <div
+      class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"
+    >
+      <p class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]">
+        {{ 'training.sessions.summary.visible' | translate }}
+      </p>
+      <p class="mt-2 text-3xl font-black">{{ filteredSessions().length }}</p>
+    </div>
+    <div
+      class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"
+    >
+      <p class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]">
+        {{ 'training.sessions.summary.inProgress' | translate }}
+      </p>
+      <p class="mt-2 text-3xl font-black">{{ totalInProgress() }}</p>
+    </div>
+    <div
+      class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4"
+    >
+      <p class="text-xs font-bold uppercase tracking-wider text-[var(--driveos-text-tertiary)]">
+        {{ 'training.sessions.summary.attention' | translate }}
+      </p>
+      <p class="mt-2 text-3xl font-black">{{ totalAttention() }}</p>
+    </div>
   </div>
 
-  <div class="mt-5 overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]">
-    @if (loading()) { <div class="grid min-h-72 place-items-center"><drive-os-spinner /></div> }
-    @else if (!filteredSessions().length) { <drive-os-empty-state class="block p-10" icon="ph-duotone ph-calendar-blank" [title]="'training.sessions.empty.title' | translate" [description]="'training.sessions.empty.description' | translate" /> }
-    @else {
+  <div
+    class="mt-5 overflow-hidden rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]"
+  >
+    @if (loading()) {
+      <div class="grid min-h-72 place-items-center"><drive-os-spinner /></div>
+    } @else if (!filteredSessions().length) {
+      <drive-os-empty-state
+        class="block p-10"
+        icon="ph-duotone ph-calendar-blank"
+        [title]="'training.sessions.empty.title' | translate"
+        [description]="'training.sessions.empty.description' | translate"
+      />
+    } @else {
       <div class="hidden overflow-x-auto lg:block">
         <table class="w-full text-left text-sm">
-          <thead class="border-b border-[var(--driveos-border)] bg-[var(--driveos-surface-subtle)] text-xs uppercase tracking-wide text-[var(--driveos-text-tertiary)]"><tr>
-            <th class="px-5 py-3">{{ 'training.sessions.columns.date' | translate }}</th><th class="px-5 py-3">{{ 'training.sessions.columns.student' | translate }}</th><th class="px-5 py-3">{{ 'training.sessions.columns.category' | translate }}</th><th class="px-5 py-3">{{ 'training.sessions.columns.status' | translate }}</th><th class="px-5 py-3">{{ 'training.sessions.columns.attendance' | translate }}</th><th class="px-5 py-3">{{ 'training.sessions.columns.duration' | translate }}</th><th class="px-5 py-3">{{ 'training.sessions.columns.alerts' | translate }}</th>
-          </tr></thead>
-          <tbody class="divide-y divide-[var(--driveos-border)]">@for (session of filteredSessions(); track session.id) {
-            <tr class="cursor-pointer transition hover:bg-[var(--driveos-surface-hover)]" (click)="openSession(session)">
-              <td class="px-5 py-4"><div class="font-extrabold">{{ session.plannedStartAtUtc | date:'dd/MM/yyyy' }}</div><div class="text-xs text-[var(--driveos-text-secondary)]">{{ session.plannedStartAtUtc | date:'HH:mm' }} – {{ session.plannedEndAtUtc | date:'HH:mm' }}</div></td>
-              <td class="px-5 py-4 font-bold">{{ session.studentDisplayName }}</td><td class="px-5 py-4">{{ session.trainingCategory || '—' }}</td>
-              <td class="px-5 py-4"><span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-800 dark:bg-blue-950/30 dark:text-blue-200">{{ statusKey(session.status) | translate }}</span></td>
-              <td class="px-5 py-4">{{ attendanceKey(session.attendanceStatus) | translate }}</td><td class="px-5 py-4">{{ session.deliveredDurationMinutes ?? plannedDurationMinutes(session) }} min</td>
-              <td class="px-5 py-4">@if (hasAttention(session)) { <span class="inline-flex items-center gap-1 rounded-full bg-orange-50 px-2.5 py-1 text-xs font-bold text-orange-800 dark:bg-orange-950/30 dark:text-orange-200"><i class="ph ph-warning"></i>{{ 'training.sessions.attention.label' | translate }}</span> } @else { <span class="text-[var(--driveos-text-tertiary)]">—</span> }</td>
-            </tr> }
+          <thead
+            class="border-b border-[var(--driveos-border)] bg-[var(--driveos-surface-subtle)] text-xs uppercase tracking-wide text-[var(--driveos-text-tertiary)]"
+          >
+            <tr>
+              <th class="px-5 py-3">{{ 'training.sessions.columns.date' | translate }}</th>
+              <th class="px-5 py-3">{{ 'training.sessions.columns.student' | translate }}</th>
+              <th class="px-5 py-3">{{ 'training.sessions.columns.category' | translate }}</th>
+              <th class="px-5 py-3">{{ 'training.sessions.columns.status' | translate }}</th>
+              <th class="px-5 py-3">{{ 'training.sessions.columns.attendance' | translate }}</th>
+              <th class="px-5 py-3">{{ 'training.sessions.columns.duration' | translate }}</th>
+              <th class="px-5 py-3">{{ 'training.sessions.columns.alerts' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[var(--driveos-border)]">
+            @for (session of filteredSessions(); track session.id) {
+              <tr
+                class="cursor-pointer transition hover:bg-[var(--driveos-surface-hover)]"
+                (click)="openSession(session)"
+              >
+                <td class="px-5 py-4">
+                  <div class="font-extrabold">
+                    {{ session.plannedStartAtUtc | date: 'dd/MM/yyyy' }}
+                  </div>
+                  <div class="text-xs text-[var(--driveos-text-secondary)]">
+                    {{ session.plannedStartAtUtc | date: 'HH:mm' }} –
+                    {{ session.plannedEndAtUtc | date: 'HH:mm' }}
+                  </div>
+                </td>
+                <td class="px-5 py-4 font-bold">{{ session.studentDisplayName }}</td>
+                <td class="px-5 py-4">{{ session.trainingCategory || '—' }}</td>
+                <td class="px-5 py-4">
+                  <span
+                    class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-800 dark:bg-blue-950/30 dark:text-blue-200"
+                  >
+                    {{ statusKey(session.status) | translate }}
+                  </span>
+                </td>
+                <td class="px-5 py-4">{{ attendanceKey(session.attendanceStatus) | translate }}</td>
+                <td class="px-5 py-4">
+                  {{ session.deliveredDurationMinutes ?? plannedDurationMinutes(session) }} min
+                </td>
+                <td class="px-5 py-4">
+                  @if (hasAttention(session)) {
+                    <span
+                      class="inline-flex items-center gap-1 rounded-full bg-orange-50 px-2.5 py-1 text-xs font-bold text-orange-800 dark:bg-orange-950/30 dark:text-orange-200"
+                    >
+                      <i class="ph ph-warning"></i>
+                      {{ 'training.sessions.attention.label' | translate }}
+                    </span>
+                  } @else {
+                    <span class="text-[var(--driveos-text-tertiary)]">—</span>
+                  }
+                </td>
+              </tr>
+            }
           </tbody>
         </table>
       </div>
-      <div class="divide-y divide-[var(--driveos-border)] lg:hidden">@for (session of filteredSessions(); track session.id) {
-        <button type="button" class="w-full p-4 text-left" (click)="openSession(session)"><div class="flex items-start justify-between gap-3"><div><div class="font-black">{{ session.studentDisplayName }}</div><div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">{{ session.plannedStartAtUtc | date:'EEE d MMM, HH:mm' }} · {{ session.trainingCategory || '—' }}</div></div><span class="rounded-full bg-blue-50 px-2 py-1 text-[0.7rem] font-bold text-blue-800 dark:bg-blue-950/30 dark:text-blue-200">{{ statusKey(session.status) | translate }}</span></div>@if (hasAttention(session)) { <div class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-orange-700"><i class="ph ph-warning"></i>{{ 'training.sessions.attention.label' | translate }}</div> }</button>
-      }</div>
+      <div class="divide-y divide-[var(--driveos-border)] lg:hidden">
+        @for (session of filteredSessions(); track session.id) {
+          <button
+            type="button"
+            class="w-full p-4 text-left"
+            (click)="openSession(session)"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="font-black">{{ session.studentDisplayName }}</div>
+                <div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                  {{ session.plannedStartAtUtc | date: 'EEE d MMM, HH:mm' }} ·
+                  {{ session.trainingCategory || '—' }}
+                </div>
+              </div>
+              <span
+                class="rounded-full bg-blue-50 px-2 py-1 text-[0.7rem] font-bold text-blue-800 dark:bg-blue-950/30 dark:text-blue-200"
+              >
+                {{ statusKey(session.status) | translate }}
+              </span>
+            </div>
+            @if (hasAttention(session)) {
+              <div class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-orange-700">
+                <i class="ph ph-warning"></i>
+                {{ 'training.sessions.attention.label' | translate }}
+              </div>
+            }
+          </button>
+        }
+      </div>
     }
   </div>
 </div>
 
-<drive-os-drawer [open]="filtersOpen()" [title]="'training.sessions.filters.title' | translate" [description]="'training.sessions.filters.description' | translate" (closeRequested)="filtersOpen.set(false)">
+<drive-os-drawer
+  [open]="filtersOpen()"
+  [title]="'training.sessions.filters.title' | translate"
+  [description]="'training.sessions.filters.description' | translate"
+  (closeRequested)="filtersOpen.set(false)"
+>
   <div class="space-y-5 p-1">
-    <label class="block"><span class="mb-2 block text-sm font-bold">{{ 'training.sessions.filters.search' | translate }}</span><input class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5" [value]="query()" (input)="updateQuery($any($event.target).value)" [placeholder]="'training.sessions.filters.searchPlaceholder' | translate" /></label>
-    <label class="block"><span class="mb-2 block text-sm font-bold">{{ 'training.sessions.filters.status' | translate }}</span><select class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5" [value]="status() ?? ''" (change)="setStatus($any($event.target).value)"><option value="">{{ 'training.sessions.filters.all' | translate }}</option>@for (value of [1,2,3,4,5,6]; track value) { <option [value]="value">{{ statusKey(value) | translate }}</option> }</select></label>
-    <label class="block"><span class="mb-2 block text-sm font-bold">{{ 'training.sessions.filters.attendance' | translate }}</span><select class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5" [value]="attendance() ?? ''" (change)="setAttendance($any($event.target).value)"><option value="">{{ 'training.sessions.filters.all' | translate }}</option>@for (value of [1,2,3,4,5,6,7,8]; track value) { <option [value]="value">{{ attendanceKey(value) | translate }}</option> }</select></label>
-    <label class="block"><span class="mb-2 block text-sm font-bold">{{ 'training.sessions.filters.attention' | translate }}</span><select class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5" [value]="attention()" (change)="setAttention($any($event.target).value)"><option value="all">{{ 'training.sessions.filters.all' | translate }}</option><option value="reports">{{ 'training.sessions.filters.missingReports' | translate }}</option><option value="incidents">{{ 'training.sessions.filters.openIncidents' | translate }}</option><option value="duration">{{ 'training.sessions.filters.durationVariance' | translate }}</option><option value="late">{{ 'training.sessions.filters.late' | translate }}</option></select></label>
-    <div class="flex gap-2 pt-2"><drive-os-button variant="secondary" icon="eraser" (pressed)="resetFilters()">{{ 'training.sessions.actions.reset' | translate }}</drive-os-button><drive-os-button icon="check" (pressed)="filtersOpen.set(false)">{{ 'training.sessions.actions.apply' | translate }}</drive-os-button></div>
+    <label class="block">
+      <span class="mb-2 block text-sm font-bold">
+        {{ 'training.sessions.filters.search' | translate }}
+      </span>
+      <input
+        class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5"
+        [value]="query()"
+        (input)="updateQuery($any($event.target).value)"
+        [placeholder]="'training.sessions.filters.searchPlaceholder' | translate"
+      />
+    </label>
+    <label class="block">
+      <span class="mb-2 block text-sm font-bold">
+        {{ 'training.sessions.filters.status' | translate }}
+      </span>
+      <select
+        class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5"
+        [value]="status() ?? ''"
+        (change)="setStatus($any($event.target).value)"
+      >
+        <option value="">{{ 'training.sessions.filters.all' | translate }}</option>
+        @for (value of [1, 2, 3, 4, 5, 6]; track value) {
+          <option [value]="value">{{ statusKey(value) | translate }}</option>
+        }
+      </select>
+    </label>
+    <label class="block">
+      <span class="mb-2 block text-sm font-bold">
+        {{ 'training.sessions.filters.attendance' | translate }}
+      </span>
+      <select
+        class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5"
+        [value]="attendance() ?? ''"
+        (change)="setAttendance($any($event.target).value)"
+      >
+        <option value="">{{ 'training.sessions.filters.all' | translate }}</option>
+        @for (value of [1, 2, 3, 4, 5, 6, 7, 8]; track value) {
+          <option [value]="value">{{ attendanceKey(value) | translate }}</option>
+        }
+      </select>
+    </label>
+    <label class="block">
+      <span class="mb-2 block text-sm font-bold">
+        {{ 'training.sessions.filters.attention' | translate }}
+      </span>
+      <select
+        class="w-full rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-3 py-2.5"
+        [value]="attention()"
+        (change)="setAttention($any($event.target).value)"
+      >
+        <option value="all">{{ 'training.sessions.filters.all' | translate }}</option>
+        <option value="reports">
+          {{ 'training.sessions.filters.missingReports' | translate }}
+        </option>
+        <option value="incidents">
+          {{ 'training.sessions.filters.openIncidents' | translate }}
+        </option>
+        <option value="duration">
+          {{ 'training.sessions.filters.durationVariance' | translate }}
+        </option>
+        <option value="late">{{ 'training.sessions.filters.late' | translate }}</option>
+      </select>
+    </label>
+    <div class="flex gap-2 pt-2">
+      <drive-os-button
+        variant="secondary"
+        icon="eraser"
+        (pressed)="resetFilters()"
+      >
+        {{ 'training.sessions.actions.reset' | translate }}
+      </drive-os-button>
+      <drive-os-button
+        icon="check"
+        (pressed)="filtersOpen.set(false)"
+      >
+        {{ 'training.sessions.actions.apply' | translate }}
+      </drive-os-button>
+    </div>
   </div>
 </drive-os-drawer>
 
-<drive-os-drawer [open]="detailsOpen()" [title]="'training.sessions.details.title' | translate" [description]="'training.sessions.details.description' | translate" (closeRequested)="closeDetails()">
-  @if (selectedSession(); as session) { <div class="space-y-5 p-1"><div class="rounded-2xl border border-blue-100 bg-blue-50/70 p-4 dark:border-blue-900 dark:bg-blue-950/25"><p class="text-xs font-extrabold uppercase tracking-wider text-blue-700 dark:text-blue-300">{{ 'training.sessions.columns.student' | translate }}</p><p class="mt-1 text-xl font-black">{{ session.studentDisplayName }}</p><p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">{{ session.plannedStartAtUtc | date:'fullDate' }} · {{ session.plannedStartAtUtc | date:'HH:mm' }}–{{ session.plannedEndAtUtc | date:'HH:mm' }}</p></div><div class="grid grid-cols-2 gap-3"><div class="rounded-xl border border-[var(--driveos-border)] p-3"><p class="text-xs font-bold text-[var(--driveos-text-tertiary)]">{{ 'training.sessions.columns.status' | translate }}</p><p class="mt-1 font-bold">{{ statusKey(session.status) | translate }}</p></div><div class="rounded-xl border border-[var(--driveos-border)] p-3"><p class="text-xs font-bold text-[var(--driveos-text-tertiary)]">{{ 'training.sessions.columns.attendance' | translate }}</p><p class="mt-1 font-bold">{{ attendanceKey(session.attendanceStatus) | translate }}</p></div></div><div><h4 class="font-black">{{ 'training.dashboard.drawerSession.objectives' | translate }}</h4><p class="mt-2 whitespace-pre-line text-sm leading-6 text-[var(--driveos-text-secondary)]">{{ session.objectives || ('training.dashboard.drawerSession.noObjectives' | translate) }}</p></div><div class="space-y-2">@if (isMissingReport(session)) { <div class="rounded-xl bg-orange-50 p-3 text-sm font-semibold text-orange-800 dark:bg-orange-950/25 dark:text-orange-200"><i class="ph ph-clipboard-text mr-2"></i>{{ 'training.dashboard.drawerSession.missingReport' | translate }}</div> } @if (session.hasOpenIncident) { <div class="rounded-xl bg-red-50 p-3 text-sm font-semibold text-red-800 dark:bg-red-950/25 dark:text-red-200"><i class="ph ph-warning-octagon mr-2"></i>{{ 'training.dashboard.drawerSession.openIncident' | translate }}</div> } @if (hasDurationVariance(session)) { <div class="rounded-xl bg-violet-50 p-3 text-sm font-semibold text-violet-800 dark:bg-violet-950/25 dark:text-violet-200"><i class="ph ph-timer mr-2"></i>{{ 'training.dashboard.drawerSession.durationVariance' | translate: { minutes: durationDifferenceMinutes(session) } }}</div> }</div><div class="pt-2"><drive-os-button icon="arrow-square-out" (pressed)="openFullSession(session.id)">{{ 'training.sessions.details.openFull' | translate }}</drive-os-button></div></div> }
+<drive-os-drawer
+  [open]="detailsOpen()"
+  [title]="'training.sessions.details.title' | translate"
+  [description]="'training.sessions.details.description' | translate"
+  (closeRequested)="closeDetails()"
+>
+  @if (selectedSession(); as session) {
+    <div class="space-y-5 p-1">
+      <div
+        class="rounded-2xl border border-blue-100 bg-blue-50/70 p-4 dark:border-blue-900 dark:bg-blue-950/25"
+      >
+        <p class="text-xs font-extrabold uppercase tracking-wider text-blue-700 dark:text-blue-300">
+          {{ 'training.sessions.columns.student' | translate }}
+        </p>
+        <p class="mt-1 text-xl font-black">{{ session.studentDisplayName }}</p>
+        <p class="mt-2 text-sm text-[var(--driveos-text-secondary)]">
+          {{ session.plannedStartAtUtc | date: 'fullDate' }} ·
+          {{ session.plannedStartAtUtc | date: 'HH:mm' }}–{{
+            session.plannedEndAtUtc | date: 'HH:mm'
+          }}
+        </p>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="rounded-xl border border-[var(--driveos-border)] p-3">
+          <p class="text-xs font-bold text-[var(--driveos-text-tertiary)]">
+            {{ 'training.sessions.columns.status' | translate }}
+          </p>
+          <p class="mt-1 font-bold">{{ statusKey(session.status) | translate }}</p>
+        </div>
+        <div class="rounded-xl border border-[var(--driveos-border)] p-3">
+          <p class="text-xs font-bold text-[var(--driveos-text-tertiary)]">
+            {{ 'training.sessions.columns.attendance' | translate }}
+          </p>
+          <p class="mt-1 font-bold">{{ attendanceKey(session.attendanceStatus) | translate }}</p>
+        </div>
+      </div>
+      <div>
+        <h4 class="font-black">{{ 'training.dashboard.drawerSession.objectives' | translate }}</h4>
+        <p class="mt-2 whitespace-pre-line text-sm leading-6 text-[var(--driveos-text-secondary)]">
+          {{ session.objectives || ('training.dashboard.drawerSession.noObjectives' | translate) }}
+        </p>
+      </div>
+      <div class="space-y-2">
+        @if (isMissingReport(session)) {
+          <div
+            class="rounded-xl bg-orange-50 p-3 text-sm font-semibold text-orange-800 dark:bg-orange-950/25 dark:text-orange-200"
+          >
+            <i class="ph ph-clipboard-text mr-2"></i>
+            {{ 'training.dashboard.drawerSession.missingReport' | translate }}
+          </div>
+        }
+        @if (session.hasOpenIncident) {
+          <div
+            class="rounded-xl bg-red-50 p-3 text-sm font-semibold text-red-800 dark:bg-red-950/25 dark:text-red-200"
+          >
+            <i class="ph ph-warning-octagon mr-2"></i>
+            {{ 'training.dashboard.drawerSession.openIncident' | translate }}
+          </div>
+        }
+        @if (hasDurationVariance(session)) {
+          <div
+            class="rounded-xl bg-violet-50 p-3 text-sm font-semibold text-violet-800 dark:bg-violet-950/25 dark:text-violet-200"
+          >
+            <i class="ph ph-timer mr-2"></i>
+            {{
+              'training.dashboard.drawerSession.durationVariance'
+                | translate: { minutes: durationDifferenceMinutes(session) }
+            }}
+          </div>
+        }
+      </div>
+      <div class="pt-2">
+        <drive-os-button
+          icon="arrow-square-out"
+          (pressed)="openFullSession(session.id)"
+        >
+          {{ 'training.sessions.details.openFull' | translate }}
+        </drive-os-button>
+      </div>
+    </div>
+  }
 </drive-os-drawer>

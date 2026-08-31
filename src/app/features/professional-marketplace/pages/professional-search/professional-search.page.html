@@ -1,0 +1,336 @@
+<drive-os-page-shell
+  width="full"
+  spacing="compact"
+>
+  <main class="grid gap-4 text-[var(--driveos-text-primary)]">
+    <header
+      class="flex min-h-24 items-center justify-between gap-4 border-b border-l-4 border-[var(--driveos-border)] border-l-[var(--driveos-primary-800)] py-3 pl-4 max-md:flex-col max-md:items-start"
+    >
+      <div>
+        <h1 class="text-2xl font-extrabold">
+          {{ 'professionalMarketplace.search.title' | translate }}
+        </h1>
+        <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+          {{ 'professionalMarketplace.search.description' | translate }}
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        @if (canInvite()) {
+          <button
+            type="button"
+            class="min-h-10 rounded-lg bg-blue-800 px-4 text-xs font-bold text-white"
+            (click)="openInvitation()"
+          >
+            <i class="ph ph-user-plus"></i>
+            {{ 'professionalMarketplace.invitations.actions.invite' | translate }}
+          </button>
+        }
+        <button
+          type="button"
+          class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] px-4 text-xs font-bold"
+          [disabled]="loading()"
+          (click)="search(page())"
+        >
+          <i
+            class="ph ph-arrows-clockwise"
+            [class.animate-spin]="loading()"
+          ></i>
+          {{ 'common.actions.refresh' | translate }}
+        </button>
+      </div>
+    </header>
+
+    <section
+      class="grid gap-3 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 shadow-sm"
+    >
+      <div class="grid grid-cols-4 gap-3 max-xl:grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1">
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.search.filters.country' | translate }}
+          <input
+            [(ngModel)]="countryCode"
+            maxlength="2"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal uppercase"
+            placeholder="FR"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.search.filters.category' | translate }}
+          <input
+            [(ngModel)]="teachingCategoryCode"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+            placeholder="B"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.search.filters.language' | translate }}
+          <input
+            [(ngModel)]="languageCode"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+            placeholder="FR"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.search.filters.specialization' | translate }}
+          <input
+            [(ngModel)]="specializationCode"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.search.filters.area' | translate }}
+          <input
+            [(ngModel)]="areaCode"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.search.filters.latitude' | translate }}
+          <input
+            type="number"
+            step="0.000001"
+            [(ngModel)]="latitude"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.search.filters.longitude' | translate }}
+          <input
+            type="number"
+            step="0.000001"
+            [(ngModel)]="longitude"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.search.filters.radius' | translate }}
+          <input
+            type="number"
+            min="1"
+            [(ngModel)]="radiusKm"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.search.filters.date' | translate }}
+          <input
+            type="date"
+            [(ngModel)]="availableOnDate"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.search.filters.from' | translate }}
+          <input
+            type="time"
+            [(ngModel)]="availableFrom"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.search.filters.to' | translate }}
+          <input
+            type="time"
+            [(ngModel)]="availableTo"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.search.filters.maxRate' | translate }}
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            [(ngModel)]="maximumRateAmount"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.search.filters.currency' | translate }}
+          <input
+            [(ngModel)]="currency"
+            maxlength="3"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal uppercase"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.search.filters.rateUnit' | translate }}
+          <select
+            [(ngModel)]="rateUnit"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] bg-transparent px-3 font-normal"
+          >
+            <option value="">{{ 'common.all' | translate }}</option>
+            @for (unit of rateUnits; track unit) {
+              <option [value]="unit">
+                {{ 'professionalMarketplace.rateUnits.' + unit | translate }}
+              </option>
+            }
+          </select>
+        </label>
+      </div>
+      <div
+        class="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--driveos-border)] pt-3"
+      >
+        <label class="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            [(ngModel)]="verifiedOnly"
+          />
+          {{ 'professionalMarketplace.search.filters.verifiedOnly' | translate }}
+        </label>
+        <div class="flex gap-2">
+          <button
+            type="button"
+            class="min-h-10 rounded-lg border border-[var(--driveos-border)] px-4 text-xs font-bold"
+            (click)="reset()"
+          >
+            {{ 'common.actions.reset' | translate }}
+          </button>
+          <button
+            type="button"
+            class="min-h-10 rounded-lg bg-blue-800 px-5 text-xs font-bold text-white"
+            [disabled]="loading()"
+            (click)="search()"
+          >
+            <i class="ph ph-magnifying-glass"></i>
+            {{ 'professionalMarketplace.search.actions.search' | translate }}
+          </button>
+        </div>
+      </div>
+    </section>
+
+    @if (loadError()) {
+      <section class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+        {{ 'professionalMarketplace.search.errors.load' | translate }}
+      </section>
+    }
+    @if (!loading() && !loadError()) {
+      <section class="grid gap-3">
+        <div class="flex items-center justify-between">
+          <strong>
+            {{ 'professionalMarketplace.search.results.count' | translate: { count: total() } }}
+          </strong>
+          <span class="text-xs text-[var(--driveos-text-secondary)]">
+            {{ 'professionalMarketplace.search.results.page' | translate: { page: page() } }}
+          </span>
+        </div>
+        @if (items().length === 0) {
+          <div
+            class="rounded-xl border border-dashed border-[var(--driveos-border)] p-10 text-center text-sm text-[var(--driveos-text-secondary)]"
+          >
+            {{ 'professionalMarketplace.search.results.empty' | translate }}
+          </div>
+        }
+        <div class="grid grid-cols-2 gap-3 max-lg:grid-cols-1">
+          @for (item of items(); track item.profileId) {
+            <article
+              class="grid gap-3 rounded-xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-4 shadow-sm transition hover:border-blue-300 hover:shadow-md"
+            >
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h2 class="font-extrabold">{{ item.headline }}</h2>
+                    @if (item.verificationBadge === 'Verified') {
+                      <span
+                        class="rounded-full bg-emerald-100 px-2 py-1 text-[11px] font-bold text-emerald-800"
+                      >
+                        <i class="ph ph-seal-check"></i>
+                        {{ 'professionalMarketplace.search.results.verified' | translate }}
+                      </span>
+                    }
+                  </div>
+                  <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                    {{
+                      'professionalMarketplace.professionalTypes.' + item.professionalType
+                        | translate
+                    }}
+                    @if (item.primaryArea) {
+                      · {{ item.primaryArea }}
+                    }
+                    @if (item.distanceKm !== null) {
+                      · {{ item.distanceKm }} km
+                    }
+                  </p>
+                </div>
+                @if (item.startingRateAmount !== null) {
+                  <div class="text-right">
+                    <strong class="text-lg">
+                      {{ item.startingRateAmount }} {{ item.rateCurrency }}
+                    </strong>
+                    <div class="text-[11px] text-[var(--driveos-text-secondary)]">
+                      {{ 'professionalMarketplace.rateUnits.' + item.rateUnit | translate }}
+                      @if (item.negotiable) {
+                        · {{ 'professionalMarketplace.search.results.negotiable' | translate }}
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+              <div class="flex flex-wrap gap-1">
+                @for (category of item.teachingCategoryCodes; track category) {
+                  <span class="rounded-md bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-800">
+                    {{ category }}
+                  </span>
+                }
+                @for (language of item.languages; track language) {
+                  <span class="rounded-md border border-[var(--driveos-border)] px-2 py-1 text-xs">
+                    {{ language }}
+                  </span>
+                }
+              </div>
+              @if (item.specializationCodes.length) {
+                <p class="text-xs text-[var(--driveos-text-secondary)]">
+                  {{ item.specializationCodes.join(' · ') }}
+                </p>
+              }
+              <div class="flex flex-wrap justify-end gap-2">
+                @if (canInvite()) {
+                  <button
+                    type="button"
+                    class="inline-flex min-h-9 items-center gap-2 rounded-lg border border-blue-200 px-3 text-xs font-bold text-blue-800"
+                    (click)="openInvitation(item)"
+                  >
+                    <i class="ph ph-paper-plane-tilt"></i>
+                    {{ 'professionalMarketplace.invitations.actions.invite' | translate }}
+                  </button>
+                }
+                <a
+                  [routerLink]="['/marketplace/professionals', item.profileId]"
+                  class="inline-flex min-h-9 items-center gap-2 rounded-lg border border-[var(--driveos-border)] px-3 text-xs font-bold text-blue-800"
+                >
+                  {{ 'professionalMarketplace.search.actions.openProfile' | translate }}
+                  <i class="ph ph-arrow-right"></i>
+                </a>
+              </div>
+            </article>
+          }
+        </div>
+        @if (total() > pageSize) {
+          <div class="flex justify-end gap-2">
+            <button
+              type="button"
+              class="min-h-9 rounded-lg border border-[var(--driveos-border)] px-3 text-xs font-bold"
+              [disabled]="page() <= 1"
+              (click)="previousPage()"
+            >
+              {{ 'common.previous' | translate }}
+            </button>
+            <button
+              type="button"
+              class="min-h-9 rounded-lg border border-[var(--driveos-border)] px-3 text-xs font-bold"
+              [disabled]="page() * pageSize >= total()"
+              (click)="nextPage()"
+            >
+              {{ 'common.next' | translate }}
+            </button>
+          </div>
+        }
+      </section>
+    }
+  </main>
+  <driveos-freelance-invitation-drawer
+    [open]="invitationDrawerOpen()"
+    [professionalProfileId]="invitationProfileId()"
+    [professionalLabel]="invitationProfileLabel()"
+    (closeRequested)="closeInvitation()"
+  />
+</drive-os-page-shell>

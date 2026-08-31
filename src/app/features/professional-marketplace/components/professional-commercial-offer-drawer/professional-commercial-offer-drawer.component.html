@@ -1,0 +1,400 @@
+<drive-os-drawer
+  [open]="open()"
+  [title]="'professionalMarketplace.commercialOffers.drawer.title' | translate"
+  size="lg"
+  (closeRequested)="close()"
+>
+  <div class="grid gap-4 p-5">
+    @if (offer(); as o) {
+      <header
+        class="flex flex-wrap items-start justify-between gap-3 border-b border-[var(--driveos-border)] pb-4"
+      >
+        <div>
+          <h3 class="text-xl font-extrabold">
+            {{ 'professionalMarketplace.commercialOffers.offer' | translate }} #{{ o.revision }}
+          </h3>
+          <p class="text-sm text-[var(--driveos-text-secondary)]">
+            {{ o.terms.startsOn }} → {{ o.terms.endsOn }}
+          </p>
+        </div>
+        <span
+          class="rounded-full border border-[var(--driveos-border)] px-3 py-1 text-xs font-bold"
+        >
+          {{ 'professionalMarketplace.commercialOffers.status.' + o.status | translate }}
+        </span>
+      </header>
+      <nav class="flex gap-2 border-b border-[var(--driveos-border)]">
+        <button
+          type="button"
+          class="px-3 py-2 text-xs font-bold"
+          [class.border-b-2]="tab() === 'terms'"
+          [class.border-blue-700]="tab() === 'terms'"
+          (click)="selectTab('terms')"
+        >
+          {{ 'professionalMarketplace.commercialOffers.tabs.terms' | translate }}
+        </button>
+        <button
+          type="button"
+          class="px-3 py-2 text-xs font-bold"
+          [class.border-b-2]="tab() === 'history'"
+          [class.border-blue-700]="tab() === 'history'"
+          (click)="selectTab('history')"
+        >
+          {{ 'professionalMarketplace.commercialOffers.tabs.history' | translate }}
+        </button>
+      </nav>
+      @if (tab() === 'history') {
+        <section class="grid gap-3">
+          <div class="rounded-xl border border-[var(--driveos-border)] p-4">
+            <div class="flex justify-between gap-3">
+              <strong>
+                v{{ o.revision }} ·
+                {{ 'professionalMarketplace.commercialOffers.current' | translate }}
+              </strong>
+              <span class="text-xs">
+                {{ 'professionalMarketplace.commercialOffers.status.' + o.status | translate }}
+              </span>
+            </div>
+            <p class="mt-2 text-sm">
+              {{ o.terms.rateAmount ?? '—' }} {{ o.terms.currency ?? '' }} /
+              {{ o.terms.rateUnit ?? '' }}
+            </p>
+          </div>
+          @for (r of o.revisions; track r.revision) {
+            <div class="rounded-xl border border-[var(--driveos-border)] p-4">
+              <div class="flex justify-between gap-3">
+                <strong>v{{ r.revision }}</strong>
+                <span class="text-xs text-[var(--driveos-text-secondary)]">
+                  {{ r.changedAtUtc | date: 'short' }}
+                </span>
+              </div>
+              <p class="mt-2 text-sm">
+                {{ r.terms.rateAmount ?? '—' }} {{ r.terms.currency ?? '' }} /
+                {{ r.terms.rateUnit ?? '' }}
+              </p>
+              <p class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ r.terms.startsOn }} → {{ r.terms.endsOn }}
+              </p>
+            </div>
+          }
+        </section>
+      } @else {
+        @if (!editMode()) {
+          <section
+            class="grid grid-cols-2 gap-3 rounded-xl border border-[var(--driveos-border)] p-4 max-sm:grid-cols-1"
+          >
+            <div>
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.commercialOffers.fields.period' | translate }}
+              </span>
+              <p class="font-bold">{{ o.terms.startsOn }} → {{ o.terms.endsOn }}</p>
+            </div>
+            <div>
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.commercialOffers.fields.rate' | translate }}
+              </span>
+              <p class="font-bold">
+                {{ o.terms.rateAmount ?? '—' }} {{ o.terms.currency ?? '' }} /
+                {{ o.terms.rateUnit ?? '' }}
+              </p>
+            </div>
+            <div>
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.commercialOffers.fields.engagementType' | translate }}
+              </span>
+              <p class="font-bold">{{ o.terms.engagementType }}</p>
+            </div>
+            <div>
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.commercialOffers.fields.vehicle' | translate }}
+              </span>
+              <p class="font-bold">{{ o.terms.vehicleProvisionMode }}</p>
+            </div>
+            <div>
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.commercialOffers.fields.mileageRate' | translate }}
+              </span>
+              <p class="font-bold">{{ o.terms.mileageRate ?? '—' }}</p>
+            </div>
+            <div>
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.commercialOffers.fields.vehicleAllowance' | translate }}
+              </span>
+              <p class="font-bold">{{ o.terms.vehicleAllowance ?? '—' }}</p>
+            </div>
+            <div>
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{
+                  'professionalMarketplace.commercialOffers.fields.minimumGuaranteed' | translate
+                }}
+              </span>
+              <p class="font-bold">{{ o.terms.minimumGuaranteedAmount ?? '—' }}</p>
+            </div>
+            <div>
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.commercialOffers.fields.estimatedMinutes' | translate }}
+              </span>
+              <p class="font-bold">{{ o.terms.estimatedMinutes ?? '—' }}</p>
+            </div>
+            <div class="col-span-2 max-sm:col-span-1">
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.commercialOffers.fields.categories' | translate }}
+              </span>
+              <p class="font-bold">{{ o.terms.teachingCategoryCodes.join(', ') }}</p>
+            </div>
+            <div class="col-span-2 max-sm:col-span-1">
+              <span class="text-xs text-[var(--driveos-text-secondary)]">
+                {{ 'professionalMarketplace.commercialOffers.fields.clauses' | translate }}
+              </span>
+              <p class="font-bold">{{ o.terms.clauseCodes.join(', ') || '—' }}</p>
+            </div>
+          </section>
+        } @else {
+          <ng-container *ngTemplateOutlet="form"></ng-container>
+        }
+      }
+      @if (cancelMode()) {
+        <section class="grid gap-2 rounded-xl border border-red-200 bg-red-50 p-4">
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.commercialOffers.fields.cancelReason' | translate }}
+            <textarea
+              class="min-h-24 rounded-lg border border-red-200 bg-white px-3 py-2 text-sm"
+              [(ngModel)]="cancelReason"
+            ></textarea>
+          </label>
+          <div class="flex justify-end gap-2">
+            <button
+              type="button"
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="cancelCancellation()"
+            >
+              {{ 'common.actions.cancel' | translate }}
+            </button>
+            <button
+              type="button"
+              class="rounded-lg bg-red-700 px-3 py-2 text-xs font-bold text-white"
+              (click)="cancelOffer()"
+            >
+              {{ 'professionalMarketplace.commercialOffers.actions.confirmCancel' | translate }}
+            </button>
+          </div>
+        </section>
+      }
+      @if (formErrors().length) {
+        <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+          @for (e of formErrors(); track e) {
+            <p>{{ e }}</p>
+          }
+        </div>
+      }
+      @if (tab() === 'terms' && !editMode() && !cancelMode()) {
+        <footer
+          class="flex flex-wrap justify-end gap-2 border-t border-[var(--driveos-border)] pt-4"
+        >
+          @if (
+            canRevise() &&
+            (o.status === 'Draft' ||
+              o.status === 'Sent' ||
+              o.status === 'PartiallyAccepted' ||
+              o.status === 'Accepted')
+          ) {
+            <button
+              class="rounded-lg border px-3 py-2 text-xs font-bold"
+              (click)="beginEdit()"
+            >
+              {{ 'professionalMarketplace.commercialOffers.actions.revise' | translate }}
+            </button>
+          }
+          @if (canWithdraw() && !['Finalized', 'Cancelled'].includes(o.status)) {
+            <button
+              class="rounded-lg border border-red-300 px-3 py-2 text-xs font-bold text-red-700"
+              (click)="beginCancel()"
+            >
+              {{ 'professionalMarketplace.commercialOffers.actions.cancel' | translate }}
+            </button>
+          }
+          @if (canCreate() && o.status === 'Draft') {
+            <button
+              class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              (click)="send()"
+            >
+              {{ 'professionalMarketplace.commercialOffers.actions.send' | translate }}
+            </button>
+          }
+          @if (
+            canAccept() &&
+            (o.status === 'Sent' || o.status === 'PartiallyAccepted') &&
+            !o.organizationAcceptedAtUtc
+          ) {
+            <button
+              class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+              (click)="acceptByOrganization()"
+            >
+              {{
+                'professionalMarketplace.commercialOffers.actions.acceptByOrganization' | translate
+              }}
+            </button>
+          }
+          @if (canAccept() && o.status === 'Accepted') {
+            <button
+              class="rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white"
+              (click)="finalize()"
+            >
+              {{ 'professionalMarketplace.commercialOffers.actions.finalize' | translate }}
+            </button>
+          }
+        </footer>
+      }
+    } @else {
+      <ng-container *ngTemplateOutlet="form"></ng-container>
+    }
+  </div>
+  <ng-template #form>
+    <section class="grid gap-3 rounded-xl border border-[var(--driveos-border)] p-4">
+      <div class="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.commercialOffers.fields.startsOn' | translate }}
+          <input
+            type="date"
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="startsOn"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.commercialOffers.fields.endsOn' | translate }}
+          <input
+            type="date"
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="endsOn"
+          />
+        </label>
+      </div>
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'professionalMarketplace.commercialOffers.fields.categories' | translate }}
+        <input
+          class="rounded-lg border px-3 py-2 text-sm"
+          [(ngModel)]="teachingCategoryCodes"
+        />
+      </label>
+      <div class="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.commercialOffers.fields.engagementType' | translate }}
+          <input
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="engagementType"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.commercialOffers.fields.vehicle' | translate }}
+          <input
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="vehicleProvisionMode"
+          />
+        </label>
+      </div>
+      <div class="grid grid-cols-3 gap-3 max-sm:grid-cols-1">
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.commercialOffers.fields.rateAmount' | translate }}
+          <input
+            type="number"
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="rateAmount"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.commercialOffers.fields.currency' | translate }}
+          <input
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="currency"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.commercialOffers.fields.rateUnit' | translate }}
+          <input
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="rateUnit"
+          />
+        </label>
+      </div>
+      <div class="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.commercialOffers.fields.estimatedMinutes' | translate }}
+          <input
+            type="number"
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="estimatedMinutes"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.commercialOffers.fields.mileageRate' | translate }}
+          <input
+            type="number"
+            step="0.001"
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="mileageRate"
+          />
+        </label>
+      </div>
+      <div class="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.commercialOffers.fields.vehicleAllowance' | translate }}
+          <input
+            type="number"
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="vehicleAllowance"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.commercialOffers.fields.minimumGuaranteed' | translate }}
+          <input
+            type="number"
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="minimumGuaranteedAmount"
+          />
+        </label>
+      </div>
+      <label class="grid gap-1 text-xs font-bold">
+        {{ 'professionalMarketplace.commercialOffers.fields.clauses' | translate }}
+        <input
+          class="rounded-lg border px-3 py-2 text-sm"
+          [(ngModel)]="clauseCodes"
+        />
+      </label>
+    </section>
+    @if (formErrors().length) {
+      <div class="mt-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+        @for (e of formErrors(); track e) {
+          <p>{{ e }}</p>
+        }
+      </div>
+    }
+    <footer class="mt-4 flex justify-end gap-2">
+      @if (editMode()) {
+        <button
+          type="button"
+          class="rounded-lg border px-3 py-2 text-xs font-bold"
+          (click)="cancelEdit()"
+        >
+          {{ 'common.actions.cancel' | translate }}
+        </button>
+        <button
+          type="button"
+          class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+          [disabled]="busy()"
+          (click)="revise()"
+        >
+          {{ 'professionalMarketplace.commercialOffers.actions.saveRevision' | translate }}
+        </button>
+      } @else {
+        <button
+          type="button"
+          class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+          [disabled]="busy() || !canCreate()"
+          (click)="create()"
+        >
+          {{ 'professionalMarketplace.commercialOffers.actions.create' | translate }}
+        </button>
+      }
+    </footer>
+  </ng-template>
+</drive-os-drawer>

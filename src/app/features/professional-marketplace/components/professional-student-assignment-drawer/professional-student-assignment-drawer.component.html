@@ -1,0 +1,173 @@
+<drive-os-drawer
+  [open]="open()"
+  [title]="
+    (isCreate()
+      ? 'professionalMarketplace.studentAssignments.drawer.create'
+      : 'professionalMarketplace.studentAssignments.drawer.title'
+    ) | translate
+  "
+  size="md"
+  (closeRequested)="close()"
+>
+  <div class="grid gap-4 p-5">
+    @if (isCreate()) {
+      <section class="grid gap-3">
+        <div class="flex gap-2">
+          <input
+            class="min-w-0 flex-1 rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="search"
+            [placeholder]="'professionalMarketplace.studentAssignments.search' | translate"
+            (keyup.enter)="searchStudents()"
+          />
+          <button
+            class="rounded-lg border px-3 py-2 text-xs font-bold"
+            (click)="searchStudents()"
+          >
+            {{ 'common.actions.search' | translate }}
+          </button>
+        </div>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.studentAssignments.fields.student' | translate }}
+          <select
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="selectedStudentId"
+          >
+            <option value="">—</option>
+            @for (s of students(); track s.studentId) {
+              <option [value]="s.studentId">
+                {{ s.firstName }} {{ s.lastName }} · {{ s.trainingCode || '—' }}
+              </option>
+            }
+          </select>
+        </label>
+        <div class="grid grid-cols-2 gap-3">
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.studentAssignments.fields.startsOn' | translate }}
+            <input
+              type="date"
+              class="rounded-lg border px-3 py-2 text-sm"
+              [(ngModel)]="startsOn"
+            />
+          </label>
+          <label class="grid gap-1 text-xs font-bold">
+            {{ 'professionalMarketplace.studentAssignments.fields.endsOn' | translate }}
+            <input
+              type="date"
+              class="rounded-lg border px-3 py-2 text-sm"
+              [(ngModel)]="endsOn"
+            />
+          </label>
+        </div>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.studentAssignments.fields.scope' | translate }}
+          <select
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="scopeCode"
+          >
+            <option value="PEDAGOGICAL">
+              {{ 'professionalMarketplace.studentAssignments.scopes.PEDAGOGICAL' | translate }}
+            </option>
+            <option value="SESSION">
+              {{ 'professionalMarketplace.studentAssignments.scopes.SESSION' | translate }}
+            </option>
+            <option value="EXAM_PREPARATION">
+              {{ 'professionalMarketplace.studentAssignments.scopes.EXAM_PREPARATION' | translate }}
+            </option>
+            <option value="TEMPORARY_REPLACEMENT">
+              {{
+                'professionalMarketplace.studentAssignments.scopes.TEMPORARY_REPLACEMENT'
+                  | translate
+              }}
+            </option>
+          </select>
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.studentAssignments.fields.reason' | translate }}
+          <textarea
+            class="min-h-24 rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="assignmentReason"
+          ></textarea>
+        </label>
+      </section>
+    } @else if (assignment(); as a) {
+      <section class="grid gap-3 text-sm">
+        <div class="rounded-xl border p-4">
+          <div class="font-extrabold">{{ a.studentDisplayName }}</div>
+          <div class="text-xs text-[var(--driveos-text-secondary)]">
+            {{ a.studentEmail || a.studentPhone || a.studentId }}
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="rounded-xl border p-3">
+            <div class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'professionalMarketplace.studentAssignments.fields.period' | translate }}
+            </div>
+            <div class="font-bold">{{ a.startsOn }} → {{ a.endsOn }}</div>
+          </div>
+          <div class="rounded-xl border p-3">
+            <div class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'professionalMarketplace.studentAssignments.fields.scope' | translate }}
+            </div>
+            <div class="font-bold">{{ a.scopeCode }}</div>
+          </div>
+        </div>
+        <div class="rounded-xl border p-3">
+          <div class="text-xs text-[var(--driveos-text-secondary)]">
+            {{ 'professionalMarketplace.studentAssignments.fields.reason' | translate }}
+          </div>
+          <p>{{ a.assignmentReason }}</p>
+        </div>
+        @if (a.revocationReason) {
+          <div class="rounded-xl border border-amber-200 bg-amber-50 p-3">
+            {{ a.revocationReason }}
+          </div>
+        }
+      </section>
+      @if (revokeMode()) {
+        <section class="grid gap-2 rounded-xl border border-red-200 bg-red-50 p-4">
+          <textarea
+            class="min-h-20 rounded-lg border bg-white px-3 py-2 text-sm"
+            [(ngModel)]="revocationReason"
+            [placeholder]="'professionalMarketplace.studentAssignments.revokeReason' | translate"
+          ></textarea>
+        </section>
+      }
+    }
+    @if (messages().length) {
+      <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+        @for (m of messages(); track m) {
+          <p>{{ m }}</p>
+        }
+      </div>
+    }
+    <footer class="flex justify-end gap-2 border-t pt-4">
+      @if (isCreate() && canManage()) {
+        <button
+          class="rounded-lg bg-blue-800 px-3 py-2 text-xs font-bold text-white"
+          [disabled]="busy()"
+          (click)="create()"
+        >
+          {{ 'professionalMarketplace.studentAssignments.actions.assign' | translate }}
+        </button>
+      }
+      @if (!isCreate() && assignment()?.status === 'Active' && canRevoke()) {
+        @if (!revokeMode()) {
+          <button
+            class="rounded-lg border border-red-300 px-3 py-2 text-xs font-bold text-red-700"
+            (click)="revokeMode.set(true)"
+          >
+            {{ 'professionalMarketplace.studentAssignments.actions.revoke' | translate }}
+          </button>
+        } @else {
+          <button
+            class="rounded-lg bg-red-700 px-3 py-2 text-xs font-bold text-white"
+            [disabled]="busy()"
+            (click)="revoke()"
+          >
+            {{ 'common.actions.confirm' | translate }}
+          </button>
+        }
+      }
+    </footer>
+  </div>
+</drive-os-drawer>

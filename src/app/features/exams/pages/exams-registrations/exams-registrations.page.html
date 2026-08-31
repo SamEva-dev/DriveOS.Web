@@ -1,17 +1,468 @@
 <section class="driveos-page mx-auto max-w-[1600px]">
-  <div class="driveos-page-header"><div><p class="driveos-kicker">{{'exams.registrations.kicker'|translate}}</p><h2 class="driveos-page-title">{{'exams.registrations.title'|translate}}</h2><p class="driveos-page-subtitle">{{'exams.registrations.description'|translate}}</p></div>@if(canCreate()){<drive-os-button icon="ph ph-plus" (pressed)="open('create')">{{'exams.registrations.actions.create'|translate}}</drive-os-button>}</div>
-  <div class="mt-6 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><div class="flex flex-col gap-3 sm:flex-row"><input [(ngModel)]="studentId" class="driveos-input flex-1" [placeholder]="'exams.common.studentId'|translate"/><drive-os-button icon="ph ph-magnifying-glass" [loading]="loading()" (pressed)="load()">{{'common.actions.search'|translate}}</drive-os-button></div></div>
-  @if(messages().length){<div class="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">@for(m of messages();track m){<p>{{m}}</p>}</div>}
-  @if(items().length){<div class="mt-5 grid gap-5 xl:grid-cols-[360px_minmax(0,1fr)]"><aside class="space-y-3">@for(item of items();track item.id){<button type="button" [class]="'w-full rounded-2xl border p-4 text-left transition '+(selected()?.id===item.id?'border-blue-500 bg-blue-50 dark:bg-blue-950/30':'border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]')" (click)="select(item)"><div class="flex justify-between gap-3"><div><strong>{{item.examType||'—'}} · {{item.licenseCategory||'—'}}</strong><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{item.scheduledStartUtc|date:'medium'}}</p></div><span class="text-xs font-bold">{{item.status}}</span></div><p class="mt-3 text-xs text-[var(--driveos-text-secondary)]">{{item.candidateReference||item.id}}</p></button>}</aside>
-  @if(selected();as r){<div class="min-w-0"><div class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><div class="flex flex-wrap items-start justify-between gap-4"><div><h3 class="text-xl font-black">{{r.examType}} · {{r.licenseCategory}}</h3><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{r.scheduledStartUtc|date:'medium'}} · {{r.providerCode}}</p></div><div class="flex flex-wrap gap-2">@if(canUpdate()){<drive-os-button variant="outline" [loading]="saving()" (pressed)="refreshFile()">{{'exams.registrations.actions.refreshFile'|translate}}</drive-os-button>}@if(canSubmit()){<drive-os-button [loading]="saving()" (pressed)="submit()">{{'exams.registrations.actions.submit'|translate}}</drive-os-button>}</div></div></div>
-  <nav class="mt-5 flex gap-2 overflow-x-auto border-b border-[var(--driveos-border)] pb-2"><button type="button" [class]="'shrink-0 rounded-t-xl border-b-2 px-4 py-3 text-sm font-bold '+(activeTab()==='overview'?'border-blue-800 bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-200':'border-transparent text-[var(--driveos-text-secondary)]')" (click)="activeTab.set('overview')">{{'exams.registrations.tabs.overview'|translate}}</button><button type="button" [class]="'shrink-0 rounded-t-xl border-b-2 px-4 py-3 text-sm font-bold '+(activeTab()==='file'?'border-blue-800 bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-200':'border-transparent text-[var(--driveos-text-secondary)]')" (click)="activeTab.set('file')">{{'exams.registrations.tabs.file'|translate}}</button><button type="button" [class]="'shrink-0 rounded-t-xl border-b-2 px-4 py-3 text-sm font-bold '+(activeTab()==='submissions'?'border-blue-800 bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-200':'border-transparent text-[var(--driveos-text-secondary)]')" (click)="activeTab.set('submissions')">{{'exams.registrations.tabs.submissions'|translate}}</button></nav>
-  @if(activeTab()==='overview'){<div class="mt-5 grid gap-5 md:grid-cols-2"><article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h4 class="font-black">{{'exams.registrations.registration'|translate}}</h4><dl class="mt-4 grid gap-3 text-sm"><div><dt class="text-[var(--driveos-text-secondary)]">{{'exams.registrations.status'|translate}}</dt><dd class="font-bold">{{r.status}}</dd></div><div><dt class="text-[var(--driveos-text-secondary)]">{{'exams.registrations.candidateReference'|translate}}</dt><dd class="font-bold">{{r.candidateReference||'—'}}</dd></div><div><dt class="text-[var(--driveos-text-secondary)]">{{'exams.registrations.externalRegistrationId'|translate}}</dt><dd class="font-bold">{{r.externalRegistrationId||'—'}}</dd></div></dl></article><article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><h4 class="font-black">{{'exams.registrations.schedule'|translate}}</h4><p class="mt-4 text-sm">{{r.scheduledStartUtc|date:'full'}}</p><p class="mt-2 text-xs text-[var(--driveos-text-secondary)]">{{r.examCenterId}}</p></article></div>}
-  @if(activeTab()==='file'){@if(file();as f){<div class="mt-5 space-y-5"><article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><div class="flex flex-wrap justify-between gap-3"><div><h4 class="font-black">{{'exams.registrations.fileStatus'|translate}}</h4><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{f.status}} · v{{f.currentVersion}}</p></div>@if(canUpdate()){<drive-os-button variant="outline" (pressed)="open('officialData')">{{'exams.registrations.actions.officialData'|translate}}</drive-os-button>}</div></article>@for(rev of f.revisions;track rev.version){<article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><div class="flex justify-between gap-3"><strong>v{{rev.version}}</strong><span class="text-xs text-[var(--driveos-text-secondary)]">{{rev.createdAtUtc|date:'medium'}}</span></div><div class="mt-4 space-y-2">@for(i of rev.checklist;track i.code){<div class="flex flex-wrap items-start justify-between gap-3 rounded-xl bg-[var(--driveos-surface-hover)] p-3 text-sm"><div><strong>{{i.messageKey|translate}}</strong><p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">{{i.code}} · {{i.source||'—'}}</p></div><span class="text-xs font-bold">{{i.status}}</span></div>}</div></article>}</div>}@else{<div class="mt-5"><drive-os-empty-state icon="ph ph-folder-open" [title]="'exams.registrations.noFile'|translate"/></div>}}
-  @if(activeTab()==='submissions'){@if(submissions().length){<div class="mt-5 space-y-3">@for(s of submissions();track s.id){<article class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"><div class="flex flex-wrap justify-between gap-3"><div><strong>{{s.providerCode}} · v{{s.submissionVersion}}</strong><p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">{{s.submittedAtUtc|date:'medium'}}</p></div><span class="text-xs font-bold">{{s.status}}</span></div>@if(s.errorMessageKey){<p class="mt-3 rounded-xl bg-red-50 p-3 text-sm text-red-800">{{s.errorMessageKey|translate}}</p>}<div class="mt-4 flex flex-wrap gap-2">@if(canSubmit() && (s.status==='Failed'||s.status==='Rejected')){<drive-os-button size="sm" variant="outline" [loading]="saving()" (pressed)="retry(s)">{{'exams.registrations.actions.retry'|translate}}</drive-os-button>}@if(canResolve()){<drive-os-button size="sm" variant="outline" (pressed)="open('officialResponse',s)">{{'exams.registrations.actions.officialResponse'|translate}}</drive-os-button>}</div></article>}</div>}@else{<div class="mt-5"><drive-os-empty-state icon="ph ph-paper-plane-tilt" [title]="'exams.registrations.noSubmissions'|translate"/></div>}}
-  </div>}</div>}@else if(!loading()){<div class="mt-5"><drive-os-empty-state icon="ph ph-file-text" [title]="'exams.registrations.empty'|translate"/></div>}
-  <drive-os-drawer [open]="drawerMode()!==null" [title]="'exams.registrations.drawerTitle'|translate" size="lg" (closeRequested)="close()"><div class="space-y-4 p-5">
-    @if(drawerMode()==='create'){<div class="grid gap-4 md:grid-cols-2"><label class="grid gap-2 text-sm font-bold">{{'exams.common.studentId'|translate}}<input class="driveos-input" [(ngModel)]="createForm.studentId"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.common.trainingPathId'|translate}}<input class="driveos-input" [(ngModel)]="createForm.trainingPathId"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.registrations.placeId'|translate}}<input class="driveos-input" [(ngModel)]="createForm.examPlaceId"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.registrations.holdMinutes'|translate}}<input type="number" class="driveos-input" [(ngModel)]="createForm.holdMinutes"/></label></div>@if(hold();as h){<div class="rounded-xl bg-emerald-50 p-4 text-sm text-emerald-900"><strong>{{'exams.registrations.holdActive'|translate}}</strong><p class="mt-1">{{h.expiresAtUtc|date:'medium'}}</p></div><div class="flex justify-between gap-3"><drive-os-button variant="outline" (pressed)="releaseHold()">{{'exams.registrations.actions.releaseHold'|translate}}</drive-os-button><drive-os-button [loading]="saving()" (pressed)="createRegistration()">{{'common.actions.create'|translate}}</drive-os-button></div>}@else{<div class="flex justify-end"><drive-os-button [loading]="saving()" (pressed)="startHold()">{{'exams.registrations.actions.hold'|translate}}</drive-os-button></div>}}
-    @if(drawerMode()==='officialData'){<label class="grid gap-2 text-sm font-bold">{{'exams.registrations.candidateReference'|translate}}<input class="driveos-input" [(ngModel)]="candidateReference"/></label><div class="flex justify-end"><drive-os-button [loading]="saving()" (pressed)="saveOfficialData()">{{'common.actions.save'|translate}}</drive-os-button></div>}
-    @if(drawerMode()==='officialResponse'){<div class="grid gap-4 md:grid-cols-2"><label class="grid gap-2 text-sm font-bold">{{'exams.registrations.outcome'|translate}}<select class="driveos-input" [(ngModel)]="responseForm.outcome"><option value="Submitted">{{'exams.enums.registrationOutcome.Submitted'|translate}}</option><option value="Accepted">{{'exams.enums.registrationOutcome.Accepted'|translate}}</option><option value="Rejected">{{'exams.enums.registrationOutcome.Rejected'|translate}}</option><option value="CorrectionRequested">{{'exams.enums.registrationOutcome.CorrectionRequested'|translate}}</option></select></label><label class="grid gap-2 text-sm font-bold">{{'exams.registrations.externalSubmissionId'|translate}}<input class="driveos-input" [(ngModel)]="responseForm.externalSubmissionId"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.registrations.externalRegistrationId'|translate}}<input class="driveos-input" [(ngModel)]="responseForm.externalRegistrationId"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.registrations.candidateReference'|translate}}<input class="driveos-input" [(ngModel)]="responseForm.candidateReference"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.registrations.providerResponseCode'|translate}}<input class="driveos-input" [(ngModel)]="responseForm.providerResponseCode"/></label><label class="grid gap-2 text-sm font-bold">{{'exams.registrations.providerErrorCode'|translate}}<input class="driveos-input" [(ngModel)]="responseForm.providerErrorCode"/></label></div><label class="grid gap-2 text-sm font-bold">{{'exams.registrations.providerResponse'|translate}}<textarea rows="5" class="driveos-input" [(ngModel)]="responseForm.providerResponseJson"></textarea></label><div class="flex justify-end"><drive-os-button [loading]="saving()" (pressed)="saveOfficialResponse()">{{'common.actions.save'|translate}}</drive-os-button></div>}
-  </div></drive-os-drawer>
+  <div class="driveos-page-header">
+    <div>
+      <p class="driveos-kicker">{{ 'exams.registrations.kicker' | translate }}</p>
+      <h2 class="driveos-page-title">{{ 'exams.registrations.title' | translate }}</h2>
+      <p class="driveos-page-subtitle">{{ 'exams.registrations.description' | translate }}</p>
+    </div>
+    @if (canCreate()) {
+      <drive-os-button
+        icon="ph ph-plus"
+        (pressed)="open('create')"
+      >
+        {{ 'exams.registrations.actions.create' | translate }}
+      </drive-os-button>
+    }
+  </div>
+  <div
+    class="mt-6 rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+  >
+    <div class="flex flex-col gap-3 sm:flex-row">
+      <input
+        [(ngModel)]="studentId"
+        class="driveos-input flex-1"
+        [placeholder]="'exams.common.studentId' | translate"
+      />
+      <drive-os-button
+        icon="ph ph-magnifying-glass"
+        [loading]="loading()"
+        (pressed)="load()"
+      >
+        {{ 'common.actions.search' | translate }}
+      </drive-os-button>
+    </div>
+  </div>
+  @if (messages().length) {
+    <div class="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+      @for (m of messages(); track m) {
+        <p>{{ m }}</p>
+      }
+    </div>
+  }
+  @if (items().length) {
+    <div class="mt-5 grid gap-5 xl:grid-cols-[360px_minmax(0,1fr)]">
+      <aside class="space-y-3">
+        @for (item of items(); track item.id) {
+          <button
+            type="button"
+            [class]="
+              'w-full rounded-2xl border p-4 text-left transition ' +
+              (selected()?.id === item.id
+                ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
+                : 'border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]')
+            "
+            (click)="select(item)"
+          >
+            <div class="flex justify-between gap-3">
+              <div>
+                <strong>{{ item.examType || '—' }} · {{ item.licenseCategory || '—' }}</strong>
+                <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                  {{ item.scheduledStartUtc | date: 'medium' }}
+                </p>
+              </div>
+              <span class="text-xs font-bold">{{ item.status }}</span>
+            </div>
+            <p class="mt-3 text-xs text-[var(--driveos-text-secondary)]">
+              {{ item.candidateReference || item.id }}
+            </p>
+          </button>
+        }
+      </aside>
+      @if (selected(); as r) {
+        <div class="min-w-0">
+          <div
+            class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+          >
+            <div class="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <h3 class="text-xl font-black">{{ r.examType }} · {{ r.licenseCategory }}</h3>
+                <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                  {{ r.scheduledStartUtc | date: 'medium' }} · {{ r.providerCode }}
+                </p>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                @if (canUpdate()) {
+                  <drive-os-button
+                    variant="outline"
+                    [loading]="saving()"
+                    (pressed)="refreshFile()"
+                  >
+                    {{ 'exams.registrations.actions.refreshFile' | translate }}
+                  </drive-os-button>
+                }
+                @if (canSubmit()) {
+                  <drive-os-button
+                    [loading]="saving()"
+                    (pressed)="submit()"
+                  >
+                    {{ 'exams.registrations.actions.submit' | translate }}
+                  </drive-os-button>
+                }
+              </div>
+            </div>
+          </div>
+          <nav class="mt-5 flex gap-2 overflow-x-auto border-b border-[var(--driveos-border)] pb-2">
+            <button
+              type="button"
+              [class]="
+                'shrink-0 rounded-t-xl border-b-2 px-4 py-3 text-sm font-bold ' +
+                (activeTab() === 'overview'
+                  ? 'border-blue-800 bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-200'
+                  : 'border-transparent text-[var(--driveos-text-secondary)]')
+              "
+              (click)="activeTab.set('overview')"
+            >
+              {{ 'exams.registrations.tabs.overview' | translate }}
+            </button>
+            <button
+              type="button"
+              [class]="
+                'shrink-0 rounded-t-xl border-b-2 px-4 py-3 text-sm font-bold ' +
+                (activeTab() === 'file'
+                  ? 'border-blue-800 bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-200'
+                  : 'border-transparent text-[var(--driveos-text-secondary)]')
+              "
+              (click)="activeTab.set('file')"
+            >
+              {{ 'exams.registrations.tabs.file' | translate }}
+            </button>
+            <button
+              type="button"
+              [class]="
+                'shrink-0 rounded-t-xl border-b-2 px-4 py-3 text-sm font-bold ' +
+                (activeTab() === 'submissions'
+                  ? 'border-blue-800 bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-200'
+                  : 'border-transparent text-[var(--driveos-text-secondary)]')
+              "
+              (click)="activeTab.set('submissions')"
+            >
+              {{ 'exams.registrations.tabs.submissions' | translate }}
+            </button>
+          </nav>
+          @if (activeTab() === 'overview') {
+            <div class="mt-5 grid gap-5 md:grid-cols-2">
+              <article
+                class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+              >
+                <h4 class="font-black">{{ 'exams.registrations.registration' | translate }}</h4>
+                <dl class="mt-4 grid gap-3 text-sm">
+                  <div>
+                    <dt class="text-[var(--driveos-text-secondary)]">
+                      {{ 'exams.registrations.status' | translate }}
+                    </dt>
+                    <dd class="font-bold">{{ r.status }}</dd>
+                  </div>
+                  <div>
+                    <dt class="text-[var(--driveos-text-secondary)]">
+                      {{ 'exams.registrations.candidateReference' | translate }}
+                    </dt>
+                    <dd class="font-bold">{{ r.candidateReference || '—' }}</dd>
+                  </div>
+                  <div>
+                    <dt class="text-[var(--driveos-text-secondary)]">
+                      {{ 'exams.registrations.externalRegistrationId' | translate }}
+                    </dt>
+                    <dd class="font-bold">{{ r.externalRegistrationId || '—' }}</dd>
+                  </div>
+                </dl>
+              </article>
+              <article
+                class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+              >
+                <h4 class="font-black">{{ 'exams.registrations.schedule' | translate }}</h4>
+                <p class="mt-4 text-sm">{{ r.scheduledStartUtc | date: 'full' }}</p>
+                <p class="mt-2 text-xs text-[var(--driveos-text-secondary)]">
+                  {{ r.examCenterId }}
+                </p>
+              </article>
+            </div>
+          }
+          @if (activeTab() === 'file') {
+            @if (file(); as f) {
+              <div class="mt-5 space-y-5">
+                <article
+                  class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+                >
+                  <div class="flex flex-wrap justify-between gap-3">
+                    <div>
+                      <h4 class="font-black">{{ 'exams.registrations.fileStatus' | translate }}</h4>
+                      <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                        {{ f.status }} · v{{ f.currentVersion }}
+                      </p>
+                    </div>
+                    @if (canUpdate()) {
+                      <drive-os-button
+                        variant="outline"
+                        (pressed)="open('officialData')"
+                      >
+                        {{ 'exams.registrations.actions.officialData' | translate }}
+                      </drive-os-button>
+                    }
+                  </div>
+                </article>
+                @for (rev of f.revisions; track rev.version) {
+                  <article
+                    class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+                  >
+                    <div class="flex justify-between gap-3">
+                      <strong>v{{ rev.version }}</strong>
+                      <span class="text-xs text-[var(--driveos-text-secondary)]">
+                        {{ rev.createdAtUtc | date: 'medium' }}
+                      </span>
+                    </div>
+                    <div class="mt-4 space-y-2">
+                      @for (i of rev.checklist; track i.code) {
+                        <div
+                          class="flex flex-wrap items-start justify-between gap-3 rounded-xl bg-[var(--driveos-surface-hover)] p-3 text-sm"
+                        >
+                          <div>
+                            <strong>{{ i.messageKey | translate }}</strong>
+                            <p class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                              {{ i.code }} · {{ i.source || '—' }}
+                            </p>
+                          </div>
+                          <span class="text-xs font-bold">{{ i.status }}</span>
+                        </div>
+                      }
+                    </div>
+                  </article>
+                }
+              </div>
+            } @else {
+              <div class="mt-5">
+                <drive-os-empty-state
+                  icon="ph ph-folder-open"
+                  [title]="'exams.registrations.noFile' | translate"
+                />
+              </div>
+            }
+          }
+          @if (activeTab() === 'submissions') {
+            @if (submissions().length) {
+              <div class="mt-5 space-y-3">
+                @for (s of submissions(); track s.id) {
+                  <article
+                    class="rounded-2xl border border-[var(--driveos-border)] bg-[var(--driveos-surface-card)] p-5"
+                  >
+                    <div class="flex flex-wrap justify-between gap-3">
+                      <div>
+                        <strong>{{ s.providerCode }} · v{{ s.submissionVersion }}</strong>
+                        <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+                          {{ s.submittedAtUtc | date: 'medium' }}
+                        </p>
+                      </div>
+                      <span class="text-xs font-bold">{{ s.status }}</span>
+                    </div>
+                    @if (s.errorMessageKey) {
+                      <p class="mt-3 rounded-xl bg-red-50 p-3 text-sm text-red-800">
+                        {{ s.errorMessageKey | translate }}
+                      </p>
+                    }
+                    <div class="mt-4 flex flex-wrap gap-2">
+                      @if (canSubmit() && (s.status === 'Failed' || s.status === 'Rejected')) {
+                        <drive-os-button
+                          size="sm"
+                          variant="outline"
+                          [loading]="saving()"
+                          (pressed)="retry(s)"
+                        >
+                          {{ 'exams.registrations.actions.retry' | translate }}
+                        </drive-os-button>
+                      }
+                      @if (canResolve()) {
+                        <drive-os-button
+                          size="sm"
+                          variant="outline"
+                          (pressed)="open('officialResponse', s)"
+                        >
+                          {{ 'exams.registrations.actions.officialResponse' | translate }}
+                        </drive-os-button>
+                      }
+                    </div>
+                  </article>
+                }
+              </div>
+            } @else {
+              <div class="mt-5">
+                <drive-os-empty-state
+                  icon="ph ph-paper-plane-tilt"
+                  [title]="'exams.registrations.noSubmissions' | translate"
+                />
+              </div>
+            }
+          }
+        </div>
+      }
+    </div>
+  } @else if (!loading()) {
+    <div class="mt-5">
+      <drive-os-empty-state
+        icon="ph ph-file-text"
+        [title]="'exams.registrations.empty' | translate"
+      />
+    </div>
+  }
+  <drive-os-drawer
+    [open]="drawerMode() !== null"
+    [title]="'exams.registrations.drawerTitle' | translate"
+    size="lg"
+    (closeRequested)="close()"
+  >
+    <div class="space-y-4 p-5">
+      @if (drawerMode() === 'create') {
+        <div class="grid gap-4 md:grid-cols-2">
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.common.studentId' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="createForm.studentId"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.common.trainingPathId' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="createForm.trainingPathId"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.registrations.placeId' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="createForm.examPlaceId"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.registrations.holdMinutes' | translate }}
+            <input
+              type="number"
+              class="driveos-input"
+              [(ngModel)]="createForm.holdMinutes"
+            />
+          </label>
+        </div>
+        @if (hold(); as h) {
+          <div class="rounded-xl bg-emerald-50 p-4 text-sm text-emerald-900">
+            <strong>{{ 'exams.registrations.holdActive' | translate }}</strong>
+            <p class="mt-1">{{ h.expiresAtUtc | date: 'medium' }}</p>
+          </div>
+          <div class="flex justify-between gap-3">
+            <drive-os-button
+              variant="outline"
+              (pressed)="releaseHold()"
+            >
+              {{ 'exams.registrations.actions.releaseHold' | translate }}
+            </drive-os-button>
+            <drive-os-button
+              [loading]="saving()"
+              (pressed)="createRegistration()"
+            >
+              {{ 'common.actions.create' | translate }}
+            </drive-os-button>
+          </div>
+        } @else {
+          <div class="flex justify-end">
+            <drive-os-button
+              [loading]="saving()"
+              (pressed)="startHold()"
+            >
+              {{ 'exams.registrations.actions.hold' | translate }}
+            </drive-os-button>
+          </div>
+        }
+      }
+      @if (drawerMode() === 'officialData') {
+        <label class="grid gap-2 text-sm font-bold">
+          {{ 'exams.registrations.candidateReference' | translate }}
+          <input
+            class="driveos-input"
+            [(ngModel)]="candidateReference"
+          />
+        </label>
+        <div class="flex justify-end">
+          <drive-os-button
+            [loading]="saving()"
+            (pressed)="saveOfficialData()"
+          >
+            {{ 'common.actions.save' | translate }}
+          </drive-os-button>
+        </div>
+      }
+      @if (drawerMode() === 'officialResponse') {
+        <div class="grid gap-4 md:grid-cols-2">
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.registrations.outcome' | translate }}
+            <select
+              class="driveos-input"
+              [(ngModel)]="responseForm.outcome"
+            >
+              <option value="Submitted">
+                {{ 'exams.enums.registrationOutcome.Submitted' | translate }}
+              </option>
+              <option value="Accepted">
+                {{ 'exams.enums.registrationOutcome.Accepted' | translate }}
+              </option>
+              <option value="Rejected">
+                {{ 'exams.enums.registrationOutcome.Rejected' | translate }}
+              </option>
+              <option value="CorrectionRequested">
+                {{ 'exams.enums.registrationOutcome.CorrectionRequested' | translate }}
+              </option>
+            </select>
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.registrations.externalSubmissionId' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="responseForm.externalSubmissionId"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.registrations.externalRegistrationId' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="responseForm.externalRegistrationId"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.registrations.candidateReference' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="responseForm.candidateReference"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.registrations.providerResponseCode' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="responseForm.providerResponseCode"
+            />
+          </label>
+          <label class="grid gap-2 text-sm font-bold">
+            {{ 'exams.registrations.providerErrorCode' | translate }}
+            <input
+              class="driveos-input"
+              [(ngModel)]="responseForm.providerErrorCode"
+            />
+          </label>
+        </div>
+        <label class="grid gap-2 text-sm font-bold">
+          {{ 'exams.registrations.providerResponse' | translate }}
+          <textarea
+            rows="5"
+            class="driveos-input"
+            [(ngModel)]="responseForm.providerResponseJson"
+          ></textarea>
+        </label>
+        <div class="flex justify-end">
+          <drive-os-button
+            [loading]="saving()"
+            (pressed)="saveOfficialResponse()"
+          >
+            {{ 'common.actions.save' | translate }}
+          </drive-os-button>
+        </div>
+      }
+    </div>
+  </drive-os-drawer>
 </section>

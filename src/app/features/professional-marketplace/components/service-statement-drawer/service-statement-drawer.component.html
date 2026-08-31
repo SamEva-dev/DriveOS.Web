@@ -1,0 +1,224 @@
+<drive-os-drawer
+  [open]="open()"
+  size="xl"
+  (closeRequested)="close()"
+>
+  <div class="grid gap-4 p-5">
+    @if (createMode() && !item()) {
+      <header>
+        <p class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+          {{ 'professionalMarketplace.serviceStatements.createEyebrow' | translate }}
+        </p>
+        <h2 class="text-xl font-extrabold">
+          {{ 'professionalMarketplace.serviceStatements.createTitle' | translate }}
+        </h2>
+      </header>
+      <div class="grid gap-3 md:grid-cols-3">
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.serviceStatements.fields.engagement' | translate }}
+          <select
+            class="rounded-lg border px-3 py-2 text-sm"
+            [(ngModel)]="engagementId"
+          >
+            @for (id of engagementOptions(); track id) {
+              <option [value]="id">{{ id }}</option>
+            }
+          </select>
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.serviceStatements.fields.periodStart' | translate }}
+          <input
+            class="rounded-lg border px-3 py-2 text-sm"
+            type="date"
+            [(ngModel)]="periodStart"
+          />
+        </label>
+        <label class="grid gap-1 text-xs font-bold">
+          {{ 'professionalMarketplace.serviceStatements.fields.periodEnd' | translate }}
+          <input
+            class="rounded-lg border px-3 py-2 text-sm"
+            type="date"
+            [(ngModel)]="periodEnd"
+          />
+        </label>
+      </div>
+      <section class="rounded-xl border p-4">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <div class="font-extrabold">
+              {{ 'professionalMarketplace.serviceStatements.preview.title' | translate }}
+            </div>
+            <div class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ previewLines().length }}
+              {{ 'professionalMarketplace.serviceStatements.preview.lines' | translate }}
+            </div>
+          </div>
+          <div class="text-lg font-black">{{ previewTotal() }} {{ previewCurrency() }}</div>
+        </div>
+        @if (hasRecorded()) {
+          <div
+            class="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800"
+          >
+            {{ 'professionalMarketplace.serviceStatements.preview.recordedWarning' | translate }}
+          </div>
+        }
+        <div class="mt-3 grid gap-2">
+          @for (x of previewLines(); track x.id) {
+            <div class="flex justify-between gap-3 rounded-lg border p-3 text-xs">
+              <span>{{ x.serviceDate }} · {{ x.serviceCode }} · {{ x.status }}</span>
+              <strong>{{ x.totalAmount }} {{ x.currency }}</strong>
+            </div>
+          } @empty {
+            <div
+              class="rounded-lg border border-dashed p-5 text-center text-xs text-[var(--driveos-text-secondary)]"
+            >
+              {{ 'professionalMarketplace.serviceStatements.preview.empty' | translate }}
+            </div>
+          }
+        </div>
+      </section>
+      @if (formErrors().length) {
+        <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+          @for (e of formErrors(); track e) {
+            <p>{{ e | translate }}</p>
+          }
+        </div>
+      }
+      <footer class="flex justify-end border-t pt-4">
+        <button
+          class="rounded-lg bg-blue-800 px-4 py-2 text-xs font-bold text-white disabled:opacity-50"
+          [disabled]="busy() || !previewLines().length || hasRecorded()"
+          (click)="create()"
+        >
+          {{ 'professionalMarketplace.serviceStatements.actions.create' | translate }}
+        </button>
+      </footer>
+    } @else if (loading()) {
+      <div class="p-8 text-center text-sm">{{ 'common.loading' | translate }}</div>
+    } @else if (item(); as s) {
+      <header class="flex items-start justify-between gap-3">
+        <div>
+          <p class="text-xs font-bold uppercase text-[var(--driveos-text-secondary)]">
+            {{ 'professionalMarketplace.serviceStatements.drawerEyebrow' | translate }}
+          </p>
+          <h2 class="text-xl font-extrabold">{{ s.periodStart }} → {{ s.periodEnd }}</h2>
+          <p class="mt-1 text-sm text-[var(--driveos-text-secondary)]">
+            {{ s.lines.length }}
+            {{ 'professionalMarketplace.serviceStatements.preview.lines' | translate }}
+          </p>
+        </div>
+        <span class="rounded-full border px-2 py-1 text-xs font-bold">
+          {{ 'professionalMarketplace.serviceStatements.status.' + s.status | translate }}
+        </span>
+      </header>
+      <nav class="flex gap-1 overflow-x-auto border-b">
+        <button
+          class="border-b-2 px-3 py-2 text-xs font-bold"
+          [class.border-blue-800]="tab() === 'summary'"
+          (click)="selectTab('summary')"
+        >
+          {{ 'professionalMarketplace.serviceStatements.tabs.summary' | translate }}
+        </button>
+        <button
+          class="border-b-2 px-3 py-2 text-xs font-bold"
+          [class.border-blue-800]="tab() === 'lines'"
+          (click)="selectTab('lines')"
+        >
+          {{ 'professionalMarketplace.serviceStatements.tabs.lines' | translate }}
+        </button>
+        <button
+          class="border-b-2 px-3 py-2 text-xs font-bold"
+          [class.border-blue-800]="tab() === 'history'"
+          (click)="selectTab('history')"
+        >
+          {{ 'professionalMarketplace.serviceStatements.tabs.history' | translate }}
+        </button>
+      </nav>
+      @if (tab() === 'summary') {
+        <section class="grid gap-3 md:grid-cols-3">
+          <div class="rounded-xl border p-4">
+            <div class="text-xs text-[var(--driveos-text-secondary)]">
+              {{ 'professionalMarketplace.serviceStatements.fields.total' | translate }}
+            </div>
+            <div class="mt-1 text-lg font-black">{{ s.totalAmount }} {{ s.currency }}</div>
+          </div>
+          <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+            <div class="text-xs text-emerald-700">
+              {{ 'professionalMarketplace.serviceStatements.fields.approved' | translate }}
+            </div>
+            <div class="mt-1 text-lg font-black text-emerald-800">
+              {{ s.approvedAmount }} {{ s.currency }}
+            </div>
+          </div>
+          <div class="rounded-xl border border-amber-200 bg-amber-50 p-4">
+            <div class="text-xs text-amber-700">
+              {{ 'professionalMarketplace.serviceStatements.fields.disputed' | translate }}
+            </div>
+            <div class="mt-1 text-lg font-black text-amber-800">
+              {{ s.disputedAmount }} {{ s.currency }}
+            </div>
+          </div>
+          @if (s.rejectionReason) {
+            <div
+              class="md:col-span-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+            >
+              {{ s.rejectionReason }}
+            </div>
+          }
+        </section>
+      }
+      @if (tab() === 'lines') {
+        <section class="grid gap-2">
+          @for (l of s.lines; track l.serviceEntryId) {
+            <article class="rounded-xl border p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <div class="font-extrabold">{{ l.serviceCode }}</div>
+                  <div class="mt-1 text-xs text-[var(--driveos-text-secondary)]">
+                    {{ l.serviceDate }} · {{ l.quantityMinutes }} min · {{ l.entryStatus }}
+                  </div>
+                </div>
+                <strong>{{ l.totalAmount }} {{ l.currency }}</strong>
+              </div>
+              <p class="mt-2 text-sm">{{ l.description }}</p>
+            </article>
+          }
+        </section>
+      }
+      @if (tab() === 'history') {
+        <section class="grid gap-2 text-sm">
+          <div class="rounded-xl border p-3">
+            {{ 'professionalMarketplace.serviceStatements.fields.createdAt' | translate }}:
+            {{ s.createdAtUtc }}
+          </div>
+          <div class="rounded-xl border p-3">
+            {{ 'professionalMarketplace.serviceStatements.fields.submittedAt' | translate }}:
+            {{ s.submittedAtUtc || '—' }}
+          </div>
+          <div class="rounded-xl border p-3">
+            {{ 'professionalMarketplace.serviceStatements.fields.reviewedAt' | translate }}:
+            {{ s.reviewedAtUtc || '—' }}
+          </div>
+        </section>
+      }
+      @if (formErrors().length) {
+        <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+          @for (e of formErrors(); track e) {
+            <p>{{ e | translate }}</p>
+          }
+        </div>
+      }
+      @if (s.status === 'Draft' && canSubmit()) {
+        <footer class="flex justify-end border-t pt-4">
+          <button
+            class="rounded-lg bg-blue-800 px-4 py-2 text-xs font-bold text-white"
+            [disabled]="busy()"
+            (click)="submit()"
+          >
+            {{ 'professionalMarketplace.serviceStatements.actions.submit' | translate }}
+          </button>
+        </footer>
+      }
+    }
+  </div>
+</drive-os-drawer>

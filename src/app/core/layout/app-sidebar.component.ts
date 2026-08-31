@@ -6,7 +6,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { filter, startWith } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -19,20 +19,21 @@ import { EXAMS_PERMISSIONS } from '../../features/exams/domain/exams-permissions
 import { SCHEDULING_PERMISSIONS } from '../../features/scheduling/domain/scheduling-permissions';
 import { TRAINING_DELIVERY_PERMISSIONS } from '../../features/training-delivery/domain/training-delivery-permissions';
 import { WORKFORCE_PERMISSIONS } from '../../features/workforce/domain/workforce-permissions';
+import { PROFESSIONAL_MARKETPLACE_PERMISSIONS } from '../../features/professional-marketplace/domain/professional-marketplace-permissions';
 import { NavigationItem } from './navigation-item';
 
 interface NavigationGroup {
   readonly labelKey: string;
   readonly items: readonly NavigationItem[];
   readonly collapsible?: boolean;
-  readonly id?: 'crm' | 'students' | 'workforce';
+  readonly id?: 'crm' | 'students' | 'workforce' | 'marketplace';
   readonly icon?: string;
 }
 
 @Component({
   selector: 'driveos-app-sidebar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, TranslatePipe],
+  imports: [RouterLink, TranslatePipe],
   template: `
     <aside
       class="flex h-full min-h-0 flex-col border-r border-[var(--driveos-border)] bg-[var(--driveos-surface-card)]"
@@ -43,10 +44,7 @@ interface NavigationGroup {
         <div
           class="flex size-9 items-center justify-center rounded-lg bg-[var(--driveos-primary-800)] text-white shadow-sm"
         >
-          <i
-            class="ph ph-car-profile text-xl"
-            aria-hidden="true"
-          ></i>
+          <i class="ph ph-car-profile text-xl" aria-hidden="true"></i>
         </div>
         <div class="min-w-0">
           <p class="truncate text-sm font-extrabold text-[var(--driveos-text-primary)]">DriveOS</p>
@@ -69,17 +67,20 @@ interface NavigationGroup {
         class="min-h-0 flex-1 overflow-y-auto px-2 py-3"
         [attr.aria-label]="'layout.mainNavigation' | translate"
       >
-        @for (group of visibleGroups(); track group.labelKey) {
+        @for (group of visibleGroups(); track group.id ?? group.labelKey ?? $index) {
           @if (group.collapsible) {
             <button
               type="button"
-              class="mb-1 flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 text-left text-sm font-bold text-[var(--driveos-text-primary)] hover:bg-[var(--driveos-surface-hover)]"
+              class="mb-1 flex min-h-10 w-full items-center gap-2 rounded-lg border-l-2 border-transparent px-2.5 text-left text-sm font-semibold text-[var(--driveos-text-secondary)] transition-colors hover:bg-[var(--driveos-surface-hover)] hover:text-[var(--driveos-text-primary)]"
+              [class.border-l-[var(--driveos-primary-800)]]="isGroupActive(group)"
+              [class.bg-[var(--driveos-primary-50)]]="isGroupActive(group)"
+              [class.text-[var(--driveos-primary-800)]]="isGroupActive(group)"
               [attr.aria-expanded]="isExpanded(group)"
               [attr.aria-controls]="group.id ? 'driveos-' + group.id + '-navigation' : null"
               (click)="toggleGroup(group)"
             >
               <i
-                [class]="(group.icon ?? 'ph ph-folder') + ' text-lg'"
+                [class]="(group.icon ?? 'ph ph-folder') + ' shrink-0 text-lg'"
                 aria-hidden="true"
               ></i>
               <span class="min-w-0 flex-1 truncate">{{ group.labelKey | translate }}</span>
@@ -87,11 +88,12 @@ interface NavigationGroup {
                 class="ph text-sm"
                 [class.ph-caret-up]="isExpanded(group)"
                 [class.ph-caret-down]="!isExpanded(group)"
+                aria-hidden="true"
               ></i>
             </button>
-          } @else {
+          } @else if (group.labelKey) {
             <p
-              class="px-2 pb-1 pt-1 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--driveos-text-tertiary)]"
+              class="px-3 pb-1.5 pt-3 text-[0.67rem] font-extrabold uppercase tracking-[0.12em] text-[var(--driveos-text-tertiary)] first:pt-0"
             >
               {{ group.labelKey | translate }}
             </p>
@@ -99,22 +101,29 @@ interface NavigationGroup {
 
           <div
             class="mb-3 space-y-0.5"
+            [class.ml-4]="group.collapsible"
+            [class.border-l]="group.collapsible"
+            [class.border-[var(--driveos-border)]]="group.collapsible"
+            [class.pl-2]="group.collapsible"
             [id]="group.collapsible && group.id ? 'driveos-' + group.id + '-navigation' : null"
             [hidden]="group.collapsible && !isExpanded(group)"
           >
             @for (item of group.items; track item.routerLink) {
               <a
                 [routerLink]="item.routerLink"
-                routerLinkActive="driveos-navigation-active"
-                [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
-                class="flex min-h-9 items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium text-[var(--driveos-text-secondary)] transition-colors hover:bg-[var(--driveos-surface-hover)] hover:text-[var(--driveos-text-primary)]"
+                class="flex min-h-10 items-center gap-2.5 rounded-lg border-l-2 border-transparent px-2.5 text-sm font-medium text-[var(--driveos-text-secondary)] transition-colors hover:bg-[var(--driveos-surface-hover)] hover:text-[var(--driveos-text-primary)]"
+                [class.border-l-[var(--driveos-primary-800)]]="isItemActive(item)"
+                [class.bg-[var(--driveos-primary-50)]]="isItemActive(item)"
+                [class.font-semibold]="isItemActive(item)"
+                [class.text-[var(--driveos-primary-800)]]="isItemActive(item)"
                 [class.opacity-55]="item.disabled"
+                [attr.aria-current]="isItemActive(item) ? 'page' : null"
                 [attr.aria-disabled]="item.disabled || null"
                 [attr.tabindex]="item.disabled ? -1 : null"
                 (click)="preventDisabledNavigation($event, item)"
               >
                 <i
-                  [class]="item.icon + ' shrink-0 text-lg'"
+                  [class]="item.icon + ' shrink-0 ' + (group.collapsible ? 'text-base' : 'text-lg')"
                   aria-hidden="true"
                 ></i>
                 <span class="min-w-0 flex-1 truncate">{{ item.labelKey | translate }}</span>
@@ -137,13 +146,15 @@ interface NavigationGroup {
 export class AppSidebarComponent {
   private readonly authorization = inject(AuthorizationService);
   private readonly router = inject(Router);
-  private readonly currentUrl = toSignal(
+
+  private readonly currentNavigation = toSignal(
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
       startWith(new NavigationEnd(0, this.router.url, this.router.url)),
     ),
     { initialValue: new NavigationEnd(0, this.router.url, this.router.url) },
   );
+
   readonly crmExpanded = signal(
     sessionStorage.getItem('driveos.sidebar.crm.expanded') !== 'false' ||
       this.router.url.startsWith('/crm'),
@@ -156,30 +167,53 @@ export class AppSidebarComponent {
     sessionStorage.getItem('driveos.sidebar.workforce.expanded') !== 'false' ||
       this.router.url.startsWith('/workforce'),
   );
+  readonly marketplaceExpanded = signal(
+    sessionStorage.getItem('driveos.sidebar.marketplace.expanded') !== 'false' ||
+      this.router.url.startsWith('/marketplace'),
+  );
 
   constructor() {
     effect(() => {
-      const url = this.currentUrl().urlAfterRedirects;
+      const url = this.currentPath();
       if (url.startsWith('/crm')) this.crmExpanded.set(true);
       if (url.startsWith('/students')) this.studentsExpanded.set(true);
       if (url.startsWith('/workforce')) this.workforceExpanded.set(true);
+      if (url.startsWith('/marketplace')) this.marketplaceExpanded.set(true);
     });
   }
 
-  private readonly mainItems: readonly NavigationItem[] = [
+  private currentPath(): string {
+    const url = this.currentNavigation().urlAfterRedirects || this.router.url;
+    return url.split('?')[0].split('#')[0] || '/';
+  }
+
+  private readonly pilotageItems: readonly NavigationItem[] = [
     {
       labelKey: 'navigation.dashboard',
       icon: 'ph ph-squares-four',
       routerLink: '/dashboard',
       exact: true,
     },
-    { labelKey: 'navigation.organizations', icon: 'ph ph-buildings', routerLink: '/organizations' },
-    { labelKey: 'navigation.pedagogy', icon: 'ph ph-books', routerLink: '/pedagogy' },
+    {
+      labelKey: 'navigation.organizations',
+      icon: 'ph ph-buildings',
+      routerLink: '/organizations',
+    },
+  ];
+
+  private readonly operationItems: readonly NavigationItem[] = [
     { labelKey: 'navigation.planning', icon: 'ph ph-calendar-dots', routerLink: '/planning' },
+    { labelKey: 'navigation.pedagogy', icon: 'ph ph-books', routerLink: '/pedagogy' },
     { labelKey: 'navigation.training', icon: 'ph ph-steering-wheel', routerLink: '/training' },
     { labelKey: 'navigation.exams', icon: 'ph ph-exam', routerLink: '/exams' },
+  ];
+
+  private readonly managementItems: readonly NavigationItem[] = [
     { labelKey: 'navigation.vehicles', icon: 'ph ph-car', routerLink: '/vehicles' },
     { labelKey: 'navigation.billing', icon: 'ph ph-wallet', routerLink: '/billing' },
+  ];
+
+  private readonly platformItems: readonly NavigationItem[] = [
     { labelKey: 'navigation.settings', icon: 'ph ph-gear', routerLink: '/settings' },
   ];
 
@@ -228,6 +262,51 @@ export class AppSidebarComponent {
     },
   ];
 
+  private readonly marketplaceItems: readonly NavigationItem[] = [
+    {
+      labelKey: 'professionalMarketplace.navigation.dashboard',
+      icon: 'ph ph-squares-four',
+      routerLink: '/marketplace/dashboard',
+      exact: true,
+    },
+    {
+      labelKey: 'professionalMarketplace.navigation.professionals',
+      icon: 'ph ph-magnifying-glass',
+      routerLink: '/marketplace/professionals',
+    },
+    {
+      labelKey: 'professionalMarketplace.navigation.opportunities',
+      icon: 'ph ph-briefcase',
+      routerLink: '/marketplace/opportunities',
+    },
+    {
+      labelKey: 'professionalMarketplace.navigation.analytics',
+      icon: 'ph ph-chart-line-up',
+      routerLink: '/marketplace/analytics',
+    },
+    {
+      labelKey: 'professionalMarketplace.navigation.myDashboard',
+      icon: 'ph ph-gauge',
+      routerLink: '/marketplace/my-dashboard',
+      exact: true,
+    },
+    {
+      labelKey: 'professionalMarketplace.navigation.myMissions',
+      icon: 'ph ph-briefcase-metal',
+      routerLink: '/marketplace/my-missions',
+    },
+    {
+      labelKey: 'professionalMarketplace.navigation.myStudents',
+      icon: 'ph ph-student',
+      routerLink: '/marketplace/my-students',
+    },
+    {
+      labelKey: 'professionalMarketplace.navigation.myServiceEntries',
+      icon: 'ph ph-receipt',
+      routerLink: '/marketplace/my-service-entries',
+    },
+  ];
+
   private readonly crmItems: readonly NavigationItem[] = [
     {
       labelKey: 'navigation.crm.dashboard',
@@ -241,76 +320,25 @@ export class AppSidebarComponent {
       icon: 'ph ph-waveform',
       routerLink: '/crm/activities',
     },
-    {
-      labelKey: 'navigation.crm.appointments',
-      icon: 'ph ph-calendar-check',
-      routerLink: '/crm/appointments',
-      disabled: true,
-    },
     { labelKey: 'navigation.crm.tasks', icon: 'ph ph-check-square', routerLink: '/crm/tasks' },
     { labelKey: 'navigation.crm.pipeline', icon: 'ph ph-git-branch', routerLink: '/crm/pipeline' },
-    {
-      labelKey: 'navigation.crm.offers',
-      icon: 'ph ph-file-text',
-      routerLink: '/crm/offers',
-      disabled: true,
-    },
-    {
-      labelKey: 'navigation.crm.communications',
-      icon: 'ph ph-chat-centered',
-      routerLink: '/crm/communications',
-      disabled: true,
-    },
-    {
-      labelKey: 'navigation.crm.acquisition',
-      icon: 'ph ph-target',
-      routerLink: '/crm/acquisition',
-      disabled: true,
-    },
-    {
-      labelKey: 'navigation.crm.duplicates',
-      icon: 'ph ph-copy',
-      routerLink: '/crm/duplicates',
-      disabled: true,
-      badgeKey: 'common.soon',
-    },
-    {
-      labelKey: 'navigation.crm.conversions',
-      icon: 'ph ph-seal-check',
-      routerLink: '/crm/conversions',
-      disabled: true,
-      badgeKey: 'common.soon',
-    },
-    {
-      labelKey: 'navigation.crm.losses',
-      icon: 'ph ph-user-minus',
-      routerLink: '/crm/losses',
-      disabled: true,
-      badgeKey: 'common.soon',
-    },
-    {
-      labelKey: 'navigation.crm.analytics',
-      icon: 'ph ph-chart-pie-slice',
-      routerLink: '/crm/analytics',
-      disabled: true,
-      badgeKey: 'common.soon',
-    },
   ];
 
   readonly visibleGroups = computed<readonly NavigationGroup[]>(() => {
     this.authorization.permissions();
-    this.currentUrl();
+    this.currentNavigation();
+
     const canReadDashboard = this.authorization.hasPermission(CRM_PERMISSIONS.dashboard.read);
     const canReadLeads = this.authorization.hasPermission(CRM_PERMISSIONS.leads.read);
     const visibleCrmItems = this.crmItems.filter((item) => {
-      if (item.disabled) return false;
       if (item.routerLink === '/crm/dashboard') return canReadDashboard;
-      if (item.routerLink === '/crm/leads' || item.routerLink === '/crm/pipeline')
-        return canReadLeads;
-      if (item.routerLink === '/crm/activities')
+      if (item.routerLink === '/crm/leads' || item.routerLink === '/crm/pipeline') return canReadLeads;
+      if (item.routerLink === '/crm/activities') {
         return this.authorization.hasPermission(CRM_PERMISSIONS.activities.read);
-      if (item.routerLink === '/crm/tasks')
+      }
+      if (item.routerLink === '/crm/tasks') {
         return this.authorization.hasPermission(CRM_PERMISSIONS.tasks.read);
+      }
       return true;
     });
 
@@ -324,47 +352,7 @@ export class AppSidebarComponent {
       return this.authorization.hasPermission(STUDENT_PERMISSIONS.read);
     });
 
-    const groups: NavigationGroup[] = [];
-    if (canReadDashboard || canReadLeads) {
-      groups.push({
-        id: 'crm',
-        labelKey: 'navigation.crm.label',
-        icon: 'ph ph-funnel',
-        items: visibleCrmItems,
-        collapsible: true,
-      });
-    }
-    if (visibleStudentItems.length) {
-      groups.push({
-        id: 'students',
-        labelKey: 'navigation.studentsMenu.label',
-        icon: 'ph ph-student',
-        items: visibleStudentItems,
-        collapsible: true,
-      });
-    }
-    const visibleWorkforceItems = this.workforceItems.filter((item) => {
-      if (item.routerLink === '/workforce/dashboard') {
-        return this.authorization.hasPermission(WORKFORCE_PERMISSIONS.dashboard.read);
-      }
-      if (item.routerLink === '/workforce/job-positions') {
-        return this.authorization.hasPermission(WORKFORCE_PERMISSIONS.jobPositions.read);
-      }
-      if (item.routerLink === '/workforce/analytics') {
-        return this.authorization.hasPermission(WORKFORCE_PERMISSIONS.analytics.read);
-      }
-      return this.authorization.hasPermission(WORKFORCE_PERMISSIONS.employees.read);
-    });
-    if (visibleWorkforceItems.length) {
-      groups.push({
-        id: 'workforce',
-        labelKey: 'navigation.workforce.label',
-        icon: 'ph ph-users-four',
-        items: visibleWorkforceItems,
-        collapsible: true,
-      });
-    }
-    const visibleMainItems = this.mainItems.filter((item) => {
+    const visibleOperationItems = this.operationItems.filter((item) => {
       if (item.routerLink === '/pedagogy') {
         return this.authorization.hasPermission(PEDAGOGY_PERMISSIONS.curricula.read);
       }
@@ -395,14 +383,117 @@ export class AppSidebarComponent {
       }
       return true;
     });
-    groups.push({ labelKey: 'navigation.groups.platform', items: visibleMainItems });
+
+    const visibleWorkforceItems = this.workforceItems.filter((item) => {
+      if (item.routerLink === '/workforce/dashboard') {
+        return this.authorization.hasPermission(WORKFORCE_PERMISSIONS.dashboard.read);
+      }
+      if (item.routerLink === '/workforce/job-positions') {
+        return this.authorization.hasPermission(WORKFORCE_PERMISSIONS.jobPositions.read);
+      }
+      if (item.routerLink === '/workforce/analytics') {
+        return this.authorization.hasPermission(WORKFORCE_PERMISSIONS.analytics.read);
+      }
+      return this.authorization.hasPermission(WORKFORCE_PERMISSIONS.employees.read);
+    });
+
+    const visibleMarketplaceItems = this.marketplaceItems.filter((item) => {
+      if (item.routerLink === '/marketplace/dashboard' || item.routerLink === '/marketplace/my-dashboard') {
+        return this.authorization.hasPermission(PROFESSIONAL_MARKETPLACE_PERMISSIONS.dashboard.read);
+      }
+      if (item.routerLink === '/marketplace/professionals') {
+        return this.authorization.hasPermission(PROFESSIONAL_MARKETPLACE_PERMISSIONS.search.read);
+      }
+      if (item.routerLink === '/marketplace/opportunities') {
+        return this.authorization.hasPermission(PROFESSIONAL_MARKETPLACE_PERMISSIONS.opportunities.read);
+      }
+      if (item.routerLink === '/marketplace/analytics') {
+        return this.authorization.hasPermission(PROFESSIONAL_MARKETPLACE_PERMISSIONS.analytics.read);
+      }
+      if (item.routerLink === '/marketplace/my-missions') {
+        return this.authorization.hasPermission(PROFESSIONAL_MARKETPLACE_PERMISSIONS.missions.read);
+      }
+      if (item.routerLink === '/marketplace/my-students') {
+        return this.authorization.hasPermission(PROFESSIONAL_MARKETPLACE_PERMISSIONS.studentAssignments.read);
+      }
+      if (item.routerLink === '/marketplace/my-service-entries') {
+        return this.authorization.hasPermission(PROFESSIONAL_MARKETPLACE_PERMISSIONS.serviceEntries.read);
+      }
+      return false;
+    });
+
+    const groups: NavigationGroup[] = [
+      { labelKey: 'navigation.groups.pilotage', items: this.pilotageItems },
+      { labelKey: 'navigation.groups.operations', items: [] },
+    ];
+
+    if (visibleCrmItems.length) {
+      groups.push({
+        id: 'crm',
+        labelKey: 'navigation.crm.label',
+        icon: 'ph ph-funnel',
+        items: visibleCrmItems,
+        collapsible: true,
+      });
+    }
+
+    if (visibleStudentItems.length) {
+      groups.push({
+        id: 'students',
+        labelKey: 'navigation.studentsMenu.label',
+        icon: 'ph ph-student',
+        items: visibleStudentItems,
+        collapsible: true,
+      });
+    }
+
+    if (visibleOperationItems.length) {
+      groups.push({ labelKey: '', items: visibleOperationItems });
+    }
+
+    groups.push({ labelKey: 'navigation.groups.management', items: [] });
+
+    if (visibleWorkforceItems.length) {
+      groups.push({
+        id: 'workforce',
+        labelKey: 'navigation.workforce.label',
+        icon: 'ph ph-users-four',
+        items: visibleWorkforceItems,
+        collapsible: true,
+      });
+    }
+
+    if (visibleMarketplaceItems.length) {
+      groups.push({
+        id: 'marketplace',
+        labelKey: 'professionalMarketplace.navigation.label',
+        icon: 'ph ph-handshake',
+        items: visibleMarketplaceItems,
+        collapsible: true,
+      });
+    }
+
+    groups.push({ labelKey: '', items: this.managementItems });
+    groups.push({ labelKey: 'navigation.groups.platform', items: this.platformItems });
     return groups;
   });
+
+  isItemActive(item: NavigationItem): boolean {
+    const current = this.currentPath();
+    const target = item.routerLink.split('?')[0].split('#')[0];
+    if (item.exact) return current === target;
+    return current === target || current.startsWith(`${target}/`);
+  }
+
+  isGroupActive(group: NavigationGroup): boolean {
+    return group.items.some((item) => this.isItemActive(item));
+  }
 
   isExpanded(group: NavigationGroup): boolean {
     if (group.id === 'crm') return this.crmExpanded();
     if (group.id === 'students') return this.studentsExpanded();
     if (group.id === 'workforce') return this.workforceExpanded();
+    if (group.id === 'marketplace') return this.marketplaceExpanded();
     return true;
   }
 
@@ -423,6 +514,12 @@ export class AppSidebarComponent {
       const expanded = !this.workforceExpanded();
       this.workforceExpanded.set(expanded);
       sessionStorage.setItem('driveos.sidebar.workforce.expanded', `${expanded}`);
+      return;
+    }
+    if (group.id === 'marketplace') {
+      const expanded = !this.marketplaceExpanded();
+      this.marketplaceExpanded.set(expanded);
+      sessionStorage.setItem('driveos.sidebar.marketplace.expanded', `${expanded}`);
     }
   }
 

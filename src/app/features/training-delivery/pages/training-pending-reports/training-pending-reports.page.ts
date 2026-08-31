@@ -12,9 +12,13 @@ import { DriveOsSpinnerComponent } from '../../../../shared/ui/spinner/driveos-s
 import { DriveOsStateBannerComponent } from '../../../../shared/ui/state-banner/driveos-state-banner.component';
 import { TrainingDeliveryApiService } from '../../data-access/training-delivery-api.service';
 import { TRAINING_DELIVERY_PERMISSIONS } from '../../domain/training-delivery-permissions';
-import { TrainingDeliveryPendingReportItem, TrainingDeliveryPendingReportsResponse } from '../../models/training-delivery.models';
+import {
+  TrainingDeliveryPendingReportItem,
+  TrainingDeliveryPendingReportsResponse,
+} from '../../models/training-delivery.models';
 
-type PendingReportCategory = 'all' | 'drafts' | 'complete' | 'sync' | 'correct' | 'validate' | 'overdue';
+type PendingReportCategory =
+  'all' | 'drafts' | 'complete' | 'sync' | 'correct' | 'validate' | 'overdue';
 
 interface LocalReportDraftSnapshot {
   readonly sessionId: string;
@@ -26,7 +30,15 @@ interface LocalReportDraftSnapshot {
 @Component({
   selector: 'driveos-training-pending-reports-page',
   standalone: true,
-  imports: [DatePipe, TranslatePipe, DriveOsButtonComponent, DriveOsDrawerComponent, DriveOsEmptyStateComponent, DriveOsSpinnerComponent, DriveOsStateBannerComponent],
+  imports: [
+    DatePipe,
+    TranslatePipe,
+    DriveOsButtonComponent,
+    DriveOsDrawerComponent,
+    DriveOsEmptyStateComponent,
+    DriveOsSpinnerComponent,
+    DriveOsStateBannerComponent,
+  ],
   templateUrl: './training-pending-reports.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -43,21 +55,32 @@ export class TrainingPendingReportsPage {
   readonly mineOnly = signal(false);
   readonly selected = signal<TrainingDeliveryPendingReportItem | null>(null);
   readonly detailsOpen = signal(false);
-  readonly canMonitorAll = computed(() => this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.reports.monitor));
-  readonly canSubmit = computed(() => this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.reports.submit));
+  readonly canMonitorAll = computed(() =>
+    this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.reports.monitor),
+  );
+  readonly canSubmit = computed(() =>
+    this.authorization.hasPermission(TRAINING_DELIVERY_PERMISSIONS.reports.submit),
+  );
   readonly localDrafts = signal<ReadonlyMap<string, LocalReportDraftSnapshot>>(new Map());
 
   readonly items = computed(() => {
     const local = this.localDrafts();
     return (this.data()?.items ?? []).filter((item) => {
       switch (this.category()) {
-        case 'drafts': return item.reportStatus === 0;
-        case 'complete': return item.reportStatus < 0 || item.reportStatus === 0 && item.completionPercent < 100;
-        case 'sync': return local.get(item.sessionId)?.pendingSync === true;
-        case 'correct': return item.isRejectedForCorrection;
-        case 'validate': return item.isWaitingForValidation;
-        case 'overdue': return item.isOverdue;
-        default: return true;
+        case 'drafts':
+          return item.reportStatus === 0;
+        case 'complete':
+          return item.reportStatus < 0 || (item.reportStatus === 0 && item.completionPercent < 100);
+        case 'sync':
+          return local.get(item.sessionId)?.pendingSync === true;
+        case 'correct':
+          return item.isRejectedForCorrection;
+        case 'validate':
+          return item.isWaitingForValidation;
+        case 'overdue':
+          return item.isOverdue;
+        default:
+          return true;
       }
     });
   });
@@ -68,26 +91,51 @@ export class TrainingPendingReportsPage {
     this.load();
   }
 
-  setCategory(category: PendingReportCategory): void { this.category.set(category); }
-  setMineOnly(value: boolean): void { if (this.canMonitorAll()) { this.mineOnly.set(value); this.load(); } }
-  openDetails(item: TrainingDeliveryPendingReportItem): void { this.selected.set(item); this.detailsOpen.set(true); }
-  closeDetails(): void { this.detailsOpen.set(false); this.selected.set(null); }
+  setCategory(category: PendingReportCategory): void {
+    this.category.set(category);
+  }
+  setMineOnly(value: boolean): void {
+    if (this.canMonitorAll()) {
+      this.mineOnly.set(value);
+      this.load();
+    }
+  }
+  openDetails(item: TrainingDeliveryPendingReportItem): void {
+    this.selected.set(item);
+    this.detailsOpen.set(true);
+  }
+  closeDetails(): void {
+    this.detailsOpen.set(false);
+    this.selected.set(null);
+  }
 
   load(): void {
     this.loading.set(true);
     this.errors.set([]);
     this.refreshLocalDrafts();
     this.api.getPendingReports(this.mineOnly()).subscribe({
-      next: (data) => { this.data.set(data); this.loading.set(false); },
-      error: (error: HttpErrorResponse) => { this.errors.set(this.apiErrors.getMessages(error)); this.loading.set(false); },
+      next: (data) => {
+        this.data.set(data);
+        this.loading.set(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.errors.set(this.apiErrors.getMessages(error));
+        this.loading.set(false);
+      },
     });
   }
 
   resume(item: TrainingDeliveryPendingReportItem): void {
-    void this.router.navigate(['/training/sessions', item.sessionId, 'report'], { queryParams: { step: this.resumeStep(item) } });
+    void this.router.navigate(['/training/sessions', item.sessionId, 'report'], {
+      queryParams: { step: this.resumeStep(item) },
+    });
   }
 
-  openSession(item: TrainingDeliveryPendingReportItem): void { void this.router.navigate(['/training/sessions', item.sessionId], { queryParams: { tab: 'report' } }); }
+  openSession(item: TrainingDeliveryPendingReportItem): void {
+    void this.router.navigate(['/training/sessions', item.sessionId], {
+      queryParams: { tab: 'report' },
+    });
+  }
 
   sync(item: TrainingDeliveryPendingReportItem): void {
     this.resume(item);
@@ -98,9 +146,19 @@ export class TrainingPendingReportsPage {
     return Math.max(1, Math.min(9, local?.currentStep ?? item.resumeStep));
   }
 
-  isSyncPending(item: TrainingDeliveryPendingReportItem): boolean { return this.localDrafts().get(item.sessionId)?.pendingSync === true; }
-  statusKey(item: TrainingDeliveryPendingReportItem): string { return item.reportStatus < 0 ? 'training.pendingReports.status.missing' : `training.reportWorkflow.status.${item.reportStatus}`; }
-  dueKey(item: TrainingDeliveryPendingReportItem): string { return item.isOverdue ? 'training.pendingReports.due.overdue' : 'training.pendingReports.due.upcoming'; }
+  isSyncPending(item: TrainingDeliveryPendingReportItem): boolean {
+    return this.localDrafts().get(item.sessionId)?.pendingSync === true;
+  }
+  statusKey(item: TrainingDeliveryPendingReportItem): string {
+    return item.reportStatus < 0
+      ? 'training.pendingReports.status.missing'
+      : `training.reportWorkflow.status.${item.reportStatus}`;
+  }
+  dueKey(item: TrainingDeliveryPendingReportItem): string {
+    return item.isOverdue
+      ? 'training.pendingReports.due.overdue'
+      : 'training.pendingReports.due.upcoming';
+  }
 
   private refreshLocalDrafts(): void {
     const snapshots = new Map<string, LocalReportDraftSnapshot>();
@@ -109,9 +167,13 @@ export class TrainingPendingReportsPage {
       const key = localStorage.key(i);
       if (!key?.startsWith(prefix)) continue;
       try {
-        const value = JSON.parse(localStorage.getItem(key) ?? 'null') as LocalReportDraftSnapshot | null;
+        const value = JSON.parse(
+          localStorage.getItem(key) ?? 'null',
+        ) as LocalReportDraftSnapshot | null;
         if (value?.sessionId) snapshots.set(value.sessionId, value);
-      } catch { /* Ignore corrupted local cache. */ }
+      } catch {
+        /* Ignore corrupted local cache. */
+      }
     }
     this.localDrafts.set(snapshots);
   }
