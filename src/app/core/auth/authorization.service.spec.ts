@@ -46,4 +46,19 @@ describe('AuthorizationService', () => {
 
     expect(service.hasAnyPermission()).toBe(false);
   });
+
+  it('should grant every permission to DriveOS.PlatformAdministrator without permission claims', () => {
+    service.setAuthorizationContext([], ['DriveOS.PlatformAdministrator']);
+
+    expect(service.hasAnyPermission()).toBe(true);
+    expect(service.hasPermission('Organizations.Delete')).toBe(true);
+    expect(service.hasAll(['Branches.Read', 'Students.Update'])).toBe(true);
+  });
+
+  it('should clear the platform administrator shortcut', () => {
+    service.setAuthorizationContext([], ['SuperAdmin']);
+    service.clearPermissions();
+
+    expect(service.hasPermission('Organizations.Delete')).toBe(false);
+  });
 });

@@ -62,7 +62,11 @@ export class OrganizationsListStore {
     },
   );
 
-  readonly page = this.resource.value;
+  readonly error = this.resource.error;
+
+  // httpResource.value() throws ResourceValueError while the resource is in
+  // an error state. Never let a temporary API outage break template rendering.
+  readonly page = computed(() => (this.error() ? EMPTY_PAGE : this.resource.value()));
 
   readonly organizations = computed(() => [...this.page().items]);
 
@@ -70,9 +74,11 @@ export class OrganizationsListStore {
 
   readonly isLoading = this.resource.isLoading;
 
-  readonly error = this.resource.error;
+  readonly hasError = computed(() => this.error() !== undefined);
 
-  readonly isEmpty = computed(() => !this.isLoading() && this.organizations().length === 0);
+  readonly isEmpty = computed(
+    () => !this.isLoading() && !this.hasError() && this.organizations().length === 0,
+  );
 
   setPage(pageNumber: number, pageSize: number): void {
     this.parametersSignal.update((current) => ({

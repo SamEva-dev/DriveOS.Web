@@ -2,7 +2,7 @@
   <header class="hero-panel">
     <div class="min-w-0">
       <a
-        [routerLink]="['/organizations', organizationId]"
+        [routerLink]="backLink"
         class="back-link"
       >
         <span aria-hidden="true">←</span>
@@ -467,7 +467,7 @@
             <div
               class="mt-7 flex flex-wrap gap-2 border-t border-slate-200 pt-5 dark:border-slate-700"
             >
-              @if (canUpdate() && x.status !== 4) {
+              @if (canUpdate() && x.status !== orgaRepresentativeStatus.Ended) {
                 <drive-os-button
                   variant="secondary"
                   (pressed)="openEdit()"
@@ -475,12 +475,12 @@
                   {{ 'common.actions.edit' | translate }}
                 </drive-os-button>
               }
-              @if (canActivate() && x.status === 1) {
+              @if (canActivate() && x.status === orgaRepresentativeStatus.Active) {
                 <drive-os-button (pressed)="request('activate')">
                   {{ 'organizations.representatives.actions.activate' | translate }}
                 </drive-os-button>
               }
-              @if (canSuspend() && x.status === 2) {
+              @if (canSuspend() && x.status === orgaRepresentativeStatus.Suspended) {
                 <drive-os-button
                   variant="secondary"
                   (pressed)="request('suspend')"
@@ -488,13 +488,13 @@
                   {{ 'organizations.representatives.actions.suspend' | translate }}
                 </drive-os-button>
               }
-              @if (canReactivate() && x.status === 3) {
+              @if (canReactivate() && x.status === orgaRepresentativeStatus.Suspended) {
                 <drive-os-button (pressed)="request('reactivate')">
                   {{ 'organizations.representatives.actions.reactivate' | translate }}
                 </drive-os-button>
               }
               @if (
-                canPrimary() && x.representativeType === 1 && x.status === 2 && !x.isPrimaryOwner
+                canPrimary() && x.representativeType === orgaRepresentativeType.Owner && x.status === orgaRepresentativeStatus.Suspended && !x.isPrimaryOwner
               ) {
                 <drive-os-button
                   variant="secondary"
@@ -503,7 +503,7 @@
                   {{ 'organizations.representatives.actions.setPrimaryOwner' | translate }}
                 </drive-os-button>
               }
-              @if (canEnd() && x.status !== 4) {
+              @if (canEnd() && x.status !== orgaRepresentativeStatus.Ended) {
                 <drive-os-button
                   variant="danger"
                   (pressed)="request('end')"

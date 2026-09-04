@@ -172,7 +172,7 @@ export class AuthService {
     }
     this.tokensSignal.set(stored);
     this.userSignal.set(user);
-    this.authorization.setPermissions(user.permissions);
+    this.authorization.setAuthorizationContext(user.permissions, user.roles);
   }
 
   private applyLogin(response: LoginResponse): void {
@@ -186,7 +186,7 @@ export class AuthService {
     this.tokens.save(authTokens);
     this.tokensSignal.set(authTokens);
     this.userSignal.set(user);
-    this.authorization.setPermissions(user.permissions);
+    this.authorization.setAuthorizationContext(user.permissions, user.roles);
   }
 
   private buildUser(accessToken: string, response?: LoginResponse): AuthUser | null {

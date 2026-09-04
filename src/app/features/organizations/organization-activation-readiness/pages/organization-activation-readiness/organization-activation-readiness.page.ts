@@ -28,6 +28,7 @@ import {
 
 interface RequirementNavigation {
   readonly routerLink: readonly string[];
+  readonly queryParams: Readonly<Record<string, string>>;
   readonly labelKey: string;
   readonly requiredPermission: string;
 }
@@ -86,11 +87,15 @@ export class OrganizationActivationReadinessPage {
     }
 
     const base = ['/organizations', this.organizationId];
+    const queryParams = {
+      returnUrl: `/organizations/${this.organizationId}/activation-readiness`,
+    };
 
     switch (requirement.code) {
       case 'organization.legal-profile':
         return {
           routerLink: [...base, 'legal-profile'],
+          queryParams,
           labelKey: 'organizations.activationReadiness.actions.openLegalProfile',
           requiredPermission: 'OrganizationLegalProfiles.Read',
         };
@@ -99,6 +104,7 @@ export class OrganizationActivationReadinessPage {
       case 'organization.active-owner':
         return {
           routerLink: [...base, 'representatives'],
+          queryParams,
           labelKey: 'organizations.activationReadiness.actions.openRepresentatives',
           requiredPermission: 'OrganizationRepresentatives.Read',
         };
@@ -106,6 +112,7 @@ export class OrganizationActivationReadinessPage {
       case 'organization.active-subscription':
         return {
           routerLink: [...base, 'subscription'],
+          queryParams,
           labelKey: 'organizations.activationReadiness.actions.openSubscription',
           requiredPermission: 'OrganizationSubscriptions.Read',
         };
@@ -113,6 +120,7 @@ export class OrganizationActivationReadinessPage {
       case 'organization.operational-settings':
         return {
           routerLink: [...base, 'settings'],
+          queryParams,
           labelKey: 'organizations.activationReadiness.actions.openConfigurations',
           requiredPermission: 'OrganizationSettings.Read',
         };
@@ -121,6 +129,7 @@ export class OrganizationActivationReadinessPage {
       case 'organization.primary-branch-manager':
         return {
           routerLink: [...base, 'branches'],
+          queryParams,
           labelKey: 'organizations.activationReadiness.actions.openBranches',
           requiredPermission: 'Branches.Read',
         };

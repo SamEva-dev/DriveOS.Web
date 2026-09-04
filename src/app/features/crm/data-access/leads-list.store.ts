@@ -57,10 +57,10 @@ export class LeadsListStore {
     { defaultValue: EMPTY_PAGE },
   );
 
-  readonly page = this.resource.value;
+  readonly error = this.resource.error;
+  readonly page = computed(() => (this.error() ? EMPTY_PAGE : this.resource.value()));
   readonly leads = computed(() => [...this.page().items]);
   readonly isLoading = this.resource.isLoading;
-  readonly error = this.resource.error;
 
   setPage(pageNumber: number, pageSize: number): void {
     this.parametersSignal.update((current) => ({ ...current, pageNumber, pageSize }));

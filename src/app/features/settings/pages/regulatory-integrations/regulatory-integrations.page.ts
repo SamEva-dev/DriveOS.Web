@@ -109,7 +109,7 @@ export class RegulatoryIntegrationsPage {
 
   filter(status: string): void {
     this.selectedStatus.set(status);
-    this.reload();
+    this.reloadSubmissions(false);
   }
 
   openCreate(): void {
@@ -140,7 +140,7 @@ export class RegulatoryIntegrationsPage {
     const observer = {
       next: () => {
         this.closeDrawer();
-        this.reload();
+        this.reloadConnections();
       },
       error: (e: HttpErrorResponse) => this.errorMessages.set(this.errors.getMessages(e)),
     };
@@ -171,7 +171,7 @@ export class RegulatoryIntegrationsPage {
     this.api
       .changeConnectionStatus(this.organizationId(), connection.id, status, connection.revision)
       .subscribe({
-        next: () => this.reload(),
+        next: () => this.reloadConnections(),
         error: (e: HttpErrorResponse) => this.errorMessages.set(this.errors.getMessages(e)),
       });
   }
@@ -192,7 +192,7 @@ export class RegulatoryIntegrationsPage {
     this.api.reconcile(id).subscribe({
       next: () => {
         this.closeDetail();
-        this.reload();
+        this.reloadSubmissions(true);
       },
       error: (e: HttpErrorResponse) => this.errorMessages.set(this.errors.getMessages(e)),
     });
@@ -201,12 +201,46 @@ export class RegulatoryIntegrationsPage {
     this.api.retry(id).subscribe({
       next: () => {
         this.closeDetail();
-        this.reload();
+        this.reloadSubmissions(true);
       },
       error: (e: HttpErrorResponse) => this.errorMessages.set(this.errors.getMessages(e)),
     });
   }
   branchName(id: string | null): string {
     return id ? (this.branches().find((x) => x.id === id)?.name ?? id) : '—';
+  }
+
+  private reloadConnections(): void {
+    const organizationId = this.organizationId();
+    if (!organizationId) return;
+
+    this.api.getConnections(organizationId).subscribe({
+      next: (connections) => this.connections.set(connections),
+      error: (error: HttpErrorResponse) =>
+        this.errorMessages.set(this.errors.getMessages(error)),
+    });
+  }
+
+  private reloadSubmissions(refreshSummary: boolean): void {
+    if (!this.canReadSubmissions()) return;
+
+    const submissions = this.api.getSubmissions(this.selectedStatus() || undefined);
+    if (!refreshSummary) {
+      submissions.subscribe({
+        next: (result) => this.submissions.set(result.items ?? []),
+        error: (error: HttpErrorResponse) =>
+          this.errorMessages.set(this.errors.getMessages(error)),
+      });
+      return;
+    }
+
+    forkJoin({ submissions, summary: this.api.getSummary() }).subscribe({
+      next: (result) => {
+        this.submissions.set(result.submissions.items ?? []);
+        this.summary.set(result.summary);
+      },
+      error: (error: HttpErrorResponse) =>
+        this.errorMessages.set(this.errors.getMessages(error)),
+    });
   }
 }

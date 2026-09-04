@@ -44,13 +44,13 @@ export class RegisterPage {
       });
       if (response.status === 'application_added') {
         await this.router.navigate(['/login'], {
-          queryParams: { email: response.email, applicationAdded: '1' },
+          queryParams: { email: response.email, applicationAdded: '1', returnUrl: this.route.snapshot.queryParamMap.get('returnUrl') },
         });
       } else if (this.auth.isAuthenticated()) {
-        await this.router.navigate(['/dashboard']);
+        await this.router.navigateByUrl(this.route.snapshot.queryParamMap.get('returnUrl') || '/dashboard');
       } else {
         await this.router.navigate(['/check-email'], {
-          queryParams: { email: response.email, type: 'verify' },
+          queryParams: { email: response.email, type: 'verify', returnUrl: this.route.snapshot.queryParamMap.get('returnUrl') },
         });
       }
     } catch (error) {

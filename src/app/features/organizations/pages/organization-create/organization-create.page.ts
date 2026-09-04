@@ -93,6 +93,7 @@ export class OrganizationCreatePage {
         error: (error: HttpErrorResponse) => {
           this.isSubmitting.set(false);
 
+          console.error('Error creating organization:', error);
           const messages = this.apiErrorService.getMessages(error);
 
           for (const message of messages) {

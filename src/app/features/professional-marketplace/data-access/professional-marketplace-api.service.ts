@@ -13,6 +13,8 @@ import {
   CreateFreelanceInvitationRequest,
   CreateFreelanceInvitationResponse,
   SendFreelanceInvitationResponse,
+  PublicFreelanceInvitation,
+  FreelanceInvitationAcceptance,
 } from '../models/freelance-invitation.model';
 import {
   ProfessionalComplianceResponse,
@@ -179,6 +181,18 @@ export class ProfessionalMarketplaceApiService {
       `${this.baseUrl}/organizations/${organizationId}/invitations/${invitationId}/send`,
       { publicBaseUrl },
     );
+  }
+
+  openFreelanceInvitation(token: string): Observable<PublicFreelanceInvitation> {
+    return this.http.post<PublicFreelanceInvitation>(`${this.baseUrl}/invitations/open`, { token });
+  }
+
+  acceptFreelanceInvitation(token: string): Observable<FreelanceInvitationAcceptance> {
+    return this.http.post<FreelanceInvitationAcceptance>(`${this.baseUrl}/invitations/accept`, { token });
+  }
+
+  declineFreelanceInvitation(token: string, reason: string | null): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/invitations/decline`, { token, reason });
   }
 
   getProfessionalCompliance(profileId: string): Observable<ProfessionalComplianceResponse> {

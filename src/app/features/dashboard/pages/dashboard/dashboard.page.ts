@@ -1,26 +1,27 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { DashboardDemoService } from '../../data-access/dashboard-demo.service';
-import { DashboardIcon } from '../../models/dashboard.model';
+import { DashboardService } from '../../data-access/dashboard.service';
+import { DashboardIcon, DashboardSnapshot } from '../../models/dashboard.model';
 
 @Component({
   selector: 'driveos-dashboard-page',
   standalone: true,
-  imports: [RouterLink, TranslatePipe],
+  imports: [RouterLink, TranslatePipe, DatePipe],
   templateUrl: './dashboard.page.html',
   styleUrl: './dashboard.page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardPage {
-  private readonly dashboard = inject(DashboardDemoService);
-
-  readonly metrics = this.dashboard.getMetrics();
-  readonly quickActions = this.dashboard.getQuickActions();
-  readonly agenda = this.dashboard.getAgenda();
-  readonly alerts = this.dashboard.getAlerts();
-  readonly activities = this.dashboard.getActivities();
+  private readonly dashboard = inject(DashboardService);
+  readonly snapshot = signal<DashboardSnapshot>({ metrics: [], quickActions: [], agenda: [], alerts: [], activities: [] });
+  readonly metrics = computed(() => this.snapshot().metrics);
+  readonly quickActions = computed(() => this.snapshot().quickActions);
+  readonly agenda = computed(() => this.snapshot().agenda);
+  readonly alerts = computed(() => this.snapshot().alerts);
+  readonly activities = computed(() => this.snapshot().activities);
 
   readonly selectedMonth = signal(new Date().getMonth());
   readonly selectedYear = signal(new Date().getFullYear());
@@ -30,6 +31,10 @@ export class DashboardPage {
   readonly years = Array.from({ length: 5 }, (_, index) => new Date().getFullYear() - 1 + index);
 
   readonly periodLabel = computed(() => `dashboard.months.${this.selectedMonth()}`);
+
+  constructor() {
+    this.refresh();
+  }
 
   setMonth(event: Event): void {
     const value = Number((event.target as HTMLSelectElement).value);
@@ -51,7 +56,14 @@ export class DashboardPage {
     }
 
     this.refreshing.set(true);
-    window.setTimeout(() => this.refreshing.set(false), 450);
+    this.dashboard.load(this.selectedMonth(), this.selectedYear()).subscribe({
+      next: (snapshot) => this.snapshot.set(snapshot),
+      error: () => {
+        this.snapshot.set({ metrics: [], quickActions: [], agenda: [], alerts: [], activities: [] });
+        this.refreshing.set(false);
+      },
+      complete: () => this.refreshing.set(false),
+    });
   }
 
   iconPath(icon: DashboardIcon): string {

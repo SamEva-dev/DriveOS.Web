@@ -70,6 +70,7 @@ export class OrganizationRepresentativesPage {
   private readonly toast = inject(DriveOsToastService);
   private readonly destroy = inject(DestroyRef);
   readonly organizationId = this.route.snapshot.paramMap.get('organizationId') ?? '';
+  readonly backLink = this.resolveBackLink();
   readonly items = signal<readonly OrganizationRepresentativeListItem[]>([]);
   readonly selected = signal<OrganizationRepresentative | null>(null);
   readonly loading = signal(true);
@@ -85,6 +86,8 @@ export class OrganizationRepresentativesPage {
   readonly canReactivate = computed(() => this.auth.hasPermission(p.reactivate));
   readonly canEnd = computed(() => this.auth.hasPermission(p.end));
   readonly canPrimary = computed(() => this.auth.hasPermission(p.setPrimaryOwner));
+  readonly orgaRepresentativeStatus = OrganizationRepresentativeStatus;
+  readonly orgaRepresentativeType = OrganizationRepresentativeType;
   readonly createForm = this.fb.nonNullable.group(
     {
       representativeType: [OrganizationRepresentativeType.Owner, Validators.required],
@@ -118,9 +121,7 @@ export class OrganizationRepresentativesPage {
     ),
   );
 
-  readonly types = Object.values(OrganizationRepresentativeType).filter(
-    (v) => typeof v === 'number',
-  ) as OrganizationRepresentativeType[];
+  readonly types = Object.values(OrganizationRepresentativeType);
   constructor() {
     if (!this.organizationId) {
       void this.router.navigate(['/organizations']);
@@ -285,10 +286,10 @@ export class OrganizationRepresentativesPage {
   }
 
   typeLabel(v: OrganizationRepresentativeType) {
-    return `organizations.representatives.types.${OrganizationRepresentativeType[v]}`;
+    return `organizations.representatives.types.${v}`;
   }
   statusLabel(v: OrganizationRepresentativeStatus) {
-    return `organizations.representatives.status.${OrganizationRepresentativeStatus[v]}`;
+    return `organizations.representatives.status.${v}`;
   }
   isInvalid(control: AbstractControl): boolean {
     return control.invalid && (control.touched || control.dirty);
@@ -305,8 +306,16 @@ export class OrganizationRepresentativesPage {
       ? 'success'
       : v === OrganizationRepresentativeStatus.Suspended
         ? 'warning'
-        : 'neutral';
+      : 'neutral';
   }
+
+  private resolveBackLink(): readonly string[] {
+    const readinessUrl = `/organizations/${this.organizationId}/activation-readiness`;
+    return this.route.snapshot.queryParamMap.get('returnUrl') === readinessUrl
+      ? ['/organizations', this.organizationId, 'activation-readiness']
+      : ['/organizations', this.organizationId];
+  }
+
   private static dateRangeValidator(control: AbstractControl): ValidationErrors | null {
     const from = control.get('effectiveFrom')?.value as string | undefined;
     const to = control.get('effectiveTo')?.value as string | undefined;

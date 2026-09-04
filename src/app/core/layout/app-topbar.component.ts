@@ -16,6 +16,9 @@ import { NotificationCenterDrawerComponent } from '../notifications/notification
 import { AuthService } from '../services/auth.service';
 import { ThemeMode } from '../theme/theme-mode';
 import { ThemeService } from '../theme/theme.service';
+import { TenantContextService } from '../tenancy/tenant-context.service';
+import { BranchesApiService } from '../../features/organizations/branches/data-access/branches-api.service';
+import { BranchListItem } from '../../features/organizations/branches/models/branch-list-item';
 
 @Component({
   selector: 'driveos-app-topbar',
@@ -49,10 +52,7 @@ import { ThemeService } from '../theme/theme.service';
         ></i>
       </button>
 
-      <button
-        type="button"
-        class="hidden min-w-44 items-center gap-3 rounded-lg px-2 py-1.5 text-left hover:bg-[var(--driveos-surface-hover)] md:flex"
-      >
+      <div class="hidden min-w-52 items-center gap-3 rounded-lg px-2 py-1.5 md:flex">
         <span
           class="flex size-9 items-center justify-center rounded-lg bg-[var(--driveos-primary-50)] text-[var(--driveos-primary-800)] dark:bg-blue-950/50 dark:text-blue-200"
         >
@@ -67,17 +67,20 @@ import { ThemeService } from '../theme/theme.service';
           >
             {{ 'layout.branchLabel' | translate }}
           </span>
-          <span
-            class="flex items-center gap-2 text-sm font-bold text-[var(--driveos-text-primary)]"
+          <select
+            class="max-w-44 bg-transparent text-sm font-bold text-[var(--driveos-text-primary)] outline-none"
+            [value]="tenantContext.branchId() ?? ''"
+            [disabled]="branchesLoading() || branches().length === 0"
+            [attr.aria-label]="'layout.branchLabel' | translate"
+            (change)="changeBranch($event)"
           >
-            {{ 'layout.branchName' | translate }}
-            <i
-              class="ph ph-caret-down text-xs"
-              aria-hidden="true"
-            ></i>
-          </span>
+            <option value="">{{ 'layout.allBranches' | translate }}</option>
+            @for (branch of branches(); track branch.id) {
+              <option [value]="branch.id">{{ branch.name }} ({{ branch.code }})</option>
+            }
+          </select>
         </span>
-      </button>
+      </div>
 
       <label class="relative hidden max-w-md flex-1 xl:block">
         <span class="sr-only">{{ 'layout.globalSearch' | translate }}</span>
@@ -225,14 +228,19 @@ export class AppTopbarComponent {
   private readonly router = inject(Router);
   private readonly authorization = inject(AuthorizationService);
   private readonly notifications = inject(CommunicationNotificationService);
+  readonly tenantContext = inject(TenantContextService);
+  private readonly branchesApi = inject(BranchesApiService);
   readonly isSigningOut = signal(false);
   readonly notificationsOpen = signal(false);
   readonly unreadNotifications = signal(0);
+  readonly branches = signal<readonly BranchListItem[]>([]);
+  readonly branchesLoading = signal(false);
   readonly canReadNotifications = computed(() =>
     this.authorization.hasPermission('Communication.Notifications.Read'),
   );
   constructor() {
     void this.loadUnreadCount();
+    void this.loadBranches();
   }
 
   readonly initials = computed(() => {
@@ -268,5 +276,42 @@ export class AppTopbarComponent {
 
   changeTheme(event: Event): void {
     this.themeService.setMode((event.target as HTMLSelectElement).value as ThemeMode);
+  }
+
+  changeBranch(event: Event): void {
+    const branchId = (event.target as HTMLSelectElement).value || null;
+    if (branchId === this.tenantContext.branchId()) return;
+    this.tenantContext.setBranch(branchId);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('driveos:tenant-context-changed'));
+      window.location.reload();
+    }
+  }
+
+  private async loadBranches(): Promise<void> {
+    const organizationId = this.tenantContext.organizationId();
+    if (!organizationId || this.branchesLoading()) return;
+    this.branchesLoading.set(true);
+    try {
+      const response = await firstValueFrom(
+        this.branchesApi.getPaged(organizationId, {
+          pageNumber: 1,
+          pageSize: 100,
+          search: '',
+          sortBy: 'name',
+          sortDirection: 'asc',
+        }),
+      );
+      const selectable = response.items.filter((branch) => branch.status === 'Active');
+      this.branches.set(selectable);
+      const selected = this.tenantContext.branchId();
+      if (selected && !selectable.some((branch) => branch.id === selected)) {
+        this.tenantContext.setBranch(null);
+      }
+    } catch {
+      this.branches.set([]);
+    } finally {
+      this.branchesLoading.set(false);
+    }
   }
 }

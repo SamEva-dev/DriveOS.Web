@@ -33,7 +33,9 @@ export class ApiErrorService {
     const body = response.error as ProblemDetailsLike | undefined;
     const messageKey = this.resolveMessageKey(body);
     if (messageKey) {
-      const messages = [this.translate.instant(messageKey, body?.parameters ?? {})];
+      const messages = [
+        this.translateOrFallback(messageKey, body?.parameters ?? {}, body?.code ?? body?.title),
+      ];
       const requirements = body?.parameters?.['requirements'];
       if (Array.isArray(requirements)) {
         for (const requirement of requirements) {
@@ -44,7 +46,7 @@ export class ApiErrorService {
             typeof requirement.messageKey === 'string'
           ) {
             messages.push(
-              this.translate.instant(
+              this.translateOrFallback(
                 requirement.messageKey,
                 'parameters' in requirement && requirement.parameters ? requirement.parameters : {},
               ),
@@ -94,6 +96,23 @@ export class ApiErrorService {
   }
 
   private translateError(error: ApiError): string {
-    return this.translate.instant(error.messageKey, error.parameters ?? {});
+    return this.translateOrFallback(error.messageKey, error.parameters ?? {}, error.code);
+  }
+
+  private translateOrFallback(
+    messageKey: string,
+    parameters: Record<string, unknown>,
+    code?: string,
+  ): string {
+    const translated = this.translate.instant(messageKey, parameters);
+    if (translated !== messageKey) return translated;
+
+    if (code) {
+      const codeKey = `apiErrors.codes.${code}`;
+      const translatedCode = this.translate.instant(codeKey, parameters);
+      if (translatedCode !== codeKey) return translatedCode;
+    }
+
+    return this.translate.instant('errors.generic');
   }
 }

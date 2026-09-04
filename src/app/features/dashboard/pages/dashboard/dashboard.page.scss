@@ -364,6 +364,32 @@ h1 {
   font-weight: 800;
   text-decoration: none;
 }
+.dashboard-live-list {
+  display: grid;
+  gap: 0.65rem;
+}
+.dashboard-live-list article,
+.dashboard-live-list a {
+  display: grid;
+  gap: 0.2rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--driveos-border, #e2e8f0);
+  padding: 0.75rem 0.9rem;
+  color: var(--driveos-text-primary, #0f172a);
+  text-decoration: none;
+}
+.dashboard-live-list span {
+  color: var(--driveos-text-secondary, #64748b);
+  font-size: 0.78rem;
+}
+.dashboard-live-list [data-severity='danger'] {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+.dashboard-live-list [data-severity='warning'] {
+  border-color: #fed7aa;
+  background: #fff7ed;
+}
 @keyframes dashboard-spin {
   to {
     transform: rotate(360deg);

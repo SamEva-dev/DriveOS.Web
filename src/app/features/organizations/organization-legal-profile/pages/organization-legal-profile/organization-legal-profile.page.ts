@@ -57,6 +57,7 @@ export class OrganizationLegalProfilePage {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly organizationId = this.route.snapshot.paramMap.get('organizationId') ?? '';
+  readonly backLink = this.resolveBackLink();
   readonly legalForms = ORGANIZATION_LEGAL_FORMS;
   readonly profile = signal<OrganizationLegalProfile | null>(null);
   readonly isLoading = signal(true);
@@ -296,5 +297,12 @@ export class OrganizationLegalProfilePage {
   private nullIfBlank(value: string): string | null {
     const normalized = value.trim();
     return normalized.length > 0 ? normalized : null;
+  }
+
+  private resolveBackLink(): readonly string[] {
+    const readinessUrl = `/organizations/${this.organizationId}/activation-readiness`;
+    return this.route.snapshot.queryParamMap.get('returnUrl') === readinessUrl
+      ? ['/organizations', this.organizationId, 'activation-readiness']
+      : ['/organizations', this.organizationId];
   }
 }

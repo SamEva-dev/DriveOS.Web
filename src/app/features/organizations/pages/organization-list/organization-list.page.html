@@ -11,6 +11,15 @@
         {{ 'organizations.listDescription' | translate }}
       </p>
     </div>
+
+    @if (canCreateOrganization()) {
+      <drive-os-button
+        icon="ph ph-plus"
+        (pressed)="createOrganization()"
+      >
+        {{ 'organizations.createTitle' | translate }}
+      </drive-os-button>
+    }
   </div>
 
   <div class="driveos-toolbar">
@@ -164,6 +173,26 @@
                   size="lg"
                   [label]="'common.loading' | translate"
                 />
+              </td>
+            </tr>
+          } @else if (store.hasError()) {
+            <tr>
+              <td colspan="6">
+                <drive-os-empty-state
+                  icon="ph-duotone ph-warning-circle"
+                  [title]="'organizations.loadErrorTitle' | translate"
+                  [description]="'errors.technicalUnavailable' | translate"
+                />
+
+                <div class="flex justify-center pb-8">
+                  <drive-os-button
+                    variant="outline"
+                    icon="ph ph-arrows-clockwise"
+                    (pressed)="store.reload()"
+                  >
+                    {{ 'common.actions.refresh' | translate }}
+                  </drive-os-button>
+                </div>
               </td>
             </tr>
           } @else {

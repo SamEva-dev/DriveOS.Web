@@ -6,6 +6,7 @@ import { catchError, from, switchMap, throwError } from 'rxjs';
 import { API_CONFIG } from '../../config/api-config';
 import { AuthService } from '../../services/auth.service';
 import { AUTH_API_CONFIG } from '../auth-api-config';
+import { TenantContextService } from '../../tenancy/tenant-context.service';
 
 const RETRY_AFTER_REFRESH = 'x-driveos-auth-retry';
 
@@ -31,6 +32,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const router = inject(Router);
   const authConfig = inject(AUTH_API_CONFIG);
   const apiConfig = inject(API_CONFIG);
+  const tenantContext = inject(TenantContextService);
 
   const authBaseUrl = normalizeBaseUrl(authConfig.baseUrl);
   const driveOsApiBaseUrl = normalizeBaseUrl(apiConfig.baseUrl);
@@ -49,17 +51,19 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
   }
 
   // Protected AuthGate endpoints (e.g. /api/users) use the same DriveOS access token.
-  const requestWithToken = attachAccessToken(request, auth.accessToken());
+  const requestWithToken = attachSecurityContext(
+    request,
+    auth.accessToken(),
+    isDriveOsApiRequest ? tenantContext.organizationId() : null,
+    isDriveOsApiRequest ? tenantContext.branchId() : null,
+  );
 
   return next(requestWithToken).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 403) {
-        void router.navigate(['/forbidden'], {
-          queryParams: {
-            returnUrl: router.url,
-          },
-        });
-
+        // A forbidden business action must remain on the current screen so the
+        // centralized error layer can display the translated messageKey. Route
+        // access is handled by guards, not by a global HTTP redirect.
         return throwError(() => error);
       }
 
@@ -91,13 +95,15 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
             return throwError(() => error);
           }
 
-          const retriedRequest = attachAccessToken(
+          const retriedRequest = attachSecurityContext(
             request.clone({
               setHeaders: {
                 [RETRY_AFTER_REFRESH]: '1',
               },
             }),
             auth.accessToken(),
+            isDriveOsApiRequest ? tenantContext.organizationId() : null,
+            isDriveOsApiRequest ? tenantContext.branchId() : null,
           );
 
           return next(retriedRequest);
@@ -107,16 +113,17 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
   );
 };
 
-function attachAccessToken(request: Parameters<HttpInterceptorFn>[0], accessToken: string | null) {
-  if (!accessToken) {
-    return request;
-  }
-
-  return request.clone({
-    setHeaders: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+function attachSecurityContext(
+  request: Parameters<HttpInterceptorFn>[0],
+  accessToken: string | null,
+  organizationId: string | null,
+  branchId: string | null,
+) {
+  const headers: Record<string, string> = {};
+  if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+  if (organizationId) headers['X-Organization-Id'] = organizationId;
+  if (branchId) headers['X-Branch-Id'] = branchId;
+  return Object.keys(headers).length === 0 ? request : request.clone({ setHeaders: headers });
 }
 
 function isPublicAuthRequest(url: string, authBaseUrl: string): boolean {

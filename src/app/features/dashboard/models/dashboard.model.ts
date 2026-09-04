@@ -21,26 +21,33 @@ export interface DashboardAgendaItem {
   readonly id: string;
   readonly startTime: string;
   readonly endTime: string;
-  readonly titleKey: string;
-  readonly descriptionKey: string;
-  readonly statusKey: string;
-  readonly status: 'confirmed' | 'pending' | 'attention';
+  readonly title: string;
+  readonly description: string;
+  readonly status: string;
 }
 
 export interface DashboardAlertItem {
   readonly id: string;
-  readonly titleKey: string;
-  readonly descriptionKey: string;
+  readonly messageKey: string;
+  readonly parameters: Readonly<Record<string, string | null>>;
   readonly severity: 'info' | 'warning' | 'danger';
   readonly route: string;
 }
 
 export interface DashboardActivityItem {
   readonly id: string;
-  readonly titleKey: string;
-  readonly descriptionKey: string;
-  readonly timeKey: string;
+  readonly title: string;
+  readonly description: string;
+  readonly occurredAtUtc: string;
   readonly icon: DashboardIcon;
+}
+
+export interface DashboardSnapshot {
+  readonly metrics: readonly DashboardMetric[];
+  readonly quickActions: readonly DashboardQuickAction[];
+  readonly agenda: readonly DashboardAgendaItem[];
+  readonly alerts: readonly DashboardAlertItem[];
+  readonly activities: readonly DashboardActivityItem[];
 }
 
 export type DashboardIcon =

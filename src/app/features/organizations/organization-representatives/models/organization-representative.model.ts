@@ -1,18 +1,18 @@
 export enum OrganizationRepresentativeType {
-  Owner = 1,
-  LegalRepresentative = 2,
-  Director = 3,
-  AuthorizedSignatory = 4,
-  AdministrativeRepresentative = 5,
-  BillingRepresentative = 6,
-  DataProtectionRepresentative = 7,
-  Other = 8,
+  Owner = 'Owner',
+  LegalRepresentative = 'LegalRepresentative',
+  Director = 'Director',
+  AuthorizedSignatory = 'AuthorizedSignatory',
+  AdministrativeRepresentative = 'AdministrativeRepresentative',
+  BillingRepresentative = 'BillingRepresentative',
+  DataProtectionRepresentative = 'DataProtectionRepresentative',
+  Other = 'Other',
 }
 export enum OrganizationRepresentativeStatus {
-  Draft = 1,
-  Active = 2,
-  Suspended = 3,
-  Ended = 4,
+  Draft = 'Draft',
+  Active = 'Active',
+  Suspended = 'Suspended',
+  Ended = 'Ended',
 }
 export interface OrganizationRepresentativeListItem {
   readonly id: string;

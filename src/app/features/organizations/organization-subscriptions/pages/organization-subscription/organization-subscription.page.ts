@@ -62,6 +62,7 @@ export class OrganizationSubscriptionPage {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly organizationId = this.route.snapshot.paramMap.get('organizationId') ?? '';
+  readonly backLink = this.resolveBackLink();
   readonly subscription = signal<OrganizationSubscription | null>(null);
   readonly loading = signal(true);
   readonly saving = signal(false);
@@ -350,5 +351,12 @@ export class OrganizationSubscriptionPage {
   private nullIfBlank(value: string): string | null {
     const normalized = value.trim();
     return normalized.length ? normalized : null;
+  }
+
+  private resolveBackLink(): readonly string[] {
+    const readinessUrl = `/organizations/${this.organizationId}/activation-readiness`;
+    return this.route.snapshot.queryParamMap.get('returnUrl') === readinessUrl
+      ? ['/organizations', this.organizationId, 'activation-readiness']
+      : ['/organizations', this.organizationId];
   }
 }

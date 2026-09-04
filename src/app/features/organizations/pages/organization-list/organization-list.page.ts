@@ -74,7 +74,10 @@ export class OrganizationListPage {
   private readonly authorization = inject(AuthorizationService);
 
   readonly canCreateOrganization = computed(() =>
-    this.authorization.hasPermission('Organizations.Create'),
+    this.authorization.hasAll([
+      'Organizations.Create',
+      'Organizations.CrossTenant.Manage',
+    ]),
   );
 
   createOrganization(): void {

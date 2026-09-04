@@ -18,3 +18,21 @@ export interface SendFreelanceInvitationResponse {
   secureUrl: string;
   expirationDate: string;
 }
+
+export interface PublicFreelanceInvitation {
+  invitationId: string;
+  organizationId: string;
+  branchId: string | null;
+  missionId: string | null;
+  message: string | null;
+  expirationDate: string;
+  status: string;
+  authenticationRequired: boolean;
+}
+
+export interface FreelanceInvitationAcceptance {
+  invitationId: string;
+  acceptedByUserId: string;
+  professionalProfileId: string | null;
+  professionalProfileRequired: boolean;
+}

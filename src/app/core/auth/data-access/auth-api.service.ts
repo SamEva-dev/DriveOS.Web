@@ -24,18 +24,28 @@ export class AuthApiService {
   }
 
   login(request: LoginRequest) {
-    return this.http.post<LoginResponse>(`${this.baseUrl}/Auth/login`, request);
-  }
-
-  register(request: RegisterRequest) {
-    return this.http.post<RegisterResponse>(`${this.baseUrl}/Auth/register-with-tenant`, {
-      ...request,
-      clientId: environment.AUTH_CLIENT_ID,
+    return this.http.post<LoginResponse>(`${this.baseUrl}/Auth/login`, request, {
+      withCredentials: true,
     });
   }
 
-  refresh(refreshToken: string) {
-    return this.http.post<LoginResponse>(`${this.baseUrl}/Auth/refresh`, { refreshToken });
+  register(request: RegisterRequest) {
+    return this.http.post<RegisterResponse>(
+      `${this.baseUrl}/Auth/register-with-tenant`,
+      {
+        ...request,
+        clientId: environment.AUTH_CLIENT_ID,
+      },
+      { withCredentials: true },
+    );
+  }
+
+  refresh(accessToken: string | null) {
+    return this.http.post<LoginResponse>(
+      `${this.baseUrl}/Auth/refresh`,
+      { accessToken },
+      { withCredentials: true },
+    );
   }
 
   logout(accessToken: string) {
@@ -46,6 +56,7 @@ export class AuthApiService {
         headers: new HttpHeaders({
           Authorization: `Bearer ${accessToken}`,
         }),
+        withCredentials: true,
       },
     );
   }

@@ -5,6 +5,13 @@ import { guestGuard } from './core/auth/guards/guest.guard';
 
 export const routes: Routes = [
   {
+    path: 'invite/freelance',
+    loadComponent: () =>
+      import('./features/professional-marketplace/pages/freelance-invitation/freelance-invitation.page').then(
+        (m) => m.FreelanceInvitationPage,
+      ),
+  },
+  {
     path: 'login',
     canActivate: [guestGuard],
     loadComponent: () => import('./features/auth/pages/login/login.page').then((m) => m.LoginPage),
@@ -136,13 +143,8 @@ export const routes: Routes = [
       },
       {
         path: 'vehicles',
-        loadComponent: () =>
-          import('./shared/pages/coming-soon/coming-soon.page').then(
-            (component) => component.ComingSoonPage,
-          ),
-        data: {
-          titleKey: 'navigation.vehicles',
-        },
+        loadChildren: () =>
+          import('./features/fleet/fleet.routes').then((module) => module.FLEET_ROUTES),
       },
       {
         path: 'billing',

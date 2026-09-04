@@ -18,11 +18,12 @@ export interface LoginRequest {
   email: string;
   password: string;
   deviceFingerprint?: string;
+  rememberMe?: boolean;
 }
 
 export interface LoginResponse {
   accessToken: string;
-  refreshToken: string;
+  refreshToken?: string;
   expiresIn: number;
   requiresMfa: boolean;
   mfaToken?: string;

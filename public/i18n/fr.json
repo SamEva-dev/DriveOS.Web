@@ -1456,14 +1456,75 @@
         "revisionRequiresSignature": "Une nouvelle version contractuelle ne peut être créée qu’après au moins une signature."
       }
     },
+    "organizationLegalProfile": {
+      "identifier": {
+        "invalid": "L’identifiant du profil juridique est invalide."
+      }
+    },
+    "organizationLegalProfiles": {
+      "notFound": "Aucun profil juridique n’a été trouvé pour cette organisation."
+    },
+    "regulatoryIntegrations": {
+      "notFound": "La connexion réglementaire demandée est introuvable.",
+      "alreadyExists": "Une connexion réglementaire existe déjà pour ce périmètre et ce fournisseur.",
+      "countryCode": { "invalid": "Le code pays de la connexion réglementaire est invalide." },
+      "providerCode": { "invalid": "Le fournisseur réglementaire est invalide." },
+      "externalAccountReference": { "invalid": "La référence du compte externe est invalide." },
+      "secretReference": { "invalid": "La référence sécurisée des identifiants est invalide." },
+      "branch": { "notOwned": "L’agence sélectionnée n’appartient pas à cette organisation." },
+      "concurrentUpdate": "La connexion a été modifiée par une autre opération. Rechargez la page et réessayez.",
+      "ended": "Une connexion terminée ne peut plus être modifiée.",
+      "status": { "invalid": "Le statut de la connexion réglementaire est invalide." },
+      "submission": {
+        "errorCodeRequired": "Le code d’erreur de la transmission est obligatoire.",
+        "invalidIdentifier": "L’identifiant de la transmission est invalide.",
+        "invalidPayload": "Les données de la transmission sont invalides.",
+        "invalidProvider": "Le fournisseur de la transmission est invalide.",
+        "invalidRetry": "Cette transmission ne peut pas être relancée dans son état actuel.",
+        "invalidTransition": "Cette transition de transmission n’est pas autorisée.",
+        "notDispatchable": "Cette transmission n’est pas prête à être envoyée.",
+        "notFound": "La transmission réglementaire est introuvable.",
+        "payloadUnreadable": "Les données archivées de cette transmission sont illisibles.",
+        "statusInvalid": "Le statut de transmission demandé est invalide."
+      }
+    },
     "technicalUnavailable": "Le service est temporairement indisponible. Nous n’avons pas pu joindre le serveur. Veuillez réessayer dans quelques instants."
+  },
+  "organization": {
+    "legal-profile": "Profil juridique actif",
+    "primary-owner": "Propriétaire principal actif",
+    "active-owner": "Propriétaire actif",
+    "active-subscription": "Abonnement actif",
+    "operational-settings": "Paramètres opérationnels",
+    "primary-branch": "Agence principale active",
+    "primary-branch-manager": "Responsable actif de l’agence principale"
+  },
+  "apiErrors": {
+    "codes": {
+      "OrganizationLegalProfiles.Id.Empty": "L’identifiant du profil juridique est obligatoire.",
+      "OrganizationLegalProfiles.OrganizationId.Empty": "L’organisation est obligatoire.",
+      "OrganizationLegalProfiles.LegalForm.Invalid": "La forme juridique est invalide.",
+      "OrganizationLegalProfiles.RegistrationNumber.Required": "Le numéro d’immatriculation est obligatoire.",
+      "OrganizationLegalProfiles.RegisteredAddress.Invalid": "L’adresse du siège social est invalide.",
+      "OrganizationLegalProfiles.Country.Mismatch": "Le pays du siège social doit correspondre au pays de l’organisation.",
+      "OrganizationLegalProfiles.Archived": "Un profil juridique archivé ne peut plus être modifié.",
+      "OrganizationLegalProfiles.AlreadyExists": "Cette organisation possède déjà un profil juridique.",
+      "OrganizationLegalProfiles.RegistrationNumber.Duplicate": "Ce numéro d’immatriculation est déjà utilisé par une autre organisation dans ce pays.",
+      "OrganizationLegalProfiles.Organization.Unavailable": "L’organisation est fermée ou archivée.",
+      "OrganizationLegalProfiles.CurrentUser.Required": "Une session utilisateur authentifiée est obligatoire.",
+      "OrganizationLegalProfiles.ConcurrentUpdate": "Le profil juridique a été modifié par une autre opération. Rechargez la page et réessayez."
+    }
   },
   "organizations": {
     "title": "Mes organisations",
+    "loadErrorTitle": "Impossible de charger les organisations",
     "createTitle": "Créer une organisation",
     "createDescription": "Enregistrer une auto-école, un réseau, un centre de formation ou une organisation partenaire.",
     "createdSuccessfully": "L’organisation a été créée avec succès.",
     "detailsTitle": "Informations de l’organisation",
+    "detail": {
+      "title": "Retour à l’organisation"
+    },
     "fields": {
       "legalName": "Raison sociale",
       "countryCode": "Code pays",
@@ -11265,6 +11326,71 @@
       "preferences": "Préférences",
       "inApp": "Dans DriveOS",
       "email": "E-mail"
+    }
+  },
+  "settings": {
+    "regulatoryIntegrations": {
+      "eyebrow": "Conformité réglementaire",
+      "title": "Intégrations réglementaires",
+      "description": "Configurez les connexions réglementaires et suivez les transmissions des dossiers de formation.",
+      "connection": {
+        "add": "Ajouter une connexion",
+        "title": "Connexions",
+        "help": "Associez DriveOS au compte réglementaire de l’organisation ou d’une agence.",
+        "scope": "Périmètre",
+        "account": "Compte externe",
+        "credentials": "Identifiants configurés",
+        "empty": "Aucune connexion réglementaire configurée.",
+        "organizationScope": "Toute l’organisation",
+        "branch": "Agence",
+        "secretReference": "Référence du secret",
+        "secretHelp": "Référence sécurisée vers les identifiants du fournisseur. Le secret lui-même n’est jamais affiché.",
+        "createTitle": "Nouvelle connexion",
+        "editTitle": "Modifier la connexion"
+      },
+      "submissions": {
+        "title": "Transmissions",
+        "help": "Suivez l’état des dossiers transmis au fournisseur réglementaire.",
+        "session": "Session",
+        "revision": "Révision",
+        "attempts": "Tentatives",
+        "lastError": "Dernière erreur",
+        "empty": "Aucune transmission réglementaire trouvée."
+      },
+      "actions": {
+        "activate": "Activer",
+        "suspend": "Suspendre",
+        "reconcile": "Réconcilier",
+        "retry": "Réessayer"
+      },
+      "status": {
+        "Draft": "Brouillon",
+        "Active": "Active",
+        "Suspended": "Suspendue",
+        "Ended": "Terminée",
+        "WaitingForData": "En attente de données",
+        "Pending": "En attente",
+        "Processing": "En cours",
+        "Submitted": "Transmise",
+        "Accepted": "Acceptée",
+        "Rejected": "Rejetée",
+        "RetryPending": "Nouvelle tentative planifiée",
+        "Failed": "Échouée",
+        "Cancelled": "Annulée",
+        "Superseded": "Remplacée"
+      },
+      "kpi": {
+        "total": "Total",
+        "accepted": "Acceptées",
+        "waitingForData": "En attente de données",
+        "rejected": "Rejetées",
+        "retryPending": "À réessayer"
+      },
+      "detail": {
+        "title": "Détail de la transmission",
+        "externalReference": "Référence externe",
+        "history": "Historique des révisions"
+      }
     }
   },
   "notifications": {

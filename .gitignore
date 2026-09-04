@@ -44,3 +44,5 @@ __screenshots__/
 Thumbs.db
 dist-build-verify/browser/*
 dist-build-verify/*
+.npm-cache/*
+dist-build-check/*

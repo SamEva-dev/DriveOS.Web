@@ -57,6 +57,7 @@ export class OrganizationSettingsPage {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly organizationId = this.route.snapshot.paramMap.get('organizationId') ?? '';
+  readonly backLink = this.resolveBackLink();
   readonly organization = signal<Organization | null>(null);
   readonly settings = signal<OrganizationSettings | null>(null);
   readonly branches = signal<readonly BranchListItem[]>([]);
@@ -467,5 +468,12 @@ export class OrganizationSettingsPage {
   private showErrors(error: HttpErrorResponse): void {
     for (const message of this.apiErrorService.getMessages(error))
       this.toast.error(this.translate.instant('errors.title'), message);
+  }
+
+  private resolveBackLink(): readonly string[] {
+    const readinessUrl = `/organizations/${this.organizationId}/activation-readiness`;
+    return this.route.snapshot.queryParamMap.get('returnUrl') === readinessUrl
+      ? ['/organizations', this.organizationId, 'activation-readiness']
+      : ['/organizations', this.organizationId];
   }
 }

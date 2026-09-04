@@ -75,7 +75,12 @@ export class BranchListPage {
     'create',
   ]);
 
-  readonly organizationLink = computed(() => ['/organizations', this.organizationId]);
+  readonly organizationLink = computed(() => {
+    const readinessUrl = `/organizations/${this.organizationId}/activation-readiness`;
+    return this.route.snapshot.queryParamMap.get('returnUrl') === readinessUrl
+      ? ['/organizations', this.organizationId, 'activation-readiness']
+      : ['/organizations', this.organizationId];
+  });
 
   readonly searchControl = new FormControl('', {
     nonNullable: true,

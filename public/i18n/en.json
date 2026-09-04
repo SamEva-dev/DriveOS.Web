@@ -1456,14 +1456,75 @@
         "revisionRequiresSignature": "A new contract version can only be created after at least one signature."
       }
     },
+    "organizationLegalProfile": {
+      "identifier": {
+        "invalid": "The legal profile identifier is invalid."
+      }
+    },
+    "organizationLegalProfiles": {
+      "notFound": "No legal profile was found for this organization."
+    },
+    "regulatoryIntegrations": {
+      "notFound": "The requested regulatory connection was not found.",
+      "alreadyExists": "A regulatory connection already exists for this scope and provider.",
+      "countryCode": { "invalid": "The regulatory connection country code is invalid." },
+      "providerCode": { "invalid": "The regulatory provider is invalid." },
+      "externalAccountReference": { "invalid": "The external account reference is invalid." },
+      "secretReference": { "invalid": "The secure credential reference is invalid." },
+      "branch": { "notOwned": "The selected branch does not belong to this organization." },
+      "concurrentUpdate": "The connection was changed by another operation. Reload the page and try again.",
+      "ended": "An ended connection can no longer be changed.",
+      "status": { "invalid": "The regulatory connection status is invalid." },
+      "submission": {
+        "errorCodeRequired": "A submission error code is required.",
+        "invalidIdentifier": "The submission identifier is invalid.",
+        "invalidPayload": "The submission payload is invalid.",
+        "invalidProvider": "The submission provider is invalid.",
+        "invalidRetry": "This submission cannot be retried in its current state.",
+        "invalidTransition": "This submission transition is not allowed.",
+        "notDispatchable": "This submission is not ready to be dispatched.",
+        "notFound": "The regulatory submission was not found.",
+        "payloadUnreadable": "The archived submission payload cannot be read.",
+        "statusInvalid": "The requested submission status is invalid."
+      }
+    },
     "technicalUnavailable": "The service is temporarily unavailable. We could not reach the server. Please try again in a few moments."
+  },
+  "organization": {
+    "legal-profile": "Active legal profile",
+    "primary-owner": "Active primary owner",
+    "active-owner": "Active owner",
+    "active-subscription": "Active subscription",
+    "operational-settings": "Operational settings",
+    "primary-branch": "Active primary branch",
+    "primary-branch-manager": "Active primary branch manager"
+  },
+  "apiErrors": {
+    "codes": {
+      "OrganizationLegalProfiles.Id.Empty": "The legal profile identifier is required.",
+      "OrganizationLegalProfiles.OrganizationId.Empty": "The organization is required.",
+      "OrganizationLegalProfiles.LegalForm.Invalid": "The legal form is invalid.",
+      "OrganizationLegalProfiles.RegistrationNumber.Required": "The registration number is required.",
+      "OrganizationLegalProfiles.RegisteredAddress.Invalid": "The registered address is invalid.",
+      "OrganizationLegalProfiles.Country.Mismatch": "The registered-address country must match the organization country.",
+      "OrganizationLegalProfiles.Archived": "An archived legal profile can no longer be changed.",
+      "OrganizationLegalProfiles.AlreadyExists": "This organization already has a legal profile.",
+      "OrganizationLegalProfiles.RegistrationNumber.Duplicate": "This registration number is already used by another organization in this country.",
+      "OrganizationLegalProfiles.Organization.Unavailable": "The organization is closed or archived.",
+      "OrganizationLegalProfiles.CurrentUser.Required": "An authenticated user session is required.",
+      "OrganizationLegalProfiles.ConcurrentUpdate": "The legal profile was changed by another operation. Reload the page and try again."
+    }
   },
   "organizations": {
     "title": "My organizations",
+    "loadErrorTitle": "Unable to load organizations",
     "createTitle": "Create an organization",
     "createDescription": "Register a driving school, network, training center or partner organization.",
     "createdSuccessfully": "The organization was created successfully.",
     "detailsTitle": "Organization information",
+    "detail": {
+      "title": "Back to organization"
+    },
     "fields": {
       "legalName": "Legal name",
       "countryCode": "Country code",
@@ -11271,6 +11332,71 @@
       "preferences": "Preferences",
       "inApp": "In DriveOS",
       "email": "Email"
+    }
+  },
+  "settings": {
+    "regulatoryIntegrations": {
+      "eyebrow": "Regulatory compliance",
+      "title": "Regulatory integrations",
+      "description": "Configure regulatory connections and monitor training-record submissions.",
+      "connection": {
+        "add": "Add connection",
+        "title": "Connections",
+        "help": "Connect DriveOS to the regulatory account of the organization or a branch.",
+        "scope": "Scope",
+        "account": "External account",
+        "credentials": "Credentials configured",
+        "empty": "No regulatory connection is configured.",
+        "organizationScope": "Entire organization",
+        "branch": "Branch",
+        "secretReference": "Secret reference",
+        "secretHelp": "Secure reference to the provider credentials. The secret itself is never displayed.",
+        "createTitle": "New connection",
+        "editTitle": "Edit connection"
+      },
+      "submissions": {
+        "title": "Submissions",
+        "help": "Monitor training records submitted to the regulatory provider.",
+        "session": "Session",
+        "revision": "Revision",
+        "attempts": "Attempts",
+        "lastError": "Last error",
+        "empty": "No regulatory submission was found."
+      },
+      "actions": {
+        "activate": "Activate",
+        "suspend": "Suspend",
+        "reconcile": "Reconcile",
+        "retry": "Retry"
+      },
+      "status": {
+        "Draft": "Draft",
+        "Active": "Active",
+        "Suspended": "Suspended",
+        "Ended": "Ended",
+        "WaitingForData": "Waiting for data",
+        "Pending": "Pending",
+        "Processing": "Processing",
+        "Submitted": "Submitted",
+        "Accepted": "Accepted",
+        "Rejected": "Rejected",
+        "RetryPending": "Retry pending",
+        "Failed": "Failed",
+        "Cancelled": "Cancelled",
+        "Superseded": "Superseded"
+      },
+      "kpi": {
+        "total": "Total",
+        "accepted": "Accepted",
+        "waitingForData": "Waiting for data",
+        "rejected": "Rejected",
+        "retryPending": "Retry pending"
+      },
+      "detail": {
+        "title": "Submission details",
+        "externalReference": "External reference",
+        "history": "Revision history"
+      }
     }
   },
   "notifications": {

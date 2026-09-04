@@ -35,7 +35,10 @@ export class LoginPage {
       const result = await this.auth.preLogin(this.email);
       if (result.nextStep === 'Register' || result.nextStep === 'RegisterApplication') {
         await this.router.navigate(['/register'], {
-          queryParams: { email: this.email.trim().toLowerCase() },
+          queryParams: {
+            email: this.email.trim().toLowerCase(),
+            returnUrl: this.route.snapshot.queryParamMap.get('returnUrl'),
+          },
         });
         return;
       }

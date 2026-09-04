@@ -10,10 +10,22 @@ import {
 } from '../models/field-sync.models';
 
 const DB_NAME = 'driveos-field-sync';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STORE = 'items';
+const KEY_STORE = 'keys';
 const DEFAULT_TTL_DAYS = 7;
 const PURGE_SYNCED_AFTER_MS = 60_000;
+
+interface EncryptedPayload {
+  readonly iv: string;
+  readonly ciphertext: string;
+}
+
+type PersistedFieldSyncItem = Omit<FieldSyncItem, 'url' | 'body'> & {
+  readonly url?: string;
+  readonly body?: unknown;
+  readonly encryptedPayload?: EncryptedPayload;
+};
 
 @Injectable({ providedIn: 'root' })
 export class FieldSyncQueueService {
@@ -387,6 +399,7 @@ export class FieldSyncQueueService {
       )
         await this.deleteById(item.id);
     }
+    if (context) await this.deleteEncryptionKey(context.userId, context.organizationId);
     this.itemsSignal.set([]);
   }
 
@@ -406,6 +419,7 @@ export class FieldSyncQueueService {
       request.onupgradeneeded = () => {
         const db = request.result;
         if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE, { keyPath: 'id' });
+        if (!db.objectStoreNames.contains(KEY_STORE)) db.createObjectStore(KEY_STORE);
       };
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -416,19 +430,31 @@ export class FieldSyncQueueService {
   private async getAll(): Promise<FieldSyncItem[]> {
     if (typeof indexedDB === 'undefined') return [];
     const db = await this.db();
-    return new Promise((resolve, reject) => {
+    const persisted = await new Promise<PersistedFieldSyncItem[]>((resolve, reject) => {
       const tx = db.transaction(STORE, 'readonly');
       const request = tx.objectStore(STORE).getAll();
-      request.onsuccess = () => resolve(request.result as FieldSyncItem[]);
+      request.onsuccess = () => resolve(request.result as PersistedFieldSyncItem[]);
       request.onerror = () => reject(request.error);
     });
+    const items: FieldSyncItem[] = [];
+    for (const item of persisted) {
+      const decoded = await this.decryptItem(item);
+      if (!decoded) {
+        await this.deleteById(item.id);
+        continue;
+      }
+      items.push(decoded);
+      if (!item.encryptedPayload) await this.put(decoded);
+    }
+    return items;
   }
 
   private async put(item: FieldSyncItem): Promise<void> {
     const db = await this.db();
+    const persisted = await this.encryptItem(item);
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORE, 'readwrite');
-      tx.objectStore(STORE).put(item);
+      tx.objectStore(STORE).put(persisted);
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
     });
@@ -442,5 +468,90 @@ export class FieldSyncQueueService {
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
     });
+  }
+
+  private async encryptItem(item: FieldSyncItem): Promise<PersistedFieldSyncItem> {
+    if (!globalThis.crypto?.subtle) throw new Error('OFFLINE_ENCRYPTION_UNAVAILABLE');
+    const key = await this.getOrCreateEncryptionKey(item.ownerUserId, item.organizationId);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const plaintext = new TextEncoder().encode(JSON.stringify({ url: item.url, body: item.body }));
+    const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plaintext);
+    const { url: _url, body: _body, ...metadata } = item;
+    return {
+      ...metadata,
+      encryptedPayload: {
+        iv: this.toBase64(iv),
+        ciphertext: this.toBase64(new Uint8Array(ciphertext)),
+      },
+    };
+  }
+
+  private async decryptItem(item: PersistedFieldSyncItem): Promise<FieldSyncItem | null> {
+    if (!item.encryptedPayload) {
+      if (!globalThis.crypto?.subtle) return null;
+      if (typeof item.url !== 'string') return null;
+      return item as FieldSyncItem;
+    }
+    try {
+      const key = await this.getOrCreateEncryptionKey(item.ownerUserId, item.organizationId);
+      const plaintext = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: this.fromBase64(item.encryptedPayload.iv) },
+        key,
+        this.fromBase64(item.encryptedPayload.ciphertext),
+      );
+      const payload = JSON.parse(new TextDecoder().decode(plaintext)) as {
+        url: string;
+        body: unknown;
+      };
+      const { encryptedPayload: _encryptedPayload, ...metadata } = item;
+      return { ...metadata, url: payload.url, body: payload.body } as FieldSyncItem;
+    } catch {
+      return null;
+    }
+  }
+
+  private async getOrCreateEncryptionKey(userId: string, organizationId: string): Promise<CryptoKey> {
+    const db = await this.db();
+    const keyId = `${userId}:${organizationId}`;
+    const existing = await new Promise<CryptoKey | undefined>((resolve, reject) => {
+      const tx = db.transaction(KEY_STORE, 'readonly');
+      const request = tx.objectStore(KEY_STORE).get(keyId);
+      request.onsuccess = () => resolve(request.result as CryptoKey | undefined);
+      request.onerror = () => reject(request.error);
+    });
+    if (existing) return existing;
+    const generated = await crypto.subtle.generateKey(
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt', 'decrypt'],
+    );
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(KEY_STORE, 'readwrite');
+      tx.objectStore(KEY_STORE).put(generated, keyId);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    return generated;
+  }
+
+  private async deleteEncryptionKey(userId: string, organizationId: string): Promise<void> {
+    const db = await this.db();
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(KEY_STORE, 'readwrite');
+      tx.objectStore(KEY_STORE).delete(`${userId}:${organizationId}`);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  private toBase64(value: Uint8Array): string {
+    let binary = '';
+    for (const byte of value) binary += String.fromCharCode(byte);
+    return btoa(binary);
+  }
+
+  private fromBase64(value: string): Uint8Array<ArrayBuffer> {
+    const bytes = Uint8Array.from(atob(value), (character) => character.charCodeAt(0));
+    return new Uint8Array(bytes);
   }
 }

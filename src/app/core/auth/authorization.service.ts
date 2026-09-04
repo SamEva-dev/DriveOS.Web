@@ -5,10 +5,13 @@ import { Injectable, computed, signal } from '@angular/core';
 })
 export class AuthorizationService {
   private readonly permissionsSignal = signal<ReadonlySet<string>>(new Set<string>());
+  private readonly platformAdministratorSignal = signal(false);
 
   readonly permissions = this.permissionsSignal.asReadonly();
 
-  readonly hasAnyPermission = computed(() => this.permissionsSignal().size > 0);
+  readonly hasAnyPermission = computed(
+    () => this.platformAdministratorSignal() || this.permissionsSignal().size > 0,
+  );
 
   setPermissions(permissions: readonly string[]): void {
     const normalized = permissions
@@ -18,12 +21,24 @@ export class AuthorizationService {
     this.permissionsSignal.set(new Set(normalized));
   }
 
+  setAuthorizationContext(permissions: readonly string[], roles: readonly string[]): void {
+    this.setPermissions(permissions);
+    this.platformAdministratorSignal.set(
+      roles.some((role) =>
+        ['driveos.platformadministrator', 'platformadmin', 'superadmin'].includes(
+          role.trim().toLowerCase(),
+        ),
+      ),
+    );
+  }
+
   clearPermissions(): void {
     this.permissionsSignal.set(new Set<string>());
+    this.platformAdministratorSignal.set(false);
   }
 
   hasPermission(permission: string): boolean {
-    return this.permissionsSignal().has(permission);
+    return this.platformAdministratorSignal() || this.permissionsSignal().has(permission);
   }
 
   hasAny(permissions: readonly string[]): boolean {

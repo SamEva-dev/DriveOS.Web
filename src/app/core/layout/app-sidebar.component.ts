@@ -20,9 +20,11 @@ import { SCHEDULING_PERMISSIONS } from '../../features/scheduling/domain/schedul
 import { TRAINING_DELIVERY_PERMISSIONS } from '../../features/training-delivery/domain/training-delivery-permissions';
 import { WORKFORCE_PERMISSIONS } from '../../features/workforce/domain/workforce-permissions';
 import { PROFESSIONAL_MARKETPLACE_PERMISSIONS } from '../../features/professional-marketplace/domain/professional-marketplace-permissions';
+import { FLEET_PERMISSIONS } from '../../features/fleet/domain/fleet-permissions';
 import { NavigationItem } from './navigation-item';
 
 interface NavigationGroup {
+  readonly key: string;
   readonly labelKey: string;
   readonly items: readonly NavigationItem[];
   readonly collapsible?: boolean;
@@ -44,7 +46,10 @@ interface NavigationGroup {
         <div
           class="flex size-9 items-center justify-center rounded-lg bg-[var(--driveos-primary-800)] text-white shadow-sm"
         >
-          <i class="ph ph-car-profile text-xl" aria-hidden="true"></i>
+          <i
+            class="ph ph-car-profile text-xl"
+            aria-hidden="true"
+          ></i>
         </div>
         <div class="min-w-0">
           <p class="truncate text-sm font-extrabold text-[var(--driveos-text-primary)]">DriveOS</p>
@@ -67,7 +72,7 @@ interface NavigationGroup {
         class="min-h-0 flex-1 overflow-y-auto px-2 py-3"
         [attr.aria-label]="'layout.mainNavigation' | translate"
       >
-        @for (group of visibleGroups(); track group.id ?? group.labelKey ?? $index) {
+        @for (group of visibleGroups(); track group.key) {
           @if (group.collapsible) {
             <button
               type="button"
@@ -332,7 +337,8 @@ export class AppSidebarComponent {
     const canReadLeads = this.authorization.hasPermission(CRM_PERMISSIONS.leads.read);
     const visibleCrmItems = this.crmItems.filter((item) => {
       if (item.routerLink === '/crm/dashboard') return canReadDashboard;
-      if (item.routerLink === '/crm/leads' || item.routerLink === '/crm/pipeline') return canReadLeads;
+      if (item.routerLink === '/crm/leads' || item.routerLink === '/crm/pipeline')
+        return canReadLeads;
       if (item.routerLink === '/crm/activities') {
         return this.authorization.hasPermission(CRM_PERMISSIONS.activities.read);
       }
@@ -398,37 +404,51 @@ export class AppSidebarComponent {
     });
 
     const visibleMarketplaceItems = this.marketplaceItems.filter((item) => {
-      if (item.routerLink === '/marketplace/dashboard' || item.routerLink === '/marketplace/my-dashboard') {
-        return this.authorization.hasPermission(PROFESSIONAL_MARKETPLACE_PERMISSIONS.dashboard.read);
+      if (
+        item.routerLink === '/marketplace/dashboard' ||
+        item.routerLink === '/marketplace/my-dashboard'
+      ) {
+        return this.authorization.hasPermission(
+          PROFESSIONAL_MARKETPLACE_PERMISSIONS.dashboard.read,
+        );
       }
       if (item.routerLink === '/marketplace/professionals') {
         return this.authorization.hasPermission(PROFESSIONAL_MARKETPLACE_PERMISSIONS.search.read);
       }
       if (item.routerLink === '/marketplace/opportunities') {
-        return this.authorization.hasPermission(PROFESSIONAL_MARKETPLACE_PERMISSIONS.opportunities.read);
+        return this.authorization.hasPermission(
+          PROFESSIONAL_MARKETPLACE_PERMISSIONS.opportunities.read,
+        );
       }
       if (item.routerLink === '/marketplace/analytics') {
-        return this.authorization.hasPermission(PROFESSIONAL_MARKETPLACE_PERMISSIONS.analytics.read);
+        return this.authorization.hasPermission(
+          PROFESSIONAL_MARKETPLACE_PERMISSIONS.analytics.read,
+        );
       }
       if (item.routerLink === '/marketplace/my-missions') {
         return this.authorization.hasPermission(PROFESSIONAL_MARKETPLACE_PERMISSIONS.missions.read);
       }
       if (item.routerLink === '/marketplace/my-students') {
-        return this.authorization.hasPermission(PROFESSIONAL_MARKETPLACE_PERMISSIONS.studentAssignments.read);
+        return this.authorization.hasPermission(
+          PROFESSIONAL_MARKETPLACE_PERMISSIONS.studentAssignments.read,
+        );
       }
       if (item.routerLink === '/marketplace/my-service-entries') {
-        return this.authorization.hasPermission(PROFESSIONAL_MARKETPLACE_PERMISSIONS.serviceEntries.read);
+        return this.authorization.hasPermission(
+          PROFESSIONAL_MARKETPLACE_PERMISSIONS.serviceEntries.read,
+        );
       }
       return false;
     });
 
     const groups: NavigationGroup[] = [
-      { labelKey: 'navigation.groups.pilotage', items: this.pilotageItems },
-      { labelKey: 'navigation.groups.operations', items: [] },
+      { key: 'pilotage', labelKey: 'navigation.groups.pilotage', items: this.pilotageItems },
+      { key: 'operations-title', labelKey: 'navigation.groups.operations', items: [] },
     ];
 
     if (visibleCrmItems.length) {
       groups.push({
+        key: 'crm',
         id: 'crm',
         labelKey: 'navigation.crm.label',
         icon: 'ph ph-funnel',
@@ -439,6 +459,7 @@ export class AppSidebarComponent {
 
     if (visibleStudentItems.length) {
       groups.push({
+        key: 'students',
         id: 'students',
         labelKey: 'navigation.studentsMenu.label',
         icon: 'ph ph-student',
@@ -448,13 +469,18 @@ export class AppSidebarComponent {
     }
 
     if (visibleOperationItems.length) {
-      groups.push({ labelKey: '', items: visibleOperationItems });
+      groups.push({ key: 'operations-items', labelKey: '', items: visibleOperationItems });
     }
 
-    groups.push({ labelKey: 'navigation.groups.management', items: [] });
+    groups.push({
+      key: 'management-title',
+      labelKey: 'navigation.groups.management',
+      items: [],
+    });
 
     if (visibleWorkforceItems.length) {
       groups.push({
+        key: 'workforce',
         id: 'workforce',
         labelKey: 'navigation.workforce.label',
         icon: 'ph ph-users-four',
@@ -465,6 +491,7 @@ export class AppSidebarComponent {
 
     if (visibleMarketplaceItems.length) {
       groups.push({
+        key: 'marketplace',
         id: 'marketplace',
         labelKey: 'professionalMarketplace.navigation.label',
         icon: 'ph ph-handshake',
@@ -473,8 +500,17 @@ export class AppSidebarComponent {
       });
     }
 
-    groups.push({ labelKey: '', items: this.managementItems });
-    groups.push({ labelKey: 'navigation.groups.platform', items: this.platformItems });
+    const visibleManagementItems = this.managementItems.filter((item) =>
+      item.routerLink === '/vehicles'
+        ? this.authorization.hasPermission(FLEET_PERMISSIONS.vehicles.read)
+        : true,
+    );
+    groups.push({ key: 'management-items', labelKey: '', items: visibleManagementItems });
+    groups.push({
+      key: 'platform',
+      labelKey: 'navigation.groups.platform',
+      items: this.platformItems,
+    });
     return groups;
   });
 

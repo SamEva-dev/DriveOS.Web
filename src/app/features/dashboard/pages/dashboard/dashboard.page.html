@@ -68,7 +68,7 @@
     </div>
 
     <div class="dashboard-actions-grid">
-      @for (action of quickActions; track action.code) {
+      @for (action of quickActions(); track action.code) {
         <a
           class="dashboard-action-card"
           [class.dashboard-action-card--accent]="action.tone === 'accent'"
@@ -108,7 +108,7 @@
     class="dashboard-metrics"
     aria-label="Indicateurs principaux"
   >
-    @for (metric of metrics; track metric.code) {
+    @for (metric of metrics(); track metric.code) {
       <article
         class="dashboard-metric"
         [attr.data-tone]="metric.tone"
@@ -140,7 +140,7 @@
         <a routerLink="/planning">{{ 'dashboard.actions.viewPlanning' | translate }}</a>
       </div>
 
-      @if (agenda.length === 0) {
+      @if (agenda().length === 0) {
         <div class="dashboard-empty">
           <span class="dashboard-empty-icon">
             <svg
@@ -154,6 +154,15 @@
           <p>{{ 'dashboard.agenda.emptyDescription' | translate }}</p>
           <a routerLink="/planning">{{ 'dashboard.agenda.emptyAction' | translate }}</a>
         </div>
+      } @else {
+        <div class="dashboard-live-list">
+          @for (item of agenda(); track item.id) {
+            <article>
+              <strong>{{ item.title }}</strong>
+              <span>{{ item.startTime | date: 'short' }} · {{ item.description }}</span>
+            </article>
+          }
+        </div>
       }
     </section>
 
@@ -165,11 +174,19 @@
         </div>
       </div>
 
-      @if (alerts.length === 0) {
+      @if (alerts().length === 0) {
         <div class="dashboard-empty dashboard-empty--compact">
           <span class="dashboard-empty-icon dashboard-empty-icon--success">✓</span>
           <h3>{{ 'dashboard.alerts.emptyTitle' | translate }}</h3>
           <p>{{ 'dashboard.alerts.emptyDescription' | translate }}</p>
+        </div>
+      } @else {
+        <div class="dashboard-live-list">
+          @for (item of alerts(); track item.id) {
+            <a [routerLink]="item.route" [attr.data-severity]="item.severity">
+              {{ item.messageKey | translate: item.parameters }}
+            </a>
+          }
         </div>
       }
     </section>
@@ -182,7 +199,7 @@
         </div>
       </div>
 
-      @if (activities.length === 0) {
+      @if (activities().length === 0) {
         <div class="dashboard-empty dashboard-empty--horizontal">
           <span class="dashboard-empty-icon">
             <svg
@@ -197,41 +214,17 @@
             <p>{{ 'dashboard.activity.emptyDescription' | translate }}</p>
           </div>
         </div>
+      } @else {
+        <div class="dashboard-live-list">
+          @for (item of activities(); track item.id) {
+            <article>
+              <strong>{{ item.title }}</strong>
+              <span>{{ item.description }} · {{ item.occurredAtUtc | date: 'short' }}</span>
+            </article>
+          }
+        </div>
       }
     </section>
 
-    <section class="dashboard-panel dashboard-readiness">
-      <div class="dashboard-panel-heading">
-        <div>
-          <h2>{{ 'dashboard.readiness.title' | translate }}</h2>
-          <p>{{ 'dashboard.readiness.subtitle' | translate }}</p>
-        </div>
-      </div>
-
-      <div class="dashboard-readiness-list">
-        <div>
-          <span>{{ 'dashboard.readiness.organization' | translate }}</span>
-          <strong>100%</strong>
-        </div>
-        <div class="dashboard-progress"><span style="width: 100%"></span></div>
-        <div>
-          <span>{{ 'dashboard.readiness.settings' | translate }}</span>
-          <strong>0%</strong>
-        </div>
-        <div class="dashboard-progress"><span style="width: 0%"></span></div>
-        <div>
-          <span>{{ 'dashboard.readiness.subscription' | translate }}</span>
-          <strong>0%</strong>
-        </div>
-        <div class="dashboard-progress"><span style="width: 0%"></span></div>
-      </div>
-
-      <a
-        class="dashboard-readiness-action"
-        routerLink="/organizations"
-      >
-        {{ 'dashboard.readiness.action' | translate }}
-      </a>
-    </section>
   </div>
 </div>

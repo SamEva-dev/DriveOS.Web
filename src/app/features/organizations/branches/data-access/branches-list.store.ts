@@ -74,15 +74,15 @@ export class BranchesListStore {
     },
   );
 
-  readonly page = this.resource.value;
+  readonly error = this.resource.error;
+
+  readonly page = computed(() => (this.error() ? EMPTY_PAGE : this.resource.value()));
 
   readonly branches = computed(() => [...this.page().items]);
 
   readonly totalCount = computed(() => this.page().totalCount);
 
   readonly isLoading = this.resource.isLoading;
-
-  readonly error = this.resource.error;
 
   readonly hasError = computed(() => this.error() !== undefined);
 
